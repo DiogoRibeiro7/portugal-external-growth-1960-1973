@@ -1,12 +1,23 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
 import pandas as pd
+import pytest
 from pytest import MonkeyPatch
 from typer.testing import CliRunner
 
+import portugal_external_growth.cli as cli
 from portugal_external_growth.cli import app
+
+
+class DummySettings:
+    def __init__(self, root: Path) -> None:
+        self._root = root
+
+    def resolved_root(self) -> Path:
+        return self._root
 
 
 def test_validate_command_exits_nonzero_on_integrity_error(
@@ -40,6 +51,108 @@ def test_validate_command_exits_zero_on_integrity_pass(
     result = CliRunner().invoke(app, ["validate"])
 
     assert result.exit_code == 0
+
+
+@pytest.mark.parametrize(
+    ("command", "target_name", "expects_root", "args"),
+    [
+        ("bootstrap", "bootstrap", True, []),
+        ("init-manual-templates", "init_manual_templates", True, []),
+        ("extract-world-bank", "extract_world_bank", False, ["--overwrite"]),
+        ("extract-comtrade", "extract_comtrade", False, ["--overwrite"]),
+        ("audit-comtrade-coverage", "audit_comtrade_coverage", False, ["--overwrite"]),
+        ("extract-bpstat", "extract_bpstat", False, ["--overwrite"]),
+        ("review-bpstat-registry", "review_bpstat_registry", False, []),
+        ("prepare-ine-transcription", "prepare_ine_transcription", False, []),
+        ("reconcile-trade-sources", "reconcile_trade_sources", False, []),
+        ("build-sitc-industry-mapping", "build_sitc_industry_mapping", False, []),
+        ("build-descriptive-results", "build_descriptive_results", False, []),
+        ("prepare-empirical-extension", "prepare_empirical_extension", False, []),
+        ("build", "build", False, []),
+        ("refresh-sources", "refresh_sources", False, ["--overwrite"]),
+        ("run-diagnostics", "run_diagnostics", False, []),
+    ],
+)
+def test_cli_dispatches_pipeline_commands(
+    command: str,
+    target_name: str,
+    expects_root: bool,
+    args: list[str],
+    tmp_path: Path,
+    monkeypatch: MonkeyPatch,
+) -> None:
+    calls: list[tuple[str, Any, dict[str, Any]]] = []
+    monkeypatch.setattr(cli, "_settings", lambda: DummySettings(tmp_path))
+
+    def fake_target(first_arg: Any, **kwargs: Any) -> None:
+        calls.append((target_name, first_arg, kwargs))
+
+    monkeypatch.setattr(cli, target_name, fake_target)
+
+    result = CliRunner().invoke(app, [command, *args])
+
+    assert result.exit_code == 0
+    assert calls
+    assert calls[0][0] == target_name
+    if expects_root:
+        assert calls[0][1] == tmp_path
+    else:
+        assert isinstance(calls[0][1], DummySettings)
+    if "--overwrite" in args:
+        assert calls[0][2] == {"overwrite": True}
+
+
+@pytest.mark.parametrize(
+    ("command", "target_name"),
+    [
+        ("reproduce-from-local", "reproduce_from_local"),
+        ("run-all-available", "run_all_available"),
+        ("run-all", "run_all"),
+    ],
+)
+def test_cli_exits_nonzero_when_boolean_workflow_fails(
+    command: str,
+    target_name: str,
+    tmp_path: Path,
+    monkeypatch: MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(cli, "_settings", lambda: DummySettings(tmp_path))
+    monkeypatch.setattr(cli, target_name, lambda *args, **kwargs: False)
+
+    result = CliRunner().invoke(app, [command])
+
+    assert result.exit_code == 1
+
+
+@pytest.mark.parametrize(
+    ("command", "target_name", "args"),
+    [
+        ("reproduce-from-local", "reproduce_from_local", []),
+        ("run-all-available", "run_all_available", ["--overwrite"]),
+        ("run-all", "run_all", ["--overwrite"]),
+    ],
+)
+def test_cli_exits_zero_when_boolean_workflow_passes(
+    command: str,
+    target_name: str,
+    args: list[str],
+    tmp_path: Path,
+    monkeypatch: MonkeyPatch,
+) -> None:
+    calls: list[dict[str, Any]] = []
+    monkeypatch.setattr(cli, "_settings", lambda: DummySettings(tmp_path))
+
+    def fake_target(*_args: Any, **kwargs: Any) -> bool:
+        calls.append(kwargs)
+        return True
+
+    monkeypatch.setattr(cli, target_name, fake_target)
+
+    result = CliRunner().invoke(app, [command, *args])
+
+    assert result.exit_code == 0
+    if "--overwrite" in args:
+        assert calls == [{"overwrite": True}]
 
 
 def _write_bootstrap_gdp(root: Path) -> None:
