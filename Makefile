@@ -23,6 +23,9 @@ review-bpstat:
 prepare-ine:
 	poetry run peg prepare-ine-transcription
 
+reconcile-trade:
+	poetry run peg reconcile-trade-sources
+
 validate:
 	poetry run peg validate
 

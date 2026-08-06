@@ -13,6 +13,7 @@ from portugal_external_growth.pipeline import (
     extract_world_bank,
     init_manual_templates,
     prepare_ine_transcription,
+    reconcile_trade_sources,
     review_bpstat_registry,
     run_all,
     validate,
@@ -91,6 +92,13 @@ def prepare_ine_transcription_command() -> None:
     """Create controlled files for INE double-entry transcription."""
 
     prepare_ine_transcription(_settings())
+
+
+@app.command("reconcile-trade-sources")
+def reconcile_trade_sources_command() -> None:
+    """Write source-preserving trade reconciliation tables."""
+
+    reconcile_trade_sources(_settings())
 
 
 @app.command("build")

@@ -13,6 +13,11 @@ from portugal_external_growth.config import load_yaml
 from portugal_external_growth.http import build_session
 from portugal_external_growth.io_utils import write_dataframe_with_metadata
 from portugal_external_growth.manual import initialise_templates, prepare_ine_transcription_workflow
+from portugal_external_growth.reconciliation import (
+    build_trade_reconciliation_notes,
+    build_trade_source_comparison,
+    finalise_trade_reconciliation,
+)
 from portugal_external_growth.registry import (
     build_bpstat_registry_review,
     load_bpstat_reviewed_candidates,
@@ -422,6 +427,34 @@ def prepare_ine_transcription(settings: Settings) -> None:
 
     for path in prepare_ine_transcription_workflow(settings.resolved_root()):
         print(path)
+
+
+def reconcile_trade_sources(settings: Settings) -> None:
+    """Reconcile annual trade totals without silently merging conflicts."""
+
+    root = settings.resolved_root()
+    comparison = build_trade_source_comparison(root)
+    write_dataframe_with_metadata(
+        comparison,
+        root / "data/interim/live/trade_source_comparison.csv",
+        metadata={
+            "source_files": [
+                "results/live/comtrade_coverage_audit.csv",
+                "data/processed/live/ine_trade_harmonised.csv",
+            ],
+            "stage": "source_preserving_trade_comparison",
+        },
+    )
+    reconciliation = finalise_trade_reconciliation(comparison)
+    write_dataframe_with_metadata(
+        reconciliation,
+        root / "results/live/trade_reconciliation.csv",
+        metadata={"source_files": ["data/interim/live/trade_source_comparison.csv"]},
+    )
+    notes = build_trade_reconciliation_notes(reconciliation)
+    output = root / "results/live/trade_reconciliation_notes.txt"
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(notes, encoding="utf-8")
 
 
 def run_all(settings: Settings, *, overwrite: bool) -> None:
