@@ -1,0 +1,17 @@
+{
+  "columns": [
+    "year",
+    "flow_code",
+    "partner_group",
+    "trade_value_usd",
+    "source_quality",
+    "annual_group_share"
+  ],
+  "created_at_utc": "2026-08-06T12:00:12.828160+00:00",
+  "file": "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\results\\live\\trade_group_shares.csv",
+  "rows": 90,
+  "sha256": "4c6f08febb36685d810f40dee8a3700222c67d0345be4e4ee83f8350b409b900",
+  "source_files": [
+    "data/interim/live/comtrade_coverage_matrix.csv"
+  ]
+}

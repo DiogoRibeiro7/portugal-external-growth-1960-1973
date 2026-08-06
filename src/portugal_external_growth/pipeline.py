@@ -10,6 +10,7 @@ from portugal_external_growth.clients.bpstat import BPstatClient, BPstatSeries
 from portugal_external_growth.clients.comtrade import ComtradeClient, ComtradeRequest
 from portugal_external_growth.clients.world_bank import WorldBankClient, WorldBankRequest
 from portugal_external_growth.config import load_yaml
+from portugal_external_growth.descriptive import build_descriptive_trade_results
 from portugal_external_growth.http import build_session
 from portugal_external_growth.io_utils import write_dataframe_with_metadata
 from portugal_external_growth.manual import initialise_templates, prepare_ine_transcription_workflow
@@ -505,6 +506,43 @@ def build_sitc_industry_mapping(settings: Settings) -> None:
         narrow,
         root / "results/live/sitc_mapping_sensitivity_narrow.csv",
         metadata={"source_files": ["data/interim/live/sitc_industry_mapping.csv"]},
+    )
+
+
+def build_descriptive_results(settings: Settings) -> None:
+    """Build stable descriptive trade-orientation tables."""
+
+    root = settings.resolved_root()
+    results = build_descriptive_trade_results(root)
+    output_map = {
+        "group_values": root / "results/live/trade_group_values.csv",
+        "annual_shares": root / "results/live/trade_group_shares.csv",
+        "period_changes": root / "results/live/trade_group_changes_1962_1973.csv",
+        "product_composition": root / "results/live/trade_product_composition.csv",
+        "concentration": root / "results/live/trade_concentration_indices.csv",
+        "export_growth_contribution": root / "results/live/trade_export_growth_contributions.csv",
+        "missingness": root / "results/live/trade_source_quality_indicators.csv",
+    }
+    for key, path in output_map.items():
+        write_dataframe_with_metadata(
+            results[key],
+            path,
+            metadata={"source_files": ["data/interim/live/comtrade_coverage_matrix.csv"]},
+        )
+    notes = root / "results/live/trade_descriptive_notes.txt"
+    notes.write_text(
+        "\n".join(
+            [
+                "Descriptive trade-orientation results",
+                "=====================================",
+                "",
+                "These tables are descriptive only. They use nominal values for shares",
+                "within each year and do not make causal claims.",
+                "Source-quality columns must be retained with every analytical table.",
+                "",
+            ]
+        ),
+        encoding="utf-8",
     )
 
 

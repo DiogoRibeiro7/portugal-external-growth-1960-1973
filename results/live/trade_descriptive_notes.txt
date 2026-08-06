@@ -1,0 +1,6 @@
+Descriptive trade-orientation results
+=====================================
+
+These tables are descriptive only. They use nominal values for shares
+within each year and do not make causal claims.
+Source-quality columns must be retained with every analytical table.

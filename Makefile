@@ -29,6 +29,9 @@ reconcile-trade:
 map-products:
 	poetry run peg build-sitc-industry-mapping
 
+describe-trade:
+	poetry run peg build-descriptive-results
+
 validate:
 	poetry run peg validate
 

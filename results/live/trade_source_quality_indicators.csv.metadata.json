@@ -1,0 +1,15 @@
+{
+  "columns": [
+    "dataset",
+    "rows",
+    "missing_trade_values",
+    "source_quality"
+  ],
+  "created_at_utc": "2026-08-06T12:00:12.870297+00:00",
+  "file": "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\results\\live\\trade_source_quality_indicators.csv",
+  "rows": 2,
+  "sha256": "38587863f820cac096197e4dca47410cb2ef21a6e7aa38f7dc0a550d9abf221f",
+  "source_files": [
+    "data/interim/live/comtrade_coverage_matrix.csv"
+  ]
+}

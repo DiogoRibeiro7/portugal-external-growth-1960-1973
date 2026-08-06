@@ -1,0 +1,18 @@
+{
+  "columns": [
+    "year",
+    "flow_code",
+    "partner_group",
+    "commodity_code_source",
+    "trade_value_usd",
+    "product_share_within_group",
+    "source_quality"
+  ],
+  "created_at_utc": "2026-08-06T12:00:12.847788+00:00",
+  "file": "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\results\\live\\trade_product_composition.csv",
+  "rows": 90,
+  "sha256": "c24e1a0f321f8ce683023d88a11b77b24d8d29afd3bf87041bdd2a20e202ce34",
+  "source_files": [
+    "data/interim/live/comtrade_coverage_matrix.csv"
+  ]
+}

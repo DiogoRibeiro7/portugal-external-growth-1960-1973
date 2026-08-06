@@ -8,6 +8,7 @@ from portugal_external_growth.pipeline import (
     audit_comtrade_coverage,
     bootstrap,
     build,
+    build_descriptive_results,
     build_sitc_industry_mapping,
     extract_bpstat,
     extract_comtrade,
@@ -107,6 +108,13 @@ def build_sitc_industry_mapping_command() -> None:
     """Build product-to-industry mapping outputs."""
 
     build_sitc_industry_mapping(_settings())
+
+
+@app.command("build-descriptive-results")
+def build_descriptive_results_command() -> None:
+    """Build descriptive trade-orientation result tables."""
+
+    build_descriptive_results(_settings())
 
 
 @app.command("build")
