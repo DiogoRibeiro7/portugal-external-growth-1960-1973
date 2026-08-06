@@ -14,6 +14,9 @@ extract:
 build:
 	poetry run peg build
 
+audit-comtrade:
+	poetry run peg audit-comtrade-coverage
+
 validate:
 	poetry run peg validate
 

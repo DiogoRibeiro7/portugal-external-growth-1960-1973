@@ -17,6 +17,7 @@ from portugal_external_growth.settings import Settings
 from portugal_external_growth.transforms import (
     aggregate_trade_orientation,
     classify_partner_groups,
+    compile_comtrade_coverage_audit,
     load_partner_memberships,
     normalise_comtrade,
     summarise_gdp_growth,
@@ -165,6 +166,106 @@ def extract_comtrade(settings: Settings, *, overwrite: bool) -> None:
             )
             raw, frame, url = client.fetch(request)
             client.save(request, raw, frame, url, root, overwrite=overwrite)
+
+
+def audit_comtrade_coverage(settings: Settings, *, overwrite: bool) -> None:
+    """Audit Portugal's historical UN Comtrade coverage before analytical use."""
+
+    root = settings.resolved_root()
+    payload = load_yaml(root / "config/comtrade.yml")
+    config = payload.get("comtrade")
+    if not isinstance(config, dict):
+        raise TypeError("comtrade.yml is invalid")
+
+    client = ComtradeClient(
+        build_session(),
+        timeout_seconds=settings.http_timeout_seconds,
+        subscription_key=settings.comtrade_subscription_key,
+    )
+    classification_codes = tuple(config.get("coverage_classification_codes", ["S1", "S2"]))
+    years = tuple(int(year) for year in config["years"])
+    flows = tuple(str(flow_code) for flow_code in config["flow_codes"])
+    partners = tuple(int(value) for value in config["partner_codes"])
+
+    matrix_inputs: list[pd.DataFrame] = []
+    raw_paths: list[str] = []
+    for classification_code in classification_codes:
+        for year in years:
+            for flow_code in flows:
+                request = ComtradeRequest(
+                    year=year,
+                    reporter_code=int(config["reporter_code"]),
+                    partner_codes=partners,
+                    flow_code=flow_code,
+                    commodity_code=str(config["commodity_codes"][0]),
+                    classification_code=str(classification_code),
+                    max_records=int(config["max_records"]),
+                )
+                raw, frame, url = client.fetch(request)
+                raw_path = client.save_availability_response(
+                    request,
+                    raw,
+                    frame,
+                    url,
+                    root,
+                    overwrite=overwrite,
+                )
+                raw_paths.append(str(raw_path))
+                if frame.empty:
+                    matrix_inputs.append(
+                        pd.DataFrame(
+                            [
+                                {
+                                    "year": year,
+                                    "flow_code": flow_code,
+                                    "classification_code": classification_code,
+                                    "reporter_code": int(config["reporter_code"]),
+                                    "partner_code": pd.NA,
+                                    "partner_desc": "",
+                                    "trade_value_usd": pd.NA,
+                                    "is_world_record": False,
+                                    "raw_records": 0,
+                                }
+                            ]
+                        )
+                    )
+                    continue
+
+                normalised = normalise_comtrade(frame)
+                matrix = pd.DataFrame(
+                    {
+                        "year": normalised["year"],
+                        "flow_code": normalised["flow_code"],
+                        "classification_code": classification_code,
+                        "reporter_code": int(config["reporter_code"]),
+                        "partner_code": normalised["partner_code"],
+                        "partner_desc": frame.get("partnerDesc", pd.Series([""] * len(frame))),
+                        "trade_value_usd": normalised["trade_value_usd"],
+                        "is_world_record": normalised["partner_code"].eq(0),
+                        "raw_records": len(frame),
+                    }
+                )
+                matrix_inputs.append(matrix)
+
+    coverage_matrix, audit, notes = compile_comtrade_coverage_audit(
+        matrix_inputs,
+        colonial_partner_codes=tuple(partners[1:8]),
+        expected_years=years,
+        expected_flow_codes=flows,
+    )
+    write_dataframe_with_metadata(
+        coverage_matrix,
+        root / "data/interim/live/comtrade_coverage_matrix.csv",
+        metadata={"source_files": raw_paths, "stage": "comtrade_coverage_matrix"},
+    )
+    write_dataframe_with_metadata(
+        audit,
+        root / "results/live/comtrade_coverage_audit.csv",
+        metadata={"source_files": ["data/interim/live/comtrade_coverage_matrix.csv"]},
+    )
+    notes_path = root / "results/live/comtrade_coverage_notes.txt"
+    notes_path.parent.mkdir(parents=True, exist_ok=True)
+    notes_path.write_text(notes, encoding="utf-8")
 
 
 def _load_bpstat_registry(path: Path) -> list[BPstatSeries]:

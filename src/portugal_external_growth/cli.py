@@ -5,6 +5,7 @@ from __future__ import annotations
 import typer
 
 from portugal_external_growth.pipeline import (
+    audit_comtrade_coverage,
     bootstrap,
     build,
     extract_bpstat,
@@ -49,6 +50,15 @@ def extract_comtrade_command(
     """Download bounded UN Comtrade requests."""
 
     extract_comtrade(_settings(), overwrite=overwrite)
+
+
+@app.command("audit-comtrade-coverage")
+def audit_comtrade_coverage_command(
+    overwrite: bool = typer.Option(False, help="Replace existing coverage-audit snapshots."),
+) -> None:
+    """Audit Portugal's historical UN Comtrade coverage."""
+
+    audit_comtrade_coverage(_settings(), overwrite=overwrite)
 
 
 @app.command("extract-bpstat")

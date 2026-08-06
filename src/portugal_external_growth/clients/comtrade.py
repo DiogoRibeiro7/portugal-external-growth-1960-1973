@@ -119,3 +119,40 @@ class ComtradeClient:
             overwrite=overwrite,
         )
         return raw_path, csv_path
+
+    def save_availability_response(
+        self,
+        request: ComtradeRequest,
+        raw_json: bytes,
+        frame: pd.DataFrame,
+        request_url: str,
+        root: Path,
+        *,
+        overwrite: bool,
+    ) -> Path:
+        """Persist one raw response used for historical coverage auditing."""
+
+        stem = (
+            f"PRT_{request.year}_{request.flow_code}_{request.classification_code}_"
+            f"{request.commodity_code}_coverage"
+        )
+        raw_path = root / "data/raw/live/comtrade_availability" / f"{stem}.json"
+        atomic_write_bytes(raw_path, raw_json, overwrite=overwrite)
+        atomic_write_json(
+            raw_path.with_suffix(".metadata.json"),
+            {
+                "source": "UN Comtrade",
+                "purpose": "historical_coverage_audit",
+                "request_url": sanitise_url(request_url, (self._subscription_key or "",)),
+                "extracted_at_utc": utc_now_iso(),
+                "raw_sha256": sha256_file(raw_path),
+                "rows": len(frame),
+                "parameters": {
+                    **request.__dict__,
+                    "partner_codes": list(request.partner_codes),
+                },
+                "endpoint_mode": "free_key" if self._subscription_key else "preview",
+            },
+            overwrite=overwrite,
+        )
+        return raw_path

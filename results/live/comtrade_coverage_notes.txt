@@ -1,0 +1,13 @@
+UN Comtrade historical coverage audit
+======================================
+
+This report is generated from local raw Comtrade availability responses.
+Empty API responses are treated as not testable until reporting metadata and
+historical statistical-territory practices are reviewed.
+
+Open checks:
+- Confirm whether missing overseas-territory partners were included in Portugal's statistical territory.
+- Confirm valuation metadata for each historical classification and flow.
+- Resolve reporter/year gaps against UN Comtrade metadata rather than inferring absence from empty data.
+
+Years without any returned classification in this run: []
