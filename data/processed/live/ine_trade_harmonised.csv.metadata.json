@@ -23,9 +23,9 @@
     "entry_pass",
     "adjudication_status"
   ],
-  "created_at_utc": "2026-08-06T11:52:26.239679+00:00",
-  "file": "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\manual\\templates\\trade_transcription_template.csv",
-  "purpose": "Double-entry transcription of historical trade tables",
+  "created_at_utc": "2026-08-06T11:51:59.451202+00:00",
+  "file": "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\processed\\live\\ine_trade_harmonised.csv",
   "rows": 0,
-  "sha256": "6eb97fa20d610dd74d5a5dab133135ebe7dccd93438bd91b79b82bc0d27245ff"
+  "sha256": "6eb97fa20d610dd74d5a5dab133135ebe7dccd93438bd91b79b82bc0d27245ff",
+  "stage": "harmonisation_pending_human_verification"
 }

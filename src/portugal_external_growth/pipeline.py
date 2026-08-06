@@ -12,7 +12,7 @@ from portugal_external_growth.clients.world_bank import WorldBankClient, WorldBa
 from portugal_external_growth.config import load_yaml
 from portugal_external_growth.http import build_session
 from portugal_external_growth.io_utils import write_dataframe_with_metadata
-from portugal_external_growth.manual import initialise_templates
+from portugal_external_growth.manual import initialise_templates, prepare_ine_transcription_workflow
 from portugal_external_growth.registry import (
     build_bpstat_registry_review,
     load_bpstat_reviewed_candidates,
@@ -414,6 +414,13 @@ def init_manual_templates(root: Path) -> None:
     """Initialise transcription templates and print created paths."""
 
     for path in initialise_templates(root):
+        print(path)
+
+
+def prepare_ine_transcription(settings: Settings) -> None:
+    """Initialise the controlled INE historical-table transcription workflow."""
+
+    for path in prepare_ine_transcription_workflow(settings.resolved_root()):
         print(path)
 
 

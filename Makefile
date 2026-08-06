@@ -20,6 +20,9 @@ audit-comtrade:
 review-bpstat:
 	poetry run peg review-bpstat-registry
 
+prepare-ine:
+	poetry run peg prepare-ine-transcription
+
 validate:
 	poetry run peg validate
 

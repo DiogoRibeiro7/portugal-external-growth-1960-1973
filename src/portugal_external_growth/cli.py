@@ -12,6 +12,7 @@ from portugal_external_growth.pipeline import (
     extract_comtrade,
     extract_world_bank,
     init_manual_templates,
+    prepare_ine_transcription,
     review_bpstat_registry,
     run_all,
     validate,
@@ -83,6 +84,13 @@ def init_manual_templates_command() -> None:
     """Create CSV templates for double-entry historical table transcription."""
 
     init_manual_templates(_settings().resolved_root())
+
+
+@app.command("prepare-ine-transcription")
+def prepare_ine_transcription_command() -> None:
+    """Create controlled files for INE double-entry transcription."""
+
+    prepare_ine_transcription(_settings())
 
 
 @app.command("build")

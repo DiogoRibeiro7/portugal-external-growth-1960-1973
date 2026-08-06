@@ -1,22 +1,27 @@
 {
   "columns": [
     "source_id",
+    "source_pdf_filename",
+    "source_pdf_sha256",
     "publication_year",
     "table_title",
     "page_number",
     "series_name_source",
     "year",
     "value_source",
+    "printed_total_value_source",
     "unit_source",
     "territorial_definition",
+    "cell_status",
     "footnote",
     "transcriber",
     "transcription_date",
-    "entry_pass"
+    "entry_pass",
+    "adjudication_status"
   ],
-  "created_at_utc": "2026-08-06T09:19:43.220412+00:00",
-  "file": "/mnt/data/portugal-external-growth-1960-1973/data/manual/templates/aggregate_cross_check_template.csv",
+  "created_at_utc": "2026-08-06T11:52:26.249921+00:00",
+  "file": "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\manual\\templates\\aggregate_cross_check_template.csv",
   "purpose": "Independent aggregate cross-check transcription",
   "rows": 0,
-  "sha256": "2fd6c6a5aeefc1c7d1e75a815a68253cdadf34b241ecc1825f744a30a95ed4a6"
+  "sha256": "c3b2408418977d84d877b094fa5bf9e2abb52c7d132afc0d2a7d210d9caf95f5"
 }

@@ -1,0 +1,9 @@
+INE historical trade transcription status
+========================================
+
+No source PDFs or human transcription rows are currently available.
+Final harmonised output is intentionally empty until two independent
+entry passes are completed and discrepancies are adjudicated.
+
+Unresolved cells: all expected INE historical trade tables.
+Footnotes: pending source-document registration and transcription.

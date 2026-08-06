@@ -6,10 +6,13 @@ from pathlib import Path
 
 import pandas as pd
 
+from portugal_external_growth.config import load_yaml
 from portugal_external_growth.io_utils import write_dataframe_with_metadata
 
 TRADE_TEMPLATE_COLUMNS = [
     "source_id",
+    "source_pdf_filename",
+    "source_pdf_sha256",
     "publication_year",
     "table_title",
     "page_number",
@@ -20,28 +23,65 @@ TRADE_TEMPLATE_COLUMNS = [
     "commodity_code_source",
     "commodity_label_source",
     "value_source",
+    "printed_total_value_source",
     "currency_source",
     "unit_multiplier",
+    "cell_status",
     "footnote",
     "transcriber",
     "transcription_date",
     "entry_pass",
+    "adjudication_status",
 ]
 
 AGGREGATE_TEMPLATE_COLUMNS = [
     "source_id",
+    "source_pdf_filename",
+    "source_pdf_sha256",
     "publication_year",
     "table_title",
     "page_number",
     "series_name_source",
     "year",
     "value_source",
+    "printed_total_value_source",
     "unit_source",
     "territorial_definition",
+    "cell_status",
     "footnote",
     "transcriber",
     "transcription_date",
     "entry_pass",
+    "adjudication_status",
+]
+
+SOURCE_REGISTRY_COLUMNS = [
+    "source_id",
+    "title_pattern",
+    "expected_year",
+    "source_pdf_filename",
+    "source_pdf_sha256",
+    "source_document_status",
+    "access_conditions",
+    "licence",
+    "territorial_definition",
+    "notes",
+]
+
+DISCREPANCY_COLUMNS = [
+    "source_id",
+    "publication_year",
+    "table_title",
+    "page_number",
+    "flow",
+    "partner_name_source",
+    "commodity_code_source",
+    "commodity_label_source",
+    "pass_1_value_source",
+    "pass_2_value_source",
+    "printed_total_value_source",
+    "discrepancy_type",
+    "resolution_status",
 ]
 
 
@@ -62,3 +102,158 @@ def initialise_templates(root: Path) -> list[Path]:
         metadata={"purpose": "Independent aggregate cross-check transcription"},
     )
     return [trade_path, aggregate_path]
+
+
+def prepare_ine_transcription_workflow(root: Path) -> list[Path]:
+    """Create controlled INE double-entry transcription workflow files."""
+
+    source_registry = _build_source_document_registry(root / "config/manual_sources.yml")
+    source_registry_path = root / "data/manual/source_documents/source_document_registry.csv"
+    write_dataframe_with_metadata(
+        source_registry,
+        source_registry_path,
+        metadata={"source_files": ["config/manual_sources.yml"], "stage": "source_registry"},
+    )
+
+    created = [source_registry_path]
+    for pass_number in (1, 2):
+        pass_dir = root / f"data/manual/transcriptions/pass_{pass_number}"
+        pass_path = pass_dir / f"ine_trade_transcription_pass_{pass_number}.csv"
+        frame = pd.DataFrame(columns=TRADE_TEMPLATE_COLUMNS)
+        frame["entry_pass"] = pd.Series(dtype="object")
+        write_dataframe_with_metadata(
+            frame,
+            pass_path,
+            metadata={"purpose": f"INE trade double-entry transcription pass {pass_number}"},
+        )
+        created.append(pass_path)
+
+    discrepancy_path = root / "data/interim/live/ine_transcription_discrepancies.csv"
+    discrepancies = compare_transcription_passes(
+        root / "data/manual/transcriptions/pass_1/ine_trade_transcription_pass_1.csv",
+        root / "data/manual/transcriptions/pass_2/ine_trade_transcription_pass_2.csv",
+    )
+    write_dataframe_with_metadata(
+        discrepancies,
+        discrepancy_path,
+        metadata={"stage": "ine_double_entry_discrepancy_check"},
+    )
+    created.append(discrepancy_path)
+
+    adjudicated_path = root / "data/interim/live/ine_trade_adjudicated.csv"
+    final_path = root / "data/processed/live/ine_trade_harmonised.csv"
+    empty_final = pd.DataFrame(columns=TRADE_TEMPLATE_COLUMNS)
+    write_dataframe_with_metadata(
+        empty_final,
+        adjudicated_path,
+        metadata={"stage": "manual_adjudication_pending"},
+    )
+    write_dataframe_with_metadata(
+        empty_final,
+        final_path,
+        metadata={"stage": "harmonisation_pending_human_verification"},
+    )
+    created.extend([adjudicated_path, final_path])
+
+    report_path = root / "results/live/ine_transcription_unresolved.txt"
+    report_path.parent.mkdir(parents=True, exist_ok=True)
+    report_path.write_text(
+        "\n".join(
+            [
+                "INE historical trade transcription status",
+                "========================================",
+                "",
+                "No source PDFs or human transcription rows are currently available.",
+                "Final harmonised output is intentionally empty until two independent",
+                "entry passes are completed and discrepancies are adjudicated.",
+                "",
+                "Unresolved cells: all expected INE historical trade tables.",
+                "Footnotes: pending source-document registration and transcription.",
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    created.append(report_path)
+    return created
+
+
+def compare_transcription_passes(pass_1_path: Path, pass_2_path: Path) -> pd.DataFrame:
+    """Compare two transcription passes and return unresolved discrepancies."""
+
+    pass_1 = _read_transcription(pass_1_path)
+    pass_2 = _read_transcription(pass_2_path)
+    if pass_1.empty and pass_2.empty:
+        return pd.DataFrame(columns=DISCREPANCY_COLUMNS)
+
+    key_columns = [
+        "source_id",
+        "publication_year",
+        "table_title",
+        "page_number",
+        "flow",
+        "partner_name_source",
+        "commodity_code_source",
+        "commodity_label_source",
+    ]
+    merged = pass_1.merge(
+        pass_2,
+        on=key_columns,
+        how="outer",
+        suffixes=("_pass_1", "_pass_2"),
+        indicator=True,
+    )
+    records: list[dict[str, object]] = []
+    for row in merged.to_dict(orient="records"):
+        value_1 = row.get("value_source_pass_1")
+        value_2 = row.get("value_source_pass_2")
+        if row["_merge"] == "both" and str(value_1) == str(value_2):
+            continue
+        records.append(
+            {
+                **{column: row.get(column) for column in key_columns},
+                "pass_1_value_source": value_1,
+                "pass_2_value_source": value_2,
+                "printed_total_value_source": row.get("printed_total_value_source_pass_1")
+                or row.get("printed_total_value_source_pass_2"),
+                "discrepancy_type": str(row["_merge"]),
+                "resolution_status": "requires_adjudication",
+            }
+        )
+    return pd.DataFrame.from_records(records, columns=DISCREPANCY_COLUMNS)
+
+
+def _read_transcription(path: Path) -> pd.DataFrame:
+    if not path.exists():
+        return pd.DataFrame(columns=TRADE_TEMPLATE_COLUMNS)
+    return pd.read_csv(path)
+
+
+def _build_source_document_registry(config_path: Path) -> pd.DataFrame:
+    payload = load_yaml(config_path)
+    sources = payload.get("manual_sources")
+    if not isinstance(sources, list):
+        raise TypeError("manual_sources.yml must contain a manual_sources list")
+    records: list[dict[str, object]] = []
+    for source in sources:
+        if not isinstance(source, dict):
+            continue
+        expected_years = source.get("expected_years")
+        if not isinstance(expected_years, list):
+            continue
+        for year in expected_years:
+            records.append(
+                {
+                    "source_id": source["source_id"],
+                    "title_pattern": source["title_pattern"],
+                    "expected_year": int(year),
+                    "source_pdf_filename": "",
+                    "source_pdf_sha256": "",
+                    "source_document_status": "missing_source_pdf",
+                    "access_conditions": "open_document_expected",
+                    "licence": "to_be_confirmed_from_source",
+                    "territorial_definition": "to_be_transcribed_from_source",
+                    "notes": "Register local PDF before transcription.",
+                }
+            )
+    return pd.DataFrame.from_records(records, columns=SOURCE_REGISTRY_COLUMNS)

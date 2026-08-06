@@ -1,0 +1,22 @@
+{
+  "columns": [
+    "source_id",
+    "publication_year",
+    "table_title",
+    "page_number",
+    "flow",
+    "partner_name_source",
+    "commodity_code_source",
+    "commodity_label_source",
+    "pass_1_value_source",
+    "pass_2_value_source",
+    "printed_total_value_source",
+    "discrepancy_type",
+    "resolution_status"
+  ],
+  "created_at_utc": "2026-08-06T11:51:59.429911+00:00",
+  "file": "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\interim\\live\\ine_transcription_discrepancies.csv",
+  "rows": 0,
+  "sha256": "6a301e3b38715f139e3ee8d653dc2aadcd0d6d77f70734707394e4eb4957cd11",
+  "stage": "ine_double_entry_discrepancy_check"
+}
