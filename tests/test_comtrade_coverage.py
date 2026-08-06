@@ -140,3 +140,45 @@ def test_comtrade_coverage_uses_configured_classification_preference() -> None:
 
     assert audit.loc[0, "preferred_classification_for_checks"] == "S2"
     assert audit.loc[0, "world_value_usd"] == 200.0
+
+
+def test_comtrade_coverage_falls_back_and_calculates_selected_partner_ratio() -> None:
+    matrix = pd.DataFrame(
+        [
+            {
+                "year": 1962,
+                "flow_code": "X",
+                "classification_code": "S3",
+                "reporter_code": 620,
+                "partner_code": 0,
+                "partner_desc": "World",
+                "trade_value_usd": 100.0,
+                "is_world_record": True,
+                "raw_records": 1,
+            },
+            {
+                "year": 1962,
+                "flow_code": "X",
+                "classification_code": "S3",
+                "reporter_code": 620,
+                "partner_code": 24,
+                "partner_desc": "Angola",
+                "trade_value_usd": 25.0,
+                "is_world_record": False,
+                "raw_records": 1,
+            },
+        ]
+    )
+
+    _, audit, _ = compile_comtrade_coverage_audit(
+        [matrix],
+        colonial_partner_codes=(24,),
+        expected_years=(1962,),
+        expected_flow_codes=("X",),
+    )
+
+    assert audit.loc[0, "preferred_classification_for_checks"] == "S3"
+    assert audit.loc[0, "selected_coverage_ratio"] == 0.25
+    assert audit.loc[0, "unselected_world_value_usd"] == 75.0
+    assert audit.loc[0, "coverage_status"] == "selected_partner_subset"
+    assert audit.loc[0, "colonial_partner_codes_present"] == "24"
