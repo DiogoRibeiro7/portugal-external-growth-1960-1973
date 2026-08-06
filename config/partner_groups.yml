@@ -1,0 +1,31 @@
+groups:
+  colonies:
+    description: Portuguese colonies and overseas territories relevant to 1960-1973.
+    members:
+      - {code: 24, name: Angola, start_year: 1960, end_year: 1973}
+      - {code: 132, name: Cabo Verde, start_year: 1960, end_year: 1973}
+      - {code: 446, name: Macao, start_year: 1960, end_year: 1973}
+      - {code: 508, name: Mozambique, start_year: 1960, end_year: 1973}
+      - {code: 624, name: Guinea-Bissau, start_year: 1960, end_year: 1973}
+      - {code: 626, name: Timor-Leste, start_year: 1960, end_year: 1973}
+      - {code: 678, name: Sao Tome and Principe, start_year: 1960, end_year: 1973}
+  efta:
+    description: Historical EFTA membership or association during the observation year.
+    members:
+      - {code: 40, name: Austria, start_year: 1960, end_year: 1973}
+      - {code: 208, name: Denmark, start_year: 1960, end_year: 1972}
+      - {code: 246, name: Finland, start_year: 1961, end_year: 1973}
+      - {code: 352, name: Iceland, start_year: 1970, end_year: 1973}
+      - {code: 578, name: Norway, start_year: 1960, end_year: 1973}
+      - {code: 752, name: Sweden, start_year: 1960, end_year: 1973}
+      - {code: 756, name: Switzerland, start_year: 1960, end_year: 1973}
+      - {code: 826, name: United Kingdom, start_year: 1960, end_year: 1972}
+  eec6:
+    description: Six members of the European Economic Community before the 1973 enlargement.
+    members:
+      - {code: 56, name: Belgium, start_year: 1960, end_year: 1973}
+      - {code: 250, name: France, start_year: 1960, end_year: 1973}
+      - {code: 276, name: Germany, start_year: 1960, end_year: 1973}
+      - {code: 380, name: Italy, start_year: 1960, end_year: 1973}
+      - {code: 442, name: Luxembourg, start_year: 1960, end_year: 1973}
+      - {code: 528, name: Netherlands, start_year: 1960, end_year: 1973}

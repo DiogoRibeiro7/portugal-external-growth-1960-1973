@@ -1,0 +1,9 @@
+BOOTSTRAP CROSS-CHECK REPORT
+============================
+GDP growth observations: 13
+Period: 1961-1973
+Arithmetic mean annual growth: 7.144773%
+Median annual growth: 6.631652%
+Cumulative real GDP index (start=100): 244.297419
+Trade results: NOT YET PRODUCED; live Comtrade or transcribed INE data required.
+BPstat results: NOT YET PRODUCED; reviewed series registry required.

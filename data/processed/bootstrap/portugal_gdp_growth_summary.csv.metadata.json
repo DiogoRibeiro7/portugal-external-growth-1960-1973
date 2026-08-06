@@ -1,0 +1,20 @@
+{
+  "columns": [
+    "start_year",
+    "end_year",
+    "observations",
+    "arithmetic_mean_growth_percent",
+    "median_growth_percent",
+    "minimum_growth_percent",
+    "maximum_growth_percent",
+    "cumulative_real_gdp_index_start_100"
+  ],
+  "created_at_utc": "2026-08-06T09:19:43.232455+00:00",
+  "file": "/mnt/data/portugal-external-growth-1960-1973/data/processed/bootstrap/portugal_gdp_growth_summary.csv",
+  "rows": 1,
+  "sha256": "c1284f4b168e3e33a41983ba4552901a5d906459638cb3ff5009268df46a80d0",
+  "source_files": [
+    "/mnt/data/portugal-external-growth-1960-1973/data/raw/bootstrap/world_bank_gdp_growth_portugal_1961_1973.csv"
+  ],
+  "stage": "processed_bootstrap"
+}

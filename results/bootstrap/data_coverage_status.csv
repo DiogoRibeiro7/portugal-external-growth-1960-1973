@@ -1,0 +1,4 @@
+dataset,status,start_year,end_year,rows,empirical,production_refresh_required
+world_bank_gdp_growth,bootstrap_available,1961,1973,13,True,True
+un_comtrade_trade,live_extraction_required,1962,1973,0,True,True
+bpstat_macro,series_registry_required,1960,1973,0,True,True

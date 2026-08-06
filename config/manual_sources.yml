@@ -1,0 +1,16 @@
+manual_sources:
+  - source_id: ine_external_trade_yearbook
+    title_pattern: Estatisticas do Comercio Externo
+    expected_years: [1960, 1961, 1962, 1963, 1964, 1965, 1966, 1967, 1968, 1969, 1970, 1971, 1972, 1973]
+    target_template: data/manual/templates/trade_transcription_template.csv
+    validation: double_entry
+  - source_id: overseas_statistical_yearbook
+    title_pattern: Anuario Estatistico do Ultramar
+    expected_years: [1960, 1961, 1962, 1963, 1964, 1965, 1966, 1967, 1968, 1969, 1970, 1971, 1972, 1973]
+    target_template: data/manual/templates/trade_transcription_template.csv
+    validation: double_entry
+  - source_id: oecd_portugal_survey
+    title_pattern: OECD Economic Survey Portugal
+    expected_years: [1960, 1961, 1962, 1963, 1964, 1965, 1966, 1967, 1968, 1969, 1970, 1971, 1972, 1973, 1974]
+    target_template: data/manual/templates/aggregate_cross_check_template.csv
+    validation: independent_source

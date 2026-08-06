@@ -1,0 +1,12 @@
+{
+  "columns": [
+    "severity",
+    "check",
+    "message"
+  ],
+  "created_at_utc": "2026-08-06T09:19:43.241221+00:00",
+  "file": "/mnt/data/portugal-external-growth-1960-1973/results/bootstrap/validation_report.csv",
+  "rows": 1,
+  "sha256": "99158fbb47fe7a67b7b8731a521c40fbbf05143ed1bebb49484cd5e6f4fb0fd9",
+  "stage": "bootstrap_validation"
+}

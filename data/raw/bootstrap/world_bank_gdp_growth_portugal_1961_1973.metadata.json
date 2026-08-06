@@ -1,0 +1,10 @@
+{
+  "source": "World Bank World Development Indicators",
+  "indicator_code": "NY.GDP.MKTP.KD.ZG",
+  "country_code": "PRT",
+  "period": "1961-1973",
+  "purpose": "Deterministic offline bootstrap and regression-test snapshot",
+  "production_rule": "Refresh from the official World Bank API and preserve this snapshot for comparison.",
+  "official_api_pattern": "https://api.worldbank.org/v2/country/PRT/indicator/NY.GDP.MKTP.KD.ZG?date=1960:1973&format=json&per_page=1000",
+  "sha256": "4a4db2e06dd153c8b01584bb6e2ebeccf92bf5fd11e84709511fd9bc86a63003"
+}

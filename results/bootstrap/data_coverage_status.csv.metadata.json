@@ -1,0 +1,16 @@
+{
+  "columns": [
+    "dataset",
+    "status",
+    "start_year",
+    "end_year",
+    "rows",
+    "empirical",
+    "production_refresh_required"
+  ],
+  "created_at_utc": "2026-08-06T09:19:43.237367+00:00",
+  "file": "/mnt/data/portugal-external-growth-1960-1973/results/bootstrap/data_coverage_status.csv",
+  "rows": 3,
+  "sha256": "39e0deda6fac861180a1ded90f9465eaffe0e67f8bc56628290f0c09599229a6",
+  "stage": "bootstrap_status"
+}

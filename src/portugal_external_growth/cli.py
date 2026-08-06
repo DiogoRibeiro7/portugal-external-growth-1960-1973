@@ -1,0 +1,96 @@
+"""Command-line interface."""
+
+from __future__ import annotations
+
+from pathlib import Path
+
+import typer
+
+from portugal_external_growth.pipeline import (
+    bootstrap,
+    build,
+    extract_bpstat,
+    extract_comtrade,
+    extract_world_bank,
+    init_manual_templates,
+    run_all,
+    validate,
+)
+from portugal_external_growth.settings import Settings
+
+app = typer.Typer(no_args_is_help=True, pretty_exceptions_show_locals=False)
+
+
+def _settings() -> Settings:
+    settings = Settings()
+    settings.validate_year_range()
+    return settings
+
+
+@app.command("bootstrap")
+def bootstrap_command() -> None:
+    """Rebuild deterministic local outputs without network access."""
+
+    settings = _settings()
+    bootstrap(settings.resolved_root())
+
+
+@app.command("extract-world-bank")
+def extract_world_bank_command(
+    overwrite: bool = typer.Option(False, help="Replace existing raw snapshots."),
+) -> None:
+    """Download configured World Bank indicators."""
+
+    extract_world_bank(_settings(), overwrite=overwrite)
+
+
+@app.command("extract-comtrade")
+def extract_comtrade_command(
+    overwrite: bool = typer.Option(False, help="Replace existing raw snapshots."),
+) -> None:
+    """Download bounded UN Comtrade requests."""
+
+    extract_comtrade(_settings(), overwrite=overwrite)
+
+
+@app.command("extract-bpstat")
+def extract_bpstat_command(
+    overwrite: bool = typer.Option(False, help="Replace existing raw snapshots."),
+) -> None:
+    """Download reviewed BPstat series."""
+
+    extract_bpstat(_settings(), overwrite=overwrite)
+
+
+@app.command("init-manual-templates")
+def init_manual_templates_command() -> None:
+    """Create CSV templates for double-entry historical table transcription."""
+
+    init_manual_templates(_settings().resolved_root())
+
+
+@app.command("build")
+def build_command() -> None:
+    """Transform all source files currently present locally."""
+
+    build(_settings())
+
+
+@app.command("validate")
+def validate_command() -> None:
+    """Run data contracts and write persistent reports."""
+
+    validate(_settings())
+
+
+@app.command("run-all")
+def run_all_command(
+    overwrite: bool = typer.Option(False, help="Replace existing raw snapshots."),
+) -> None:
+    """Extract, build, and validate all configured sources."""
+
+    run_all(_settings(), overwrite=overwrite)
+
+
+if __name__ == "__main__":
+    app()

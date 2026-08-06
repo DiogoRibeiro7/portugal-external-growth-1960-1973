@@ -1,0 +1,21 @@
+{
+  "columns": [
+    "country_name",
+    "country_code",
+    "indicator_name",
+    "indicator_code",
+    "year",
+    "value",
+    "unit",
+    "source",
+    "snapshot_role"
+  ],
+  "created_at_utc": "2026-08-06T09:19:43.226218+00:00",
+  "file": "/mnt/data/portugal-external-growth-1960-1973/data/interim/bootstrap/world_bank_macro_long.csv",
+  "rows": 13,
+  "sha256": "af9efc5d606bb23e00ff1994897b443a331705e8ebe8617bd89fe3f24b5a3e49",
+  "source_files": [
+    "/mnt/data/portugal-external-growth-1960-1973/data/raw/bootstrap/world_bank_gdp_growth_portugal_1961_1973.csv"
+  ],
+  "stage": "normalised_bootstrap"
+}

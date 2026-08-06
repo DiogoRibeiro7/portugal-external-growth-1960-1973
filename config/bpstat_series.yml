@@ -1,0 +1,11 @@
+# Populate only after confirming each series in BPstat and its historical territorial definition.
+series: []
+
+# Expected entry format:
+# series:
+#   - series_id: 12345678
+#     slug: real_gdp_growth
+#     expected_start_year: 1947
+#     expected_frequency: annual
+#     territorial_definition: metropolitan_portugal
+#     notes: Confirm islands and overseas territories treatment from metadata.

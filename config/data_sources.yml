@@ -1,0 +1,32 @@
+sources:
+  world_bank:
+    base_url: https://api.worldbank.org/v2
+    licence: CC BY 4.0
+    access: open_api
+    priority: cross_check
+  un_comtrade:
+    preview_base_url: https://comtradeapi.un.org/public/v1/preview
+    full_base_url: https://comtradeapi.un.org/data/v1/get
+    documentation: https://uncomtrade.org/docs/un-comtrade-api/
+    access: preview_or_free_key
+    priority: primary_trade_candidate
+  bpstat:
+    base_url: https://bpstat.bportugal.pt/data/v1
+    documentation: https://bpstat.bportugal.pt/data/docs
+    access: open_api
+    priority: primary_macro
+  cepii_tradhist:
+    landing_page: https://www.cepii.fr/CEPII/en/bdd_modele/bdd_modele_item.asp?id=32
+    access: open_download
+    priority: aggregate_trade_cross_check
+  ine_digital_library:
+    landing_page: https://www.ine.pt
+    access: open_documents
+    priority: primary_historical_tables
+  oecd_historical_surveys:
+    access: open_documents
+    priority: definitions_and_cross_checks
+  efta_annual_reports:
+    landing_page: https://www.efta.int/publications/annual-reports
+    access: open_documents
+    priority: policy_chronology

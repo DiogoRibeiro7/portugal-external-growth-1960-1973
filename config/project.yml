@@ -1,0 +1,8 @@
+project:
+  name: portugal-external-growth-1960-1973
+  start_year: 1960
+  end_year: 1973
+  reporter_code: 620
+  reporter_iso3: PRT
+  currency_note: Preserve source currency and units. Do not merge nominal series before harmonisation.
+  raw_overwrite_default: false

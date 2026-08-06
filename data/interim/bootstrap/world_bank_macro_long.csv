@@ -1,0 +1,14 @@
+country_name,country_code,indicator_name,indicator_code,year,value,unit,source,snapshot_role
+Portugal,PRT,GDP growth (annual %),NY.GDP.MKTP.KD.ZG,1961,5.53490347567526,percent,World Bank World Development Indicators,deterministic_bootstrap_refresh_from_official_api_required
+Portugal,PRT,GDP growth (annual %),NY.GDP.MKTP.KD.ZG,1962,6.61444776877345,percent,World Bank World Development Indicators,deterministic_bootstrap_refresh_from_official_api_required
+Portugal,PRT,GDP growth (annual %),NY.GDP.MKTP.KD.ZG,1963,5.87370211616305,percent,World Bank World Development Indicators,deterministic_bootstrap_refresh_from_official_api_required
+Portugal,PRT,GDP growth (annual %),NY.GDP.MKTP.KD.ZG,1964,6.3107473825748,percent,World Bank World Development Indicators,deterministic_bootstrap_refresh_from_official_api_required
+Portugal,PRT,GDP growth (annual %),NY.GDP.MKTP.KD.ZG,1965,7.46898852994384,percent,World Bank World Development Indicators,deterministic_bootstrap_refresh_from_official_api_required
+Portugal,PRT,GDP growth (annual %),NY.GDP.MKTP.KD.ZG,1966,4.07790943398123,percent,World Bank World Development Indicators,deterministic_bootstrap_refresh_from_official_api_required
+Portugal,PRT,GDP growth (annual %),NY.GDP.MKTP.KD.ZG,1967,7.54448252895017,percent,World Bank World Development Indicators,deterministic_bootstrap_refresh_from_official_api_required
+Portugal,PRT,GDP growth (annual %),NY.GDP.MKTP.KD.ZG,1968,8.87550923376676,percent,World Bank World Development Indicators,deterministic_bootstrap_refresh_from_official_api_required
+Portugal,PRT,GDP growth (annual %),NY.GDP.MKTP.KD.ZG,1969,2.12074116169649,percent,World Bank World Development Indicators,deterministic_bootstrap_refresh_from_official_api_required
+Portugal,PRT,GDP growth (annual %),NY.GDP.MKTP.KD.ZG,1970,12.6126037066661,percent,World Bank World Development Indicators,deterministic_bootstrap_refresh_from_official_api_required
+Portugal,PRT,GDP growth (annual %),NY.GDP.MKTP.KD.ZG,1971,6.63165235583854,percent,World Bank World Development Indicators,deterministic_bootstrap_refresh_from_official_api_required
+Portugal,PRT,GDP growth (annual %),NY.GDP.MKTP.KD.ZG,1972,8.01569621287975,percent,World Bank World Development Indicators,deterministic_bootstrap_refresh_from_official_api_required
+Portugal,PRT,GDP growth (annual %),NY.GDP.MKTP.KD.ZG,1973,11.2006710689802,percent,World Bank World Development Indicators,deterministic_bootstrap_refresh_from_official_api_required

@@ -1,0 +1,25 @@
+indicators:
+  NY.GDP.MKTP.KD.ZG:
+    name: GDP growth
+    unit: annual_percent
+  NY.GDP.MKTP.KD:
+    name: GDP
+    unit: constant_2015_usd
+  NY.GDP.PCAP.KD:
+    name: GDP per capita
+    unit: constant_2015_usd
+  NE.TRD.GNFS.ZS:
+    name: Trade
+    unit: percent_of_gdp
+  NE.EXP.GNFS.ZS:
+    name: Exports of goods and services
+    unit: percent_of_gdp
+  NE.IMP.GNFS.ZS:
+    name: Imports of goods and services
+    unit: percent_of_gdp
+  NE.GDI.FTOT.ZS:
+    name: Gross fixed capital formation
+    unit: percent_of_gdp
+  SP.POP.TOTL:
+    name: Population
+    unit: persons

@@ -1,0 +1,22 @@
+{
+  "columns": [
+    "source_id",
+    "publication_year",
+    "table_title",
+    "page_number",
+    "series_name_source",
+    "year",
+    "value_source",
+    "unit_source",
+    "territorial_definition",
+    "footnote",
+    "transcriber",
+    "transcription_date",
+    "entry_pass"
+  ],
+  "created_at_utc": "2026-08-06T09:19:43.220412+00:00",
+  "file": "/mnt/data/portugal-external-growth-1960-1973/data/manual/templates/aggregate_cross_check_template.csv",
+  "purpose": "Independent aggregate cross-check transcription",
+  "rows": 0,
+  "sha256": "2fd6c6a5aeefc1c7d1e75a815a68253cdadf34b241ecc1825f744a30a95ed4a6"
+}

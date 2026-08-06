@@ -1,0 +1,13 @@
+{
+  "columns": [
+    "relative_path",
+    "size_bytes",
+    "sha256"
+  ],
+  "created_at_utc": "2026-08-06T09:19:43.259743+00:00",
+  "file": "/mnt/data/portugal-external-growth-1960-1973/results/manifests/current_manifest.csv",
+  "rows": 33,
+  "scope": "current",
+  "sha256": "2c017e4ddc8e11ba0826a218a22f861eef523ff510c7963570edc973a45655d6",
+  "stage": "manifest"
+}

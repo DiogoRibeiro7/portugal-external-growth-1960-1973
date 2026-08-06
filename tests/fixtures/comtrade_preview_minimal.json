@@ -1,0 +1,22 @@
+{
+  "elapsedTime": "0.01 secs",
+  "count": 2,
+  "data": [
+    {
+      "period": 1970,
+      "reporterCode": 620,
+      "partnerCode": 24,
+      "flowCode": "X",
+      "cmdCode": "TOTAL",
+      "primaryValue": 25.0
+    },
+    {
+      "period": 1970,
+      "reporterCode": 620,
+      "partnerCode": 826,
+      "flowCode": "X",
+      "cmdCode": "TOTAL",
+      "primaryValue": 75.0
+    }
+  ]
+}
