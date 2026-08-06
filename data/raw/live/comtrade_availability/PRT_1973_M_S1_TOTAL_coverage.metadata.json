@@ -1,6 +1,13 @@
 {
+  "access_conditions": "preview_or_subscription_api",
+  "api_version": "UN Comtrade API v1",
+  "content_type": "application/json",
+  "endpoint": "https://comtradeapi.un.org/public/v1/preview/C/A/S1",
   "endpoint_mode": "preview",
+  "etag": "",
   "extracted_at_utc": "2026-08-06T12:47:48.829595+00:00",
+  "http_status": 200,
+  "last_modified": "",
   "parameters": {
     "classification_code": "S1",
     "commodity_code": "TOTAL",
@@ -35,8 +42,19 @@
     "year": 1973
   },
   "purpose": "historical_coverage_audit",
+  "query_parameters": {
+    "cmdCode": "TOTAL",
+    "flowCode": "M",
+    "maxRecords": "500",
+    "partnerCode": "0,24,132,446,508,624,626,678,40,56,208,246,250,276,352,372,380,442,528,578,752,756,826",
+    "period": "1973",
+    "reporterCode": "620"
+  },
   "raw_sha256": "3ddb595a7c592bb634e4dab8ca80484af31cad931948ebe8d91eba72de2204f6",
   "request_url": "https://comtradeapi.un.org/public/v1/preview/C/A/S1?period=1973&reporterCode=620&partnerCode=0%2C24%2C132%2C446%2C508%2C624%2C626%2C678%2C40%2C56%2C208%2C246%2C250%2C276%2C352%2C372%2C380%2C442%2C528%2C578%2C752%2C756%2C826&flowCode=M&cmdCode=TOTAL&maxRecords=500",
   "rows": 17,
-  "source": "UN Comtrade"
+  "source": "UN Comtrade",
+  "source_licence": "subject_to_un_comtrade_terms",
+  "territorial_definition": "UN Comtrade partner trade/customs/statistical area codes",
+  "units": "current_us_dollars"
 }

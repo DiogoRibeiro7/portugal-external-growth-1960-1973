@@ -166,8 +166,8 @@ def extract_world_bank(settings: Settings, *, overwrite: bool) -> None:
             settings.start_year,
             settings.end_year,
         )
-        raw, frame, url = client.fetch(request)
-        client.save(request, raw, frame, url, root, overwrite=overwrite)
+        raw, frame, url, http_metadata = client.fetch(request)
+        client.save(request, raw, frame, url, http_metadata, root, overwrite=overwrite)
 
 
 def extract_comtrade(settings: Settings, *, overwrite: bool) -> None:
@@ -196,8 +196,8 @@ def extract_comtrade(settings: Settings, *, overwrite: bool) -> None:
                 classification_code=str(config["classification_code"]),
                 max_records=int(config["max_records"]),
             )
-            raw, frame, url = client.fetch(request)
-            client.save(request, raw, frame, url, root, overwrite=overwrite)
+            raw, frame, url, http_metadata = client.fetch(request)
+            client.save(request, raw, frame, url, http_metadata, root, overwrite=overwrite)
 
 
 def audit_comtrade_coverage(settings: Settings, *, overwrite: bool) -> None:
@@ -236,12 +236,13 @@ def audit_comtrade_coverage(settings: Settings, *, overwrite: bool) -> None:
                     classification_code=str(classification_code),
                     max_records=int(config["max_records"]),
                 )
-                raw, frame, url = client.fetch(request)
+                raw, frame, url, http_metadata = client.fetch(request)
                 raw_path = client.save_availability_response(
                     request,
                     raw,
                     frame,
                     url,
+                    http_metadata,
                     root,
                     overwrite=overwrite,
                 )
@@ -464,13 +465,14 @@ def extract_bpstat(settings: Settings, *, overwrite: bool) -> None:
         grouped.setdefault((int(domain_ids[0]), dataset_id), []).append(series_id)
     for (domain_id, dataset_id), grouped_ids in grouped.items():
         series_ids = tuple(grouped_ids)
-        raw, frame, url = client.fetch_dataset(
+        raw, frame, url, http_metadata = client.fetch_dataset(
             domain_id=domain_id, dataset_id=dataset_id, series_ids=series_ids
         )
         client.save(
             raw_json=raw,
             frame=frame,
             request_url=url,
+            http_metadata=http_metadata,
             series_ids=series_ids,
             root=root,
             overwrite=overwrite,

@@ -46,7 +46,7 @@ class ComtradeClient:
         self._timeout_seconds = timeout_seconds
         self._subscription_key = subscription_key
 
-    def fetch(self, request: ComtradeRequest) -> tuple[bytes, pd.DataFrame, str]:
+    def fetch(self, request: ComtradeRequest) -> tuple[bytes, pd.DataFrame, str, dict[str, object]]:
         """Fetch annual records for one flow and year."""
 
         endpoint = "data/v1/get" if self._subscription_key else "public/v1/preview"
@@ -75,7 +75,17 @@ class ComtradeClient:
         if not isinstance(data, list):
             raise ValueError("UN Comtrade response does not contain a data list")
         frame = pd.json_normalize(data)
-        return response.content, frame, response.url
+        return (
+            response.content,
+            frame,
+            response.url,
+            _http_provenance(
+                response,
+                endpoint=url,
+                query_parameters=params,
+                subscription_key=self._subscription_key,
+            ),
+        )
 
     def save(
         self,
@@ -83,6 +93,7 @@ class ComtradeClient:
         raw_json: bytes,
         frame: pd.DataFrame,
         request_url: str,
+        http_metadata: dict[str, object],
         root: Path,
         *,
         overwrite: bool,
@@ -107,6 +118,7 @@ class ComtradeClient:
                 "source": "UN Comtrade",
                 "request_url": sanitise_url(request_url, (self._subscription_key or "",)),
                 "extracted_at_utc": utc_now_iso(),
+                **http_metadata,
                 "raw_sha256": sha256_file(raw_path),
                 "csv_sha256": sha256_file(csv_path),
                 "rows": len(frame),
@@ -126,6 +138,7 @@ class ComtradeClient:
         raw_json: bytes,
         frame: pd.DataFrame,
         request_url: str,
+        http_metadata: dict[str, object],
         root: Path,
         *,
         overwrite: bool,
@@ -145,6 +158,7 @@ class ComtradeClient:
                 "purpose": "historical_coverage_audit",
                 "request_url": sanitise_url(request_url, (self._subscription_key or "",)),
                 "extracted_at_utc": utc_now_iso(),
+                **http_metadata,
                 "raw_sha256": sha256_file(raw_path),
                 "rows": len(frame),
                 "parameters": {
@@ -156,3 +170,29 @@ class ComtradeClient:
             overwrite=overwrite,
         )
         return raw_path
+
+
+def _http_provenance(
+    response: Any,
+    *,
+    endpoint: str,
+    query_parameters: dict[str, str | int],
+    subscription_key: str | None,
+) -> dict[str, object]:
+    redacted_parameters = {
+        key: ("***REDACTED***" if key == "subscription-key" and subscription_key else value)
+        for key, value in query_parameters.items()
+    }
+    return {
+        "endpoint": endpoint,
+        "query_parameters": redacted_parameters,
+        "http_status": response.status_code,
+        "content_type": response.headers.get("Content-Type", ""),
+        "etag": response.headers.get("ETag", ""),
+        "last_modified": response.headers.get("Last-Modified", ""),
+        "api_version": "UN Comtrade API v1",
+        "source_licence": "subject_to_un_comtrade_terms",
+        "access_conditions": "preview_or_subscription_api",
+        "territorial_definition": "UN Comtrade partner trade/customs/statistical area codes",
+        "units": "current_us_dollars",
+    }

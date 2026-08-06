@@ -32,8 +32,16 @@ def test_world_bank_client_fetches_and_saves_snapshot(tmp_path: Path) -> None:
     request = WorldBankRequest("PRT", "NY.GDP.MKTP.KD.ZG", 1961, 1962)
     client = WorldBankClient(requests.Session())
 
-    raw, frame, request_url = client.fetch(request)
-    raw_path, csv_path = client.save(request, raw, frame, request_url, tmp_path, overwrite=True)
+    raw, frame, request_url, http_metadata = client.fetch(request)
+    raw_path, csv_path = client.save(
+        request,
+        raw,
+        frame,
+        request_url,
+        http_metadata,
+        tmp_path,
+        overwrite=True,
+    )
 
     assert frame["year"].tolist() == [1961, 1962]
     assert raw_path.exists()
@@ -41,6 +49,9 @@ def test_world_bank_client_fetches_and_saves_snapshot(tmp_path: Path) -> None:
     metadata = json.loads(raw_path.with_suffix(".metadata.json").read_text(encoding="utf-8"))
     assert metadata["rows"] == 2
     assert metadata["parameters"]["country_code"] == "PRT"
+    assert metadata["http_status"] == 200
+    assert metadata["content_type"] == "application/json"
+    assert metadata["query_parameters"]["date"] == "1961:1962"
 
 
 @responses.activate
@@ -85,13 +96,22 @@ def test_comtrade_client_fetches_preview_and_redacts_subscription_key(tmp_path: 
     )
     client = ComtradeClient(requests.Session(), subscription_key="secret-key")
 
-    raw, frame, request_url = client.fetch(request)
-    raw_path, csv_path = client.save(request, raw, frame, request_url, tmp_path, overwrite=True)
+    raw, frame, request_url, http_metadata = client.fetch(request)
+    raw_path, csv_path = client.save(
+        request,
+        raw,
+        frame,
+        request_url,
+        http_metadata,
+        tmp_path,
+        overwrite=True,
+    )
     availability_path = client.save_availability_response(
         request,
         raw,
         frame,
         request_url,
+        http_metadata,
         tmp_path,
         overwrite=True,
     )
@@ -104,6 +124,9 @@ def test_comtrade_client_fetches_preview_and_redacts_subscription_key(tmp_path: 
     assert csv_path.exists()
     assert "secret-key" not in metadata["request_url"]
     assert metadata["endpoint_mode"] == "free_key"
+    assert metadata["http_status"] == 200
+    assert metadata["query_parameters"]["subscription-key"] == "***REDACTED***"
+    assert metadata["territorial_definition"].startswith("UN Comtrade partner")
     assert availability_metadata["purpose"] == "historical_coverage_audit"
 
 
@@ -150,11 +173,14 @@ def test_bpstat_client_fetches_metadata_dataset_and_saves(tmp_path: Path) -> Non
     client = BPstatClient(requests.Session())
 
     metadata = client.fetch_series_metadata((123,))
-    raw, frame, request_url = client.fetch_dataset(domain_id=1, dataset_id="DS", series_ids=(123,))
+    raw, frame, request_url, http_metadata = client.fetch_dataset(
+        domain_id=1, dataset_id="DS", series_ids=(123,)
+    )
     raw_path, csv_path = client.save(
         raw_json=raw,
         frame=frame,
         request_url=request_url,
+        http_metadata=http_metadata,
         series_ids=(123,),
         root=tmp_path,
         overwrite=True,
@@ -167,6 +193,9 @@ def test_bpstat_client_fetches_metadata_dataset_and_saves(tmp_path: Path) -> Non
     ]
     assert raw_path.exists()
     assert csv_path.exists()
+    sidecar = json.loads(raw_path.with_suffix(".metadata.json").read_text(encoding="utf-8"))
+    assert sidecar["http_status"] == 200
+    assert sidecar["api_version"] == "BPstat Data API v1"
 
 
 @responses.activate

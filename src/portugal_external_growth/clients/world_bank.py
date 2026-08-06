@@ -37,18 +37,21 @@ class WorldBankClient:
         self._timeout_seconds = timeout_seconds
         self._base_url = "https://api.worldbank.org/v2"
 
-    def fetch(self, request: WorldBankRequest) -> tuple[bytes, pd.DataFrame, str]:
+    def fetch(
+        self, request: WorldBankRequest
+    ) -> tuple[bytes, pd.DataFrame, str, dict[str, object]]:
         """Fetch one indicator and return raw JSON, a long table, and the request URL."""
 
         url = f"{self._base_url}/country/{request.country_code}/indicator/{request.indicator_code}"
+        params: dict[str, str | int] = {
+            "date": f"{request.start_year}:{request.end_year}",
+            "format": "json",
+            "per_page": 1000,
+        }
         response = get_bytes(
             self._session,
             url,
-            params={
-                "date": f"{request.start_year}:{request.end_year}",
-                "format": "json",
-                "per_page": 1000,
-            },
+            params=params,
             timeout_seconds=self._timeout_seconds,
         )
         payload: Any = response.json()
@@ -73,7 +76,16 @@ class WorldBankClient:
                 }
             )
         frame = pd.DataFrame.from_records(records).sort_values("year").reset_index(drop=True)
-        return response.content, frame, response.url
+        return (
+            response.content,
+            frame,
+            response.url,
+            _http_provenance(
+                response,
+                endpoint=url,
+                query_parameters=params,
+            ),
+        )
 
     def save(
         self,
@@ -81,6 +93,7 @@ class WorldBankClient:
         raw_json: bytes,
         frame: pd.DataFrame,
         request_url: str,
+        http_metadata: dict[str, object],
         root: Path,
         *,
         overwrite: bool,
@@ -105,6 +118,7 @@ class WorldBankClient:
                 "source": "World Bank Indicators API v2",
                 "request_url": sanitise_url(request_url, ()),
                 "extracted_at_utc": utc_now_iso(),
+                **http_metadata,
                 "raw_sha256": sha256_file(raw_path),
                 "csv_sha256": sha256_file(csv_path),
                 "rows": len(frame),
@@ -113,3 +127,24 @@ class WorldBankClient:
             overwrite=overwrite,
         )
         return raw_path, csv_path
+
+
+def _http_provenance(
+    response: Any,
+    *,
+    endpoint: str,
+    query_parameters: dict[str, str | int],
+) -> dict[str, object]:
+    return {
+        "endpoint": endpoint,
+        "query_parameters": query_parameters,
+        "http_status": response.status_code,
+        "content_type": response.headers.get("Content-Type", ""),
+        "etag": response.headers.get("ETag", ""),
+        "last_modified": response.headers.get("Last-Modified", ""),
+        "api_version": "World Bank Indicators API v2",
+        "source_licence": "subject_to_world_bank_data_terms",
+        "access_conditions": "public_api",
+        "territorial_definition": "World Bank country and indicator metadata",
+        "units": "indicator_specific",
+    }

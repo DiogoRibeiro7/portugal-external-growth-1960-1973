@@ -59,21 +59,34 @@ class BPstatClient:
         domain_id: int,
         dataset_id: str,
         series_ids: tuple[int, ...],
-    ) -> tuple[bytes, pd.DataFrame, str]:
+    ) -> tuple[bytes, pd.DataFrame, str, dict[str, object]]:
         """Download a JSON-stat dataset and flatten it to a table."""
 
         url = f"{self._base_url}/domains/{domain_id}/datasets/{dataset_id}"
+        params: dict[str, str | int] = {
+            "lang": "EN",
+            "series_ids": ",".join(map(str, series_ids)),
+        }
         response = get_bytes(
             self._session,
             url,
-            params={"lang": "EN", "series_ids": ",".join(map(str, series_ids))},
+            params=params,
             timeout_seconds=self._timeout_seconds,
         )
         payload = response.json()
         if not isinstance(payload, dict):
             raise ValueError("Unexpected BPstat dataset response")
         frame = flatten_jsonstat(payload)
-        return response.content, frame, response.url
+        return (
+            response.content,
+            frame,
+            response.url,
+            _http_provenance(
+                response,
+                endpoint=url,
+                query_parameters=params,
+            ),
+        )
 
     def save(
         self,
@@ -81,6 +94,7 @@ class BPstatClient:
         raw_json: bytes,
         frame: pd.DataFrame,
         request_url: str,
+        http_metadata: dict[str, object],
         series_ids: tuple[int, ...],
         root: Path,
         overwrite: bool,
@@ -102,6 +116,7 @@ class BPstatClient:
                 "source": "BPstat Data API v1",
                 "request_url": request_url,
                 "extracted_at_utc": utc_now_iso(),
+                **http_metadata,
                 "raw_sha256": sha256_file(raw_path),
                 "csv_sha256": sha256_file(csv_path),
                 "rows": len(frame),
@@ -172,3 +187,24 @@ def flatten_jsonstat(payload: dict[str, Any]) -> pd.DataFrame:
             record[f"{key}_label"] = label_maps[key].get(code, code)
         records.append(record)
     return pd.DataFrame.from_records(records)
+
+
+def _http_provenance(
+    response: Any,
+    *,
+    endpoint: str,
+    query_parameters: dict[str, str | int],
+) -> dict[str, object]:
+    return {
+        "endpoint": endpoint,
+        "query_parameters": query_parameters,
+        "http_status": response.status_code,
+        "content_type": response.headers.get("Content-Type", ""),
+        "etag": response.headers.get("ETag", ""),
+        "last_modified": response.headers.get("Last-Modified", ""),
+        "api_version": "BPstat Data API v1",
+        "source_licence": "subject_to_banco_de_portugal_terms",
+        "access_conditions": "public_api_or_provider_terms",
+        "territorial_definition": "series_specific_bpstat_metadata",
+        "units": "series_specific",
+    }
