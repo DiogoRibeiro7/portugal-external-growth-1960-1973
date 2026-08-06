@@ -1,0 +1,10 @@
+BPstat historical series registry review
+========================================
+
+Reviewed candidates: 7
+Accepted for context only: 1
+Rejected for 1960-1973 use: 6
+Held for further review: 0
+
+No BPstat extraction series is enabled until territorial definitions,
+methodological breaks, and historical coverage are fully accepted.

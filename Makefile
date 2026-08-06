@@ -17,6 +17,9 @@ build:
 audit-comtrade:
 	poetry run peg audit-comtrade-coverage
 
+review-bpstat:
+	poetry run peg review-bpstat-registry
+
 validate:
 	poetry run peg validate
 

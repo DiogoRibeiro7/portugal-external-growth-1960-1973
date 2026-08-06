@@ -12,6 +12,7 @@ from portugal_external_growth.pipeline import (
     extract_comtrade,
     extract_world_bank,
     init_manual_templates,
+    review_bpstat_registry,
     run_all,
     validate,
 )
@@ -68,6 +69,13 @@ def extract_bpstat_command(
     """Download reviewed BPstat series."""
 
     extract_bpstat(_settings(), overwrite=overwrite)
+
+
+@app.command("review-bpstat-registry")
+def review_bpstat_registry_command() -> None:
+    """Write the reviewed BPstat candidate registry."""
+
+    review_bpstat_registry(_settings())
 
 
 @app.command("init-manual-templates")

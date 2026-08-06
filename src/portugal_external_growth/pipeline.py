@@ -13,6 +13,10 @@ from portugal_external_growth.config import load_yaml
 from portugal_external_growth.http import build_session
 from portugal_external_growth.io_utils import write_dataframe_with_metadata
 from portugal_external_growth.manual import initialise_templates
+from portugal_external_growth.registry import (
+    build_bpstat_registry_review,
+    load_bpstat_reviewed_candidates,
+)
 from portugal_external_growth.settings import Settings
 from portugal_external_growth.transforms import (
     aggregate_trade_orientation,
@@ -310,6 +314,25 @@ def extract_bpstat(settings: Settings, *, overwrite: bool) -> None:
             root=root,
             overwrite=overwrite,
         )
+
+
+def review_bpstat_registry(settings: Settings) -> None:
+    """Write the reviewed BPstat candidate registry and review report."""
+
+    root = settings.resolved_root()
+    registry = load_bpstat_reviewed_candidates(root / "config/bpstat_series.yml")
+    write_dataframe_with_metadata(
+        registry,
+        root / "data/interim/live/bpstat_series_registry.csv",
+        metadata={
+            "source_files": ["config/bpstat_series.yml"],
+            "stage": "bpstat_series_registry_review",
+        },
+    )
+    report = build_bpstat_registry_review(registry)
+    output = root / "results/live/bpstat_registry_review.txt"
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(report, encoding="utf-8")
 
 
 def build(settings: Settings) -> None:

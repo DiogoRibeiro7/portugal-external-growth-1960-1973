@@ -1,0 +1,29 @@
+{
+  "columns": [
+    "slug",
+    "series_id",
+    "concept",
+    "label",
+    "domain_id",
+    "dataset_id",
+    "frequency",
+    "units",
+    "price_basis",
+    "first_observation",
+    "last_observation",
+    "territorial_definition",
+    "reconstruction_method",
+    "methodological_breaks",
+    "source_status",
+    "review_status",
+    "rejection_or_hold_reason"
+  ],
+  "created_at_utc": "2026-08-06T11:47:28.510634+00:00",
+  "file": "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\interim\\live\\bpstat_series_registry.csv",
+  "rows": 7,
+  "sha256": "ab12e4a2da70ea2cf19d90264a5f95f5b283c9d2ca1e5805c6e74c5ac02abcea",
+  "source_files": [
+    "config/bpstat_series.yml"
+  ],
+  "stage": "bpstat_series_registry_review"
+}
