@@ -8,7 +8,6 @@ import pandas as pd
 
 from portugal_external_growth.io_utils import write_dataframe_with_metadata
 
-
 TRADE_TEMPLATE_COLUMNS = [
     "source_id",
     "publication_year",

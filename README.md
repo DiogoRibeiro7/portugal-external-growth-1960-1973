@@ -1,8 +1,30 @@
 # Portugal External Growth 1960–1973
 
+[![CI](https://github.com/DiogoRibeiro7/portugal-external-growth-1960-1973/actions/workflows/ci.yml/badge.svg)](https://github.com/DiogoRibeiro7/portugal-external-growth-1960-1973/actions/workflows/ci.yml)
+[![Python](https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.13-blue)](pyproject.toml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+
 Reproducible data repository for studying the relative importance of colonial and European economic linkages in Portuguese growth between 1960 and 1973.
 
 This repository contains **data engineering and analytical code only**. It intentionally does not contain a paper, argument, narrative conclusion, or publication draft. Those should be written only after the data pipeline, territorial definitions, classifications, and cross-checks are stable.
+
+## Project status
+
+The project is in active research-pipeline development. The committed bootstrap snapshot is deterministic and suitable for local validation. Live extraction workflows require network access and, for some UN Comtrade requests, an optional subscription key.
+
+## Repository layout
+
+```text
+config/                         Source registries and historical classifications
+data/raw/bootstrap/             Small committed source snapshot for offline checks
+data/interim/bootstrap/         Normalised bootstrap tables
+data/processed/bootstrap/       Stable bootstrap analysis tables
+data/manual/templates/          Manual transcription templates
+results/bootstrap/              Bootstrap validation and cross-check outputs
+results/manifests/              File manifests with checksums
+src/portugal_external_growth/   Package source code
+tests/                          Unit tests and source fixtures
+```
 
 ## Research boundary
 
@@ -64,6 +86,8 @@ cp .env.example .env
 poetry run pre-commit install
 ```
 
+The package is installed as the `peg` command-line application.
+
 ## Main commands
 
 ```bash
@@ -101,6 +125,26 @@ make build
 make validate
 make test
 make quality
+```
+
+## Quality gates
+
+The repository is configured with:
+
+- Ruff formatting and linting;
+- strict mypy checks for `src/` and `tests/`;
+- pytest with branch coverage;
+- pre-commit hooks for formatting, linting, YAML/JSON checks, and large-file protection;
+- GitHub Actions CI across Python 3.11, 3.12, and 3.13;
+- Dependabot checks for GitHub Actions and Python dependencies.
+
+Before changing generated outputs, run:
+
+```bash
+make bootstrap
+make validate
+make quality
+make test
 ```
 
 ## Data stability and peer-review support

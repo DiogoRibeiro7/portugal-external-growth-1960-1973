@@ -8,9 +8,7 @@ def test_flatten_jsonstat_dense_values() -> None:
         "id": ["series", "time"],
         "size": [1, 2],
         "dimension": {
-            "series": {
-                "category": {"index": {"1": 0}, "label": {"1": "GDP"}}
-            },
+            "series": {"category": {"index": {"1": 0}, "label": {"1": "GDP"}}},
             "time": {
                 "category": {
                     "index": {"1960": 0, "1961": 1},

@@ -40,10 +40,7 @@ class WorldBankClient:
     def fetch(self, request: WorldBankRequest) -> tuple[bytes, pd.DataFrame, str]:
         """Fetch one indicator and return raw JSON, a long table, and the request URL."""
 
-        url = (
-            f"{self._base_url}/country/{request.country_code}/indicator/"
-            f"{request.indicator_code}"
-        )
+        url = f"{self._base_url}/country/{request.country_code}/indicator/{request.indicator_code}"
         response = get_bytes(
             self._session,
             url,
@@ -90,7 +87,10 @@ class WorldBankClient:
     ) -> tuple[Path, Path]:
         """Persist raw and tabular snapshots with provenance metadata."""
 
-        stem = f"{request.country_code}_{request.indicator_code}_{request.start_year}_{request.end_year}"
+        stem = (
+            f"{request.country_code}_{request.indicator_code}_"
+            f"{request.start_year}_{request.end_year}"
+        )
         raw_path = root / "data/raw/live/world_bank" / f"{stem}.json"
         csv_path = root / "data/raw/live/world_bank" / f"{stem}.csv"
         atomic_write_bytes(raw_path, raw_json, overwrite=overwrite)

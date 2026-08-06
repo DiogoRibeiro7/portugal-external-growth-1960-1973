@@ -75,7 +75,7 @@ def write_dataframe_with_metadata(
         "created_at_utc": utc_now_iso(),
         "file": str(csv_path),
         "sha256": sha256_file(csv_path),
-        "rows": int(len(frame)),
+        "rows": len(frame),
         "columns": [str(column) for column in frame.columns],
     }
     atomic_write_json(sidecar, complete_metadata, overwrite=overwrite)

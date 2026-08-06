@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security reports
+    url: https://github.com/DiogoRibeiro7/portugal-external-growth-1960-1973/security/policy
+    about: Report private security or credential exposure concerns.

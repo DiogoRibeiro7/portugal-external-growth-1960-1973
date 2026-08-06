@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
 from typing import Any
 
@@ -22,7 +23,7 @@ class HttpResponse:
     def json(self) -> Any:
         """Decode response content as JSON."""
 
-        return requests.models.complexjson.loads(self.content.decode("utf-8"))
+        return json.loads(self.content.decode("utf-8"))
 
 
 def build_session() -> requests.Session:

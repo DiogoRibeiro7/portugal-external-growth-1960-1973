@@ -1,14 +1,20 @@
 .venv/
 __pycache__/
 *.py[cod]
+.benchmarks/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
 .coverage
 htmlcov/
 dist/
+.idea/
+.vscode/
 .env
 .DS_Store
+
+# Local planning prompts and run notes.
+prompts/
 
 # Local API payloads may be large. Curated snapshots can be force-added.
 data/raw/live/

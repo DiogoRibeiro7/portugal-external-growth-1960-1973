@@ -75,8 +75,10 @@ def validate_trade_shares(frame: pd.DataFrame) -> list[ValidationIssue]:
         ValidationIssue(
             "warning",
             "trade.share_sum",
-            "Partner-group shares do not sum to one for some years. This may indicate preview limits, "
-            "missing partner records, or exclusion of World totals.",
+            (
+                "Partner-group shares do not sum to one for some years. This may indicate "
+                "preview limits, missing partner records, or exclusion of World totals."
+            ),
         )
     ]
 

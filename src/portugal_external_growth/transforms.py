@@ -3,12 +3,11 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
+from statistics import fmean, median
 
 import pandas as pd
 
 from portugal_external_growth.config import load_yaml
-
 
 COMTRADE_COLUMN_CANDIDATES: dict[str, tuple[str, ...]] = {
     "year": ("period", "refYear"),
@@ -94,15 +93,15 @@ def aggregate_trade_orientation(classified: pd.DataFrame) -> pd.DataFrame:
         return pd.DataFrame(
             columns=["year", "flow_code", "partner_group", "trade_value_usd", "flow_share"]
         )
-    grouped = (
-        classified.groupby(["year", "flow_code", "partner_group"], as_index=False)[
-            "trade_value_usd"
-        ]
-        .sum(min_count=1)
-        .sort_values(["year", "flow_code", "partner_group"])
+    grouped = classified.groupby(
+        ["year", "flow_code", "partner_group"],
+        as_index=False,
+    ).sum(numeric_only=True, min_count=1)
+    grouped = grouped.sort_values(["year", "flow_code", "partner_group"])
+    totals = (
+        grouped.groupby(["year", "flow_code"])["trade_value_usd"].transform("sum").replace(0, pd.NA)
     )
-    totals = grouped.groupby(["year", "flow_code"])["trade_value_usd"].transform("sum")
-    grouped["flow_share"] = grouped["trade_value_usd"] / totals.where(totals.ne(0))
+    grouped["flow_share"] = grouped["trade_value_usd"] / totals
     return grouped.reset_index(drop=True)
 
 
@@ -114,19 +113,23 @@ def summarise_gdp_growth(frame: pd.DataFrame) -> pd.DataFrame:
     if missing:
         raise ValueError(f"GDP input is missing required columns: {sorted(missing)}")
     clean = frame.dropna(subset=["value"]).copy()
-    clean["value"] = pd.to_numeric(clean["value"], errors="raise")
+    clean["year"] = pd.to_numeric(clean["year"], errors="raise").astype("int64")
+    clean["value"] = pd.to_numeric(clean["value"], errors="raise").astype("float64")
     clean = clean.sort_values("year")
-    cumulative_index = float((1.0 + clean["value"] / 100.0).prod() * 100.0)
+    growth_values = [float(value) for value in clean["value"].tolist()]
+    cumulative_index = 100.0
+    for value in growth_values:
+        cumulative_index *= 1.0 + value / 100.0
     return pd.DataFrame(
         [
             {
                 "start_year": int(clean["year"].min()),
                 "end_year": int(clean["year"].max()),
-                "observations": int(len(clean)),
-                "arithmetic_mean_growth_percent": float(clean["value"].mean()),
-                "median_growth_percent": float(clean["value"].median()),
-                "minimum_growth_percent": float(clean["value"].min()),
-                "maximum_growth_percent": float(clean["value"].max()),
+                "observations": len(clean),
+                "arithmetic_mean_growth_percent": fmean(growth_values),
+                "median_growth_percent": median(growth_values),
+                "minimum_growth_percent": min(growth_values),
+                "maximum_growth_percent": max(growth_values),
                 "cumulative_real_gdp_index_start_100": cumulative_index,
             }
         ]

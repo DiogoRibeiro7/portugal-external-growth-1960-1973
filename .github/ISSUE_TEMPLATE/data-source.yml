@@ -1,0 +1,24 @@
+name: Data source task
+description: Track extraction, transcription, source coverage, or provenance work.
+title: "[Data] "
+labels: ["area: data", "type: data-update"]
+body:
+  - type: textarea
+    id: source
+    attributes:
+      label: Source
+      description: Name the source, table, API endpoint, or document.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: Describe years, flows, partner groups, product groups, or series IDs.
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: Validation Plan
+      description: Explain cross-checks, metadata, or expected output changes.

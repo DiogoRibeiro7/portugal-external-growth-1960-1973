@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite it using the metadata below."
+title: "Portugal External Growth 1960-1973"
+type: software
+authors:
+  - family-names: Ribeiro
+    given-names: Diogo
+repository-code: "https://github.com/DiogoRibeiro7/portugal-external-growth-1960-1973"
+abstract: "Reproducible data pipeline for Portuguese colonial and European economic linkages, 1960-1973."
+license: MIT
+version: 0.1.0
+date-released: "2026-08-06"

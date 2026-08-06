@@ -2,9 +2,7 @@
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
-from typing import Any
 
 import pandas as pd
 
@@ -130,7 +128,12 @@ def extract_world_bank(settings: Settings, *, overwrite: bool) -> None:
         raise TypeError("world_bank_indicators.yml is invalid")
     client = WorldBankClient(build_session(), settings.http_timeout_seconds)
     for indicator_code in indicators:
-        request = WorldBankRequest("PRT", str(indicator_code), settings.start_year, settings.end_year)
+        request = WorldBankRequest(
+            "PRT",
+            str(indicator_code),
+            settings.start_year,
+            settings.end_year,
+        )
         raw, frame, url = client.fetch(request)
         client.save(request, raw, frame, url, root, overwrite=overwrite)
 

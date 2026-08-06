@@ -1,0 +1,19 @@
+name: Research note
+description: Track a historical definition, interpretation, or source caveat.
+title: "[Research] "
+labels: ["type: research-note"]
+body:
+  - type: textarea
+    id: note
+    attributes:
+      label: Note
+      description: State the historical or empirical point being tracked.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Link or cite the relevant source material.
+    validations:
+      required: true
