@@ -1,10 +1,13 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 import pandas as pd
 
 from portugal_external_growth.descriptive import (
     _build_export_growth_contribution,
     _build_world_denominator_groups,
+    build_descriptive_trade_results,
 )
 
 MEMBERSHIPS = pd.DataFrame(
@@ -78,3 +81,100 @@ def test_1973_accession_countries_are_current_eec() -> None:
         current.loc[current["partner_group"] == "eec_contemporaneous", "trade_value_usd"].iloc[0]
         == 60.0
     )
+
+
+def test_build_descriptive_trade_results_from_local_registry(tmp_path: Path) -> None:
+    _write_partner_registry(tmp_path)
+    coverage_dir = tmp_path / "data/interim/live"
+    coverage_dir.mkdir(parents=True)
+    pd.DataFrame(
+        [
+            _coverage_row(1962, "X", "S1", 0, 100.0),
+            _coverage_row(1962, "X", "S1", 24, 20.0),
+            _coverage_row(1962, "X", "S1", 826, 30.0),
+            _coverage_row(1973, "X", "S1", 0, 200.0),
+            _coverage_row(1973, "X", "S1", 24, 40.0),
+            _coverage_row(1973, "X", "S1", 208, 10.0),
+            _coverage_row(1973, "X", "S1", 372, 20.0),
+            _coverage_row(1973, "X", "S1", 826, 30.0),
+            _coverage_row(1973, "X", "S2", 0, 999.0),
+        ]
+    ).to_csv(coverage_dir / "comtrade_coverage_matrix.csv", index=False)
+
+    results = build_descriptive_trade_results(tmp_path)
+
+    preliminary = results["preliminary_group_shares"]
+    colonial = results["preliminary_colonial_share"]
+    product = results["diagnostic_product_composition"]
+    current_1973 = preliminary.loc[
+        (preliminary["year"] == 1973)
+        & (preliminary["classification_scheme"] == "contemporaneous_institutional_membership")
+    ]
+    assert set(results) == {
+        "preliminary_group_shares",
+        "preliminary_colonial_share",
+        "diagnostic_selected_group_values",
+        "diagnostic_selected_group_shares",
+        "diagnostic_period_changes",
+        "diagnostic_product_composition",
+        "diagnostic_concentration",
+        "diagnostic_export_growth_contribution",
+        "diagnostic_missingness",
+    }
+    assert current_1973["world_share"].sum() == 1.0
+    assert (
+        current_1973.loc[
+            current_1973["partner_group"] == "eec_contemporaneous", "trade_value_usd"
+        ].iloc[0]
+        == 60.0
+    )
+    assert colonial["classification_scheme"].unique().tolist() == [
+        "contemporaneous_institutional_membership"
+    ]
+    assert set(product["commodity_code_source"]) == {"TOTAL"}
+
+
+def test_build_descriptive_trade_results_returns_empty_tables_without_coverage(
+    tmp_path: Path,
+) -> None:
+    results = build_descriptive_trade_results(tmp_path)
+
+    assert all(frame.empty for frame in results.values())
+
+
+def _write_partner_registry(root: Path) -> None:
+    config = root / "config"
+    config.mkdir()
+    (config / "partner_groups.yml").write_text(
+        """
+groups:
+  colonies:
+    members:
+      - {code: 24, name: Angola, start_year: 1960, end_year: 1973}
+  efta:
+    members:
+      - {code: 826, name: United Kingdom, start_year: 1960, end_year: 1972}
+  eec:
+    members:
+      - {code: 208, name: Denmark, start_year: 1973, end_year: 1973}
+      - {code: 372, name: Ireland, start_year: 1973, end_year: 1973}
+      - {code: 826, name: United Kingdom, start_year: 1973, end_year: 1973}
+""",
+        encoding="utf-8",
+    )
+
+
+def _coverage_row(
+    year: int,
+    flow_code: str,
+    classification_code: str,
+    partner_code: int,
+    trade_value_usd: float,
+) -> dict[str, object]:
+    return {
+        "year": year,
+        "flow_code": flow_code,
+        "classification_code": classification_code,
+        "partner_code": partner_code,
+        "trade_value_usd": trade_value_usd,
+    }
