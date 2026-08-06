@@ -1,0 +1,12 @@
+{
+  "columns": [
+    "prerequisite",
+    "status",
+    "blocking_reason"
+  ],
+  "created_at_utc": "2026-08-06T12:02:29.998334+00:00",
+  "file": "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\results\\live\\empirical_prerequisite_status.csv",
+  "rows": 6,
+  "sha256": "74548a2fe32c9667275aa757e1e6d144bcc9d65d114defc170a35a33c1f521a8",
+  "stage": "empirical_readiness"
+}

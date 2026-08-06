@@ -14,6 +14,7 @@ from portugal_external_growth.pipeline import (
     extract_comtrade,
     extract_world_bank,
     init_manual_templates,
+    prepare_empirical_extension,
     prepare_ine_transcription,
     reconcile_trade_sources,
     review_bpstat_registry,
@@ -115,6 +116,13 @@ def build_descriptive_results_command() -> None:
     """Build descriptive trade-orientation result tables."""
 
     build_descriptive_results(_settings())
+
+
+@app.command("prepare-empirical-extension")
+def prepare_empirical_extension_command() -> None:
+    """Prepare empirical design artefacts without fitting models."""
+
+    prepare_empirical_extension(_settings())
 
 
 @app.command("build")

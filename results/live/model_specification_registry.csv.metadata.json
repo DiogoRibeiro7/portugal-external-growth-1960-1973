@@ -1,0 +1,15 @@
+{
+  "columns": [
+    "model_slug",
+    "model_family",
+    "unit_of_observation",
+    "dependent_variable",
+    "status",
+    "identification_risk"
+  ],
+  "created_at_utc": "2026-08-06T12:02:29.989573+00:00",
+  "file": "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\results\\live\\model_specification_registry.csv",
+  "rows": 4,
+  "sha256": "b57db788672f9a269847d87fe5333b1c4f5108ca66414a682a8bb014112919aa",
+  "stage": "candidate_model_registry"
+}

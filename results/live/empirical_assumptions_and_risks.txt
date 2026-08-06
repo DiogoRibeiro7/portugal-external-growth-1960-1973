@@ -1,0 +1,12 @@
+Empirical extension readiness
+=============================
+
+No model has been fit and no causal coefficient is reported.
+The current repository lacks a reviewed bilateral trade panel, stable
+product-to-industry mapping, Portuguese sectoral output data, and
+documented treatment of simultaneity and common European shocks.
+
+Prohibited shortcuts remain blocked: aggregate fourteen-observation
+regressions, machine-learning prediction models, gross-export-to-GDP
+equivalence, and single preferred specifications without sensitivity
+analysis.

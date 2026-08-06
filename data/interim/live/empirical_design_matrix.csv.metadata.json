@@ -1,0 +1,16 @@
+{
+  "columns": [
+    "sector_code",
+    "year",
+    "outcome_variable",
+    "colonial_exposure",
+    "european_exposure",
+    "controls_available",
+    "source_quality"
+  ],
+  "created_at_utc": "2026-08-06T12:02:29.980419+00:00",
+  "file": "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\interim\\live\\empirical_design_matrix.csv",
+  "rows": 0,
+  "sha256": "85266264b226ad6d955941adb2efc241d15839361a02923080f85bc46d15432a",
+  "stage": "empirical_design_pending_prerequisites"
+}

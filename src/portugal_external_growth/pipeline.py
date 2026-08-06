@@ -11,6 +11,14 @@ from portugal_external_growth.clients.comtrade import ComtradeClient, ComtradeRe
 from portugal_external_growth.clients.world_bank import WorldBankClient, WorldBankRequest
 from portugal_external_growth.config import load_yaml
 from portugal_external_growth.descriptive import build_descriptive_trade_results
+from portugal_external_growth.empirical import (
+    build_empirical_prerequisite_status,
+    build_empirical_risk_notes,
+    build_model_specification_registry,
+    empty_coefficients,
+    empty_design_matrix,
+    empty_diagnostics,
+)
 from portugal_external_growth.http import build_session
 from portugal_external_growth.io_utils import write_dataframe_with_metadata
 from portugal_external_growth.manual import initialise_templates, prepare_ine_transcription_workflow
@@ -544,6 +552,44 @@ def build_descriptive_results(settings: Settings) -> None:
         ),
         encoding="utf-8",
     )
+
+
+def prepare_empirical_extension(settings: Settings) -> None:
+    """Prepare empirical-design artefacts without fitting models."""
+
+    root = settings.resolved_root()
+    write_dataframe_with_metadata(
+        empty_design_matrix(),
+        root / "data/interim/live/empirical_design_matrix.csv",
+        metadata={"stage": "empirical_design_pending_prerequisites"},
+    )
+    write_dataframe_with_metadata(
+        build_model_specification_registry(),
+        root / "results/live/model_specification_registry.csv",
+        metadata={"stage": "candidate_model_registry"},
+    )
+    write_dataframe_with_metadata(
+        build_empirical_prerequisite_status(),
+        root / "results/live/empirical_prerequisite_status.csv",
+        metadata={"stage": "empirical_readiness"},
+    )
+    write_dataframe_with_metadata(
+        empty_diagnostics(),
+        root / "results/live/empirical_diagnostics.csv",
+        metadata={"stage": "diagnostics_not_fit"},
+    )
+    write_dataframe_with_metadata(
+        empty_coefficients(),
+        root / "results/live/empirical_coefficients.csv",
+        metadata={"stage": "coefficients_not_estimated"},
+    )
+    coefficient_text = root / "results/live/empirical_coefficients.txt"
+    coefficient_text.write_text(
+        "No coefficients estimated; empirical prerequisites are not satisfied.\n",
+        encoding="utf-8",
+    )
+    risk_notes = root / "results/live/empirical_assumptions_and_risks.txt"
+    risk_notes.write_text(build_empirical_risk_notes(), encoding="utf-8")
 
 
 def run_all(settings: Settings, *, overwrite: bool) -> None:

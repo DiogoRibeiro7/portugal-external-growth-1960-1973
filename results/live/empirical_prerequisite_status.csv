@@ -1,0 +1,7 @@
+prerequisite,status,blocking_reason
+reviewed_bilateral_trade_panel,not_satisfied,Comtrade coverage and source reconciliation are incomplete.
+stable_product_classification,not_satisfied,Only aggregate TOTAL records are currently available locally.
+portuguese_sectoral_output_data,not_satisfied,No reviewed 1960-1973 sectoral output panel is registered.
+documented_product_to_industry_mapping,not_satisfied,No official correspondence table is registered.
+sufficient_observations_and_variation,not_satisfied,Design matrix has not been constructed.
+simultaneity_and_common_shock_strategy,not_satisfied,Identification controls are not specified yet.

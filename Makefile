@@ -32,6 +32,9 @@ map-products:
 describe-trade:
 	poetry run peg build-descriptive-results
 
+prepare-empirical:
+	poetry run peg prepare-empirical-extension
+
 validate:
 	poetry run peg validate
 

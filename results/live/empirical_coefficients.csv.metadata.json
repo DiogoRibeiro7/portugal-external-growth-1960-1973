@@ -1,0 +1,17 @@
+{
+  "columns": [
+    "model_slug",
+    "term",
+    "estimate",
+    "standard_error",
+    "p_value",
+    "confidence_interval_low",
+    "confidence_interval_high",
+    "status"
+  ],
+  "created_at_utc": "2026-08-06T12:02:30.018560+00:00",
+  "file": "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\results\\live\\empirical_coefficients.csv",
+  "rows": 0,
+  "sha256": "3a8bce7669d4f04cb30dabaf95afe8286856046e03ac4c04b3189a66f778a608",
+  "stage": "coefficients_not_estimated"
+}

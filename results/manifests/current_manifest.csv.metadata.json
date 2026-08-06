@@ -4,10 +4,10 @@
     "size_bytes",
     "sha256"
   ],
-  "created_at_utc": "2026-08-06T09:19:43.259743+00:00",
-  "file": "/mnt/data/portugal-external-growth-1960-1973/results/manifests/current_manifest.csv",
-  "rows": 33,
+  "created_at_utc": "2026-08-06T12:03:11.763828+00:00",
+  "file": "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\results\\manifests\\current_manifest.csv",
+  "rows": 119,
   "scope": "current",
-  "sha256": "2c017e4ddc8e11ba0826a218a22f861eef523ff510c7963570edc973a45655d6",
+  "sha256": "c39b273d7cdb0d7cca19e452ba2a8366a6321a74ac093bc28c8e20efb3ff5d1e",
   "stage": "manifest"
 }
