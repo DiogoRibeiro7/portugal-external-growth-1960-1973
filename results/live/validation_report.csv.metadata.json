@@ -4,9 +4,8 @@
     "check",
     "message"
   ],
-  "created_at_utc": "2026-08-06T12:03:11.465786+00:00",
-  "file": "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\results\\live\\validation_report.csv",
+  "file": "results/live/validation_report.csv",
   "rows": 1,
-  "sha256": "ad5e3da0ae48395fce1f30e5f1f8c10a92262da451b3fdeae2bf13b1db1a4fa2",
+  "sha256": "99158fbb47fe7a67b7b8731a521c40fbbf05143ed1bebb49484cd5e6f4fb0fd9",
   "stage": "validation"
 }

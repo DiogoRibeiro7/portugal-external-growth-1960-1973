@@ -31,7 +31,7 @@ RECONCILIATION_COLUMNS = [
 def build_trade_source_comparison(root: Path) -> pd.DataFrame:
     """Build a source-preserving annual trade comparison table."""
 
-    coverage_path = root / "results/live/comtrade_coverage_audit.csv"
+    coverage_path = root / "results/diagnostics/comtrade_coverage/comtrade_coverage_audit.csv"
     rows: list[dict[str, object]] = []
     if coverage_path.exists():
         coverage = pd.read_csv(coverage_path)

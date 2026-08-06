@@ -1,0 +1,14 @@
+{
+  "columns": [
+    "partner_group",
+    "export_growth_usd",
+    "contribution_to_export_growth",
+    "source_quality"
+  ],
+  "file": "results/diagnostics/comtrade_coverage/selected_export_growth_contributions.csv",
+  "rows": 4,
+  "sha256": "07aa9a7d7d08e86d33ee8975414003bc4ee7c9cc616cf82592fd924eb4ce88cd",
+  "source_files": [
+    "data/interim/live/comtrade_coverage_matrix.csv"
+  ]
+}

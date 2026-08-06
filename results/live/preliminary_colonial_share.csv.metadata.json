@@ -1,0 +1,19 @@
+{
+  "columns": [
+    "year",
+    "flow_code",
+    "classification_scheme",
+    "partner_group",
+    "colonial_trade_value_usd",
+    "world_value_usd",
+    "colonial_world_share",
+    "value_method",
+    "source_quality"
+  ],
+  "file": "results/live/preliminary_colonial_share.csv",
+  "rows": 24,
+  "sha256": "a54b297d9d8d33ac8eb03ddf3d94ffa0576b89df36111c6fd0340bdd76657b73",
+  "source_files": [
+    "data/interim/live/comtrade_coverage_matrix.csv"
+  ]
+}

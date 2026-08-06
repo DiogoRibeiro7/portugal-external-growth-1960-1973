@@ -160,17 +160,13 @@ def compile_comtrade_coverage_audit(
                 float(partner_values.sum()) if not partner_values.empty else None
             )
             if world_value is None or partner_sum is None:
-                absolute_difference: float | None = None
-                percentage_difference: float | None = None
-                world_partner_status = "not_testable"
+                selected_coverage_ratio: float | None = None
+                unselected_world_value: float | None = None
+                coverage_status = "not_testable"
             else:
-                absolute_difference = world_value - partner_sum
-                percentage_difference = absolute_difference / world_value if world_value else None
-                world_partner_status = (
-                    "within_tolerance"
-                    if percentage_difference is not None and abs(percentage_difference) <= 0.01
-                    else "outside_tolerance"
-                )
+                selected_coverage_ratio = partner_sum / world_value if world_value else None
+                unselected_world_value = world_value - partner_sum
+                coverage_status = "selected_partner_subset"
             present_colonies = sorted(
                 int(value)
                 for value in preferred.loc[
@@ -195,10 +191,10 @@ def compile_comtrade_coverage_audit(
                     ),
                     "colonial_partner_count_present": len(present_colonies),
                     "world_value_usd": world_value,
-                    "partner_sum_usd": partner_sum,
-                    "world_partner_absolute_difference": absolute_difference,
-                    "world_partner_percentage_difference": percentage_difference,
-                    "world_partner_status": world_partner_status,
+                    "selected_partner_sum_usd": partner_sum,
+                    "selected_coverage_ratio": selected_coverage_ratio,
+                    "unselected_world_value_usd": unselected_world_value,
+                    "coverage_status": coverage_status,
                     "valuation_note": (
                         "Comtrade convention: imports CIF, exports FOB; verify in source metadata."
                     ),

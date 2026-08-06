@@ -1,0 +1,13 @@
+{
+  "columns": [
+    "year",
+    "flow_code",
+    "selected_group_hhi"
+  ],
+  "file": "results/diagnostics/comtrade_coverage/selected_group_concentration.csv",
+  "rows": 24,
+  "sha256": "bd63d71b364478081f24ae8ea10582767f635b11003da056da11bc3cc41cf7f5",
+  "source_files": [
+    "data/interim/live/comtrade_coverage_matrix.csv"
+  ]
+}

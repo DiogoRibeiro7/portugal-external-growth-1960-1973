@@ -1,0 +1,8 @@
+Preliminary trade-orientation results
+=====================================
+
+The live preliminary tables use UN Comtrade World totals as the denominator.
+The true_rest_of_world row is calculated as World minus selected group totals.
+Coverage-derived selected-partner diagnostics are stored under
+results/diagnostics/comtrade_coverage and should not be cited as final
+analytical result tables.

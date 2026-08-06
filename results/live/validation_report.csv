@@ -1,2 +1,2 @@
 severity,check,message
-warning,trade.available,No live trade orientation table exists; run extract-comtrade and build.
+ok,all,All checks passed

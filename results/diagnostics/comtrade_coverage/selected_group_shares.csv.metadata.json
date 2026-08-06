@@ -1,0 +1,16 @@
+{
+  "columns": [
+    "year",
+    "flow_code",
+    "partner_group",
+    "trade_value_usd",
+    "source_quality",
+    "selected_partner_share"
+  ],
+  "file": "results/diagnostics/comtrade_coverage/selected_group_shares.csv",
+  "rows": 94,
+  "sha256": "8164dca779d3d2fc2421d38bfdc8081796664e11dfb419edafe85a6856198b82",
+  "source_files": [
+    "data/interim/live/comtrade_coverage_matrix.csv"
+  ]
+}

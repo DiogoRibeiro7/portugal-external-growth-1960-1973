@@ -11,10 +11,9 @@
     "raw_records",
     "duplicate_key"
   ],
-  "created_at_utc": "2026-08-06T11:39:01.765632+00:00",
-  "file": "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\interim\\live\\comtrade_coverage_matrix.csv",
-  "rows": 360,
-  "sha256": "68946e3874d3dba1a0ec053bbda7914931936300c5b54c5f6980295471d6e1aa",
+  "file": "data/interim/live/comtrade_coverage_matrix.csv",
+  "rows": 384,
+  "sha256": "37667b607bf55fcf96ef4b8613c4af5dd544c98669c76fa48214690653b32984",
   "source_files": [
     "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1962_X_S1_TOTAL_coverage.json",
     "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1962_M_S1_TOTAL_coverage.json",

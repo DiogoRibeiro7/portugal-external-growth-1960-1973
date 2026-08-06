@@ -83,6 +83,64 @@ def validate_trade_shares(frame: pd.DataFrame) -> list[ValidationIssue]:
     ]
 
 
+def validate_preliminary_trade_shares(frame: pd.DataFrame) -> list[ValidationIssue]:
+    """Validate World-denominator preliminary trade-share outputs."""
+
+    required = {
+        "year",
+        "flow_code",
+        "classification_scheme",
+        "partner_group",
+        "trade_value_usd",
+        "world_value_usd",
+        "world_share",
+        "value_method",
+    }
+    missing = required.difference(frame.columns)
+    if missing:
+        return [
+            ValidationIssue(
+                "error",
+                "preliminary_trade.schema",
+                f"Missing preliminary trade columns: {sorted(missing)}",
+            )
+        ]
+    issues: list[ValidationIssue] = []
+    sums = frame.groupby(["year", "flow_code", "classification_scheme"])["world_share"].sum()
+    invalid_sums = sums.loc[(sums - 1.0).abs() > 1e-8]
+    if not invalid_sums.empty:
+        issues.append(
+            ValidationIssue(
+                "error",
+                "preliminary_trade.world_share_sum",
+                "World-denominator shares must sum to one within each scheme/year/flow.",
+            )
+        )
+    residual = frame.loc[frame["partner_group"] == "true_rest_of_world"]
+    residual_counts = residual.groupby(["year", "flow_code", "classification_scheme"]).size()
+    expected_groups = frame.groupby(["year", "flow_code", "classification_scheme"]).size()
+    if len(residual_counts) != len(expected_groups) or (residual_counts != 1).any():
+        issues.append(
+            ValidationIssue(
+                "error",
+                "preliminary_trade.true_residual",
+                "Each scheme/year/flow must contain exactly one true_rest_of_world row.",
+            )
+        )
+    negative_residuals = residual.loc[
+        pd.to_numeric(residual["trade_value_usd"], errors="coerce") < 0
+    ]
+    if not negative_residuals.empty:
+        issues.append(
+            ValidationIssue(
+                "error",
+                "preliminary_trade.negative_residual",
+                "true_rest_of_world cannot be negative.",
+            )
+        )
+    return issues
+
+
 def build_file_manifest(root: Path) -> pd.DataFrame:
     """Create a checksum manifest for local CSV, TXT, JSON, and YAML artefacts."""
 
@@ -92,11 +150,14 @@ def build_file_manifest(root: Path) -> pd.DataFrame:
         if not base.exists():
             continue
         for path in sorted(base.rglob("*")):
-            if not path.is_file() or path.name.endswith(".metadata.json"):
+            relative = path.relative_to(root).as_posix()
+            if not path.is_file():
+                continue
+            if relative.startswith("results/manifests/"):
                 continue
             records.append(
                 {
-                    "relative_path": str(path.relative_to(root)),
+                    "relative_path": relative,
                     "size_bytes": path.stat().st_size,
                     "sha256": sha256_file(path),
                 }

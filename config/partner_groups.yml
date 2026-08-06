@@ -20,12 +20,15 @@ groups:
       - {code: 752, name: Sweden, start_year: 1960, end_year: 1973}
       - {code: 756, name: Switzerland, start_year: 1960, end_year: 1973}
       - {code: 826, name: United Kingdom, start_year: 1960, end_year: 1972}
-  eec6:
-    description: Six members of the European Economic Community before the 1973 enlargement.
+  eec:
+    description: European Economic Community membership during the observation year.
     members:
       - {code: 56, name: Belgium, start_year: 1960, end_year: 1973}
+      - {code: 208, name: Denmark, start_year: 1973, end_year: 1973}
       - {code: 250, name: France, start_year: 1960, end_year: 1973}
       - {code: 276, name: Germany, start_year: 1960, end_year: 1973}
+      - {code: 372, name: Ireland, start_year: 1973, end_year: 1973}
       - {code: 380, name: Italy, start_year: 1960, end_year: 1973}
       - {code: 442, name: Luxembourg, start_year: 1960, end_year: 1973}
       - {code: 528, name: Netherlands, start_year: 1960, end_year: 1973}
+      - {code: 826, name: United Kingdom, start_year: 1973, end_year: 1973}

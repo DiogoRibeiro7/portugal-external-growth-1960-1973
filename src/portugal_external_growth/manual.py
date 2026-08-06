@@ -109,7 +109,7 @@ def prepare_ine_transcription_workflow(root: Path) -> list[Path]:
 
     source_registry = _build_source_document_registry(root / "config/manual_sources.yml")
     source_registry_path = root / "data/manual/source_documents/source_document_registry.csv"
-    write_dataframe_with_metadata(
+    _write_if_missing(
         source_registry,
         source_registry_path,
         metadata={"source_files": ["config/manual_sources.yml"], "stage": "source_registry"},
@@ -121,7 +121,7 @@ def prepare_ine_transcription_workflow(root: Path) -> list[Path]:
         pass_path = pass_dir / f"ine_trade_transcription_pass_{pass_number}.csv"
         frame = pd.DataFrame(columns=TRADE_TEMPLATE_COLUMNS)
         frame["entry_pass"] = pd.Series(dtype="object")
-        write_dataframe_with_metadata(
+        _write_if_missing(
             frame,
             pass_path,
             metadata={"purpose": f"INE trade double-entry transcription pass {pass_number}"},
@@ -133,7 +133,7 @@ def prepare_ine_transcription_workflow(root: Path) -> list[Path]:
         root / "data/manual/transcriptions/pass_1/ine_trade_transcription_pass_1.csv",
         root / "data/manual/transcriptions/pass_2/ine_trade_transcription_pass_2.csv",
     )
-    write_dataframe_with_metadata(
+    _write_if_missing(
         discrepancies,
         discrepancy_path,
         metadata={"stage": "ine_double_entry_discrepancy_check"},
@@ -143,12 +143,12 @@ def prepare_ine_transcription_workflow(root: Path) -> list[Path]:
     adjudicated_path = root / "data/interim/live/ine_trade_adjudicated.csv"
     final_path = root / "data/processed/live/ine_trade_harmonised.csv"
     empty_final = pd.DataFrame(columns=TRADE_TEMPLATE_COLUMNS)
-    write_dataframe_with_metadata(
+    _write_if_missing(
         empty_final,
         adjudicated_path,
         metadata={"stage": "manual_adjudication_pending"},
     )
-    write_dataframe_with_metadata(
+    _write_if_missing(
         empty_final,
         final_path,
         metadata={"stage": "harmonisation_pending_human_verification"},
@@ -157,23 +157,24 @@ def prepare_ine_transcription_workflow(root: Path) -> list[Path]:
 
     report_path = root / "results/live/ine_transcription_unresolved.txt"
     report_path.parent.mkdir(parents=True, exist_ok=True)
-    report_path.write_text(
-        "\n".join(
-            [
-                "INE historical trade transcription status",
-                "========================================",
-                "",
-                "No source PDFs or human transcription rows are currently available.",
-                "Final harmonised output is intentionally empty until two independent",
-                "entry passes are completed and discrepancies are adjudicated.",
-                "",
-                "Unresolved cells: all expected INE historical trade tables.",
-                "Footnotes: pending source-document registration and transcription.",
-                "",
-            ]
-        ),
-        encoding="utf-8",
-    )
+    if not report_path.exists():
+        report_path.write_text(
+            "\n".join(
+                [
+                    "INE historical trade transcription status",
+                    "========================================",
+                    "",
+                    "No source PDFs or human transcription rows are currently available.",
+                    "Final harmonised output is intentionally empty until two independent",
+                    "entry passes are completed and discrepancies are adjudicated.",
+                    "",
+                    "Unresolved cells: all expected INE historical trade tables.",
+                    "Footnotes: pending source-document registration and transcription.",
+                    "",
+                ]
+            ),
+            encoding="utf-8",
+        )
     created.append(report_path)
     return created
 
@@ -227,6 +228,17 @@ def _read_transcription(path: Path) -> pd.DataFrame:
     if not path.exists():
         return pd.DataFrame(columns=TRADE_TEMPLATE_COLUMNS)
     return pd.read_csv(path)
+
+
+def _write_if_missing(
+    frame: pd.DataFrame,
+    path: Path,
+    *,
+    metadata: dict[str, object],
+) -> None:
+    if path.exists():
+        return
+    write_dataframe_with_metadata(frame, path, metadata=metadata, overwrite=False)
 
 
 def _build_source_document_registry(config_path: Path) -> pd.DataFrame:

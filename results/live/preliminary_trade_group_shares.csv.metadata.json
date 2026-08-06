@@ -1,0 +1,19 @@
+{
+  "columns": [
+    "year",
+    "flow_code",
+    "classification_scheme",
+    "partner_group",
+    "trade_value_usd",
+    "world_value_usd",
+    "world_share",
+    "value_method",
+    "source_quality"
+  ],
+  "file": "results/live/preliminary_trade_group_shares.csv",
+  "rows": 240,
+  "sha256": "8bd455e13092a6775468d018326019fb2e78829d66a70bc4c307dd1b11a93e06",
+  "source_files": [
+    "data/interim/live/comtrade_coverage_matrix.csv"
+  ]
+}

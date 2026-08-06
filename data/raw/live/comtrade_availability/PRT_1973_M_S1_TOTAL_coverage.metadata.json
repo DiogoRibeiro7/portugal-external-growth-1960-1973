@@ -1,6 +1,6 @@
 {
   "endpoint_mode": "preview",
-  "extracted_at_utc": "2026-08-06T11:37:54.748835+00:00",
+  "extracted_at_utc": "2026-08-06T12:47:48.829595+00:00",
   "parameters": {
     "classification_code": "S1",
     "commodity_code": "TOTAL",
@@ -22,6 +22,7 @@
       250,
       276,
       352,
+      372,
       380,
       442,
       528,
@@ -34,8 +35,8 @@
     "year": 1973
   },
   "purpose": "historical_coverage_audit",
-  "raw_sha256": "d8687a00aa03b07582dd8cde9b2320cc092896d9e4b1a80920135ca9ea04bd68",
-  "request_url": "https://comtradeapi.un.org/public/v1/preview/C/A/S1?period=1973&reporterCode=620&partnerCode=0%2C24%2C132%2C446%2C508%2C624%2C626%2C678%2C40%2C56%2C208%2C246%2C250%2C276%2C352%2C380%2C442%2C528%2C578%2C752%2C756%2C826&flowCode=M&cmdCode=TOTAL&maxRecords=500",
-  "rows": 16,
+  "raw_sha256": "3ddb595a7c592bb634e4dab8ca80484af31cad931948ebe8d91eba72de2204f6",
+  "request_url": "https://comtradeapi.un.org/public/v1/preview/C/A/S1?period=1973&reporterCode=620&partnerCode=0%2C24%2C132%2C446%2C508%2C624%2C626%2C678%2C40%2C56%2C208%2C246%2C250%2C276%2C352%2C372%2C380%2C442%2C528%2C578%2C752%2C756%2C826&flowCode=M&cmdCode=TOTAL&maxRecords=500",
+  "rows": 17,
   "source": "UN Comtrade"
 }

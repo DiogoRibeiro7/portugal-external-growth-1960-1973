@@ -18,8 +18,7 @@
     "explanatory_note",
     "confidence_status"
   ],
-  "created_at_utc": "2026-08-06T11:54:22.489111+00:00",
-  "file": "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\results\\live\\trade_reconciliation.csv",
+  "file": "results/live/trade_reconciliation.csv",
   "rows": 120,
   "sha256": "ec66284b4f9df2d35830a3d90ced5a53ccd65bdd0941b59c83371f2369f30c10",
   "source_files": [

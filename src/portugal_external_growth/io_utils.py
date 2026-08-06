@@ -72,14 +72,21 @@ def write_dataframe_with_metadata(
     sidecar = csv_path.with_suffix(csv_path.suffix + ".metadata.json")
     complete_metadata: dict[str, Any] = {
         **metadata,
-        "created_at_utc": utc_now_iso(),
-        "file": str(csv_path),
+        "file": _metadata_path(csv_path),
         "sha256": sha256_file(csv_path),
         "rows": len(frame),
         "columns": [str(column) for column in frame.columns],
     }
     atomic_write_json(sidecar, complete_metadata, overwrite=overwrite)
     return sidecar
+
+
+def _metadata_path(path: Path) -> str:
+    resolved = path.resolve()
+    try:
+        return resolved.relative_to(Path.cwd().resolve()).as_posix()
+    except ValueError:
+        return path.as_posix()
 
 
 def sanitise_url(url: str, secrets: tuple[str, ...]) -> str:

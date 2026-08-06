@@ -4,7 +4,11 @@ from pathlib import Path
 
 import pandas as pd
 
-from portugal_external_growth.manual import TRADE_TEMPLATE_COLUMNS, compare_transcription_passes
+from portugal_external_growth.manual import (
+    TRADE_TEMPLATE_COLUMNS,
+    compare_transcription_passes,
+    prepare_ine_transcription_workflow,
+)
 
 
 def test_transcription_pass_comparison_flags_value_disagreement(tmp_path: Path) -> None:
@@ -33,3 +37,30 @@ def test_transcription_pass_comparison_flags_value_disagreement(tmp_path: Path) 
 
     assert len(result) == 1
     assert result.loc[0, "resolution_status"] == "requires_adjudication"
+
+
+def test_prepare_ine_transcription_does_not_overwrite_pass_files(tmp_path: Path) -> None:
+    config = tmp_path / "config"
+    config.mkdir()
+    (config / "manual_sources.yml").write_text(
+        """
+manual_sources:
+  - source_id: ine
+    title_pattern: INE
+    expected_years: [1962]
+    target_template: data/manual/templates/trade_transcription_template.csv
+    validation: double_entry
+""",
+        encoding="utf-8",
+    )
+    pass_dir = tmp_path / "data/manual/transcriptions/pass_1"
+    pass_dir.mkdir(parents=True)
+    pass_file = pass_dir / "ine_trade_transcription_pass_1.csv"
+    row = {column: "" for column in TRADE_TEMPLATE_COLUMNS}
+    row["source_id"] = "human_entered"
+    pd.DataFrame([row], columns=TRADE_TEMPLATE_COLUMNS).to_csv(pass_file, index=False)
+    original = pass_file.read_text(encoding="utf-8")
+
+    prepare_ine_transcription_workflow(tmp_path)
+
+    assert pass_file.read_text(encoding="utf-8") == original

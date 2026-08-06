@@ -45,7 +45,7 @@ from portugal_external_growth.validation import (
     ValidationIssue,
     build_file_manifest,
     issues_to_frame,
-    validate_trade_shares,
+    validate_preliminary_trade_shares,
     validate_unique,
     validate_year_range,
 )
@@ -266,9 +266,17 @@ def audit_comtrade_coverage(settings: Settings, *, overwrite: bool) -> None:
                 )
                 matrix_inputs.append(matrix)
 
+    partner_groups = load_yaml(root / "config/partner_groups.yml")
+    colonial_codes = tuple(
+        int(member["code"])
+        for group_name, group in partner_groups["groups"].items()
+        if group_name == "colonies" and isinstance(group, dict)
+        for member in group.get("members", [])
+        if isinstance(member, dict)
+    )
     coverage_matrix, audit, notes = compile_comtrade_coverage_audit(
         matrix_inputs,
-        colonial_partner_codes=tuple(partners[1:8]),
+        colonial_partner_codes=colonial_codes,
         expected_years=years,
         expected_flow_codes=flows,
     )
@@ -279,10 +287,10 @@ def audit_comtrade_coverage(settings: Settings, *, overwrite: bool) -> None:
     )
     write_dataframe_with_metadata(
         audit,
-        root / "results/live/comtrade_coverage_audit.csv",
+        root / "results/diagnostics/comtrade_coverage/comtrade_coverage_audit.csv",
         metadata={"source_files": ["data/interim/live/comtrade_coverage_matrix.csv"]},
     )
-    notes_path = root / "results/live/comtrade_coverage_notes.txt"
+    notes_path = root / "results/diagnostics/comtrade_coverage/comtrade_coverage_notes.txt"
     notes_path.parent.mkdir(parents=True, exist_ok=True)
     notes_path.write_text(notes, encoding="utf-8")
 
@@ -400,16 +408,27 @@ def validate(settings: Settings) -> None:
         end_year=settings.end_year,
         name="gdp",
     )
-    orientation_path = root / "data/processed/live/trade_orientation_by_group.csv"
-    if orientation_path.exists():
-        orientation = pd.read_csv(orientation_path)
-        issues += validate_trade_shares(orientation)
+    preliminary_path = root / "results/live/preliminary_trade_group_shares.csv"
+    if preliminary_path.exists():
+        preliminary = pd.read_csv(preliminary_path)
+        issues += validate_preliminary_trade_shares(preliminary)
     else:
         issues.append(
             ValidationIssue(
-                "warning",
-                "trade.available",
-                "No live trade orientation table exists; run extract-comtrade and build.",
+                "error",
+                "preliminary_trade.available",
+                "Missing preliminary World-denominator trade-share table.",
+            )
+        )
+    if (root / "results/live/trade_product_composition.csv").exists():
+        issues.append(
+            ValidationIssue(
+                "error",
+                "descriptive.live_product_composition",
+                (
+                    "Coverage-derived TOTAL product composition must not be published "
+                    "under results/live."
+                ),
             )
         )
     write_dataframe_with_metadata(
@@ -449,7 +468,7 @@ def reconcile_trade_sources(settings: Settings) -> None:
         root / "data/interim/live/trade_source_comparison.csv",
         metadata={
             "source_files": [
-                "results/live/comtrade_coverage_audit.csv",
+                "results/diagnostics/comtrade_coverage/comtrade_coverage_audit.csv",
                 "data/processed/live/ine_trade_harmonised.csv",
             ],
             "stage": "source_preserving_trade_comparison",
@@ -523,13 +542,22 @@ def build_descriptive_results(settings: Settings) -> None:
     root = settings.resolved_root()
     results = build_descriptive_trade_results(root)
     output_map = {
-        "group_values": root / "results/live/trade_group_values.csv",
-        "annual_shares": root / "results/live/trade_group_shares.csv",
-        "period_changes": root / "results/live/trade_group_changes_1962_1973.csv",
-        "product_composition": root / "results/live/trade_product_composition.csv",
-        "concentration": root / "results/live/trade_concentration_indices.csv",
-        "export_growth_contribution": root / "results/live/trade_export_growth_contributions.csv",
-        "missingness": root / "results/live/trade_source_quality_indicators.csv",
+        "preliminary_group_shares": root / "results/live/preliminary_trade_group_shares.csv",
+        "preliminary_colonial_share": root / "results/live/preliminary_colonial_share.csv",
+        "diagnostic_selected_group_values": root
+        / "results/diagnostics/comtrade_coverage/selected_group_values.csv",
+        "diagnostic_selected_group_shares": root
+        / "results/diagnostics/comtrade_coverage/selected_group_shares.csv",
+        "diagnostic_period_changes": root
+        / "results/diagnostics/comtrade_coverage/selected_group_changes_1962_1973.csv",
+        "diagnostic_product_composition": root
+        / "results/diagnostics/comtrade_coverage/selected_product_composition.csv",
+        "diagnostic_concentration": root
+        / "results/diagnostics/comtrade_coverage/selected_group_concentration.csv",
+        "diagnostic_export_growth_contribution": root
+        / "results/diagnostics/comtrade_coverage/selected_export_growth_contributions.csv",
+        "diagnostic_missingness": root
+        / "results/diagnostics/comtrade_coverage/source_quality_indicators.csv",
     }
     for key, path in output_map.items():
         write_dataframe_with_metadata(
@@ -537,16 +565,18 @@ def build_descriptive_results(settings: Settings) -> None:
             path,
             metadata={"source_files": ["data/interim/live/comtrade_coverage_matrix.csv"]},
         )
-    notes = root / "results/live/trade_descriptive_notes.txt"
+    notes = root / "results/live/preliminary_trade_notes.txt"
     notes.write_text(
         "\n".join(
             [
-                "Descriptive trade-orientation results",
+                "Preliminary trade-orientation results",
                 "=====================================",
                 "",
-                "These tables are descriptive only. They use nominal values for shares",
-                "within each year and do not make causal claims.",
-                "Source-quality columns must be retained with every analytical table.",
+                "The live preliminary tables use UN Comtrade World totals as the denominator.",
+                "The true_rest_of_world row is calculated as World minus selected group totals.",
+                "Coverage-derived selected-partner diagnostics are stored under",
+                "results/diagnostics/comtrade_coverage and should not be cited as final",
+                "analytical result tables.",
                 "",
             ]
         ),

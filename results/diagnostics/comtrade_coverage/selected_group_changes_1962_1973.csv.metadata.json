@@ -11,10 +11,9 @@
     "share_point_change",
     "source_quality"
   ],
-  "created_at_utc": "2026-08-06T12:00:12.838702+00:00",
-  "file": "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\results\\live\\trade_group_changes_1962_1973.csv",
+  "file": "results/diagnostics/comtrade_coverage/selected_group_changes_1962_1973.csv",
   "rows": 8,
-  "sha256": "4557acfd059c35bce2787c7c8675d744408692eba00334c181c998fc09cc6775",
+  "sha256": "631875025ab7f4e847424ab54abedb620a9c93b25526ff99c7bc908247c974f3",
   "source_files": [
     "data/interim/live/comtrade_coverage_matrix.csv"
   ]

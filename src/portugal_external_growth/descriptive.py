@@ -7,77 +7,193 @@ from typing import cast
 
 import pandas as pd
 
-from portugal_external_growth.transforms import classify_partner_groups, load_partner_memberships
+COLONIAL_CODES = {24, 132, 446, 508, 624, 626, 678}
+EFTA_1960_CODES = {40, 208, 578, 752, 756, 826}
+EEC6_CODES = {56, 250, 276, 380, 442, 528}
+EFTA_CURRENT_CODES = {
+    year: EFTA_1960_CODES - ({208, 826} if year >= 1973 else set())
+    | ({246} if year >= 1961 else set())
+    | ({352} if year >= 1970 else set())
+    for year in range(1960, 1974)
+}
+EEC_CURRENT_CODES = {
+    year: EEC6_CODES | ({208, 372, 826} if year >= 1973 else set()) for year in range(1960, 1974)
+}
+GEOGRAPHICAL_EUROPE_CODES = EFTA_1960_CODES | EEC6_CODES | {246, 352, 372}
 
 
 def build_descriptive_trade_results(root: Path) -> dict[str, pd.DataFrame]:
-    """Generate descriptive trade-orientation tables from local source-preserving data."""
+    """Generate preliminary World-denominator and diagnostic result tables."""
 
     coverage_path = root / "data/interim/live/comtrade_coverage_matrix.csv"
     if not coverage_path.exists():
         empty = pd.DataFrame()
         return {
-            "group_values": empty,
-            "annual_shares": empty,
-            "period_changes": empty,
-            "product_composition": empty,
-            "concentration": empty,
-            "export_growth_contribution": empty,
-            "missingness": empty,
+            "preliminary_group_shares": empty,
+            "preliminary_colonial_share": empty,
+            "diagnostic_selected_group_values": empty,
+            "diagnostic_selected_group_shares": empty,
+            "diagnostic_period_changes": empty,
+            "diagnostic_product_composition": empty,
+            "diagnostic_concentration": empty,
+            "diagnostic_export_growth_contribution": empty,
+            "diagnostic_missingness": empty,
         }
 
     coverage = pd.read_csv(coverage_path)
+    coverage = coverage.loc[coverage["classification_code"] == "S1"].copy()
+    coverage["trade_value_usd"] = pd.to_numeric(coverage["trade_value_usd"], errors="coerce")
+    preliminary = _build_world_denominator_groups(coverage)
+    diagnostics = _build_selected_partner_diagnostics(coverage)
+    colonial = preliminary.loc[
+        (preliminary["classification_scheme"] == "current_institutional")
+        & (preliminary["partner_group"] == "colonies")
+    ].copy()
+    colonial = colonial.rename(
+        columns={
+            "trade_value_usd": "colonial_trade_value_usd",
+            "world_share": "colonial_world_share",
+        }
+    )
+    return {
+        "preliminary_group_shares": preliminary,
+        "preliminary_colonial_share": colonial,
+        **diagnostics,
+    }
+
+
+def _build_world_denominator_groups(coverage: pd.DataFrame) -> pd.DataFrame:
+    records: list[dict[str, object]] = []
+    for (year, flow_code), subset in coverage.groupby(["year", "flow_code"]):
+        year_int = int(str(year))
+        world_values = subset.loc[subset["partner_code"].eq(0), "trade_value_usd"].dropna()
+        if world_values.empty:
+            continue
+        world_value = float(world_values.iloc[0])
+        partner_values = {
+            int(row["partner_code"]): float(row["trade_value_usd"])
+            for row in subset.loc[
+                subset["partner_code"].notna() & subset["partner_code"].ne(0)
+            ].to_dict(orient="records")
+            if pd.notna(row["trade_value_usd"])
+        }
+        schemes = {
+            "current_institutional": {
+                "colonies": COLONIAL_CODES,
+                "efta_current": EFTA_CURRENT_CODES[year_int],
+                "eec_current": EEC_CURRENT_CODES[year_int],
+            },
+            "fixed_1960_blocs": {
+                "colonies": COLONIAL_CODES,
+                "efta_1960": EFTA_1960_CODES,
+                "eec6": EEC6_CODES,
+            },
+            "geographical_europe": {
+                "selected_geographical_europe": GEOGRAPHICAL_EUROPE_CODES,
+            },
+        }
+        for scheme, groups in schemes.items():
+            assigned_total = 0.0
+            for group_name, codes in groups.items():
+                value = sum(partner_values.get(code, 0.0) for code in codes)
+                assigned_total += value
+                records.append(
+                    _world_share_record(
+                        year_int,
+                        str(flow_code),
+                        scheme,
+                        group_name,
+                        value,
+                        world_value,
+                        "selected_partner_sum",
+                    )
+                )
+            residual = world_value - assigned_total
+            records.append(
+                _world_share_record(
+                    year_int,
+                    str(flow_code),
+                    scheme,
+                    "true_rest_of_world",
+                    residual,
+                    world_value,
+                    "world_total_minus_selected_groups",
+                )
+            )
+    return pd.DataFrame.from_records(records).sort_values(
+        ["classification_scheme", "year", "flow_code", "partner_group"]
+    )
+
+
+def _world_share_record(
+    year: int,
+    flow_code: str,
+    scheme: str,
+    group_name: str,
+    value: float,
+    world_value: float,
+    value_method: str,
+) -> dict[str, object]:
+    return {
+        "year": year,
+        "flow_code": flow_code,
+        "classification_scheme": scheme,
+        "partner_group": group_name,
+        "trade_value_usd": value,
+        "world_value_usd": world_value,
+        "world_share": value / world_value if world_value else pd.NA,
+        "value_method": value_method,
+        "source_quality": "preliminary_from_comtrade_coverage_snapshot",
+    }
+
+
+def _build_selected_partner_diagnostics(coverage: pd.DataFrame) -> dict[str, pd.DataFrame]:
     partner_records = coverage.loc[
         coverage["partner_code"].notna() & coverage["partner_code"].ne(0)
     ].copy()
-    partner_records["commodity_code_source"] = "TOTAL"
-    partner_records["trade_value_usd"] = pd.to_numeric(
-        partner_records["trade_value_usd"],
-        errors="coerce",
+    partner_records["partner_group"] = partner_records.apply(
+        lambda row: _current_group(int(row["year"]), int(row["partner_code"])),
+        axis=1,
     )
-    memberships = load_partner_memberships(root / "config/partner_groups.yml")
-    classified = classify_partner_groups(partner_records, memberships)
+    partner_records["commodity_code_source"] = "TOTAL"
     group_values = cast(
         pd.DataFrame,
-        classified.groupby(["year", "flow_code", "partner_group"], as_index=False)[
+        partner_records.groupby(["year", "flow_code", "partner_group"], as_index=False)[
             "trade_value_usd"
         ].sum(min_count=1),
     )
     group_values = group_values.sort_values(["year", "flow_code", "partner_group"])
     totals = group_values.groupby(["year", "flow_code"])["trade_value_usd"].transform("sum")
-    group_values["source_quality"] = "selected_partner_records_not_full_world"
-    annual_shares = group_values.copy()
-    annual_shares["annual_group_share"] = annual_shares["trade_value_usd"] / totals
-
-    period_changes = _build_period_changes(annual_shares)
-    product_composition = _build_product_composition(classified)
-    concentration = _build_concentration(annual_shares)
-    export_growth_contribution = _build_export_growth_contribution(group_values)
-    missingness = _build_missingness(root, coverage)
-
+    group_values["source_quality"] = "diagnostic_selected_partners_not_world_denominator"
+    selected_shares = group_values.copy()
+    selected_shares["selected_partner_share"] = selected_shares["trade_value_usd"] / totals
     return {
-        "group_values": group_values,
-        "annual_shares": annual_shares,
-        "period_changes": period_changes,
-        "product_composition": product_composition,
-        "concentration": concentration,
-        "export_growth_contribution": export_growth_contribution,
-        "missingness": missingness,
+        "diagnostic_selected_group_values": group_values,
+        "diagnostic_selected_group_shares": selected_shares,
+        "diagnostic_period_changes": _build_period_changes(selected_shares),
+        "diagnostic_product_composition": _build_product_composition(partner_records),
+        "diagnostic_concentration": _build_concentration(selected_shares),
+        "diagnostic_export_growth_contribution": _build_export_growth_contribution(group_values),
+        "diagnostic_missingness": _build_missingness(coverage),
     }
 
 
-def _build_period_changes(annual_shares: pd.DataFrame) -> pd.DataFrame:
-    start = annual_shares.loc[annual_shares["year"] == 1962].rename(
-        columns={
-            "trade_value_usd": "value_1962_usd",
-            "annual_group_share": "share_1962",
-        }
+def _current_group(year: int, partner_code: int) -> str:
+    if partner_code in COLONIAL_CODES:
+        return "colonies"
+    if partner_code in EFTA_CURRENT_CODES[year]:
+        return "efta_current"
+    if partner_code in EEC_CURRENT_CODES[year]:
+        return "eec_current"
+    return "requested_unclassified_partner"
+
+
+def _build_period_changes(selected_shares: pd.DataFrame) -> pd.DataFrame:
+    start = selected_shares.loc[selected_shares["year"] == 1962].rename(
+        columns={"trade_value_usd": "value_1962_usd", "selected_partner_share": "share_1962"}
     )
-    end = annual_shares.loc[annual_shares["year"] == 1973].rename(
-        columns={
-            "trade_value_usd": "value_1973_usd",
-            "annual_group_share": "share_1973",
-        }
+    end = selected_shares.loc[selected_shares["year"] == 1973].rename(
+        columns={"trade_value_usd": "value_1973_usd", "selected_partner_share": "share_1973"}
     )
     endpoints = start.merge(
         end,
@@ -96,11 +212,6 @@ def _build_period_changes(annual_shares: pd.DataFrame) -> pd.DataFrame:
             if pd.notna(value_start) and pd.notna(value_end)
             else pd.NA
         )
-        relative_change = (
-            absolute_change / float(value_start)
-            if pd.notna(absolute_change) and float(value_start) != 0
-            else pd.NA
-        )
         records.append(
             {
                 "flow_code": row["flow_code"],
@@ -108,7 +219,11 @@ def _build_period_changes(annual_shares: pd.DataFrame) -> pd.DataFrame:
                 "value_1962_usd": value_start,
                 "value_1973_usd": value_end,
                 "absolute_change_usd": absolute_change,
-                "relative_change": relative_change,
+                "relative_change": (
+                    absolute_change / float(value_start)
+                    if pd.notna(absolute_change) and float(value_start) != 0
+                    else pd.NA
+                ),
                 "share_1962": share_start,
                 "share_1973": share_end,
                 "share_point_change": (
@@ -116,7 +231,7 @@ def _build_period_changes(annual_shares: pd.DataFrame) -> pd.DataFrame:
                     if pd.notna(share_start) and pd.notna(share_end)
                     else pd.NA
                 ),
-                "source_quality": "selected_partner_records_not_full_world",
+                "source_quality": "diagnostic_selected_partners_not_world_denominator",
             }
         )
     return pd.DataFrame.from_records(records)
@@ -134,18 +249,18 @@ def _build_product_composition(classified: pd.DataFrame) -> pd.DataFrame:
         "sum"
     )
     grouped["product_share_within_group"] = grouped["trade_value_usd"] / totals
-    grouped["source_quality"] = "aggregate_total_only_no_product_detail"
+    grouped["source_quality"] = "diagnostic_aggregate_total_only_no_product_detail"
     return grouped
 
 
-def _build_concentration(annual_shares: pd.DataFrame) -> pd.DataFrame:
-    hhi = annual_shares.copy()
-    hhi["share_square"] = hhi["annual_group_share"] ** 2
+def _build_concentration(selected_shares: pd.DataFrame) -> pd.DataFrame:
+    hhi = selected_shares.copy()
+    hhi["share_square"] = hhi["selected_partner_share"] ** 2
     result = cast(
         pd.DataFrame,
         hhi.groupby(["year", "flow_code"], as_index=False)["share_square"].sum(),
     )
-    return result.rename(columns={"share_square": "destination_group_hhi"})
+    return result.rename(columns={"share_square": "selected_group_hhi"})
 
 
 def _build_export_growth_contribution(group_values: pd.DataFrame) -> pd.DataFrame:
@@ -167,27 +282,18 @@ def _build_export_growth_contribution(group_values: pd.DataFrame) -> pd.DataFram
     result["contribution_to_export_growth"] = (
         result["export_growth_usd"] / total_growth if total_growth else pd.NA
     )
-    result["source_quality"] = "selected_partner_records_not_full_world"
+    result["source_quality"] = "diagnostic_selected_partners_not_world_denominator"
     return result
 
 
-def _build_missingness(root: Path, coverage: pd.DataFrame) -> pd.DataFrame:
-    audit_path = root / "results/live/comtrade_coverage_audit.csv"
-    audit = pd.read_csv(audit_path) if audit_path.exists() else pd.DataFrame()
-    records = [
-        {
-            "dataset": "comtrade_coverage_matrix",
-            "rows": len(coverage),
-            "missing_trade_values": int(coverage["trade_value_usd"].isna().sum()),
-            "source_quality": "preview_or_free_api_results",
-        },
-        {
-            "dataset": "comtrade_coverage_audit",
-            "rows": len(audit),
-            "missing_trade_values": int(audit["world_value_usd"].isna().sum())
-            if not audit.empty
-            else pd.NA,
-            "source_quality": "territorial_definition_under_review",
-        },
-    ]
-    return pd.DataFrame.from_records(records)
+def _build_missingness(coverage: pd.DataFrame) -> pd.DataFrame:
+    return pd.DataFrame.from_records(
+        [
+            {
+                "dataset": "comtrade_coverage_matrix",
+                "rows": len(coverage),
+                "missing_trade_values": int(coverage["trade_value_usd"].isna().sum()),
+                "source_quality": "preview_or_free_api_results",
+            }
+        ]
+    )

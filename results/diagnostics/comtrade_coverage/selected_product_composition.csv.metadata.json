@@ -1,0 +1,17 @@
+{
+  "columns": [
+    "year",
+    "flow_code",
+    "partner_group",
+    "commodity_code_source",
+    "trade_value_usd",
+    "product_share_within_group",
+    "source_quality"
+  ],
+  "file": "results/diagnostics/comtrade_coverage/selected_product_composition.csv",
+  "rows": 94,
+  "sha256": "2875f1b91d66f8fb3b0af3997a06257b3b82952e6b4cd7e012199e2dbb5d908b",
+  "source_files": [
+    "data/interim/live/comtrade_coverage_matrix.csv"
+  ]
+}

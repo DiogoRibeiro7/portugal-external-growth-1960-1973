@@ -10,17 +10,16 @@
     "colonial_partner_codes_present",
     "colonial_partner_count_present",
     "world_value_usd",
-    "partner_sum_usd",
-    "world_partner_absolute_difference",
-    "world_partner_percentage_difference",
-    "world_partner_status",
+    "selected_partner_sum_usd",
+    "selected_coverage_ratio",
+    "unselected_world_value_usd",
+    "coverage_status",
     "valuation_note",
     "territorial_definition_status"
   ],
-  "created_at_utc": "2026-08-06T11:39:01.792780+00:00",
-  "file": "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\results\\live\\comtrade_coverage_audit.csv",
+  "file": "results/diagnostics/comtrade_coverage/comtrade_coverage_audit.csv",
   "rows": 24,
-  "sha256": "e56589e1683db6411198a372c294d6f6b1db31c861c6c085f5d4818a02796bb3",
+  "sha256": "483c8b42a62e86b1b22a9ef07fe0ec7dd92628a8012484269a4c86ede4b4b3ab",
   "source_files": [
     "data/interim/live/comtrade_coverage_matrix.csv"
   ]
