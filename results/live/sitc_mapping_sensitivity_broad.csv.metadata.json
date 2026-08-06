@@ -1,0 +1,16 @@
+{
+  "columns": [
+    "mapping_scope",
+    "classification_revision",
+    "commodity_code_source",
+    "industry_code",
+    "weighted_trade_value_usd"
+  ],
+  "created_at_utc": "2026-08-06T11:57:26.392649+00:00",
+  "file": "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\results\\live\\sitc_mapping_sensitivity_broad.csv",
+  "rows": 0,
+  "sha256": "69d169e7a9245394f1ab6e7e72dc953fd965290cedd56fe23af763bbbd4ddb22",
+  "source_files": [
+    "data/interim/live/sitc_industry_mapping.csv"
+  ]
+}

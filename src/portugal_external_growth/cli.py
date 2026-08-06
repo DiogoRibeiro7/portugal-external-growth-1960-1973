@@ -8,6 +8,7 @@ from portugal_external_growth.pipeline import (
     audit_comtrade_coverage,
     bootstrap,
     build,
+    build_sitc_industry_mapping,
     extract_bpstat,
     extract_comtrade,
     extract_world_bank,
@@ -99,6 +100,13 @@ def reconcile_trade_sources_command() -> None:
     """Write source-preserving trade reconciliation tables."""
 
     reconcile_trade_sources(_settings())
+
+
+@app.command("build-sitc-industry-mapping")
+def build_sitc_industry_mapping_command() -> None:
+    """Build product-to-industry mapping outputs."""
+
+    build_sitc_industry_mapping(_settings())
 
 
 @app.command("build")

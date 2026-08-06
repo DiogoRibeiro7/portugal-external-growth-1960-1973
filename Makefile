@@ -26,6 +26,9 @@ prepare-ine:
 reconcile-trade:
 	poetry run peg reconcile-trade-sources
 
+map-products:
+	poetry run peg build-sitc-industry-mapping
+
 validate:
 	poetry run peg validate
 

@@ -13,6 +13,7 @@ from portugal_external_growth.config import load_yaml
 from portugal_external_growth.http import build_session
 from portugal_external_growth.io_utils import write_dataframe_with_metadata
 from portugal_external_growth.manual import initialise_templates, prepare_ine_transcription_workflow
+from portugal_external_growth.mapping import build_mapping_outputs
 from portugal_external_growth.reconciliation import (
     build_trade_reconciliation_notes,
     build_trade_source_comparison,
@@ -455,6 +456,56 @@ def reconcile_trade_sources(settings: Settings) -> None:
     output = root / "results/live/trade_reconciliation_notes.txt"
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(notes, encoding="utf-8")
+
+
+def build_sitc_industry_mapping(settings: Settings) -> None:
+    """Build transparent SITC-to-industry mapping outputs."""
+
+    root = settings.resolved_root()
+    mapping, unmapped, coverage, broad, narrow = build_mapping_outputs(root)
+
+    raw_registry = pd.DataFrame(
+        [
+            {
+                "source_name": "official_sitc_industry_correspondence",
+                "source_status": "not_registered_locally",
+                "access_conditions": "to_be_confirmed",
+                "licence": "to_be_confirmed",
+                "sha256": "",
+                "notes": "Register official correspondence before mapping product codes.",
+            }
+        ]
+    )
+    write_dataframe_with_metadata(
+        raw_registry,
+        root / "data/raw/live/sitc_industry_correspondence/source_registry.csv",
+        metadata={"stage": "mapping_source_registry"},
+    )
+    write_dataframe_with_metadata(
+        mapping,
+        root / "data/interim/live/sitc_industry_mapping.csv",
+        metadata={"source_files": ["config/sitc_industry_mapping.yml"]},
+    )
+    write_dataframe_with_metadata(
+        unmapped,
+        root / "results/live/sitc_unmapped_codes.csv",
+        metadata={"source_files": ["data/interim/live/comtrade_coverage_matrix.csv"]},
+    )
+    write_dataframe_with_metadata(
+        coverage,
+        root / "results/live/sitc_mapping_coverage.csv",
+        metadata={"source_files": ["results/live/sitc_unmapped_codes.csv"]},
+    )
+    write_dataframe_with_metadata(
+        broad,
+        root / "results/live/sitc_mapping_sensitivity_broad.csv",
+        metadata={"source_files": ["data/interim/live/sitc_industry_mapping.csv"]},
+    )
+    write_dataframe_with_metadata(
+        narrow,
+        root / "results/live/sitc_mapping_sensitivity_narrow.csv",
+        metadata={"source_files": ["data/interim/live/sitc_industry_mapping.csv"]},
+    )
 
 
 def run_all(settings: Settings, *, overwrite: bool) -> None:

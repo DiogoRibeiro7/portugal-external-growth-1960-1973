@@ -1,0 +1,16 @@
+{
+  "columns": [
+    "classification_revision",
+    "total_trade_value_usd",
+    "mapped_trade_value_usd",
+    "mapping_coverage_share",
+    "source_quality"
+  ],
+  "created_at_utc": "2026-08-06T11:57:26.384107+00:00",
+  "file": "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\results\\live\\sitc_mapping_coverage.csv",
+  "rows": 1,
+  "sha256": "58c49a5be252e3f37411b879b169a2b48bdb46204d3fe3a473397aa24cd98f35",
+  "source_files": [
+    "results/live/sitc_unmapped_codes.csv"
+  ]
+}

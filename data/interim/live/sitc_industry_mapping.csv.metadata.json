@@ -1,0 +1,19 @@
+{
+  "columns": [
+    "classification_revision",
+    "commodity_code_source",
+    "industry_code",
+    "industry_label",
+    "mapping_scope",
+    "weight",
+    "decision_source",
+    "decision_note"
+  ],
+  "created_at_utc": "2026-08-06T11:57:26.366461+00:00",
+  "file": "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\interim\\live\\sitc_industry_mapping.csv",
+  "rows": 0,
+  "sha256": "5ccf34b1387101a387d135dbd5a9ae57b5bc617ace06d9cd1282ac40e224bfd7",
+  "source_files": [
+    "config/sitc_industry_mapping.yml"
+  ]
+}
