@@ -54,6 +54,7 @@ from portugal_external_growth.transforms import (
 from portugal_external_growth.validation import (
     ValidationIssue,
     build_file_manifest,
+    build_manual_source_document_inventory,
     build_research_readiness_report,
     has_error,
     issues_to_frame,
@@ -564,6 +565,17 @@ def validate(settings: Settings) -> bool:
         build_research_readiness_report(root),
         root / "results/validation/research_readiness_report.csv",
         metadata={"stage": "research_readiness"},
+    )
+    write_dataframe_with_metadata(
+        build_manual_source_document_inventory(root),
+        root / "results/validation/manual_source_document_inventory.csv",
+        metadata={
+            "source_files": [
+                "config/manual_sources.yml",
+                "data/manual/source_documents/source_document_registry.csv",
+            ],
+            "stage": "manual_source_document_readiness",
+        },
     )
     manifest = build_file_manifest(root)
     write_dataframe_with_metadata(

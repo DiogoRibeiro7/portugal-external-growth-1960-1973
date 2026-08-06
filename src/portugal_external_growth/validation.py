@@ -244,16 +244,8 @@ def build_research_readiness_report(root: Path) -> pd.DataFrame:
         )
 
     expected_documents = _expected_manual_document_count(root)
-    source_registry_path = root / "data/manual/source_documents/source_document_registry.csv"
-    if source_registry_path.exists():
-        registry = pd.read_csv(source_registry_path)
-        available_documents = int(
-            registry["source_document_status"].isin(["registered", "available"]).sum()
-            if "source_document_status" in registry
-            else 0
-        )
-    else:
-        available_documents = 0
+    document_inventory = build_manual_source_document_inventory(root)
+    available_documents = int(document_inventory["is_available"].sum())
     if available_documents < expected_documents:
         issues.append(
             ValidationIssue(
@@ -366,6 +358,86 @@ def build_research_readiness_report(root: Path) -> pd.DataFrame:
             }
         ]
     )
+
+
+def build_manual_source_document_inventory(root: Path) -> pd.DataFrame:
+    """Summarise manual source-document availability for validation reports."""
+
+    columns = [
+        "source_id",
+        "title_pattern",
+        "expected_year",
+        "source_pdf_filename",
+        "source_pdf_sha256",
+        "source_document_status",
+        "is_available",
+        "blocking_reason",
+    ]
+    source_registry_path = root / "data/manual/source_documents/source_document_registry.csv"
+    if not source_registry_path.exists():
+        return _manual_document_inventory_from_config(root, columns)
+
+    registry = pd.read_csv(source_registry_path)
+    for column in columns:
+        if column not in registry:
+            registry[column] = ""
+    registry["source_document_status"] = registry["source_document_status"].astype("string")
+    registry["source_pdf_filename"] = registry["source_pdf_filename"].astype("string").fillna("")
+    registry["source_pdf_sha256"] = registry["source_pdf_sha256"].astype("string").fillna("")
+    has_registered_status = registry["source_document_status"].isin(["registered", "available"])
+    has_filename = registry["source_pdf_filename"].str.len() > 0
+    has_checksum = registry["source_pdf_sha256"].str.len() > 0
+    registry["is_available"] = has_registered_status & has_filename & has_checksum
+    registry["blocking_reason"] = registry.apply(_manual_document_blocking_reason, axis=1)
+    return (
+        registry[columns]
+        .sort_values(["source_id", "expected_year"], na_position="last")
+        .reset_index(drop=True)
+    )
+
+
+def _manual_document_inventory_from_config(root: Path, columns: list[str]) -> pd.DataFrame:
+    config_path = root / "config/manual_sources.yml"
+    if not config_path.exists():
+        return pd.DataFrame(columns=columns)
+    payload = load_yaml(config_path)
+    sources = payload.get("manual_sources")
+    if not isinstance(sources, list):
+        return pd.DataFrame(columns=columns)
+    records: list[dict[str, object]] = []
+    for source in sources:
+        if not isinstance(source, dict):
+            continue
+        expected_years = source.get("expected_years")
+        if not isinstance(expected_years, list):
+            continue
+        for year in expected_years:
+            records.append(
+                {
+                    "source_id": source.get("source_id", ""),
+                    "title_pattern": source.get("title_pattern", ""),
+                    "expected_year": int(year),
+                    "source_pdf_filename": "",
+                    "source_pdf_sha256": "",
+                    "source_document_status": "missing_source_registry",
+                    "is_available": False,
+                    "blocking_reason": "source_document_registry_missing",
+                }
+            )
+    return pd.DataFrame.from_records(records, columns=columns)
+
+
+def _manual_document_blocking_reason(row: pd.Series) -> str:
+    status = str(row["source_document_status"])
+    if status in {"registered", "available"}:
+        if not str(row["source_pdf_filename"]):
+            return "filename_not_recorded"
+        if not str(row["source_pdf_sha256"]):
+            return "sha256_not_recorded"
+        return ""
+    if not status or status == "<NA>":
+        return "source_document_status_missing"
+    return status
 
 
 def _artifact_role(relative_path: str) -> str:

@@ -6,6 +6,7 @@ import pandas as pd
 
 from portugal_external_growth.validation import (
     build_file_manifest,
+    build_manual_source_document_inventory,
     build_research_readiness_report,
     issues_to_frame,
     validate_preliminary_trade_shares,
@@ -105,3 +106,58 @@ manual_sources:
 
     assert "not_ready" in report["severity"].tolist()
     assert "research.manual_source_documents" in report["check"].tolist()
+
+
+def test_manual_source_document_inventory_falls_back_to_config(tmp_path: Path) -> None:
+    config = tmp_path / "config"
+    config.mkdir()
+    (config / "manual_sources.yml").write_text(
+        """
+manual_sources:
+  - source_id: ine
+    title_pattern: INE
+    expected_years: [1960, 1961]
+""",
+        encoding="utf-8",
+    )
+
+    inventory = build_manual_source_document_inventory(tmp_path)
+
+    assert inventory["source_id"].tolist() == ["ine", "ine"]
+    assert inventory["is_available"].tolist() == [False, False]
+    assert inventory["blocking_reason"].tolist() == [
+        "source_document_registry_missing",
+        "source_document_registry_missing",
+    ]
+
+
+def test_manual_source_document_inventory_flags_incomplete_registered_metadata(
+    tmp_path: Path,
+) -> None:
+    registry_dir = tmp_path / "data/manual/source_documents"
+    registry_dir.mkdir(parents=True)
+    pd.DataFrame(
+        [
+            {
+                "source_id": "ine",
+                "title_pattern": "INE",
+                "expected_year": 1960,
+                "source_pdf_filename": "ine_1960.pdf",
+                "source_pdf_sha256": "",
+                "source_document_status": "registered",
+            },
+            {
+                "source_id": "ine",
+                "title_pattern": "INE",
+                "expected_year": 1961,
+                "source_pdf_filename": "ine_1961.pdf",
+                "source_pdf_sha256": "abc",
+                "source_document_status": "available",
+            },
+        ]
+    ).to_csv(registry_dir / "source_document_registry.csv", index=False)
+
+    inventory = build_manual_source_document_inventory(tmp_path)
+
+    assert inventory["is_available"].tolist() == [False, True]
+    assert inventory["blocking_reason"].tolist() == ["sha256_not_recorded", ""]

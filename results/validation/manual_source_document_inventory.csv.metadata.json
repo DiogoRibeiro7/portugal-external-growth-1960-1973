@@ -1,0 +1,47 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "source_id",
+    "title_pattern",
+    "expected_year",
+    "source_pdf_filename",
+    "source_pdf_sha256",
+    "source_document_status",
+    "is_available",
+    "blocking_reason"
+  ],
+  "date_range": {
+    "end_year": 1974,
+    "start_year": 1960
+  },
+  "file": "results/validation/manual_source_document_inventory.csv",
+  "input_artifacts": [
+    {
+      "path": "config/manual_sources.yml",
+      "sha256": "ae07d71386c83eac2581a5b12f8baf3dc241598a7a39045fd3d3dff6bc4107ea"
+    },
+    {
+      "path": "data/manual/source_documents/source_document_registry.csv",
+      "sha256": "1c17345c3c844d29c5ac95b58004e41868fc80b9ecea2ba3454a0e43fe8c1e1e"
+    }
+  ],
+  "rows": 43,
+  "schema": {
+    "blocking_reason": "object",
+    "expected_year": "int64",
+    "is_available": "boolean",
+    "source_document_status": "string",
+    "source_id": "object",
+    "source_pdf_filename": "string",
+    "source_pdf_sha256": "string",
+    "title_pattern": "object"
+  },
+  "sha256": "2cda0fedcf591b96998cd285dd1d7e8dc67dc02569fe3765e42601d85b4cb126",
+  "source_files": [
+    "config/manual_sources.yml",
+    "data/manual/source_documents/source_document_registry.csv"
+  ],
+  "source_licence": "not_specified",
+  "stage": "manual_source_document_readiness",
+  "validation_findings": []
+}
