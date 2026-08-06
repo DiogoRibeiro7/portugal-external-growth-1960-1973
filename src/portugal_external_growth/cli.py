@@ -9,10 +9,13 @@ from portugal_external_growth.pipeline import (
     bootstrap,
     build,
     build_descriptive_results,
+    build_ine_harmonised_outputs,
     build_sitc_industry_mapping,
+    compare_ine_transcription_passes,
     extract_bpstat,
     extract_comtrade,
     extract_world_bank,
+    init_ine_transcription_inputs,
     init_manual_templates,
     prepare_empirical_extension,
     prepare_ine_transcription,
@@ -99,6 +102,27 @@ def prepare_ine_transcription_command() -> None:
     """Create controlled files for INE double-entry transcription."""
 
     prepare_ine_transcription(_settings())
+
+
+@app.command("init-ine-transcription")
+def init_ine_transcription_command() -> None:
+    """Create protected INE double-entry transcription inputs."""
+
+    init_ine_transcription_inputs(_settings())
+
+
+@app.command("compare-ine-transcriptions")
+def compare_ine_transcriptions_command() -> None:
+    """Regenerate INE double-entry discrepancy outputs."""
+
+    compare_ine_transcription_passes(_settings())
+
+
+@app.command("build-ine-harmonised")
+def build_ine_harmonised_command() -> None:
+    """Regenerate INE harmonisation placeholders pending adjudication."""
+
+    build_ine_harmonised_outputs(_settings())
 
 
 @app.command("reconcile-trade-sources")

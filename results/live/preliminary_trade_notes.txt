@@ -3,6 +3,11 @@ Preliminary trade-orientation results
 
 The live preliminary tables use UN Comtrade World totals as the denominator.
 The true_rest_of_world row is calculated as World minus selected group totals.
+European and institutional group-share rows are withheld from live preliminary
+results until the Comtrade source-area crosswalk has been reviewed against
+returned partner-area metadata for every requested year and flow.
+Colonial partner coverage remains under territorial-definition review; missing
+historical Comtrade partner areas are not interpreted as zero trade.
 Coverage-derived selected-partner diagnostics are stored under
 results/diagnostics/comtrade_coverage and should not be cited as final
 analytical result tables.

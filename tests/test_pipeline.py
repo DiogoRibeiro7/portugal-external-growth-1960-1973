@@ -8,7 +8,7 @@ from portugal_external_growth.pipeline import build, reproduce_from_local, run_d
 from portugal_external_growth.settings import Settings
 
 
-def test_build_generates_trade_orientation_from_local_comtrade(tmp_path: Path) -> None:
+def test_build_does_not_emit_legacy_trade_orientation_with_world_row(tmp_path: Path) -> None:
     _write_bootstrap_gdp(tmp_path)
     config = tmp_path / "config"
     config.mkdir()
@@ -25,6 +25,15 @@ groups:
     raw_dir.mkdir(parents=True)
     pd.DataFrame(
         [
+            {
+                "period": 1962,
+                "reporterCode": 620,
+                "partnerCode": 0,
+                "partnerDesc": "World",
+                "flowCode": "X",
+                "cmdCode": "TOTAL",
+                "primaryValue": 100.0,
+            },
             {
                 "period": 1962,
                 "reporterCode": 620,
@@ -48,9 +57,10 @@ groups:
 
     build(Settings(root=tmp_path))
 
-    result = pd.read_csv(tmp_path / "results/live/trade_orientation_by_group.csv")
-    assert result["flow_share"].sum() == 1.0
-    assert result.loc[result["partner_group"] == "colonies", "trade_value_usd"].iloc[0] == 25.0
+    assert not (tmp_path / "results/live/trade_orientation_by_group.csv").exists()
+    assert not (tmp_path / "data/processed/live/trade_orientation_by_group.csv").exists()
+    normalised = pd.read_csv(tmp_path / "data/interim/live/comtrade_normalised.csv")
+    assert normalised.loc[normalised["partner_code"] == 0, "trade_value_usd"].iloc[0] == 100.0
 
 
 def test_validate_writes_integrity_and_readiness_reports(tmp_path: Path) -> None:
@@ -82,7 +92,7 @@ def test_run_diagnostics_regenerates_local_outputs(tmp_path: Path) -> None:
     prerequisites = pd.read_csv(tmp_path / "results/live/empirical_prerequisite_status.csv")
     assert audit.loc[0, "world_value_usd"] == 100.0
     assert mapping.loc[0, "classification_revision"] == "SITC Rev.1"
-    assert "contemporaneous_institutional_membership" in set(preliminary["classification_scheme"])
+    assert set(preliminary["classification_scheme"]) == {"colonial_world_share_preliminary"}
     assert set(prerequisites["status"]) == {"not_satisfied"}
 
 

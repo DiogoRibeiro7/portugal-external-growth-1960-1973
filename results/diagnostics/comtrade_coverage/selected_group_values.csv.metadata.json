@@ -1,7 +1,7 @@
 {
   "access_conditions": "not_specified",
-  "classification_registry": "config/partner_groups.yml",
-  "classification_registry_sha256": "ba9d37a47c9c7d4fc25848640c72235bb343a2c6042cd95ee9f02e91832f5d04",
+  "classification_registry": "config/historical_groups.yml",
+  "classification_registry_sha256": "051f419321f5afc675979b67498c2d0ed0054d67e5267b732a089a8aff58ef9a",
   "columns": [
     "year",
     "flow_code",
@@ -17,14 +17,18 @@
   "input_artifacts": [
     {
       "path": "data/interim/live/comtrade_coverage_matrix.csv",
-      "sha256": "4082622b34149ba6639377572f2f3f698b39bb000d093f41d3bcec68f727489f"
+      "sha256": "83d62f09bc64433ba94b5ffc3b72b1cb349fc98a106f5b4f3446034f8e885ff2"
     },
     {
-      "path": "config/partner_groups.yml",
-      "sha256": "ba9d37a47c9c7d4fc25848640c72235bb343a2c6042cd95ee9f02e91832f5d04"
+      "path": "config/historical_groups.yml",
+      "sha256": "051f419321f5afc675979b67498c2d0ed0054d67e5267b732a089a8aff58ef9a"
+    },
+    {
+      "path": "config/comtrade_partner_areas.yml",
+      "sha256": "9c87944f318ed502502d41ffb5a535f40a311d791ce77d340fca6e73263a49b1"
     }
   ],
-  "rows": 94,
+  "rows": 110,
   "schema": {
     "flow_code": "object",
     "partner_group": "object",
@@ -32,10 +36,11 @@
     "trade_value_usd": "float64",
     "year": "int64"
   },
-  "sha256": "2e11f8e8f5a51ddd48a8fb5d29bb536830227c2b6d83123500255ede6dd83d44",
+  "sha256": "5e808b3cd487a32af153fb130cff0458121776523df02f2bbe24b96eb2b399ba",
   "source_files": [
     "data/interim/live/comtrade_coverage_matrix.csv",
-    "config/partner_groups.yml"
+    "config/historical_groups.yml",
+    "config/comtrade_partner_areas.yml"
   ],
   "source_licence": "not_specified",
   "validation_findings": []

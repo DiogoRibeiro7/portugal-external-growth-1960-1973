@@ -1,0 +1,41 @@
+groups:
+  colonies:
+    - {entity_id: angola, start_year: 1960, end_year: 1973}
+    - {entity_id: cabo_verde, start_year: 1960, end_year: 1973}
+    - {entity_id: macao, start_year: 1960, end_year: 1973}
+    - {entity_id: mozambique, start_year: 1960, end_year: 1973}
+    - {entity_id: guinea_bissau, start_year: 1960, end_year: 1973}
+    - {entity_id: timor_leste, start_year: 1960, end_year: 1973}
+    - {entity_id: sao_tome_principe, start_year: 1960, end_year: 1973}
+  efta_current_membership:
+    - {entity_id: austria, start_year: 1960, end_year: 1973}
+    - {entity_id: denmark, start_year: 1960, end_year: 1972}
+    - {entity_id: finland, start_year: 1961, end_year: 1973}
+    - {entity_id: iceland, start_year: 1970, end_year: 1973}
+    - {entity_id: norway, start_year: 1960, end_year: 1973}
+    - {entity_id: sweden, start_year: 1960, end_year: 1973}
+    - {entity_id: switzerland_liechtenstein, start_year: 1960, end_year: 1973}
+    - {entity_id: united_kingdom, start_year: 1960, end_year: 1972}
+  eec_current_membership:
+    - {entity_id: belgium_luxembourg, start_year: 1960, end_year: 1973}
+    - {entity_id: denmark, start_year: 1973, end_year: 1973}
+    - {entity_id: france, start_year: 1960, end_year: 1973}
+    - {entity_id: west_germany, start_year: 1960, end_year: 1973}
+    - {entity_id: ireland, start_year: 1973, end_year: 1973}
+    - {entity_id: italy, start_year: 1960, end_year: 1973}
+    - {entity_id: netherlands, start_year: 1960, end_year: 1973}
+    - {entity_id: united_kingdom, start_year: 1973, end_year: 1973}
+  western_europe_fixed_sample:
+    - {entity_id: austria, start_year: 1960, end_year: 1973}
+    - {entity_id: belgium_luxembourg, start_year: 1960, end_year: 1973}
+    - {entity_id: denmark, start_year: 1960, end_year: 1973}
+    - {entity_id: finland, start_year: 1960, end_year: 1973}
+    - {entity_id: france, start_year: 1960, end_year: 1973}
+    - {entity_id: west_germany, start_year: 1960, end_year: 1973}
+    - {entity_id: ireland, start_year: 1960, end_year: 1973}
+    - {entity_id: italy, start_year: 1960, end_year: 1973}
+    - {entity_id: netherlands, start_year: 1960, end_year: 1973}
+    - {entity_id: norway, start_year: 1960, end_year: 1973}
+    - {entity_id: sweden, start_year: 1960, end_year: 1973}
+    - {entity_id: switzerland_liechtenstein, start_year: 1960, end_year: 1973}
+    - {entity_id: united_kingdom, start_year: 1960, end_year: 1973}

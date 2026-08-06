@@ -22,8 +22,20 @@ from portugal_external_growth.empirical import (
 )
 from portugal_external_growth.http import build_session
 from portugal_external_growth.io_utils import sha256_file, write_dataframe_with_metadata
-from portugal_external_growth.manual import initialise_templates, prepare_ine_transcription_workflow
+from portugal_external_growth.manual import (
+    build_ine_harmonised,
+    compare_ine_transcriptions,
+    init_ine_transcription,
+    initialise_templates,
+    prepare_ine_transcription_workflow,
+)
 from portugal_external_growth.mapping import build_mapping_outputs
+from portugal_external_growth.partners import (
+    annotate_comtrade_partner_areas,
+    build_requested_partner_return_status,
+    configured_comtrade_partner_codes,
+    load_historical_group_memberships,
+)
 from portugal_external_growth.reconciliation import (
     build_trade_reconciliation_notes,
     build_trade_source_comparison,
@@ -35,10 +47,7 @@ from portugal_external_growth.registry import (
 )
 from portugal_external_growth.settings import Settings
 from portugal_external_growth.transforms import (
-    aggregate_trade_orientation,
-    classify_partner_groups,
     compile_comtrade_coverage_audit,
-    load_partner_memberships,
     normalise_comtrade,
     summarise_gdp_growth,
 )
@@ -174,8 +183,9 @@ def extract_comtrade(settings: Settings, *, overwrite: bool) -> None:
         timeout_seconds=settings.http_timeout_seconds,
         subscription_key=settings.comtrade_subscription_key,
     )
-    partners = tuple(int(value) for value in config["partner_codes"])
-    for year in config["years"]:
+    years = tuple(int(year) for year in config["years"])
+    partners = configured_comtrade_partner_codes(root, years)
+    for year in years:
         for flow_code in config["flow_codes"]:
             request = ComtradeRequest(
                 year=int(year),
@@ -210,7 +220,7 @@ def audit_comtrade_coverage(settings: Settings, *, overwrite: bool) -> None:
     )
     years = tuple(int(year) for year in config["years"])
     flows = tuple(str(flow_code) for flow_code in config["flow_codes"])
-    partners = tuple(int(value) for value in config["partner_codes"])
+    partners = configured_comtrade_partner_codes(root, years)
 
     matrix_inputs: list[pd.DataFrame] = []
     raw_paths: list[str] = []
@@ -272,6 +282,9 @@ def audit_comtrade_coverage(settings: Settings, *, overwrite: bool) -> None:
                         "raw_records": len(frame),
                     }
                 )
+                area_path = root / "config/comtrade_partner_areas.yml"
+                if area_path.exists():
+                    matrix = annotate_comtrade_partner_areas(matrix, area_path)
                 matrix_inputs.append(matrix)
 
     coverage_matrix, audit, notes = compile_comtrade_coverage_audit(
@@ -291,6 +304,25 @@ def audit_comtrade_coverage(settings: Settings, *, overwrite: bool) -> None:
         root / "results/diagnostics/comtrade_coverage/comtrade_coverage_audit.csv",
         metadata={"source_files": ["data/interim/live/comtrade_coverage_matrix.csv"]},
     )
+    area_path = root / "config/comtrade_partner_areas.yml"
+    if area_path.exists():
+        requested_status = build_requested_partner_return_status(
+            coverage_matrix,
+            area_path,
+            years=years,
+            flows=flows,
+            classification_codes=classification_codes,
+        )
+        write_dataframe_with_metadata(
+            requested_status.loc[~requested_status["returned"]].copy(),
+            root / "results/diagnostics/comtrade_coverage/requested_not_returned.csv",
+            metadata={
+                "source_files": [
+                    "data/interim/live/comtrade_coverage_matrix.csv",
+                    "config/comtrade_partner_areas.yml",
+                ]
+            },
+        )
     notes_path = root / "results/diagnostics/comtrade_coverage/comtrade_coverage_notes.txt"
     notes_path.parent.mkdir(parents=True, exist_ok=True)
     notes_path.write_text(notes, encoding="utf-8")
@@ -315,6 +347,9 @@ def rebuild_comtrade_coverage_audit_from_local(settings: Settings) -> None:
     preferred_classification_codes = tuple(
         str(value) for value in config.get("preferred_coverage_classification_codes", ["S1", "S2"])
     )
+    area_path = root / "config/comtrade_partner_areas.yml"
+    if area_path.exists():
+        coverage_matrix = annotate_comtrade_partner_areas(coverage_matrix, area_path)
     coverage_matrix, audit, notes = compile_comtrade_coverage_audit(
         [coverage_matrix],
         colonial_partner_codes=_colonial_partner_codes(root),
@@ -335,12 +370,48 @@ def rebuild_comtrade_coverage_audit_from_local(settings: Settings) -> None:
         root / "results/diagnostics/comtrade_coverage/comtrade_coverage_audit.csv",
         metadata={"source_files": ["data/interim/live/comtrade_coverage_matrix.csv"]},
     )
+    if area_path.exists():
+        classification_codes = tuple(
+            str(value) for value in config.get("coverage_classification_codes", ["S1", "S2"])
+        )
+        requested_status = build_requested_partner_return_status(
+            coverage_matrix,
+            area_path,
+            years=years,
+            flows=flows,
+            classification_codes=classification_codes,
+        )
+        write_dataframe_with_metadata(
+            requested_status.loc[~requested_status["returned"]].copy(),
+            root / "results/diagnostics/comtrade_coverage/requested_not_returned.csv",
+            metadata={
+                "source_files": [
+                    "data/interim/live/comtrade_coverage_matrix.csv",
+                    "config/comtrade_partner_areas.yml",
+                ]
+            },
+        )
     notes_path = root / "results/diagnostics/comtrade_coverage/comtrade_coverage_notes.txt"
     notes_path.parent.mkdir(parents=True, exist_ok=True)
     notes_path.write_text(notes, encoding="utf-8")
 
 
 def _colonial_partner_codes(root: Path) -> tuple[int, ...]:
+    historical = root / "config/historical_groups.yml"
+    areas = root / "config/comtrade_partner_areas.yml"
+    if historical.exists() and areas.exists():
+        memberships = load_historical_group_memberships(historical, areas)
+        return tuple(
+            sorted(
+                int(code)
+                for code in memberships.loc[
+                    memberships["partner_group"].eq("colonies"), "partner_code"
+                ]
+                .dropna()
+                .unique()
+                .tolist()
+            )
+        )
     partner_groups = load_yaml(root / "config/partner_groups.yml")
     return tuple(
         int(member["code"])
@@ -440,24 +511,8 @@ def build(settings: Settings) -> None:
             root / "data/interim/live/comtrade_normalised.csv",
             metadata={"source_files": [str(path) for path in trade_files]},
         )
-        memberships = load_partner_memberships(root / "config/partner_groups.yml")
-        classified = classify_partner_groups(normalised, memberships)
-        write_dataframe_with_metadata(
-            classified,
-            root / "data/interim/live/comtrade_classified.csv",
-            metadata={"source_files": ["data/interim/live/comtrade_normalised.csv"]},
-        )
-        orientation = aggregate_trade_orientation(classified)
-        write_dataframe_with_metadata(
-            orientation,
-            root / "data/processed/live/trade_orientation_by_group.csv",
-            metadata={"source_files": ["data/interim/live/comtrade_classified.csv"]},
-        )
-        write_dataframe_with_metadata(
-            orientation,
-            root / "results/live/trade_orientation_by_group.csv",
-            metadata={"result_type": "primary_trade_orientation"},
-        )
+    if (root / "data/interim/live/comtrade_coverage_matrix.csv").exists():
+        build_descriptive_results(settings)
 
 
 def validate(settings: Settings) -> bool:
@@ -528,6 +583,27 @@ def prepare_ine_transcription(settings: Settings) -> None:
     """Initialise the controlled INE historical-table transcription workflow."""
 
     for path in prepare_ine_transcription_workflow(settings.resolved_root()):
+        print(path)
+
+
+def init_ine_transcription_inputs(settings: Settings) -> None:
+    """Initialise only protected INE human-entry input files."""
+
+    for path in init_ine_transcription(settings.resolved_root()):
+        print(path)
+
+
+def compare_ine_transcription_passes(settings: Settings) -> None:
+    """Regenerate INE double-entry discrepancy outputs."""
+
+    for path in compare_ine_transcriptions(settings.resolved_root()):
+        print(path)
+
+
+def build_ine_harmonised_outputs(settings: Settings) -> None:
+    """Regenerate INE harmonisation placeholders pending adjudication."""
+
+    for path in build_ine_harmonised(settings.resolved_root()):
         print(path)
 
 
@@ -615,6 +691,14 @@ def build_descriptive_results(settings: Settings) -> None:
     root = settings.resolved_root()
     results = build_descriptive_trade_results(root)
     classification_registry = root / "config/partner_groups.yml"
+    source_files = ["data/interim/live/comtrade_coverage_matrix.csv"]
+    if (root / "config/historical_groups.yml").exists() and (
+        root / "config/comtrade_partner_areas.yml"
+    ).exists():
+        source_files.extend(["config/historical_groups.yml", "config/comtrade_partner_areas.yml"])
+        classification_registry = root / "config/historical_groups.yml"
+    else:
+        source_files.append("config/partner_groups.yml")
     output_map = {
         "preliminary_group_shares": root / "results/live/preliminary_trade_group_shares.csv",
         "preliminary_colonial_share": root / "results/live/preliminary_colonial_share.csv",
@@ -639,10 +723,9 @@ def build_descriptive_results(settings: Settings) -> None:
             path,
             metadata={
                 "source_files": [
-                    "data/interim/live/comtrade_coverage_matrix.csv",
-                    "config/partner_groups.yml",
+                    *source_files,
                 ],
-                "classification_registry": "config/partner_groups.yml",
+                "classification_registry": classification_registry.relative_to(root).as_posix(),
                 "classification_registry_sha256": sha256_file(classification_registry),
             },
         )
@@ -655,6 +738,11 @@ def build_descriptive_results(settings: Settings) -> None:
                 "",
                 "The live preliminary tables use UN Comtrade World totals as the denominator.",
                 "The true_rest_of_world row is calculated as World minus selected group totals.",
+                "European and institutional group-share rows are withheld from live preliminary",
+                "results until the Comtrade source-area crosswalk has been reviewed against",
+                "returned partner-area metadata for every requested year and flow.",
+                "Colonial partner coverage remains under territorial-definition review; missing",
+                "historical Comtrade partner areas are not interpreted as zero trade.",
                 "Coverage-derived selected-partner diagnostics are stored under",
                 "results/diagnostics/comtrade_coverage and should not be cited as final",
                 "analytical result tables.",

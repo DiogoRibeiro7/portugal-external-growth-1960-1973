@@ -1,4 +1,5 @@
 {
+  "access_conditions": "not_specified",
   "columns": [
     "source_id",
     "source_pdf_filename",
@@ -23,9 +24,35 @@
     "entry_pass",
     "adjudication_status"
   ],
-  "created_at_utc": "2026-08-06T11:51:59.441708+00:00",
-  "file": "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\interim\\live\\ine_trade_adjudicated.csv",
+  "date_range": null,
+  "file": "data/interim/live/ine_trade_adjudicated.csv",
   "rows": 0,
+  "schema": {
+    "adjudication_status": "object",
+    "cell_status": "object",
+    "commodity_code_source": "object",
+    "commodity_label_source": "object",
+    "currency_source": "object",
+    "entry_pass": "object",
+    "flow": "object",
+    "footnote": "object",
+    "page_number": "object",
+    "partner_code_harmonised": "object",
+    "partner_name_source": "object",
+    "printed_total_value_source": "object",
+    "publication_year": "object",
+    "reporting_territory": "object",
+    "source_id": "object",
+    "source_pdf_filename": "object",
+    "source_pdf_sha256": "object",
+    "table_title": "object",
+    "transcriber": "object",
+    "transcription_date": "object",
+    "unit_multiplier": "object",
+    "value_source": "object"
+  },
   "sha256": "6eb97fa20d610dd74d5a5dab133135ebe7dccd93438bd91b79b82bc0d27245ff",
-  "stage": "manual_adjudication_pending"
+  "source_licence": "not_specified",
+  "stage": "manual_adjudication_pending",
+  "validation_findings": []
 }

@@ -1,0 +1,697 @@
+year,flow_code,classification_code,entity_id,entity_label,requested_partner_code,historical_trade_area,returned,mapping_status,mapping_source,resolution
+1962,X,S1,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,X,S1,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,X,S1,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1962,X,S1,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,X,S1,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1962,X,S1,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,X,S1,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1962,X,S1,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,X,S2,angola,Angola,24,Angola,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,X,S2,austria,Austria,40,Austria,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,X,S2,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,X,S2,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,X,S2,denmark,Denmark,208,Denmark,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,X,S2,finland,Finland,246,Finland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,X,S2,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1962,X,S2,guinea_bissau,Guinea-Bissau,624,Guinea-Bissau,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,X,S2,iceland,Iceland,352,Iceland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,X,S2,ireland,Ireland,372,Ireland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,X,S2,italy,Italy,380,Italy,False,direct_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1962,X,S2,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,X,S2,mozambique,Mozambique,508,Mozambique,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,X,S2,netherlands,Netherlands,528,Netherlands,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,X,S2,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1962,X,S2,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,X,S2,sweden,Sweden,752,Sweden,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,X,S2,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1962,X,S2,timor_leste,Timor-Leste,626,Timor-Leste,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,X,S2,united_kingdom,United Kingdom,826,United Kingdom,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,X,S2,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,X,S2,world,World,0,World,False,comtrade_total,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,M,S1,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,M,S1,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,M,S1,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1962,M,S1,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,M,S1,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1962,M,S1,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,M,S1,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1962,M,S1,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,M,S2,angola,Angola,24,Angola,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,M,S2,austria,Austria,40,Austria,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,M,S2,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,M,S2,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,M,S2,denmark,Denmark,208,Denmark,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,M,S2,finland,Finland,246,Finland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,M,S2,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1962,M,S2,guinea_bissau,Guinea-Bissau,624,Guinea-Bissau,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,M,S2,iceland,Iceland,352,Iceland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,M,S2,ireland,Ireland,372,Ireland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,M,S2,italy,Italy,380,Italy,False,direct_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1962,M,S2,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,M,S2,mozambique,Mozambique,508,Mozambique,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,M,S2,netherlands,Netherlands,528,Netherlands,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,M,S2,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1962,M,S2,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,M,S2,sweden,Sweden,752,Sweden,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,M,S2,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1962,M,S2,timor_leste,Timor-Leste,626,Timor-Leste,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,M,S2,united_kingdom,United Kingdom,826,United Kingdom,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,M,S2,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1962,M,S2,world,World,0,World,False,comtrade_total,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,X,S1,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,X,S1,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,X,S1,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1963,X,S1,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,X,S1,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1963,X,S1,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,X,S1,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1963,X,S1,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,X,S2,angola,Angola,24,Angola,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,X,S2,austria,Austria,40,Austria,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,X,S2,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,X,S2,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,X,S2,denmark,Denmark,208,Denmark,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,X,S2,finland,Finland,246,Finland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,X,S2,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1963,X,S2,guinea_bissau,Guinea-Bissau,624,Guinea-Bissau,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,X,S2,iceland,Iceland,352,Iceland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,X,S2,ireland,Ireland,372,Ireland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,X,S2,italy,Italy,380,Italy,False,direct_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1963,X,S2,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,X,S2,mozambique,Mozambique,508,Mozambique,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,X,S2,netherlands,Netherlands,528,Netherlands,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,X,S2,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1963,X,S2,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,X,S2,sweden,Sweden,752,Sweden,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,X,S2,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1963,X,S2,timor_leste,Timor-Leste,626,Timor-Leste,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,X,S2,united_kingdom,United Kingdom,826,United Kingdom,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,X,S2,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,X,S2,world,World,0,World,False,comtrade_total,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,M,S1,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,M,S1,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,M,S1,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1963,M,S1,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,M,S1,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1963,M,S1,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,M,S1,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1963,M,S1,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,M,S2,angola,Angola,24,Angola,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,M,S2,austria,Austria,40,Austria,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,M,S2,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,M,S2,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,M,S2,denmark,Denmark,208,Denmark,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,M,S2,finland,Finland,246,Finland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,M,S2,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1963,M,S2,guinea_bissau,Guinea-Bissau,624,Guinea-Bissau,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,M,S2,iceland,Iceland,352,Iceland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,M,S2,ireland,Ireland,372,Ireland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,M,S2,italy,Italy,380,Italy,False,direct_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1963,M,S2,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,M,S2,mozambique,Mozambique,508,Mozambique,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,M,S2,netherlands,Netherlands,528,Netherlands,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,M,S2,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1963,M,S2,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,M,S2,sweden,Sweden,752,Sweden,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,M,S2,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1963,M,S2,timor_leste,Timor-Leste,626,Timor-Leste,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,M,S2,united_kingdom,United Kingdom,826,United Kingdom,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,M,S2,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1963,M,S2,world,World,0,World,False,comtrade_total,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,X,S1,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,X,S1,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,X,S1,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1964,X,S1,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,X,S1,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1964,X,S1,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,X,S1,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1964,X,S1,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,X,S2,angola,Angola,24,Angola,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,X,S2,austria,Austria,40,Austria,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,X,S2,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,X,S2,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,X,S2,denmark,Denmark,208,Denmark,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,X,S2,finland,Finland,246,Finland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,X,S2,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1964,X,S2,guinea_bissau,Guinea-Bissau,624,Guinea-Bissau,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,X,S2,iceland,Iceland,352,Iceland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,X,S2,ireland,Ireland,372,Ireland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,X,S2,italy,Italy,380,Italy,False,direct_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1964,X,S2,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,X,S2,mozambique,Mozambique,508,Mozambique,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,X,S2,netherlands,Netherlands,528,Netherlands,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,X,S2,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1964,X,S2,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,X,S2,sweden,Sweden,752,Sweden,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,X,S2,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1964,X,S2,timor_leste,Timor-Leste,626,Timor-Leste,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,X,S2,united_kingdom,United Kingdom,826,United Kingdom,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,X,S2,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,X,S2,world,World,0,World,False,comtrade_total,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,M,S1,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,M,S1,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,M,S1,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1964,M,S1,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,M,S1,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1964,M,S1,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,M,S1,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1964,M,S1,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,M,S2,angola,Angola,24,Angola,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,M,S2,austria,Austria,40,Austria,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,M,S2,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,M,S2,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,M,S2,denmark,Denmark,208,Denmark,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,M,S2,finland,Finland,246,Finland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,M,S2,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1964,M,S2,guinea_bissau,Guinea-Bissau,624,Guinea-Bissau,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,M,S2,iceland,Iceland,352,Iceland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,M,S2,ireland,Ireland,372,Ireland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,M,S2,italy,Italy,380,Italy,False,direct_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1964,M,S2,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,M,S2,mozambique,Mozambique,508,Mozambique,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,M,S2,netherlands,Netherlands,528,Netherlands,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,M,S2,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1964,M,S2,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,M,S2,sweden,Sweden,752,Sweden,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,M,S2,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1964,M,S2,timor_leste,Timor-Leste,626,Timor-Leste,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,M,S2,united_kingdom,United Kingdom,826,United Kingdom,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,M,S2,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1964,M,S2,world,World,0,World,False,comtrade_total,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,X,S1,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,X,S1,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,X,S1,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1965,X,S1,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,X,S1,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1965,X,S1,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,X,S1,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1965,X,S1,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,X,S2,angola,Angola,24,Angola,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,X,S2,austria,Austria,40,Austria,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,X,S2,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,X,S2,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,X,S2,denmark,Denmark,208,Denmark,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,X,S2,finland,Finland,246,Finland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,X,S2,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1965,X,S2,guinea_bissau,Guinea-Bissau,624,Guinea-Bissau,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,X,S2,iceland,Iceland,352,Iceland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,X,S2,ireland,Ireland,372,Ireland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,X,S2,italy,Italy,380,Italy,False,direct_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1965,X,S2,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,X,S2,mozambique,Mozambique,508,Mozambique,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,X,S2,netherlands,Netherlands,528,Netherlands,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,X,S2,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1965,X,S2,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,X,S2,sweden,Sweden,752,Sweden,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,X,S2,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1965,X,S2,timor_leste,Timor-Leste,626,Timor-Leste,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,X,S2,united_kingdom,United Kingdom,826,United Kingdom,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,X,S2,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,X,S2,world,World,0,World,False,comtrade_total,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,M,S1,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,M,S1,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,M,S1,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1965,M,S1,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,M,S1,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1965,M,S1,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,M,S1,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1965,M,S1,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,M,S2,angola,Angola,24,Angola,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,M,S2,austria,Austria,40,Austria,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,M,S2,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,M,S2,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,M,S2,denmark,Denmark,208,Denmark,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,M,S2,finland,Finland,246,Finland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,M,S2,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1965,M,S2,guinea_bissau,Guinea-Bissau,624,Guinea-Bissau,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,M,S2,iceland,Iceland,352,Iceland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,M,S2,ireland,Ireland,372,Ireland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,M,S2,italy,Italy,380,Italy,False,direct_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1965,M,S2,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,M,S2,mozambique,Mozambique,508,Mozambique,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,M,S2,netherlands,Netherlands,528,Netherlands,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,M,S2,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1965,M,S2,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,M,S2,sweden,Sweden,752,Sweden,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,M,S2,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1965,M,S2,timor_leste,Timor-Leste,626,Timor-Leste,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,M,S2,united_kingdom,United Kingdom,826,United Kingdom,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,M,S2,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1965,M,S2,world,World,0,World,False,comtrade_total,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,X,S1,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,X,S1,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,X,S1,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1966,X,S1,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,X,S1,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1966,X,S1,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,X,S1,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1966,X,S1,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,X,S2,angola,Angola,24,Angola,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,X,S2,austria,Austria,40,Austria,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,X,S2,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,X,S2,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,X,S2,denmark,Denmark,208,Denmark,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,X,S2,finland,Finland,246,Finland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,X,S2,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1966,X,S2,guinea_bissau,Guinea-Bissau,624,Guinea-Bissau,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,X,S2,iceland,Iceland,352,Iceland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,X,S2,ireland,Ireland,372,Ireland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,X,S2,italy,Italy,380,Italy,False,direct_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1966,X,S2,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,X,S2,mozambique,Mozambique,508,Mozambique,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,X,S2,netherlands,Netherlands,528,Netherlands,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,X,S2,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1966,X,S2,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,X,S2,sweden,Sweden,752,Sweden,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,X,S2,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1966,X,S2,timor_leste,Timor-Leste,626,Timor-Leste,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,X,S2,united_kingdom,United Kingdom,826,United Kingdom,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,X,S2,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,X,S2,world,World,0,World,False,comtrade_total,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,M,S1,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,M,S1,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,M,S1,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1966,M,S1,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,M,S1,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1966,M,S1,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,M,S1,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1966,M,S1,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,M,S2,angola,Angola,24,Angola,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,M,S2,austria,Austria,40,Austria,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,M,S2,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,M,S2,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,M,S2,denmark,Denmark,208,Denmark,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,M,S2,finland,Finland,246,Finland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,M,S2,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1966,M,S2,guinea_bissau,Guinea-Bissau,624,Guinea-Bissau,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,M,S2,iceland,Iceland,352,Iceland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,M,S2,ireland,Ireland,372,Ireland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,M,S2,italy,Italy,380,Italy,False,direct_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1966,M,S2,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,M,S2,mozambique,Mozambique,508,Mozambique,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,M,S2,netherlands,Netherlands,528,Netherlands,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,M,S2,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1966,M,S2,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,M,S2,sweden,Sweden,752,Sweden,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,M,S2,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1966,M,S2,timor_leste,Timor-Leste,626,Timor-Leste,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,M,S2,united_kingdom,United Kingdom,826,United Kingdom,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,M,S2,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1966,M,S2,world,World,0,World,False,comtrade_total,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,X,S1,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,X,S1,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,X,S1,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1967,X,S1,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,X,S1,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1967,X,S1,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,X,S1,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1967,X,S1,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,X,S2,angola,Angola,24,Angola,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,X,S2,austria,Austria,40,Austria,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,X,S2,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,X,S2,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,X,S2,denmark,Denmark,208,Denmark,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,X,S2,finland,Finland,246,Finland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,X,S2,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1967,X,S2,guinea_bissau,Guinea-Bissau,624,Guinea-Bissau,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,X,S2,iceland,Iceland,352,Iceland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,X,S2,ireland,Ireland,372,Ireland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,X,S2,italy,Italy,380,Italy,False,direct_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1967,X,S2,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,X,S2,mozambique,Mozambique,508,Mozambique,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,X,S2,netherlands,Netherlands,528,Netherlands,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,X,S2,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1967,X,S2,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,X,S2,sweden,Sweden,752,Sweden,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,X,S2,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1967,X,S2,timor_leste,Timor-Leste,626,Timor-Leste,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,X,S2,united_kingdom,United Kingdom,826,United Kingdom,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,X,S2,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,X,S2,world,World,0,World,False,comtrade_total,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,M,S1,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,M,S1,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,M,S1,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1967,M,S1,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,M,S1,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1967,M,S1,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,M,S1,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1967,M,S1,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,M,S2,angola,Angola,24,Angola,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,M,S2,austria,Austria,40,Austria,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,M,S2,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,M,S2,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,M,S2,denmark,Denmark,208,Denmark,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,M,S2,finland,Finland,246,Finland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,M,S2,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1967,M,S2,guinea_bissau,Guinea-Bissau,624,Guinea-Bissau,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,M,S2,iceland,Iceland,352,Iceland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,M,S2,ireland,Ireland,372,Ireland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,M,S2,italy,Italy,380,Italy,False,direct_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1967,M,S2,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,M,S2,mozambique,Mozambique,508,Mozambique,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,M,S2,netherlands,Netherlands,528,Netherlands,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,M,S2,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1967,M,S2,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,M,S2,sweden,Sweden,752,Sweden,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,M,S2,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1967,M,S2,timor_leste,Timor-Leste,626,Timor-Leste,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,M,S2,united_kingdom,United Kingdom,826,United Kingdom,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,M,S2,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1967,M,S2,world,World,0,World,False,comtrade_total,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,X,S1,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,X,S1,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,X,S1,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1968,X,S1,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,X,S1,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1968,X,S1,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,X,S1,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1968,X,S1,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,X,S2,angola,Angola,24,Angola,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,X,S2,austria,Austria,40,Austria,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,X,S2,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,X,S2,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,X,S2,denmark,Denmark,208,Denmark,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,X,S2,finland,Finland,246,Finland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,X,S2,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1968,X,S2,guinea_bissau,Guinea-Bissau,624,Guinea-Bissau,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,X,S2,iceland,Iceland,352,Iceland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,X,S2,ireland,Ireland,372,Ireland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,X,S2,italy,Italy,380,Italy,False,direct_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1968,X,S2,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,X,S2,mozambique,Mozambique,508,Mozambique,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,X,S2,netherlands,Netherlands,528,Netherlands,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,X,S2,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1968,X,S2,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,X,S2,sweden,Sweden,752,Sweden,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,X,S2,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1968,X,S2,timor_leste,Timor-Leste,626,Timor-Leste,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,X,S2,united_kingdom,United Kingdom,826,United Kingdom,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,X,S2,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,X,S2,world,World,0,World,False,comtrade_total,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,M,S1,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,M,S1,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,M,S1,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1968,M,S1,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,M,S1,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1968,M,S1,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,M,S1,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1968,M,S1,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,M,S2,angola,Angola,24,Angola,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,M,S2,austria,Austria,40,Austria,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,M,S2,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,M,S2,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,M,S2,denmark,Denmark,208,Denmark,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,M,S2,finland,Finland,246,Finland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,M,S2,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1968,M,S2,guinea_bissau,Guinea-Bissau,624,Guinea-Bissau,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,M,S2,iceland,Iceland,352,Iceland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,M,S2,ireland,Ireland,372,Ireland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,M,S2,italy,Italy,380,Italy,False,direct_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1968,M,S2,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,M,S2,mozambique,Mozambique,508,Mozambique,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,M,S2,netherlands,Netherlands,528,Netherlands,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,M,S2,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1968,M,S2,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,M,S2,sweden,Sweden,752,Sweden,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,M,S2,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1968,M,S2,timor_leste,Timor-Leste,626,Timor-Leste,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,M,S2,united_kingdom,United Kingdom,826,United Kingdom,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,M,S2,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1968,M,S2,world,World,0,World,False,comtrade_total,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,X,S1,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,X,S1,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,X,S1,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1969,X,S1,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,X,S1,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1969,X,S1,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,X,S1,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1969,X,S1,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,X,S2,angola,Angola,24,Angola,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,X,S2,austria,Austria,40,Austria,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,X,S2,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,X,S2,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,X,S2,denmark,Denmark,208,Denmark,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,X,S2,finland,Finland,246,Finland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,X,S2,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1969,X,S2,guinea_bissau,Guinea-Bissau,624,Guinea-Bissau,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,X,S2,iceland,Iceland,352,Iceland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,X,S2,ireland,Ireland,372,Ireland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,X,S2,italy,Italy,380,Italy,False,direct_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1969,X,S2,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,X,S2,mozambique,Mozambique,508,Mozambique,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,X,S2,netherlands,Netherlands,528,Netherlands,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,X,S2,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1969,X,S2,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,X,S2,sweden,Sweden,752,Sweden,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,X,S2,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1969,X,S2,timor_leste,Timor-Leste,626,Timor-Leste,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,X,S2,united_kingdom,United Kingdom,826,United Kingdom,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,X,S2,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,X,S2,world,World,0,World,False,comtrade_total,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,M,S1,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,M,S1,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,M,S1,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1969,M,S1,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,M,S1,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1969,M,S1,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,M,S1,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1969,M,S1,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,M,S2,angola,Angola,24,Angola,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,M,S2,austria,Austria,40,Austria,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,M,S2,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,M,S2,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,M,S2,denmark,Denmark,208,Denmark,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,M,S2,finland,Finland,246,Finland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,M,S2,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1969,M,S2,guinea_bissau,Guinea-Bissau,624,Guinea-Bissau,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,M,S2,iceland,Iceland,352,Iceland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,M,S2,ireland,Ireland,372,Ireland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,M,S2,italy,Italy,380,Italy,False,direct_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1969,M,S2,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,M,S2,mozambique,Mozambique,508,Mozambique,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,M,S2,netherlands,Netherlands,528,Netherlands,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,M,S2,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1969,M,S2,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,M,S2,sweden,Sweden,752,Sweden,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,M,S2,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1969,M,S2,timor_leste,Timor-Leste,626,Timor-Leste,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,M,S2,united_kingdom,United Kingdom,826,United Kingdom,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,M,S2,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1969,M,S2,world,World,0,World,False,comtrade_total,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,X,S1,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,X,S1,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1970,X,S1,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1970,X,S1,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1970,X,S1,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,X,S2,angola,Angola,24,Angola,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,X,S2,austria,Austria,40,Austria,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,X,S2,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,X,S2,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,X,S2,denmark,Denmark,208,Denmark,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,X,S2,finland,Finland,246,Finland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,X,S2,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1970,X,S2,guinea_bissau,Guinea-Bissau,624,Guinea-Bissau,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,X,S2,iceland,Iceland,352,Iceland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,X,S2,ireland,Ireland,372,Ireland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,X,S2,italy,Italy,380,Italy,False,direct_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1970,X,S2,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,X,S2,mozambique,Mozambique,508,Mozambique,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,X,S2,netherlands,Netherlands,528,Netherlands,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,X,S2,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1970,X,S2,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,X,S2,sweden,Sweden,752,Sweden,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,X,S2,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1970,X,S2,timor_leste,Timor-Leste,626,Timor-Leste,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,X,S2,united_kingdom,United Kingdom,826,United Kingdom,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,X,S2,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,X,S2,world,World,0,World,False,comtrade_total,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,M,S1,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,M,S1,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1970,M,S1,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1970,M,S1,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1970,M,S1,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,M,S2,angola,Angola,24,Angola,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,M,S2,austria,Austria,40,Austria,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,M,S2,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,M,S2,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,M,S2,denmark,Denmark,208,Denmark,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,M,S2,finland,Finland,246,Finland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,M,S2,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1970,M,S2,guinea_bissau,Guinea-Bissau,624,Guinea-Bissau,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,M,S2,iceland,Iceland,352,Iceland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,M,S2,ireland,Ireland,372,Ireland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,M,S2,italy,Italy,380,Italy,False,direct_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1970,M,S2,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,M,S2,mozambique,Mozambique,508,Mozambique,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,M,S2,netherlands,Netherlands,528,Netherlands,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,M,S2,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1970,M,S2,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,M,S2,sweden,Sweden,752,Sweden,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,M,S2,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1970,M,S2,timor_leste,Timor-Leste,626,Timor-Leste,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,M,S2,united_kingdom,United Kingdom,826,United Kingdom,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,M,S2,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1970,M,S2,world,World,0,World,False,comtrade_total,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,X,S1,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,X,S1,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1971,X,S1,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1971,X,S1,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1971,X,S1,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,X,S2,angola,Angola,24,Angola,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,X,S2,austria,Austria,40,Austria,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,X,S2,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,X,S2,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,X,S2,denmark,Denmark,208,Denmark,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,X,S2,finland,Finland,246,Finland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,X,S2,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1971,X,S2,guinea_bissau,Guinea-Bissau,624,Guinea-Bissau,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,X,S2,iceland,Iceland,352,Iceland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,X,S2,ireland,Ireland,372,Ireland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,X,S2,italy,Italy,380,Italy,False,direct_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1971,X,S2,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,X,S2,mozambique,Mozambique,508,Mozambique,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,X,S2,netherlands,Netherlands,528,Netherlands,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,X,S2,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1971,X,S2,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,X,S2,sweden,Sweden,752,Sweden,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,X,S2,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1971,X,S2,timor_leste,Timor-Leste,626,Timor-Leste,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,X,S2,united_kingdom,United Kingdom,826,United Kingdom,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,X,S2,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,X,S2,world,World,0,World,False,comtrade_total,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,M,S1,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,M,S1,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1971,M,S1,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1971,M,S1,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1971,M,S1,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,M,S2,angola,Angola,24,Angola,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,M,S2,austria,Austria,40,Austria,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,M,S2,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,M,S2,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,M,S2,denmark,Denmark,208,Denmark,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,M,S2,finland,Finland,246,Finland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,M,S2,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1971,M,S2,guinea_bissau,Guinea-Bissau,624,Guinea-Bissau,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,M,S2,iceland,Iceland,352,Iceland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,M,S2,ireland,Ireland,372,Ireland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,M,S2,italy,Italy,380,Italy,False,direct_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1971,M,S2,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,M,S2,mozambique,Mozambique,508,Mozambique,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,M,S2,netherlands,Netherlands,528,Netherlands,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,M,S2,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1971,M,S2,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,M,S2,sweden,Sweden,752,Sweden,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,M,S2,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1971,M,S2,timor_leste,Timor-Leste,626,Timor-Leste,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,M,S2,united_kingdom,United Kingdom,826,United Kingdom,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,M,S2,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1971,M,S2,world,World,0,World,False,comtrade_total,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,X,S1,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,X,S1,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1972,X,S1,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1972,X,S1,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1972,X,S1,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,X,S2,angola,Angola,24,Angola,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,X,S2,austria,Austria,40,Austria,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,X,S2,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,X,S2,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,X,S2,denmark,Denmark,208,Denmark,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,X,S2,finland,Finland,246,Finland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,X,S2,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1972,X,S2,guinea_bissau,Guinea-Bissau,624,Guinea-Bissau,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,X,S2,iceland,Iceland,352,Iceland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,X,S2,ireland,Ireland,372,Ireland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,X,S2,italy,Italy,380,Italy,False,direct_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1972,X,S2,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,X,S2,mozambique,Mozambique,508,Mozambique,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,X,S2,netherlands,Netherlands,528,Netherlands,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,X,S2,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1972,X,S2,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,X,S2,sweden,Sweden,752,Sweden,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,X,S2,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1972,X,S2,timor_leste,Timor-Leste,626,Timor-Leste,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,X,S2,united_kingdom,United Kingdom,826,United Kingdom,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,X,S2,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,X,S2,world,World,0,World,False,comtrade_total,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,M,S1,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,M,S1,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1972,M,S1,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1972,M,S1,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1972,M,S1,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,M,S2,angola,Angola,24,Angola,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,M,S2,austria,Austria,40,Austria,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,M,S2,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,M,S2,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,M,S2,denmark,Denmark,208,Denmark,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,M,S2,finland,Finland,246,Finland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,M,S2,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1972,M,S2,guinea_bissau,Guinea-Bissau,624,Guinea-Bissau,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,M,S2,iceland,Iceland,352,Iceland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,M,S2,ireland,Ireland,372,Ireland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,M,S2,italy,Italy,380,Italy,False,direct_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1972,M,S2,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,M,S2,mozambique,Mozambique,508,Mozambique,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,M,S2,netherlands,Netherlands,528,Netherlands,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,M,S2,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1972,M,S2,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,M,S2,sweden,Sweden,752,Sweden,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,M,S2,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1972,M,S2,timor_leste,Timor-Leste,626,Timor-Leste,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,M,S2,united_kingdom,United Kingdom,826,United Kingdom,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,M,S2,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1972,M,S2,world,World,0,World,False,comtrade_total,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,X,S1,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,X,S1,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1973,X,S1,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1973,X,S1,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1973,X,S1,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,X,S2,angola,Angola,24,Angola,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,X,S2,austria,Austria,40,Austria,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,X,S2,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,X,S2,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,X,S2,denmark,Denmark,208,Denmark,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,X,S2,finland,Finland,246,Finland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,X,S2,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1973,X,S2,guinea_bissau,Guinea-Bissau,624,Guinea-Bissau,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,X,S2,iceland,Iceland,352,Iceland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,X,S2,ireland,Ireland,372,Ireland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,X,S2,italy,Italy,380,Italy,False,direct_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1973,X,S2,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,X,S2,mozambique,Mozambique,508,Mozambique,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,X,S2,netherlands,Netherlands,528,Netherlands,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,X,S2,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1973,X,S2,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,X,S2,sweden,Sweden,752,Sweden,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,X,S2,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1973,X,S2,timor_leste,Timor-Leste,626,Timor-Leste,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,X,S2,united_kingdom,United Kingdom,826,United Kingdom,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,X,S2,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,X,S2,world,World,0,World,False,comtrade_total,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,M,S1,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,M,S1,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1973,M,S1,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1973,M,S1,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1973,M,S1,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,M,S2,angola,Angola,24,Angola,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,M,S2,austria,Austria,40,Austria,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,M,S2,belgium_luxembourg,Belgium-Luxembourg,58,Belgium-Luxembourg (...1998),False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,M,S2,cabo_verde,Cabo Verde,132,Cabo Verde,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,M,S2,denmark,Denmark,208,Denmark,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,M,S2,finland,Finland,246,Finland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,M,S2,france,France,251,France customs area,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1973,M,S2,guinea_bissau,Guinea-Bissau,624,Guinea-Bissau,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,M,S2,iceland,Iceland,352,Iceland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,M,S2,ireland,Ireland,372,Ireland,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,M,S2,italy,Italy,380,Italy,False,direct_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1973,M,S2,macao,Macao,446,Macao,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,M,S2,mozambique,Mozambique,508,Mozambique,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,M,S2,netherlands,Netherlands,528,Netherlands,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,M,S2,norway,Norway,579,"Norway, Svalbard and Jan Mayen",False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1973,M,S2,sao_tome_principe,Sao Tome and Principe,678,Sao Tome and Principe,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,M,S2,sweden,Sweden,752,Sweden,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,M,S2,switzerland_liechtenstein,Switzerland and Liechtenstein,757,Switzerland and Liechtenstein,False,customs_area_match,un_comtrade_customs_area_help,not_returned_by_api
+1973,M,S2,timor_leste,Timor-Leste,626,Timor-Leste,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,M,S2,united_kingdom,United Kingdom,826,United Kingdom,False,direct_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,M,S2,west_germany,Former Federal Republic of Germany,280,Former Federal Republic of Germany,False,historical_trade_area_match,un_comtrade_partner_areas_reference,not_returned_by_api
+1973,M,S2,world,World,0,World,False,comtrade_total,un_comtrade_partner_areas_reference,not_returned_by_api

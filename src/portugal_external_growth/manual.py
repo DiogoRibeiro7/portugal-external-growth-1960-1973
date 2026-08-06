@@ -107,6 +107,15 @@ def initialise_templates(root: Path) -> list[Path]:
 def prepare_ine_transcription_workflow(root: Path) -> list[Path]:
     """Create controlled INE double-entry transcription workflow files."""
 
+    created = init_ine_transcription(root)
+    created.extend(compare_ine_transcriptions(root))
+    created.extend(build_ine_harmonised(root))
+    return created
+
+
+def init_ine_transcription(root: Path) -> list[Path]:
+    """Create only human-authored INE transcription inputs when missing."""
+
     source_registry = _build_source_document_registry(root / "config/manual_sources.yml")
     source_registry_path = root / "data/manual/source_documents/source_document_registry.csv"
     _write_if_missing(
@@ -127,56 +136,62 @@ def prepare_ine_transcription_workflow(root: Path) -> list[Path]:
             metadata={"purpose": f"INE trade double-entry transcription pass {pass_number}"},
         )
         created.append(pass_path)
+    return created
+
+
+def compare_ine_transcriptions(root: Path) -> list[Path]:
+    """Regenerate derived INE double-entry discrepancy outputs."""
 
     discrepancy_path = root / "data/interim/live/ine_transcription_discrepancies.csv"
     discrepancies = compare_transcription_passes(
         root / "data/manual/transcriptions/pass_1/ine_trade_transcription_pass_1.csv",
         root / "data/manual/transcriptions/pass_2/ine_trade_transcription_pass_2.csv",
     )
-    _write_if_missing(
+    write_dataframe_with_metadata(
         discrepancies,
         discrepancy_path,
         metadata={"stage": "ine_double_entry_discrepancy_check"},
+        overwrite=True,
     )
-    created.append(discrepancy_path)
+    report_path = root / "results/live/ine_transcription_unresolved.txt"
+    report_path.parent.mkdir(parents=True, exist_ok=True)
+    unresolved = len(discrepancies)
+    report_path.write_text(
+        "\n".join(
+            [
+                "INE historical trade transcription status",
+                "========================================",
+                "",
+                f"Unresolved transcription discrepancies: {unresolved}",
+                "Derived discrepancy outputs are regenerated from the two protected",
+                "human-entry passes on every comparison run.",
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    return [discrepancy_path, report_path]
+
+
+def build_ine_harmonised(root: Path) -> list[Path]:
+    """Regenerate derived placeholder harmonised outputs pending adjudication."""
 
     adjudicated_path = root / "data/interim/live/ine_trade_adjudicated.csv"
     final_path = root / "data/processed/live/ine_trade_harmonised.csv"
     empty_final = pd.DataFrame(columns=TRADE_TEMPLATE_COLUMNS)
-    _write_if_missing(
+    write_dataframe_with_metadata(
         empty_final,
         adjudicated_path,
         metadata={"stage": "manual_adjudication_pending"},
+        overwrite=True,
     )
-    _write_if_missing(
+    write_dataframe_with_metadata(
         empty_final,
         final_path,
         metadata={"stage": "harmonisation_pending_human_verification"},
+        overwrite=True,
     )
-    created.extend([adjudicated_path, final_path])
-
-    report_path = root / "results/live/ine_transcription_unresolved.txt"
-    report_path.parent.mkdir(parents=True, exist_ok=True)
-    if not report_path.exists():
-        report_path.write_text(
-            "\n".join(
-                [
-                    "INE historical trade transcription status",
-                    "========================================",
-                    "",
-                    "No source PDFs or human transcription rows are currently available.",
-                    "Final harmonised output is intentionally empty until two independent",
-                    "entry passes are completed and discrepancies are adjudicated.",
-                    "",
-                    "Unresolved cells: all expected INE historical trade tables.",
-                    "Footnotes: pending source-document registration and transcription.",
-                    "",
-                ]
-            ),
-            encoding="utf-8",
-        )
-    created.append(report_path)
-    return created
+    return [adjudicated_path, final_path]
 
 
 def compare_transcription_passes(pass_1_path: Path, pass_2_path: Path) -> pd.DataFrame:

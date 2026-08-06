@@ -1,0 +1,23 @@
+entities:
+  - {entity_id: world, label: World, m49_code: 0, entity_type: aggregate}
+  - {entity_id: angola, label: Angola, m49_code: 24, entity_type: territory}
+  - {entity_id: cabo_verde, label: Cabo Verde, m49_code: 132, entity_type: territory}
+  - {entity_id: macao, label: Macao, m49_code: 446, entity_type: territory}
+  - {entity_id: mozambique, label: Mozambique, m49_code: 508, entity_type: territory}
+  - {entity_id: guinea_bissau, label: Guinea-Bissau, m49_code: 624, entity_type: territory}
+  - {entity_id: timor_leste, label: Timor-Leste, m49_code: 626, entity_type: territory}
+  - {entity_id: sao_tome_principe, label: Sao Tome and Principe, m49_code: 678, entity_type: territory}
+  - {entity_id: austria, label: Austria, m49_code: 40, entity_type: country}
+  - {entity_id: denmark, label: Denmark, m49_code: 208, entity_type: country}
+  - {entity_id: finland, label: Finland, m49_code: 246, entity_type: country}
+  - {entity_id: iceland, label: Iceland, m49_code: 352, entity_type: country}
+  - {entity_id: norway, label: Norway, m49_code: 578, entity_type: country}
+  - {entity_id: sweden, label: Sweden, m49_code: 752, entity_type: country}
+  - {entity_id: switzerland_liechtenstein, label: Switzerland and Liechtenstein, m49_code: 756, entity_type: customs_area}
+  - {entity_id: united_kingdom, label: United Kingdom, m49_code: 826, entity_type: country}
+  - {entity_id: belgium_luxembourg, label: Belgium-Luxembourg, m49_code: 58, entity_type: customs_area}
+  - {entity_id: france, label: France, m49_code: 250, entity_type: country}
+  - {entity_id: west_germany, label: Former Federal Republic of Germany, m49_code: 280, entity_type: historical_country}
+  - {entity_id: ireland, label: Ireland, m49_code: 372, entity_type: country}
+  - {entity_id: italy, label: Italy, m49_code: 380, entity_type: country}
+  - {entity_id: netherlands, label: Netherlands, m49_code: 528, entity_type: country}

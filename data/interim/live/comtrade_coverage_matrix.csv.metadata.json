@@ -11,7 +11,11 @@
     "is_world_record",
     "raw_records",
     "duplicate_key",
-    "commodity_code_source"
+    "commodity_code_source",
+    "entity_id",
+    "historical_trade_area",
+    "mapping_status",
+    "mapping_source"
   ],
   "date_range": {
     "end_year": 1973,
@@ -217,8 +221,12 @@
     "classification_code": "object",
     "commodity_code_source": "object",
     "duplicate_key": "bool",
+    "entity_id": "object",
     "flow_code": "object",
+    "historical_trade_area": "object",
     "is_world_record": "bool",
+    "mapping_source": "object",
+    "mapping_status": "object",
     "partner_code": "float64",
     "partner_desc": "float64",
     "raw_records": "int64",
@@ -226,7 +234,7 @@
     "trade_value_usd": "float64",
     "year": "int64"
   },
-  "sha256": "4082622b34149ba6639377572f2f3f698b39bb000d093f41d3bcec68f727489f",
+  "sha256": "83d62f09bc64433ba94b5ffc3b72b1cb349fc98a106f5b4f3446034f8e885ff2",
   "source_files": [
     "data/raw/live/comtrade_availability/PRT_1962_X_S1_TOTAL_coverage.json",
     "data/raw/live/comtrade_availability/PRT_1962_M_S1_TOTAL_coverage.json",

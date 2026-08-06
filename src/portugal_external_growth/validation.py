@@ -176,6 +176,7 @@ def build_file_manifest(root: Path) -> pd.DataFrame:
         root / "pyproject.toml",
         root / "poetry.lock",
         root / "README.md",
+        root / "DATA_LICENSES.md",
         root / "Makefile",
     ]:
         if not path.exists():

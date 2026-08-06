@@ -50,22 +50,21 @@ def test_preliminary_shares_use_world_denominator_and_true_residual() -> None:
     )
 
     result = _build_world_denominator_groups(coverage, MEMBERSHIPS)
-    current = result.loc[
-        result["classification_scheme"] == "contemporaneous_institutional_membership"
-    ]
+    current = result.loc[result["classification_scheme"] == "colonial_world_share_preliminary"]
 
     assert current["world_share"].sum() == 1.0
     assert current.loc[current["partner_group"] == "colonies", "world_share"].iloc[0] == 0.2
     assert (
         current.loc[current["partner_group"] == "true_rest_of_world", "trade_value_usd"].iloc[0]
-        == 50.0
+        == 80.0
     )
 
 
-def test_1973_accession_countries_are_current_eec() -> None:
+def test_preliminary_world_shares_do_not_publish_european_group_rows() -> None:
     coverage = pd.DataFrame(
         [
             {"year": 1973, "flow_code": "X", "partner_code": 0, "trade_value_usd": 100.0},
+            {"year": 1973, "flow_code": "X", "partner_code": 24, "trade_value_usd": 5.0},
             {"year": 1973, "flow_code": "X", "partner_code": 208, "trade_value_usd": 10.0},
             {"year": 1973, "flow_code": "X", "partner_code": 372, "trade_value_usd": 20.0},
             {"year": 1973, "flow_code": "X", "partner_code": 826, "trade_value_usd": 30.0},
@@ -73,14 +72,8 @@ def test_1973_accession_countries_are_current_eec() -> None:
     )
 
     result = _build_world_denominator_groups(coverage, MEMBERSHIPS)
-    current = result.loc[
-        result["classification_scheme"] == "contemporaneous_institutional_membership"
-    ]
 
-    assert (
-        current.loc[current["partner_group"] == "eec_contemporaneous", "trade_value_usd"].iloc[0]
-        == 60.0
-    )
+    assert set(result["partner_group"]) == {"colonies", "true_rest_of_world"}
 
 
 def test_build_descriptive_trade_results_from_local_registry(tmp_path: Path) -> None:
@@ -108,7 +101,7 @@ def test_build_descriptive_trade_results_from_local_registry(tmp_path: Path) -> 
     product = results["diagnostic_product_composition"]
     current_1973 = preliminary.loc[
         (preliminary["year"] == 1973)
-        & (preliminary["classification_scheme"] == "contemporaneous_institutional_membership")
+        & (preliminary["classification_scheme"] == "colonial_world_share_preliminary")
     ]
     assert set(results) == {
         "preliminary_group_shares",
@@ -122,14 +115,9 @@ def test_build_descriptive_trade_results_from_local_registry(tmp_path: Path) -> 
         "diagnostic_missingness",
     }
     assert current_1973["world_share"].sum() == 1.0
-    assert (
-        current_1973.loc[
-            current_1973["partner_group"] == "eec_contemporaneous", "trade_value_usd"
-        ].iloc[0]
-        == 60.0
-    )
+    assert set(current_1973["partner_group"]) == {"colonies", "true_rest_of_world"}
     assert colonial["classification_scheme"].unique().tolist() == [
-        "contemporaneous_institutional_membership"
+        "colonial_world_share_preliminary"
     ]
     assert set(product["commodity_code_source"]) == {"TOTAL"}
 
