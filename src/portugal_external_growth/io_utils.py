@@ -70,23 +70,72 @@ def write_dataframe_with_metadata(
     atomic_write_bytes(csv_path, csv_payload, overwrite=overwrite)
 
     sidecar = csv_path.with_suffix(csv_path.suffix + ".metadata.json")
+    normalised_metadata = _normalise_metadata(metadata, root=Path.cwd())
     complete_metadata: dict[str, Any] = {
-        **metadata,
+        **normalised_metadata,
         "file": _metadata_path(csv_path),
         "sha256": sha256_file(csv_path),
         "rows": len(frame),
         "columns": [str(column) for column in frame.columns],
+        "schema": {str(column): str(dtype) for column, dtype in frame.dtypes.items()},
+        "date_range": _date_range(frame),
+        "validation_findings": normalised_metadata.get("validation_findings", []),
+        "source_licence": normalised_metadata.get("source_licence", "not_specified"),
+        "access_conditions": normalised_metadata.get("access_conditions", "not_specified"),
     }
     atomic_write_json(sidecar, complete_metadata, overwrite=overwrite)
     return sidecar
 
 
 def _metadata_path(path: Path) -> str:
-    resolved = path.resolve()
+    return repo_relative_path(path, root=Path.cwd())
+
+
+def repo_relative_path(path: str | Path, *, root: Path) -> str:
+    """Return a stable POSIX path relative to the repository when possible."""
+
+    candidate = Path(path)
+    resolved = candidate.resolve() if candidate.is_absolute() else (root / candidate).resolve()
     try:
-        return resolved.relative_to(Path.cwd().resolve()).as_posix()
+        return resolved.relative_to(root.resolve()).as_posix()
     except ValueError:
-        return path.as_posix()
+        return candidate.as_posix()
+
+
+def _normalise_metadata(metadata: Mapping[str, Any], *, root: Path) -> dict[str, Any]:
+    output = dict(metadata)
+    source_files = output.get("source_files")
+    if isinstance(source_files, list):
+        normalised_sources = [
+            repo_relative_path(path, root=root) for path in source_files if isinstance(path, str)
+        ]
+        output["source_files"] = normalised_sources
+        output.setdefault("input_artifacts", _input_artifacts(normalised_sources, root=root))
+    return output
+
+
+def _input_artifacts(source_files: list[str], *, root: Path) -> list[dict[str, str]]:
+    artifacts: list[dict[str, str]] = []
+    for source_file in source_files:
+        path = root / source_file
+        artifacts.append(
+            {
+                "path": source_file,
+                "sha256": sha256_file(path) if path.exists() and path.is_file() else "",
+            }
+        )
+    return artifacts
+
+
+def _date_range(frame: pd.DataFrame) -> dict[str, int] | None:
+    for column in ("year", "expected_year", "publication_year"):
+        if column not in frame.columns:
+            continue
+        years = pd.to_numeric(frame[column], errors="coerce").dropna()
+        if years.empty:
+            continue
+        return {"start_year": int(years.min()), "end_year": int(years.max())}
+    return None
 
 
 def sanitise_url(url: str, secrets: tuple[str, ...]) -> str:

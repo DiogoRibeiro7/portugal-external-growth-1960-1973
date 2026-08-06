@@ -1,4 +1,5 @@
 {
+  "access_conditions": "not_specified",
   "columns": [
     "model_slug",
     "model_family",
@@ -7,9 +8,19 @@
     "status",
     "identification_risk"
   ],
-  "created_at_utc": "2026-08-06T12:02:29.989573+00:00",
-  "file": "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\results\\live\\model_specification_registry.csv",
+  "date_range": null,
+  "file": "results/live/model_specification_registry.csv",
   "rows": 4,
+  "schema": {
+    "dependent_variable": "object",
+    "identification_risk": "object",
+    "model_family": "object",
+    "model_slug": "object",
+    "status": "object",
+    "unit_of_observation": "object"
+  },
   "sha256": "b57db788672f9a269847d87fe5333b1c4f5108ca66414a682a8bb014112919aa",
-  "stage": "candidate_model_registry"
+  "source_licence": "not_specified",
+  "stage": "candidate_model_registry",
+  "validation_findings": []
 }

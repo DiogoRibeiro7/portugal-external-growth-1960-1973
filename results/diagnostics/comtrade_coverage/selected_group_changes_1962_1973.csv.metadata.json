@@ -1,4 +1,7 @@
 {
+  "access_conditions": "not_specified",
+  "classification_registry": "config/partner_groups.yml",
+  "classification_registry_sha256": "ba9d37a47c9c7d4fc25848640c72235bb343a2c6042cd95ee9f02e91832f5d04",
   "columns": [
     "flow_code",
     "partner_group",
@@ -11,10 +14,36 @@
     "share_point_change",
     "source_quality"
   ],
+  "date_range": null,
   "file": "results/diagnostics/comtrade_coverage/selected_group_changes_1962_1973.csv",
+  "input_artifacts": [
+    {
+      "path": "data/interim/live/comtrade_coverage_matrix.csv",
+      "sha256": "4082622b34149ba6639377572f2f3f698b39bb000d093f41d3bcec68f727489f"
+    },
+    {
+      "path": "config/partner_groups.yml",
+      "sha256": "ba9d37a47c9c7d4fc25848640c72235bb343a2c6042cd95ee9f02e91832f5d04"
+    }
+  ],
   "rows": 8,
-  "sha256": "631875025ab7f4e847424ab54abedb620a9c93b25526ff99c7bc908247c974f3",
+  "schema": {
+    "absolute_change_usd": "object",
+    "flow_code": "object",
+    "partner_group": "object",
+    "relative_change": "object",
+    "share_1962": "float64",
+    "share_1973": "float64",
+    "share_point_change": "object",
+    "source_quality": "object",
+    "value_1962_usd": "float64",
+    "value_1973_usd": "float64"
+  },
+  "sha256": "8f413be6058d2dc9f08edb3ea47857d161b4952565c5b1a1de8a4a5ad26d012a",
   "source_files": [
-    "data/interim/live/comtrade_coverage_matrix.csv"
-  ]
+    "data/interim/live/comtrade_coverage_matrix.csv",
+    "config/partner_groups.yml"
+  ],
+  "source_licence": "not_specified",
+  "validation_findings": []
 }

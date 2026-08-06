@@ -7,6 +7,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from portugal_external_growth.config import load_yaml
 from portugal_external_growth.io_utils import sha256_file
 
 
@@ -142,10 +143,18 @@ def validate_preliminary_trade_shares(frame: pd.DataFrame) -> list[ValidationIss
 
 
 def build_file_manifest(root: Path) -> pd.DataFrame:
-    """Create a checksum manifest for local CSV, TXT, JSON, and YAML artefacts."""
+    """Create a checksum manifest for data, results, code, tests, and dependencies."""
 
     records: list[dict[str, object]] = []
-    included_roots = [root / "data", root / "results", root / "config", root / "prompts"]
+    included_roots = [
+        root / "data",
+        root / "results",
+        root / "config",
+        root / "prompts",
+        root / "src",
+        root / "tests",
+        root / ".github",
+    ]
     for base in included_roots:
         if not base.exists():
             continue
@@ -153,21 +162,237 @@ def build_file_manifest(root: Path) -> pd.DataFrame:
             relative = path.relative_to(root).as_posix()
             if not path.is_file():
                 continue
-            if relative.startswith("results/manifests/"):
+            if _excluded_from_manifest(path, relative):
                 continue
             records.append(
                 {
                     "relative_path": relative,
                     "size_bytes": path.stat().st_size,
                     "sha256": sha256_file(path),
+                    "artifact_role": _artifact_role(relative),
                 }
             )
+    for path in [
+        root / "pyproject.toml",
+        root / "poetry.lock",
+        root / "README.md",
+        root / "Makefile",
+    ]:
+        if not path.exists():
+            continue
+        records.append(
+            {
+                "relative_path": path.relative_to(root).as_posix(),
+                "size_bytes": path.stat().st_size,
+                "sha256": sha256_file(path),
+                "artifact_role": _artifact_role(path.name),
+            }
+        )
     return pd.DataFrame.from_records(records)
+
+
+def _excluded_from_manifest(path: Path, relative_path: str) -> bool:
+    if relative_path.startswith("results/manifests/"):
+        return True
+    if "__pycache__" in path.parts:
+        return True
+    return path.suffix in {".pyc", ".pyo"}
 
 
 def issues_to_frame(issues: list[ValidationIssue]) -> pd.DataFrame:
     """Convert validation findings to a stable table."""
 
     if not issues:
-        return pd.DataFrame([{"severity": "ok", "check": "all", "message": "All checks passed"}])
+        return pd.DataFrame(
+            [
+                {
+                    "severity": "ok",
+                    "check": "data_integrity.status",
+                    "message": "Data-integrity checks passed.",
+                }
+            ]
+        )
     return pd.DataFrame([issue.__dict__ for issue in issues])
+
+
+def has_error(issues: list[ValidationIssue]) -> bool:
+    """Return whether any validation issue should fail the command."""
+
+    return any(issue.severity == "error" for issue in issues)
+
+
+def build_research_readiness_report(root: Path) -> pd.DataFrame:
+    """Report whether current artefacts are sufficient for empirical interpretation."""
+
+    issues: list[ValidationIssue] = []
+    prerequisite_path = root / "results/live/empirical_prerequisite_status.csv"
+    if prerequisite_path.exists():
+        prerequisites = pd.read_csv(prerequisite_path)
+        satisfied = int(prerequisites["status"].eq("satisfied").sum())
+        total = len(prerequisites)
+    else:
+        satisfied = 0
+        total = 6
+    if satisfied < total:
+        issues.append(
+            ValidationIssue(
+                "not_ready",
+                "research.empirical_prerequisites",
+                f"{satisfied}/{total} empirical prerequisites are satisfied.",
+            )
+        )
+
+    expected_documents = _expected_manual_document_count(root)
+    source_registry_path = root / "data/manual/source_documents/source_document_registry.csv"
+    if source_registry_path.exists():
+        registry = pd.read_csv(source_registry_path)
+        available_documents = int(
+            registry["source_document_status"].isin(["registered", "available"]).sum()
+            if "source_document_status" in registry
+            else 0
+        )
+    else:
+        available_documents = 0
+    if available_documents < expected_documents:
+        issues.append(
+            ValidationIssue(
+                "not_ready",
+                "research.manual_source_documents",
+                (
+                    f"{available_documents}/{expected_documents} expected manual source "
+                    "documents are available."
+                ),
+            )
+        )
+
+    comparison_path = root / "data/interim/live/trade_source_comparison.csv"
+    if comparison_path.exists():
+        comparison = pd.read_csv(comparison_path)
+        missing_rows = int(
+            comparison.astype("string")
+            .apply(lambda column: column.str.contains("missing", case=False, na=False))
+            .any(axis=1)
+            .sum()
+        )
+        if missing_rows:
+            issues.append(
+                ValidationIssue(
+                    "not_ready",
+                    "research.cross_source_comparison",
+                    (
+                        f"{missing_rows}/{len(comparison)} cross-source comparison rows have "
+                        "missing source coverage."
+                    ),
+                )
+            )
+    else:
+        issues.append(
+            ValidationIssue(
+                "not_ready",
+                "research.cross_source_comparison",
+                "Cross-source comparison table has not been generated.",
+            )
+        )
+
+    mapping_path = root / "results/live/sitc_mapping_coverage.csv"
+    if mapping_path.exists():
+        mapping = pd.read_csv(mapping_path)
+        max_coverage = float(
+            pd.to_numeric(
+                mapping.get("mapping_coverage_share", pd.Series(dtype=float)), errors="coerce"
+            )
+            .fillna(0.0)
+            .max()
+        )
+    else:
+        max_coverage = 0.0
+    if max_coverage <= 0.0:
+        issues.append(
+            ValidationIssue(
+                "not_ready",
+                "research.product_industry_mapping",
+                "Product-to-industry mapping coverage is zero.",
+            )
+        )
+
+    audit_path = root / "results/diagnostics/comtrade_coverage/comtrade_coverage_audit.csv"
+    if audit_path.exists():
+        audit = pd.read_csv(audit_path)
+        unresolved = int(
+            audit.get("territorial_definition_status", pd.Series(dtype=object))
+            .astype("string")
+            .ne("resolved")
+            .sum()
+        )
+        if unresolved:
+            issues.append(
+                ValidationIssue(
+                    "not_ready",
+                    "research.territorial_definition",
+                    (
+                        f"{unresolved} Comtrade coverage rows still require "
+                        "territorial-definition review."
+                    ),
+                )
+            )
+    else:
+        issues.append(
+            ValidationIssue(
+                "not_ready",
+                "research.territorial_definition",
+                "Comtrade coverage audit has not been generated.",
+            )
+        )
+
+    design_path = root / "data/interim/live/empirical_design_matrix.csv"
+    if not design_path.exists() or pd.read_csv(design_path).empty:
+        issues.append(
+            ValidationIssue(
+                "not_ready",
+                "research.empirical_design_matrix",
+                "No empirical design matrix exists.",
+            )
+        )
+
+    if issues:
+        return pd.DataFrame([issue.__dict__ for issue in issues])
+    return pd.DataFrame(
+        [
+            {
+                "severity": "ready",
+                "check": "research.status",
+                "message": "Research-readiness checks passed.",
+            }
+        ]
+    )
+
+
+def _artifact_role(relative_path: str) -> str:
+    if relative_path.startswith(("src/", "tests/")):
+        return "implementation"
+    if relative_path.startswith(".github/") or relative_path in {"pyproject.toml", "poetry.lock"}:
+        return "execution_environment"
+    if relative_path.startswith("config/"):
+        return "configuration"
+    if relative_path.startswith("data/"):
+        return "data"
+    if relative_path.startswith("results/"):
+        return "result"
+    if relative_path.startswith("prompts/"):
+        return "workflow_instruction"
+    return "documentation"
+
+
+def _expected_manual_document_count(root: Path) -> int:
+    config_path = root / "config/manual_sources.yml"
+    if not config_path.exists():
+        return 0
+    payload = load_yaml(config_path)
+    sources = payload.get("manual_sources")
+    if not isinstance(sources, list):
+        return 0
+    return sum(
+        len(source.get("expected_years", []))
+        for source in sources
+        if isinstance(source, dict) and isinstance(source.get("expected_years"), list)
+    )

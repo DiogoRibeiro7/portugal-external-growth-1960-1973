@@ -1,15 +1,32 @@
 {
+  "access_conditions": "not_specified",
   "columns": [
     "classification_code",
+    "classification_revision",
     "commodity_code_source",
     "trade_value_usd",
     "unmapped_reason"
   ],
-  "created_at_utc": "2026-08-06T11:57:26.375227+00:00",
-  "file": "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\results\\live\\sitc_unmapped_codes.csv",
+  "date_range": null,
+  "file": "results/live/sitc_unmapped_codes.csv",
+  "input_artifacts": [
+    {
+      "path": "data/interim/live/comtrade_coverage_matrix.csv",
+      "sha256": "4082622b34149ba6639377572f2f3f698b39bb000d093f41d3bcec68f727489f"
+    }
+  ],
   "rows": 2,
-  "sha256": "6eb6ace06c8063eb6a996ce68ec6af8f9e59f2031029a35f178d110b29ac6852",
+  "schema": {
+    "classification_code": "object",
+    "classification_revision": "object",
+    "commodity_code_source": "object",
+    "trade_value_usd": "float64",
+    "unmapped_reason": "object"
+  },
+  "sha256": "e23e86991a3924e5064d51436a3d5be8fc924339086ba74d3e46b859b8e9bc96",
   "source_files": [
     "data/interim/live/comtrade_coverage_matrix.csv"
-  ]
+  ],
+  "source_licence": "not_specified",
+  "validation_findings": []
 }

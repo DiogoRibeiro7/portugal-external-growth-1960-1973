@@ -6,7 +6,7 @@
     "message"
   ],
   "date_range": null,
-  "file": "results/bootstrap/validation_report.csv",
+  "file": "results/validation/data_integrity_report.csv",
   "rows": 1,
   "schema": {
     "check": "object",
@@ -15,6 +15,6 @@
   },
   "sha256": "7096ed4c2273a5cbf0415f4ce2bfb70a8329ff50baba01039c164f11d785f8cb",
   "source_licence": "not_specified",
-  "stage": "bootstrap_validation",
+  "stage": "validation",
   "validation_findings": []
 }

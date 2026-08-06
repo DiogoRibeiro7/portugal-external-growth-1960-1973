@@ -1,2 +1,3 @@
-classification_revision,total_trade_value_usd,mapped_trade_value_usd,mapping_coverage_share,source_quality
-SITC Rev.1,38468515911.0,0.0,0.0,mapping_pending_official_correspondence
+classification_code,classification_revision,total_trade_value_usd,mapped_trade_value_usd,mapping_coverage_share,source_quality
+S1,SITC Rev.1,38513711419.0,0.0,0.0,mapping_pending_official_correspondence
+S2,SITC Rev.2,0.0,0.0,0.0,mapping_pending_official_correspondence

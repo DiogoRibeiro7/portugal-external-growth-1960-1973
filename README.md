@@ -45,7 +45,7 @@ The pipeline uses three data layers:
 2. `data/interim/` — normalised tables, code mappings, and harmonised classifications.
 3. `data/processed/` — stable analysis tables used to generate final result files.
 
-Human-readable outputs are written to `results/`. Each run creates SHA-256 hashes, row counts, date ranges, and source metadata. Existing raw files are not overwritten unless `--overwrite` is explicitly supplied.
+Human-readable outputs are written to `results/`. Processed outputs write portable metadata sidecars with repository-relative paths, SHA-256 hashes, row counts, dtypes, available year ranges, and input artefact hashes when the inputs are present locally. Existing raw files are not overwritten unless `--overwrite` is explicitly supplied.
 
 ## Initial data sources
 
@@ -112,8 +112,17 @@ poetry run peg build
 # Validate contracts and cross-source consistency
 poetry run peg validate
 
-# Run the complete available pipeline
-poetry run peg run-all
+# Refresh network sources and raw availability snapshots
+poetry run peg refresh-sources
+
+# Reproduce committed non-network outputs from local files
+poetry run peg reproduce-from-local
+
+# Regenerate local diagnostics and readiness artefacts
+poetry run peg run-diagnostics
+
+# Run every configured online and local workflow currently available
+poetry run peg run-all-available
 ```
 
 Equivalent Make targets are available:
@@ -123,6 +132,9 @@ make bootstrap
 make extract
 make build
 make validate
+make reproduce
+make run-diagnostics
+make run-all-available
 make test
 make quality
 ```
@@ -143,6 +155,7 @@ Before changing generated outputs, run:
 ```bash
 make bootstrap
 make validate
+make reproduce
 make quality
 make test
 ```
@@ -163,10 +176,17 @@ Every processed table writes:
 
 - a CSV file;
 - a metadata JSON file;
-- input file hashes;
-- output schema;
-- row count and date range;
-- validation warnings.
+- repository-relative input file references;
+- input file hashes for existing local inputs;
+- output column names and pandas dtypes;
+- row count and available year range;
+- validation findings when supplied by the generating step;
+- source licence and access-condition fields, using `not_specified` until a source registry supplies confirmed values.
+
+`poetry run peg validate` writes two distinct reports:
+
+- `results/validation/data_integrity_report.csv` for structural data checks. Error-severity findings make the command exit non-zero.
+- `results/validation/research_readiness_report.csv` for empirical readiness. This report may be `not_ready` even when data-integrity checks pass.
 
 The `results/manifests/` directory is intended to be archived with any submitted paper version.
 

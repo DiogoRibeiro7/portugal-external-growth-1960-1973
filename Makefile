@@ -1,4 +1,4 @@
-.PHONY: install bootstrap extract build validate run-all test quality clean
+.PHONY: install bootstrap extract build validate refresh-sources reproduce run-diagnostics run-all run-all-available test quality clean
 
 install:
 	poetry install
@@ -7,9 +7,7 @@ bootstrap:
 	poetry run peg bootstrap
 
 extract:
-	poetry run peg extract-world-bank
-	poetry run peg extract-comtrade
-	poetry run peg extract-bpstat
+	poetry run peg refresh-sources
 
 build:
 	poetry run peg build
@@ -37,6 +35,18 @@ prepare-empirical:
 
 validate:
 	poetry run peg validate
+
+refresh-sources:
+	poetry run peg refresh-sources
+
+reproduce:
+	poetry run peg reproduce-from-local
+
+run-diagnostics:
+	poetry run peg run-diagnostics
+
+run-all-available:
+	poetry run peg run-all-available
 
 run-all:
 	poetry run peg run-all

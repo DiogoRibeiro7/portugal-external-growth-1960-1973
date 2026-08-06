@@ -57,3 +57,9 @@ jobs:
 
       - name: Tests
         run: poetry run pytest --cov
+
+      - name: Reproduce committed local artefacts
+        run: poetry run peg reproduce-from-local
+
+      - name: Check reproduced outputs are committed
+        run: git diff --exit-code

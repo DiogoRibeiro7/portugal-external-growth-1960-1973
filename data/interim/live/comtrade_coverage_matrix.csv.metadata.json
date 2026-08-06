@@ -1,4 +1,5 @@
 {
+  "access_conditions": "not_specified",
   "columns": [
     "year",
     "flow_code",
@@ -9,60 +10,274 @@
     "trade_value_usd",
     "is_world_record",
     "raw_records",
-    "duplicate_key"
+    "duplicate_key",
+    "commodity_code_source"
   ],
+  "date_range": {
+    "end_year": 1973,
+    "start_year": 1962
+  },
   "file": "data/interim/live/comtrade_coverage_matrix.csv",
-  "rows": 384,
-  "sha256": "37667b607bf55fcf96ef4b8613c4af5dd544c98669c76fa48214690653b32984",
-  "source_files": [
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1962_X_S1_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1962_M_S1_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1963_X_S1_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1963_M_S1_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1964_X_S1_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1964_M_S1_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1965_X_S1_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1965_M_S1_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1966_X_S1_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1966_M_S1_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1967_X_S1_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1967_M_S1_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1968_X_S1_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1968_M_S1_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1969_X_S1_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1969_M_S1_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1970_X_S1_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1970_M_S1_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1971_X_S1_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1971_M_S1_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1972_X_S1_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1972_M_S1_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1973_X_S1_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1973_M_S1_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1962_X_S2_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1962_M_S2_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1963_X_S2_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1963_M_S2_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1964_X_S2_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1964_M_S2_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1965_X_S2_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1965_M_S2_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1966_X_S2_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1966_M_S2_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1967_X_S2_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1967_M_S2_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1968_X_S2_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1968_M_S2_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1969_X_S2_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1969_M_S2_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1970_X_S2_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1970_M_S2_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1971_X_S2_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1971_M_S2_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1972_X_S2_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1972_M_S2_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1973_X_S2_TOTAL_coverage.json",
-    "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\comtrade_availability\\PRT_1973_M_S2_TOTAL_coverage.json"
+  "input_artifacts": [
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1962_X_S1_TOTAL_coverage.json",
+      "sha256": "a2499a23d829105e41570802a57094734b47a2e14895e4b27f06357f0190ef8c"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1962_M_S1_TOTAL_coverage.json",
+      "sha256": "7c8ab716f3f70af21de59b7b579988089d19cdd4cc0fcd16cd0f738cbc6779ea"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1963_X_S1_TOTAL_coverage.json",
+      "sha256": "f41a0202a6be78bbab12b3093d84696364733d25ba0b065f902b0327e948cdc5"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1963_M_S1_TOTAL_coverage.json",
+      "sha256": "11bd4b6ac2c97870614bc3d01f28b477cdf412d3603a0bbec8ac09beda59ce21"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1964_X_S1_TOTAL_coverage.json",
+      "sha256": "bbadce229ddc52fe4300c6ba56dfc27753e21ebf8f7cf337517fb0c45aaa1847"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1964_M_S1_TOTAL_coverage.json",
+      "sha256": "106f1749e37db3b124ea3643bd9d012d89a0235886687f2349bdaf11133efb24"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1965_X_S1_TOTAL_coverage.json",
+      "sha256": "9afc07bc13b5d869095e78f7fbb22206c37b5b257ec2e8cc801df2f2882d39fa"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1965_M_S1_TOTAL_coverage.json",
+      "sha256": "895628a9517e86e9a812a17b466de8bc78955d412d7110048d87084ace228548"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1966_X_S1_TOTAL_coverage.json",
+      "sha256": "e0c11f86f6497091bb180d2b1594de7f2ac7b826b2d2db89718be1389b6bb288"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1966_M_S1_TOTAL_coverage.json",
+      "sha256": "48d69501b2af81883947ec63e309aa74b73ef07337961b7c93999aa9c19ec21f"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1967_X_S1_TOTAL_coverage.json",
+      "sha256": "271f87b52495744ffd04b40c9c28371c136d9ddb80bc5826f7d94a1d4f03f233"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1967_M_S1_TOTAL_coverage.json",
+      "sha256": "e9892115b1668fbf37c8ecd7afd9ef24548507bf1beba0e921007c41775a2e34"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1968_X_S1_TOTAL_coverage.json",
+      "sha256": "250584226e1e786a0e8f8496f717a778bdfaf01abf5bef248599d686be3cb8ce"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1968_M_S1_TOTAL_coverage.json",
+      "sha256": "1aa7f826e4f65cb4dc4faa80bf5c3097f4eec5296c6038df3d237959e6fd6b21"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1969_X_S1_TOTAL_coverage.json",
+      "sha256": "a5d1d9480000c2b7a7fda40a1f59bd900e1a31921c3829ec90a8a2026f718f60"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1969_M_S1_TOTAL_coverage.json",
+      "sha256": "cb3b295fda78914bf6b959bc2f00ad8eb08457c2b93efdbd4a7de82397d4aecf"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1970_X_S1_TOTAL_coverage.json",
+      "sha256": "49b75a19441b7c0475bc098d619b23f9a8b22f3461abf8e3f552d2b3a11f2f57"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1970_M_S1_TOTAL_coverage.json",
+      "sha256": "13e169396b0ac9f7ac0a023ea3a04d932eebda4cb6df2c1a1534263b7d899b5d"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1971_X_S1_TOTAL_coverage.json",
+      "sha256": "fabaab56b05bf33ce1710b332cc99bc33466fa925536d24bafe785af6733b26e"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1971_M_S1_TOTAL_coverage.json",
+      "sha256": "a8023387aca07c760411d166e6d04daa5626d9f36537297c8c82ceaeedd04688"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1972_X_S1_TOTAL_coverage.json",
+      "sha256": "5a88d4e355c4e3ecc391793a98fda5029a90fd993e6a811ff39c3fd6d8444f81"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1972_M_S1_TOTAL_coverage.json",
+      "sha256": "dd5d97012404b82706c527f332e52fb27f381a1a42d8ae1a4aeaaae5351dddae"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1973_X_S1_TOTAL_coverage.json",
+      "sha256": "3223273e246c7ccdde43e10cb7bb8ed7f0cee5e3efb0b93758fe34f363902a38"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1973_M_S1_TOTAL_coverage.json",
+      "sha256": "3ddb595a7c592bb634e4dab8ca80484af31cad931948ebe8d91eba72de2204f6"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1962_X_S2_TOTAL_coverage.json",
+      "sha256": "aa2dc316a84f6f209139f722e1e2da8e42f4ce7f06dc6ba7a7cb5223a8598af5"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1962_M_S2_TOTAL_coverage.json",
+      "sha256": "29436ff532ed5d391eb2c942ecf170d387a8e21878c0be47c8735fad6d6a2cf6"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1963_X_S2_TOTAL_coverage.json",
+      "sha256": "65a09982fd54f10976d88d3d5859795c3b14b5c30954a226066a3fbadd2973de"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1963_M_S2_TOTAL_coverage.json",
+      "sha256": "26b093947f504a0ada440a2c8640062cc206501e2be7be8d40b93bb94f18e50c"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1964_X_S2_TOTAL_coverage.json",
+      "sha256": "d5b6bec2ca12c01d3de898153073fea5196e40f417bf4617352282e5478ee1bd"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1964_M_S2_TOTAL_coverage.json",
+      "sha256": "e264d124fb2d407dc0328ee61ff1ece8a5021cd533a150cfd81c0cac2b8ae976"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1965_X_S2_TOTAL_coverage.json",
+      "sha256": "48f94f2dbede23c1916af170bf9eaa4f10d23f0633610c5c6ddcf9c35d37f964"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1965_M_S2_TOTAL_coverage.json",
+      "sha256": "74fb9e013d2918f975bfabd9d7de6ec6c766547ddfcbaed48bfea66fe1eb2e96"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1966_X_S2_TOTAL_coverage.json",
+      "sha256": "abfcedadc0d00b569b74638799519831d5e902e849c7a0e480ad2bf9740c068f"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1966_M_S2_TOTAL_coverage.json",
+      "sha256": "cb37289c748151394165fc868c98cf4949e12c588f76bb973a7170a364d1774d"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1967_X_S2_TOTAL_coverage.json",
+      "sha256": "d57e2b40bb3b619be0bc32b3e286369aa0934f18d6de3352168eb895a7ffeac2"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1967_M_S2_TOTAL_coverage.json",
+      "sha256": "48f94f2dbede23c1916af170bf9eaa4f10d23f0633610c5c6ddcf9c35d37f964"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1968_X_S2_TOTAL_coverage.json",
+      "sha256": "df1e6fe3a5459749ff6c7d55116ee25b3419c45f614d714013baef7d21c98174"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1968_M_S2_TOTAL_coverage.json",
+      "sha256": "fb5db5e9c0761c5aee04f5999411c157325318b2ab34dc2f3dee5bce90d77ebe"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1969_X_S2_TOTAL_coverage.json",
+      "sha256": "65a09982fd54f10976d88d3d5859795c3b14b5c30954a226066a3fbadd2973de"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1969_M_S2_TOTAL_coverage.json",
+      "sha256": "a4125e67f48773eac9ac4f799ec0969870631163b6c1f90638da7ff5a24c90a5"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1970_X_S2_TOTAL_coverage.json",
+      "sha256": "0001fd9e2ce2777ac8c6345c0d7ee4d1fcf3262174e5464cea916cb1ba34d549"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1970_M_S2_TOTAL_coverage.json",
+      "sha256": "ebd184a0ac3fa055a0a100f05368c726d5768bfcfbadccff51c0c58ef83ea963"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1971_X_S2_TOTAL_coverage.json",
+      "sha256": "0d18aee8bbdb2081ce896841ef76a1c2ab685c14db3d827fe79a8ee11996426d"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1971_M_S2_TOTAL_coverage.json",
+      "sha256": "d0921c08888e4e2c81b093eb88a3901a5baccbe8cc3163b9fb49ac4fb39814bc"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1972_X_S2_TOTAL_coverage.json",
+      "sha256": "abfcedadc0d00b569b74638799519831d5e902e849c7a0e480ad2bf9740c068f"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1972_M_S2_TOTAL_coverage.json",
+      "sha256": "a2c52b3d8d49175d77926b2be215d8e3450996fe24265ea31b6ba73222a18533"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1973_X_S2_TOTAL_coverage.json",
+      "sha256": "eb3dee940a78f23484887c7c4d0f3347f74c98cfaa0275bea5bdc3298562c1e1"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1973_M_S2_TOTAL_coverage.json",
+      "sha256": "d0921c08888e4e2c81b093eb88a3901a5baccbe8cc3163b9fb49ac4fb39814bc"
+    }
   ],
-  "stage": "comtrade_coverage_matrix"
+  "rows": 384,
+  "schema": {
+    "classification_code": "object",
+    "commodity_code_source": "object",
+    "duplicate_key": "bool",
+    "flow_code": "object",
+    "is_world_record": "bool",
+    "partner_code": "float64",
+    "partner_desc": "float64",
+    "raw_records": "int64",
+    "reporter_code": "int64",
+    "trade_value_usd": "float64",
+    "year": "int64"
+  },
+  "sha256": "4082622b34149ba6639377572f2f3f698b39bb000d093f41d3bcec68f727489f",
+  "source_files": [
+    "data/raw/live/comtrade_availability/PRT_1962_X_S1_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1962_M_S1_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1963_X_S1_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1963_M_S1_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1964_X_S1_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1964_M_S1_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1965_X_S1_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1965_M_S1_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1966_X_S1_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1966_M_S1_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1967_X_S1_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1967_M_S1_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1968_X_S1_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1968_M_S1_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1969_X_S1_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1969_M_S1_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1970_X_S1_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1970_M_S1_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1971_X_S1_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1971_M_S1_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1972_X_S1_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1972_M_S1_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1973_X_S1_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1973_M_S1_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1962_X_S2_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1962_M_S2_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1963_X_S2_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1963_M_S2_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1964_X_S2_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1964_M_S2_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1965_X_S2_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1965_M_S2_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1966_X_S2_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1966_M_S2_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1967_X_S2_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1967_M_S2_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1968_X_S2_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1968_M_S2_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1969_X_S2_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1969_M_S2_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1970_X_S2_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1970_M_S2_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1971_X_S2_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1971_M_S2_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1972_X_S2_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1972_M_S2_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1973_X_S2_TOTAL_coverage.json",
+    "data/raw/live/comtrade_availability/PRT_1973_M_S2_TOTAL_coverage.json"
+  ],
+  "source_licence": "not_specified",
+  "stage": "comtrade_coverage_matrix",
+  "validation_findings": []
 }

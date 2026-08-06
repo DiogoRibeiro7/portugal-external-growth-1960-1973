@@ -1,4 +1,5 @@
 {
+  "access_conditions": "not_specified",
   "columns": [
     "model_slug",
     "term",
@@ -9,9 +10,21 @@
     "confidence_interval_high",
     "status"
   ],
-  "created_at_utc": "2026-08-06T12:02:30.018560+00:00",
-  "file": "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\results\\live\\empirical_coefficients.csv",
+  "date_range": null,
+  "file": "results/live/empirical_coefficients.csv",
   "rows": 0,
+  "schema": {
+    "confidence_interval_high": "object",
+    "confidence_interval_low": "object",
+    "estimate": "object",
+    "model_slug": "object",
+    "p_value": "object",
+    "standard_error": "object",
+    "status": "object",
+    "term": "object"
+  },
   "sha256": "3a8bce7669d4f04cb30dabaf95afe8286856046e03ac4c04b3189a66f778a608",
-  "stage": "coefficients_not_estimated"
+  "source_licence": "not_specified",
+  "stage": "coefficients_not_estimated",
+  "validation_findings": []
 }

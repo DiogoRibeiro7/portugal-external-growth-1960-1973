@@ -1,4 +1,5 @@
 {
+  "access_conditions": "not_specified",
   "columns": [
     "start_year",
     "end_year",
@@ -9,12 +10,30 @@
     "maximum_growth_percent",
     "cumulative_real_gdp_index_start_100"
   ],
-  "created_at_utc": "2026-08-06T09:19:43.232455+00:00",
-  "file": "/mnt/data/portugal-external-growth-1960-1973/data/processed/bootstrap/portugal_gdp_growth_summary.csv",
-  "rows": 1,
-  "sha256": "c1284f4b168e3e33a41983ba4552901a5d906459638cb3ff5009268df46a80d0",
-  "source_files": [
-    "/mnt/data/portugal-external-growth-1960-1973/data/raw/bootstrap/world_bank_gdp_growth_portugal_1961_1973.csv"
+  "date_range": null,
+  "file": "data/processed/bootstrap/portugal_gdp_growth_summary.csv",
+  "input_artifacts": [
+    {
+      "path": "data/raw/bootstrap/world_bank_gdp_growth_portugal_1961_1973.csv",
+      "sha256": "4a4db2e06dd153c8b01584bb6e2ebeccf92bf5fd11e84709511fd9bc86a63003"
+    }
   ],
-  "stage": "processed_bootstrap"
+  "rows": 1,
+  "schema": {
+    "arithmetic_mean_growth_percent": "float64",
+    "cumulative_real_gdp_index_start_100": "float64",
+    "end_year": "int64",
+    "maximum_growth_percent": "float64",
+    "median_growth_percent": "float64",
+    "minimum_growth_percent": "float64",
+    "observations": "int64",
+    "start_year": "int64"
+  },
+  "sha256": "c633dadc846aeb9edc109736cef9740f23ee83af6347216df52a46d72bc4c9d0",
+  "source_files": [
+    "data/raw/bootstrap/world_bank_gdp_growth_portugal_1961_1973.csv"
+  ],
+  "source_licence": "not_specified",
+  "stage": "processed_bootstrap",
+  "validation_findings": []
 }

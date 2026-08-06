@@ -1,11 +1,12 @@
 {
+  "access_conditions": "not_specified",
   "columns": [
     "year",
     "flow_code",
     "reporter_code",
     "reporter_available",
     "available_classifications",
-    "classification_change_flag",
+    "multiple_classifications_available",
     "preferred_classification_for_checks",
     "colonial_partner_codes_present",
     "colonial_partner_count_present",
@@ -17,10 +18,40 @@
     "valuation_note",
     "territorial_definition_status"
   ],
+  "date_range": {
+    "end_year": 1973,
+    "start_year": 1962
+  },
   "file": "results/diagnostics/comtrade_coverage/comtrade_coverage_audit.csv",
+  "input_artifacts": [
+    {
+      "path": "data/interim/live/comtrade_coverage_matrix.csv",
+      "sha256": "4082622b34149ba6639377572f2f3f698b39bb000d093f41d3bcec68f727489f"
+    }
+  ],
   "rows": 24,
-  "sha256": "483c8b42a62e86b1b22a9ef07fe0ec7dd92628a8012484269a4c86ede4b4b3ab",
+  "schema": {
+    "available_classifications": "object",
+    "colonial_partner_codes_present": "object",
+    "colonial_partner_count_present": "int64",
+    "coverage_status": "object",
+    "flow_code": "object",
+    "multiple_classifications_available": "bool",
+    "preferred_classification_for_checks": "object",
+    "reporter_available": "bool",
+    "reporter_code": "int64",
+    "selected_coverage_ratio": "float64",
+    "selected_partner_sum_usd": "float64",
+    "territorial_definition_status": "object",
+    "unselected_world_value_usd": "float64",
+    "valuation_note": "object",
+    "world_value_usd": "float64",
+    "year": "int64"
+  },
+  "sha256": "946a7b2eacd6537c42572872791960f2b6644d65c0c16d36df019d4e3938dd54",
   "source_files": [
     "data/interim/live/comtrade_coverage_matrix.csv"
-  ]
+  ],
+  "source_licence": "not_specified",
+  "validation_findings": []
 }

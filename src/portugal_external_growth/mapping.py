@@ -63,43 +63,77 @@ def build_mapping_outputs(
         )
     if "commodity_code_source" not in trade.columns:
         trade["commodity_code_source"] = "TOTAL"
+    trade["classification_revision"] = trade["classification_code"].map(_classification_revision)
     product_values = (
-        trade.groupby(["classification_code", "commodity_code_source"], as_index=False)[
-            "trade_value_usd"
-        ].sum(min_count=1)
+        trade.groupby(
+            ["classification_code", "classification_revision", "commodity_code_source"],
+            as_index=False,
+        )["trade_value_usd"].sum(min_count=1)
         if not trade.empty
         else pd.DataFrame(
-            columns=["classification_code", "commodity_code_source", "trade_value_usd"]
+            columns=[
+                "classification_code",
+                "classification_revision",
+                "commodity_code_source",
+                "trade_value_usd",
+            ]
         )
     )
-    mapped_codes = set(mapping["commodity_code_source"].tolist()) if not mapping.empty else set()
+    mapped_keys = (
+        set(zip(mapping["classification_revision"], mapping["commodity_code_source"], strict=True))
+        if not mapping.empty
+        else set()
+    )
+    product_values["is_mapped"] = product_values.apply(
+        lambda row: (row["classification_revision"], row["commodity_code_source"]) in mapped_keys,
+        axis=1,
+    )
     unmapped = cast(
         pd.DataFrame,
         product_values.loc[
-            ~product_values["commodity_code_source"].isin(mapped_codes),
+            ~product_values["is_mapped"],
             :,
         ].copy(),
     )
+    unmapped = unmapped.drop(columns=["is_mapped"])
     unmapped["unmapped_reason"] = "no_official_correspondence_registered"
-    total_value = (
-        float(product_values["trade_value_usd"].sum()) if not product_values.empty else 0.0
-    )
-    mapped_value = float(
-        product_values.loc[
-            product_values["commodity_code_source"].isin(mapped_codes), "trade_value_usd"
-        ].sum()
-    )
-    coverage = pd.DataFrame(
-        [
-            {
-                "classification_revision": "SITC Rev.1",
-                "total_trade_value_usd": total_value,
-                "mapped_trade_value_usd": mapped_value,
-                "mapping_coverage_share": mapped_value / total_value if total_value else 0.0,
-                "source_quality": "mapping_pending_official_correspondence",
-            }
-        ]
-    )
+    if product_values.empty:
+        coverage = pd.DataFrame(
+            columns=[
+                "classification_code",
+                "classification_revision",
+                "total_trade_value_usd",
+                "mapped_trade_value_usd",
+                "mapping_coverage_share",
+                "source_quality",
+            ]
+        )
+    else:
+        totals = cast(
+            pd.DataFrame,
+            product_values.groupby(
+                ["classification_code", "classification_revision"], as_index=False
+            )["trade_value_usd"].sum(min_count=1),
+        ).rename(columns={"trade_value_usd": "total_trade_value_usd"})
+        mapped = cast(
+            pd.DataFrame,
+            product_values.loc[product_values["is_mapped"]]
+            .groupby(["classification_code", "classification_revision"], as_index=False)[
+                "trade_value_usd"
+            ]
+            .sum(min_count=1),
+        ).rename(columns={"trade_value_usd": "mapped_trade_value_usd"})
+        coverage = totals.merge(
+            mapped,
+            on=["classification_code", "classification_revision"],
+            how="left",
+        )
+        coverage["total_trade_value_usd"] = coverage["total_trade_value_usd"].fillna(0.0)
+        coverage["mapped_trade_value_usd"] = coverage["mapped_trade_value_usd"].fillna(0.0)
+        coverage["mapping_coverage_share"] = (
+            coverage["mapped_trade_value_usd"] / coverage["total_trade_value_usd"]
+        ).fillna(0.0)
+        coverage["source_quality"] = "mapping_pending_official_correspondence"
     sensitivity_columns = [
         "mapping_scope",
         "classification_revision",
@@ -110,3 +144,13 @@ def build_mapping_outputs(
     broad = pd.DataFrame(columns=sensitivity_columns)
     narrow = pd.DataFrame(columns=sensitivity_columns)
     return mapping, unmapped, coverage, broad, narrow
+
+
+def _classification_revision(classification_code: object) -> str:
+    labels = {
+        "S1": "SITC Rev.1",
+        "S2": "SITC Rev.2",
+        "S3": "SITC Rev.3",
+        "S4": "SITC Rev.4",
+    }
+    return labels.get(str(classification_code), f"Comtrade {classification_code}")

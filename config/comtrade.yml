@@ -3,6 +3,7 @@ comtrade:
   frequency_code: A
   classification_code: S1
   coverage_classification_codes: [S1, S2]
+  preferred_coverage_classification_codes: [S1, S2]
   reporter_code: 620
   flow_codes: [X, M]
   commodity_codes: [TOTAL]

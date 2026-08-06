@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import pandas as pd
@@ -20,7 +21,7 @@ from portugal_external_growth.empirical import (
     empty_diagnostics,
 )
 from portugal_external_growth.http import build_session
-from portugal_external_growth.io_utils import write_dataframe_with_metadata
+from portugal_external_growth.io_utils import sha256_file, write_dataframe_with_metadata
 from portugal_external_growth.manual import initialise_templates, prepare_ine_transcription_workflow
 from portugal_external_growth.mapping import build_mapping_outputs
 from portugal_external_growth.reconciliation import (
@@ -44,6 +45,8 @@ from portugal_external_growth.transforms import (
 from portugal_external_growth.validation import (
     ValidationIssue,
     build_file_manifest,
+    build_research_readiness_report,
+    has_error,
     issues_to_frame,
     validate_preliminary_trade_shares,
     validate_unique,
@@ -202,6 +205,9 @@ def audit_comtrade_coverage(settings: Settings, *, overwrite: bool) -> None:
         subscription_key=settings.comtrade_subscription_key,
     )
     classification_codes = tuple(config.get("coverage_classification_codes", ["S1", "S2"]))
+    preferred_classification_codes = tuple(
+        str(value) for value in config.get("preferred_coverage_classification_codes", ["S1", "S2"])
+    )
     years = tuple(int(year) for year in config["years"])
     flows = tuple(str(flow_code) for flow_code in config["flow_codes"])
     partners = tuple(int(value) for value in config["partner_codes"])
@@ -241,6 +247,7 @@ def audit_comtrade_coverage(settings: Settings, *, overwrite: bool) -> None:
                                     "reporter_code": int(config["reporter_code"]),
                                     "partner_code": pd.NA,
                                     "partner_desc": "",
+                                    "commodity_code_source": str(config["commodity_codes"][0]),
                                     "trade_value_usd": pd.NA,
                                     "is_world_record": False,
                                     "raw_records": 0,
@@ -258,7 +265,8 @@ def audit_comtrade_coverage(settings: Settings, *, overwrite: bool) -> None:
                         "classification_code": classification_code,
                         "reporter_code": int(config["reporter_code"]),
                         "partner_code": normalised["partner_code"],
-                        "partner_desc": frame.get("partnerDesc", pd.Series([""] * len(frame))),
+                        "partner_desc": normalised["partner_desc"],
+                        "commodity_code_source": normalised["commodity_code"],
                         "trade_value_usd": normalised["trade_value_usd"],
                         "is_world_record": normalised["partner_code"].eq(0),
                         "raw_records": len(frame),
@@ -266,19 +274,12 @@ def audit_comtrade_coverage(settings: Settings, *, overwrite: bool) -> None:
                 )
                 matrix_inputs.append(matrix)
 
-    partner_groups = load_yaml(root / "config/partner_groups.yml")
-    colonial_codes = tuple(
-        int(member["code"])
-        for group_name, group in partner_groups["groups"].items()
-        if group_name == "colonies" and isinstance(group, dict)
-        for member in group.get("members", [])
-        if isinstance(member, dict)
-    )
     coverage_matrix, audit, notes = compile_comtrade_coverage_audit(
         matrix_inputs,
-        colonial_partner_codes=colonial_codes,
+        colonial_partner_codes=_colonial_partner_codes(root),
         expected_years=years,
         expected_flow_codes=flows,
+        preferred_classification_codes=preferred_classification_codes,
     )
     write_dataframe_with_metadata(
         coverage_matrix,
@@ -293,6 +294,72 @@ def audit_comtrade_coverage(settings: Settings, *, overwrite: bool) -> None:
     notes_path = root / "results/diagnostics/comtrade_coverage/comtrade_coverage_notes.txt"
     notes_path.parent.mkdir(parents=True, exist_ok=True)
     notes_path.write_text(notes, encoding="utf-8")
+
+
+def rebuild_comtrade_coverage_audit_from_local(settings: Settings) -> None:
+    """Regenerate Comtrade coverage-audit outputs from the committed local matrix."""
+
+    root = settings.resolved_root()
+    matrix_path = root / "data/interim/live/comtrade_coverage_matrix.csv"
+    if not matrix_path.exists():
+        return
+    payload = load_yaml(root / "config/comtrade.yml")
+    config = payload.get("comtrade")
+    if not isinstance(config, dict):
+        raise TypeError("comtrade.yml is invalid")
+    coverage_matrix = pd.read_csv(matrix_path)
+    if "commodity_code_source" not in coverage_matrix.columns:
+        coverage_matrix["commodity_code_source"] = str(config["commodity_codes"][0])
+    years = tuple(int(year) for year in config["years"])
+    flows = tuple(str(flow_code) for flow_code in config["flow_codes"])
+    preferred_classification_codes = tuple(
+        str(value) for value in config.get("preferred_coverage_classification_codes", ["S1", "S2"])
+    )
+    coverage_matrix, audit, notes = compile_comtrade_coverage_audit(
+        [coverage_matrix],
+        colonial_partner_codes=_colonial_partner_codes(root),
+        expected_years=years,
+        expected_flow_codes=flows,
+        preferred_classification_codes=preferred_classification_codes,
+    )
+    write_dataframe_with_metadata(
+        coverage_matrix,
+        matrix_path,
+        metadata={
+            "source_files": _existing_metadata_source_files(matrix_path),
+            "stage": "comtrade_coverage_matrix",
+        },
+    )
+    write_dataframe_with_metadata(
+        audit,
+        root / "results/diagnostics/comtrade_coverage/comtrade_coverage_audit.csv",
+        metadata={"source_files": ["data/interim/live/comtrade_coverage_matrix.csv"]},
+    )
+    notes_path = root / "results/diagnostics/comtrade_coverage/comtrade_coverage_notes.txt"
+    notes_path.parent.mkdir(parents=True, exist_ok=True)
+    notes_path.write_text(notes, encoding="utf-8")
+
+
+def _colonial_partner_codes(root: Path) -> tuple[int, ...]:
+    partner_groups = load_yaml(root / "config/partner_groups.yml")
+    return tuple(
+        int(member["code"])
+        for group_name, group in partner_groups["groups"].items()
+        if group_name == "colonies" and isinstance(group, dict)
+        for member in group.get("members", [])
+        if isinstance(member, dict)
+    )
+
+
+def _existing_metadata_source_files(path: Path) -> list[str]:
+    sidecar = path.with_suffix(path.suffix + ".metadata.json")
+    if not sidecar.exists():
+        return []
+    payload = json.loads(sidecar.read_text(encoding="utf-8"))
+    source_files = payload.get("source_files")
+    if not isinstance(source_files, list):
+        return []
+    return [str(source_file) for source_file in source_files]
 
 
 def _load_bpstat_registry(path: Path) -> list[BPstatSeries]:
@@ -393,7 +460,7 @@ def build(settings: Settings) -> None:
         )
 
 
-def validate(settings: Settings) -> None:
+def validate(settings: Settings) -> bool:
     """Run local contract checks and write a persistent validation report."""
 
     root = settings.resolved_root()
@@ -433,8 +500,13 @@ def validate(settings: Settings) -> None:
         )
     write_dataframe_with_metadata(
         issues_to_frame(issues),
-        root / "results/live/validation_report.csv",
+        root / "results/validation/data_integrity_report.csv",
         metadata={"stage": "validation"},
+    )
+    write_dataframe_with_metadata(
+        build_research_readiness_report(root),
+        root / "results/validation/research_readiness_report.csv",
+        metadata={"stage": "research_readiness"},
     )
     manifest = build_file_manifest(root)
     write_dataframe_with_metadata(
@@ -442,6 +514,7 @@ def validate(settings: Settings) -> None:
         root / "results/manifests/current_manifest.csv",
         metadata={"stage": "manifest", "scope": "current"},
     )
+    return not has_error(issues)
 
 
 def init_manual_templates(root: Path) -> None:
@@ -541,6 +614,7 @@ def build_descriptive_results(settings: Settings) -> None:
 
     root = settings.resolved_root()
     results = build_descriptive_trade_results(root)
+    classification_registry = root / "config/partner_groups.yml"
     output_map = {
         "preliminary_group_shares": root / "results/live/preliminary_trade_group_shares.csv",
         "preliminary_colonial_share": root / "results/live/preliminary_colonial_share.csv",
@@ -563,7 +637,14 @@ def build_descriptive_results(settings: Settings) -> None:
         write_dataframe_with_metadata(
             results[key],
             path,
-            metadata={"source_files": ["data/interim/live/comtrade_coverage_matrix.csv"]},
+            metadata={
+                "source_files": [
+                    "data/interim/live/comtrade_coverage_matrix.csv",
+                    "config/partner_groups.yml",
+                ],
+                "classification_registry": "config/partner_groups.yml",
+                "classification_registry_sha256": sha256_file(classification_registry),
+            },
         )
     notes = root / "results/live/preliminary_trade_notes.txt"
     notes.write_text(
@@ -622,11 +703,46 @@ def prepare_empirical_extension(settings: Settings) -> None:
     risk_notes.write_text(build_empirical_risk_notes(), encoding="utf-8")
 
 
-def run_all(settings: Settings, *, overwrite: bool) -> None:
-    """Run all extractors that have sufficient configuration, then build and validate."""
+def refresh_sources(settings: Settings, *, overwrite: bool) -> None:
+    """Refresh configured network sources and source-coverage snapshots."""
 
     extract_world_bank(settings, overwrite=overwrite)
     extract_comtrade(settings, overwrite=overwrite)
+    audit_comtrade_coverage(settings, overwrite=overwrite)
     extract_bpstat(settings, overwrite=overwrite)
+
+
+def run_diagnostics(settings: Settings) -> None:
+    """Regenerate local diagnostic artefacts from committed inputs."""
+
+    rebuild_comtrade_coverage_audit_from_local(settings)
+    review_bpstat_registry(settings)
+    prepare_ine_transcription(settings)
+    reconcile_trade_sources(settings)
+    build_sitc_industry_mapping(settings)
+    build_descriptive_results(settings)
+    prepare_empirical_extension(settings)
+
+
+def reproduce_from_local(settings: Settings) -> bool:
+    """Regenerate every committed non-network intermediate and result artefact."""
+
+    bootstrap(settings.resolved_root())
     build(settings)
-    validate(settings)
+    run_diagnostics(settings)
+    return validate(settings)
+
+
+def run_all_available(settings: Settings, *, overwrite: bool) -> bool:
+    """Run every configured online and local workflow currently available."""
+
+    refresh_sources(settings, overwrite=overwrite)
+    build(settings)
+    run_diagnostics(settings)
+    return validate(settings)
+
+
+def run_all(settings: Settings, *, overwrite: bool) -> bool:
+    """Backward-compatible alias for the complete available workflow."""
+
+    return run_all_available(settings, overwrite=overwrite)

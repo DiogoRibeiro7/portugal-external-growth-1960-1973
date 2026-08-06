@@ -1,4 +1,5 @@
 {
+  "access_conditions": "not_specified",
   "columns": [
     "mapping_scope",
     "classification_revision",
@@ -6,11 +7,26 @@
     "industry_code",
     "weighted_trade_value_usd"
   ],
-  "created_at_utc": "2026-08-06T11:57:26.401754+00:00",
-  "file": "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\results\\live\\sitc_mapping_sensitivity_narrow.csv",
+  "date_range": null,
+  "file": "results/live/sitc_mapping_sensitivity_narrow.csv",
+  "input_artifacts": [
+    {
+      "path": "data/interim/live/sitc_industry_mapping.csv",
+      "sha256": "5ccf34b1387101a387d135dbd5a9ae57b5bc617ace06d9cd1282ac40e224bfd7"
+    }
+  ],
   "rows": 0,
+  "schema": {
+    "classification_revision": "object",
+    "commodity_code_source": "object",
+    "industry_code": "object",
+    "mapping_scope": "object",
+    "weighted_trade_value_usd": "object"
+  },
   "sha256": "69d169e7a9245394f1ab6e7e72dc953fd965290cedd56fe23af763bbbd4ddb22",
   "source_files": [
     "data/interim/live/sitc_industry_mapping.csv"
-  ]
+  ],
+  "source_licence": "not_specified",
+  "validation_findings": []
 }

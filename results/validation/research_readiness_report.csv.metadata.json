@@ -6,15 +6,15 @@
     "message"
   ],
   "date_range": null,
-  "file": "results/bootstrap/validation_report.csv",
-  "rows": 1,
+  "file": "results/validation/research_readiness_report.csv",
+  "rows": 6,
   "schema": {
     "check": "object",
     "message": "object",
     "severity": "object"
   },
-  "sha256": "7096ed4c2273a5cbf0415f4ce2bfb70a8329ff50baba01039c164f11d785f8cb",
+  "sha256": "3e10bf4e66da7e3ba34eb055daf846525ef44f19279a6962580eea5e9b9a52e9",
   "source_licence": "not_specified",
-  "stage": "bootstrap_validation",
+  "stage": "research_readiness",
   "validation_findings": []
 }

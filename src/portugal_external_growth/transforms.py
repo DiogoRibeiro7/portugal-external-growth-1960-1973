@@ -13,6 +13,7 @@ COMTRADE_COLUMN_CANDIDATES: dict[str, tuple[str, ...]] = {
     "year": ("period", "refYear"),
     "reporter_code": ("reporterCode", "reporterCodeM49"),
     "partner_code": ("partnerCode", "partnerCodeM49"),
+    "partner_desc": ("partnerDesc", "partnerDescM49"),
     "flow_code": ("flowCode",),
     "commodity_code": ("cmdCode",),
     "trade_value_usd": ("primaryValue", "TradeValue", "tradeValue"),
@@ -23,6 +24,8 @@ def _select_column(frame: pd.DataFrame, candidates: tuple[str, ...], target: str
     for candidate in candidates:
         if candidate in frame.columns:
             return frame[candidate]
+    if target == "partner_desc":
+        return pd.Series([""] * len(frame), index=frame.index, dtype="string")
     raise ValueError(f"Unable to map required Comtrade column '{target}' from {candidates}")
 
 
@@ -40,6 +43,7 @@ def normalise_comtrade(frame: pd.DataFrame) -> pd.DataFrame:
     for column in ("year", "reporter_code", "partner_code"):
         output[column] = pd.to_numeric(output[column], errors="raise").astype("int64")
     output["trade_value_usd"] = pd.to_numeric(output["trade_value_usd"], errors="coerce")
+    output["partner_desc"] = output["partner_desc"].astype("string")
     output["flow_code"] = output["flow_code"].astype("string")
     output["commodity_code"] = output["commodity_code"].astype("string")
     output["source"] = "UN Comtrade"
@@ -111,6 +115,7 @@ def compile_comtrade_coverage_audit(
     colonial_partner_codes: tuple[int, ...],
     expected_years: tuple[int, ...],
     expected_flow_codes: tuple[str, ...],
+    preferred_classification_codes: tuple[str, ...] = ("S1", "S2"),
 ) -> tuple[pd.DataFrame, pd.DataFrame, str]:
     """Summarise raw Comtrade availability responses into audit tables and notes."""
 
@@ -126,6 +131,7 @@ def compile_comtrade_coverage_audit(
                 "reporter_code",
                 "partner_code",
                 "partner_desc",
+                "commodity_code_source",
                 "trade_value_usd",
                 "is_world_record",
                 "raw_records",
@@ -145,8 +151,9 @@ def compile_comtrade_coverage_audit(
                 .unique()
                 .tolist()
             )
-            preferred_classification = (
-                available_classifications[0] if available_classifications else ""
+            preferred_classification = _preferred_classification(
+                available_classifications,
+                preferred_classification_codes=preferred_classification_codes,
             )
             preferred = subset.loc[subset["classification_code"] == preferred_classification]
             world_values = preferred.loc[preferred["is_world_record"], "trade_value_usd"]
@@ -184,7 +191,7 @@ def compile_comtrade_coverage_audit(
                     "reporter_code": 620,
                     "reporter_available": bool(available_classifications),
                     "available_classifications": ";".join(available_classifications),
-                    "classification_change_flag": len(available_classifications) > 1,
+                    "multiple_classifications_available": len(available_classifications) > 1,
                     "preferred_classification_for_checks": preferred_classification,
                     "colonial_partner_codes_present": ";".join(
                         str(code) for code in present_colonies
@@ -229,6 +236,17 @@ def compile_comtrade_coverage_audit(
         ]
     )
     return matrix, audit, notes
+
+
+def _preferred_classification(
+    available_classifications: list[str],
+    *,
+    preferred_classification_codes: tuple[str, ...],
+) -> str:
+    for classification_code in preferred_classification_codes:
+        if classification_code in available_classifications:
+            return classification_code
+    return available_classifications[0] if available_classifications else ""
 
 
 def summarise_gdp_growth(frame: pd.DataFrame) -> pd.DataFrame:

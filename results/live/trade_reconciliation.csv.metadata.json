@@ -1,4 +1,5 @@
 {
+  "access_conditions": "not_specified",
   "columns": [
     "year",
     "flow_code",
@@ -18,10 +19,41 @@
     "explanatory_note",
     "confidence_status"
   ],
+  "date_range": {
+    "end_year": 1973,
+    "start_year": 1962
+  },
   "file": "results/live/trade_reconciliation.csv",
+  "input_artifacts": [
+    {
+      "path": "data/interim/live/trade_source_comparison.csv",
+      "sha256": "ec66284b4f9df2d35830a3d90ced5a53ccd65bdd0941b59c83371f2369f30c10"
+    }
+  ],
   "rows": 120,
+  "schema": {
+    "absolute_discrepancy": "object",
+    "benchmark_source": "object",
+    "benchmark_value": "object",
+    "confidence_status": "object",
+    "coverage_definition": "object",
+    "difference_from_benchmark": "object",
+    "explanatory_note": "object",
+    "flow_code": "object",
+    "included_partners": "object",
+    "nominal_conversion_method": "object",
+    "percentage_discrepancy": "object",
+    "source": "object",
+    "source_currency": "object",
+    "source_unit": "object",
+    "source_value": "object",
+    "territorial_definition": "object",
+    "year": "int64"
+  },
   "sha256": "ec66284b4f9df2d35830a3d90ced5a53ccd65bdd0941b59c83371f2369f30c10",
   "source_files": [
     "data/interim/live/trade_source_comparison.csv"
-  ]
+  ],
+  "source_licence": "not_specified",
+  "validation_findings": []
 }

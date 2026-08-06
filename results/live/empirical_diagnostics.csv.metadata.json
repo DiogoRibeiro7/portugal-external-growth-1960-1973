@@ -1,13 +1,22 @@
 {
+  "access_conditions": "not_specified",
   "columns": [
     "diagnostic",
     "status",
     "value",
     "note"
   ],
-  "created_at_utc": "2026-08-06T12:02:30.007075+00:00",
-  "file": "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\results\\live\\empirical_diagnostics.csv",
+  "date_range": null,
+  "file": "results/live/empirical_diagnostics.csv",
   "rows": 1,
+  "schema": {
+    "diagnostic": "object",
+    "note": "object",
+    "status": "object",
+    "value": "int64"
+  },
   "sha256": "4e6ba55e6de65728657070fb48635d16769c0c29089272a8a95f7bf040e2a854",
-  "stage": "diagnostics_not_fit"
+  "source_licence": "not_specified",
+  "stage": "diagnostics_not_fit",
+  "validation_findings": []
 }

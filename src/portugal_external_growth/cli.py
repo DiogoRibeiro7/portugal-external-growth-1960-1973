@@ -17,8 +17,12 @@ from portugal_external_growth.pipeline import (
     prepare_empirical_extension,
     prepare_ine_transcription,
     reconcile_trade_sources,
+    refresh_sources,
+    reproduce_from_local,
     review_bpstat_registry,
     run_all,
+    run_all_available,
+    run_diagnostics,
     validate,
 )
 from portugal_external_growth.settings import Settings
@@ -136,7 +140,42 @@ def build_command() -> None:
 def validate_command() -> None:
     """Run data contracts and write persistent reports."""
 
-    validate(_settings())
+    if not validate(_settings()):
+        raise typer.Exit(1)
+
+
+@app.command("refresh-sources")
+def refresh_sources_command(
+    overwrite: bool = typer.Option(False, help="Replace existing raw snapshots."),
+) -> None:
+    """Refresh configured network sources and source coverage snapshots."""
+
+    refresh_sources(_settings(), overwrite=overwrite)
+
+
+@app.command("reproduce-from-local")
+def reproduce_from_local_command() -> None:
+    """Regenerate committed non-network outputs from local files."""
+
+    if not reproduce_from_local(_settings()):
+        raise typer.Exit(1)
+
+
+@app.command("run-diagnostics")
+def run_diagnostics_command() -> None:
+    """Regenerate local diagnostics and readiness artefacts."""
+
+    run_diagnostics(_settings())
+
+
+@app.command("run-all-available")
+def run_all_available_command(
+    overwrite: bool = typer.Option(False, help="Replace existing raw snapshots."),
+) -> None:
+    """Run every configured online and local workflow currently available."""
+
+    if not run_all_available(_settings(), overwrite=overwrite):
+        raise typer.Exit(1)
 
 
 @app.command("run-all")
@@ -145,7 +184,8 @@ def run_all_command(
 ) -> None:
     """Extract, build, and validate all configured sources."""
 
-    run_all(_settings(), overwrite=overwrite)
+    if not run_all(_settings(), overwrite=overwrite):
+        raise typer.Exit(1)
 
 
 if __name__ == "__main__":

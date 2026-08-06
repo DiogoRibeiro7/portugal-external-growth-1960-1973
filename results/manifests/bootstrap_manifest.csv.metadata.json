@@ -1,13 +1,23 @@
 {
+  "access_conditions": "not_specified",
   "columns": [
     "relative_path",
     "size_bytes",
-    "sha256"
+    "sha256",
+    "artifact_role"
   ],
-  "created_at_utc": "2026-08-06T09:19:43.246145+00:00",
-  "file": "/mnt/data/portugal-external-growth-1960-1973/results/manifests/bootstrap_manifest.csv",
-  "rows": 32,
+  "date_range": null,
+  "file": "results/manifests/bootstrap_manifest.csv",
+  "rows": 250,
+  "schema": {
+    "artifact_role": "object",
+    "relative_path": "object",
+    "sha256": "object",
+    "size_bytes": "int64"
+  },
   "scope": "bootstrap",
-  "sha256": "7593127b3e1e6324898745a6049cac42f6c66a49aa011da9211b74956d16f016",
-  "stage": "manifest"
+  "sha256": "131b09a07490b93e7f2b4075f98cbff509c13afa225439000b94ce1bb0306326",
+  "source_licence": "not_specified",
+  "stage": "manifest",
+  "validation_findings": []
 }

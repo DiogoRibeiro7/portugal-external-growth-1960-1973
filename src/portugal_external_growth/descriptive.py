@@ -7,19 +7,7 @@ from typing import cast
 
 import pandas as pd
 
-COLONIAL_CODES = {24, 132, 446, 508, 624, 626, 678}
-EFTA_1960_CODES = {40, 208, 578, 752, 756, 826}
-EEC6_CODES = {56, 250, 276, 380, 442, 528}
-EFTA_CURRENT_CODES = {
-    year: EFTA_1960_CODES - ({208, 826} if year >= 1973 else set())
-    | ({246} if year >= 1961 else set())
-    | ({352} if year >= 1970 else set())
-    for year in range(1960, 1974)
-}
-EEC_CURRENT_CODES = {
-    year: EEC6_CODES | ({208, 372, 826} if year >= 1973 else set()) for year in range(1960, 1974)
-}
-GEOGRAPHICAL_EUROPE_CODES = EFTA_1960_CODES | EEC6_CODES | {246, 352, 372}
+from portugal_external_growth.transforms import load_partner_memberships
 
 
 def build_descriptive_trade_results(root: Path) -> dict[str, pd.DataFrame]:
@@ -43,10 +31,11 @@ def build_descriptive_trade_results(root: Path) -> dict[str, pd.DataFrame]:
     coverage = pd.read_csv(coverage_path)
     coverage = coverage.loc[coverage["classification_code"] == "S1"].copy()
     coverage["trade_value_usd"] = pd.to_numeric(coverage["trade_value_usd"], errors="coerce")
-    preliminary = _build_world_denominator_groups(coverage)
-    diagnostics = _build_selected_partner_diagnostics(coverage)
+    memberships = load_partner_memberships(root / "config/partner_groups.yml")
+    preliminary = _build_world_denominator_groups(coverage, memberships)
+    diagnostics = _build_selected_partner_diagnostics(coverage, memberships)
     colonial = preliminary.loc[
-        (preliminary["classification_scheme"] == "current_institutional")
+        (preliminary["classification_scheme"] == "contemporaneous_institutional_membership")
         & (preliminary["partner_group"] == "colonies")
     ].copy()
     colonial = colonial.rename(
@@ -62,8 +51,17 @@ def build_descriptive_trade_results(root: Path) -> dict[str, pd.DataFrame]:
     }
 
 
-def _build_world_denominator_groups(coverage: pd.DataFrame) -> pd.DataFrame:
+def _build_world_denominator_groups(
+    coverage: pd.DataFrame,
+    memberships: pd.DataFrame,
+) -> pd.DataFrame:
     records: list[dict[str, object]] = []
+    fixed_1960 = {
+        "colonies": _codes_for_group(memberships, "colonies", 1960),
+        "efta_1960": _codes_for_group(memberships, "efta", 1960),
+        "eec6": _codes_for_group(memberships, "eec", 1960),
+    }
+    geographical_europe = _codes_for_groups(memberships, {"efta", "eec"})
     for (year, flow_code), subset in coverage.groupby(["year", "flow_code"]):
         year_int = int(str(year))
         world_values = subset.loc[subset["partner_code"].eq(0), "trade_value_usd"].dropna()
@@ -78,18 +76,14 @@ def _build_world_denominator_groups(coverage: pd.DataFrame) -> pd.DataFrame:
             if pd.notna(row["trade_value_usd"])
         }
         schemes = {
-            "current_institutional": {
-                "colonies": COLONIAL_CODES,
-                "efta_current": EFTA_CURRENT_CODES[year_int],
-                "eec_current": EEC_CURRENT_CODES[year_int],
+            "contemporaneous_institutional_membership": {
+                "colonies": _codes_for_group(memberships, "colonies", year_int),
+                "efta_contemporaneous": _codes_for_group(memberships, "efta", year_int),
+                "eec_contemporaneous": _codes_for_group(memberships, "eec", year_int),
             },
-            "fixed_1960_blocs": {
-                "colonies": COLONIAL_CODES,
-                "efta_1960": EFTA_1960_CODES,
-                "eec6": EEC6_CODES,
-            },
+            "fixed_1960_blocs": fixed_1960,
             "geographical_europe": {
-                "selected_geographical_europe": GEOGRAPHICAL_EUROPE_CODES,
+                "selected_geographical_europe": geographical_europe,
             },
         }
         for scheme, groups in schemes.items():
@@ -147,12 +141,15 @@ def _world_share_record(
     }
 
 
-def _build_selected_partner_diagnostics(coverage: pd.DataFrame) -> dict[str, pd.DataFrame]:
+def _build_selected_partner_diagnostics(
+    coverage: pd.DataFrame,
+    memberships: pd.DataFrame,
+) -> dict[str, pd.DataFrame]:
     partner_records = coverage.loc[
         coverage["partner_code"].notna() & coverage["partner_code"].ne(0)
     ].copy()
     partner_records["partner_group"] = partner_records.apply(
-        lambda row: _current_group(int(row["year"]), int(row["partner_code"])),
+        lambda row: _current_group(int(row["year"]), int(row["partner_code"]), memberships),
         axis=1,
     )
     partner_records["commodity_code_source"] = "TOTAL"
@@ -178,14 +175,32 @@ def _build_selected_partner_diagnostics(coverage: pd.DataFrame) -> dict[str, pd.
     }
 
 
-def _current_group(year: int, partner_code: int) -> str:
-    if partner_code in COLONIAL_CODES:
-        return "colonies"
-    if partner_code in EFTA_CURRENT_CODES[year]:
-        return "efta_current"
-    if partner_code in EEC_CURRENT_CODES[year]:
-        return "eec_current"
+def _current_group(year: int, partner_code: int, memberships: pd.DataFrame) -> str:
+    matches = memberships.loc[
+        (memberships["year"].eq(year)) & (memberships["partner_code"].eq(partner_code)),
+        "partner_group",
+    ].tolist()
+    if matches:
+        group = str(matches[0])
+        if group == "efta":
+            return "efta_contemporaneous"
+        if group == "eec":
+            return "eec_contemporaneous"
+        return group
     return "requested_unclassified_partner"
+
+
+def _codes_for_group(memberships: pd.DataFrame, group_name: str, year: int) -> set[int]:
+    values = memberships.loc[
+        (memberships["partner_group"].eq(group_name)) & (memberships["year"].eq(year)),
+        "partner_code",
+    ]
+    return {int(value) for value in values.dropna().tolist()}
+
+
+def _codes_for_groups(memberships: pd.DataFrame, group_names: set[str]) -> set[int]:
+    values = memberships.loc[memberships["partner_group"].isin(group_names), "partner_code"]
+    return {int(value) for value in values.dropna().unique().tolist()}
 
 
 def _build_period_changes(selected_shares: pd.DataFrame) -> pd.DataFrame:

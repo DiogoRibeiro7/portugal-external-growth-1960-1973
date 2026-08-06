@@ -20,6 +20,7 @@ def test_normalise_comtrade_maps_api_columns() -> None:
             "period": [1970],
             "reporterCode": [620],
             "partnerCode": [24],
+            "partnerDesc": ["Angola"],
             "flowCode": ["X"],
             "cmdCode": ["TOTAL"],
             "primaryValue": [125.0],
@@ -28,6 +29,28 @@ def test_normalise_comtrade_maps_api_columns() -> None:
     result = normalise_comtrade(source)
     assert result.loc[0, "year"] == 1970
     assert result.loc[0, "trade_value_usd"] == pytest.approx(125.0)
+    assert result.loc[0, "partner_desc"] == "Angola"
+
+
+def test_normalise_comtrade_keeps_partner_descriptions_aligned_after_sort() -> None:
+    source = pd.DataFrame(
+        {
+            "period": [1970, 1970],
+            "reporterCode": [620, 620],
+            "partnerCode": [826, 24],
+            "partnerDesc": ["United Kingdom", "Angola"],
+            "flowCode": ["X", "X"],
+            "cmdCode": ["TOTAL", "TOTAL"],
+            "primaryValue": [30.0, 20.0],
+        }
+    )
+
+    result = normalise_comtrade(source)
+
+    assert result[["partner_code", "partner_desc"]].to_dict(orient="records") == [
+        {"partner_code": 24, "partner_desc": "Angola"},
+        {"partner_code": 826, "partner_desc": "United Kingdom"},
+    ]
 
 
 def test_partner_classification_is_time_aware(tmp_path: Path) -> None:

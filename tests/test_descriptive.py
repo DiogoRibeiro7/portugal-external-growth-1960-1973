@@ -7,6 +7,20 @@ from portugal_external_growth.descriptive import (
     _build_world_denominator_groups,
 )
 
+MEMBERSHIPS = pd.DataFrame(
+    [
+        {"year": 1960, "partner_code": 24, "partner_group": "colonies"},
+        {"year": 1962, "partner_code": 24, "partner_group": "colonies"},
+        {"year": 1973, "partner_code": 24, "partner_group": "colonies"},
+        {"year": 1960, "partner_code": 826, "partner_group": "efta"},
+        {"year": 1962, "partner_code": 826, "partner_group": "efta"},
+        {"year": 1960, "partner_code": 56, "partner_group": "eec"},
+        {"year": 1973, "partner_code": 208, "partner_group": "eec"},
+        {"year": 1973, "partner_code": 372, "partner_group": "eec"},
+        {"year": 1973, "partner_code": 826, "partner_group": "eec"},
+    ]
+)
+
 
 def test_export_growth_contribution_sums_to_one() -> None:
     group_values = pd.DataFrame(
@@ -32,8 +46,10 @@ def test_preliminary_shares_use_world_denominator_and_true_residual() -> None:
         ]
     )
 
-    result = _build_world_denominator_groups(coverage)
-    current = result.loc[result["classification_scheme"] == "current_institutional"]
+    result = _build_world_denominator_groups(coverage, MEMBERSHIPS)
+    current = result.loc[
+        result["classification_scheme"] == "contemporaneous_institutional_membership"
+    ]
 
     assert current["world_share"].sum() == 1.0
     assert current.loc[current["partner_group"] == "colonies", "world_share"].iloc[0] == 0.2
@@ -53,7 +69,12 @@ def test_1973_accession_countries_are_current_eec() -> None:
         ]
     )
 
-    result = _build_world_denominator_groups(coverage)
-    current = result.loc[result["classification_scheme"] == "current_institutional"]
+    result = _build_world_denominator_groups(coverage, MEMBERSHIPS)
+    current = result.loc[
+        result["classification_scheme"] == "contemporaneous_institutional_membership"
+    ]
 
-    assert current.loc[current["partner_group"] == "eec_current", "trade_value_usd"].iloc[0] == 60.0
+    assert (
+        current.loc[current["partner_group"] == "eec_contemporaneous", "trade_value_usd"].iloc[0]
+        == 60.0
+    )

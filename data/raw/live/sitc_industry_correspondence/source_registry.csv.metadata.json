@@ -1,4 +1,5 @@
 {
+  "access_conditions": "not_specified",
   "columns": [
     "source_name",
     "source_status",
@@ -7,9 +8,19 @@
     "sha256",
     "notes"
   ],
-  "created_at_utc": "2026-08-06T11:57:26.357335+00:00",
-  "file": "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\raw\\live\\sitc_industry_correspondence\\source_registry.csv",
+  "date_range": null,
+  "file": "data/raw/live/sitc_industry_correspondence/source_registry.csv",
   "rows": 1,
+  "schema": {
+    "access_conditions": "object",
+    "licence": "object",
+    "notes": "object",
+    "sha256": "object",
+    "source_name": "object",
+    "source_status": "object"
+  },
   "sha256": "ccff307e4f39bd2a1c6a99a7ba914a07cc9f422ec18a46b2c5b3ad4e53e27ae7",
-  "stage": "mapping_source_registry"
+  "source_licence": "not_specified",
+  "stage": "mapping_source_registry",
+  "validation_findings": []
 }

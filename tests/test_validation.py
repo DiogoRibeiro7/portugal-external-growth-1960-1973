@@ -6,6 +6,8 @@ import pandas as pd
 
 from portugal_external_growth.validation import (
     build_file_manifest,
+    build_research_readiness_report,
+    issues_to_frame,
     validate_preliminary_trade_shares,
     validate_trade_shares,
     validate_unique,
@@ -59,15 +61,47 @@ def test_validate_preliminary_trade_shares_requires_world_sum() -> None:
 
 def test_manifest_excludes_manifest_outputs_and_uses_posix_paths(tmp_path: Path) -> None:
     data = tmp_path / "data"
+    src = tmp_path / "src/package"
     manifests = tmp_path / "results/manifests"
     data.mkdir(parents=True)
+    src.mkdir(parents=True)
     manifests.mkdir(parents=True)
     (data / "table.csv").write_text("a\n1\n", encoding="utf-8")
     (data / "table.csv.metadata.json").write_text("{}\n", encoding="utf-8")
+    (src / "module.py").write_text("VALUE = 1\n", encoding="utf-8")
+    (tmp_path / "pyproject.toml").write_text("[project]\nname='x'\n", encoding="utf-8")
     (manifests / "current_manifest.csv").write_text("old\n", encoding="utf-8")
 
     manifest = build_file_manifest(tmp_path)
 
     assert "data/table.csv" in manifest["relative_path"].tolist()
     assert "data/table.csv.metadata.json" in manifest["relative_path"].tolist()
+    assert "src/package/module.py" in manifest["relative_path"].tolist()
+    assert "pyproject.toml" in manifest["relative_path"].tolist()
     assert not any(path.startswith("results/manifests/") for path in manifest["relative_path"])
+
+
+def test_empty_integrity_issues_do_not_claim_research_readiness() -> None:
+    frame = issues_to_frame([])
+
+    assert frame.loc[0, "check"] == "data_integrity.status"
+    assert "All checks passed" not in str(frame.loc[0, "message"])
+
+
+def test_research_readiness_reports_missing_prerequisites(tmp_path: Path) -> None:
+    config = tmp_path / "config"
+    config.mkdir()
+    (config / "manual_sources.yml").write_text(
+        """
+manual_sources:
+  - source_id: ine
+    title_pattern: INE
+    expected_years: [1960, 1961]
+""",
+        encoding="utf-8",
+    )
+
+    report = build_research_readiness_report(tmp_path)
+
+    assert "not_ready" in report["severity"].tolist()
+    assert "research.manual_source_documents" in report["check"].tolist()

@@ -99,4 +99,44 @@ def test_comtrade_coverage_detects_classification_changes() -> None:
         expected_years=(1962,),
         expected_flow_codes=("X",),
     )
-    assert bool(audit.loc[0, "classification_change_flag"])
+    assert bool(audit.loc[0, "multiple_classifications_available"])
+
+
+def test_comtrade_coverage_uses_configured_classification_preference() -> None:
+    matrix = pd.DataFrame(
+        [
+            {
+                "year": 1962,
+                "flow_code": "X",
+                "classification_code": "S1",
+                "reporter_code": 620,
+                "partner_code": 0,
+                "partner_desc": "World",
+                "trade_value_usd": 100.0,
+                "is_world_record": True,
+                "raw_records": 1,
+            },
+            {
+                "year": 1962,
+                "flow_code": "X",
+                "classification_code": "S2",
+                "reporter_code": 620,
+                "partner_code": 0,
+                "partner_desc": "World",
+                "trade_value_usd": 200.0,
+                "is_world_record": True,
+                "raw_records": 1,
+            },
+        ]
+    )
+
+    _, audit, _ = compile_comtrade_coverage_audit(
+        [matrix],
+        colonial_partner_codes=(24,),
+        expected_years=(1962,),
+        expected_flow_codes=("X",),
+        preferred_classification_codes=("S2", "S1"),
+    )
+
+    assert audit.loc[0, "preferred_classification_for_checks"] == "S2"
+    assert audit.loc[0, "world_value_usd"] == 200.0
