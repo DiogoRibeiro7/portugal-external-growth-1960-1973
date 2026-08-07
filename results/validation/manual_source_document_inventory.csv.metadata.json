@@ -22,7 +22,7 @@
     },
     {
       "path": "data/manual/source_documents/source_document_registry.csv",
-      "sha256": "1c17345c3c844d29c5ac95b58004e41868fc80b9ecea2ba3454a0e43fe8c1e1e"
+      "sha256": "aac213410d765eb7b2feb0e5541f4f7a940b8341614e8c154cb177f66b3dadc5"
     }
   ],
   "rows": 43,
@@ -36,7 +36,7 @@
     "source_pdf_sha256": "string",
     "title_pattern": "object"
   },
-  "sha256": "2cda0fedcf591b96998cd285dd1d7e8dc67dc02569fe3765e42601d85b4cb126",
+  "sha256": "d4748b2866962f2971a58a76f02ecf4c3aa85960eee632c624eb33e741693f10",
   "source_files": [
     "config/manual_sources.yml",
     "data/manual/source_documents/source_document_registry.csv"

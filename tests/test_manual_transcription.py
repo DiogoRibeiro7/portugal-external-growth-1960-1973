@@ -203,6 +203,7 @@ def test_compare_ine_transcriptions_reports_source_and_adjudication_gaps(
     )
     assert "Registered source-year documents: 1" in report
     assert "Missing source PDFs: 1" in report
+    assert "Catalogue records identified: 0" in report
     assert "Rows without source PDF SHA-256: 1" in report
     assert "Pass 1 transcribed rows: 1" in report
     assert "Pass 2 transcribed rows: 1" in report

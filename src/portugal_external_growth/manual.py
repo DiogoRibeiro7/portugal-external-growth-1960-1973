@@ -263,10 +263,11 @@ def _build_ine_transcription_report(
     pass_2: pd.DataFrame,
     adjudicated: pd.DataFrame,
 ) -> str:
-    missing_source_pdfs = _count_equal(
+    missing_source_pdfs = _count_blank(source_registry, "source_pdf_filename")
+    identified_catalogue_records = _count_equal(
         source_registry,
         "source_document_status",
-        "missing_source_pdf",
+        "catalogue_record_identified_no_local_pdf",
     )
     missing_pdf_hashes = _count_blank(source_registry, "source_pdf_sha256")
     unreadable_final_cells = _count_equal(adjudicated, "cell_status", "unreadable")
@@ -283,6 +284,7 @@ def _build_ine_transcription_report(
             "",
             f"Registered source-year documents: {len(source_registry)}",
             f"Missing source PDFs: {missing_source_pdfs}",
+            f"Catalogue records identified: {identified_catalogue_records}",
             f"Rows without source PDF SHA-256: {missing_pdf_hashes}",
             f"Pass 1 transcribed rows: {len(pass_1)}",
             f"Pass 2 transcribed rows: {len(pass_2)}",
