@@ -143,9 +143,11 @@ def compare_ine_transcriptions(root: Path) -> list[Path]:
     """Regenerate derived INE double-entry discrepancy outputs."""
 
     discrepancy_path = root / "data/interim/live/ine_transcription_discrepancies.csv"
+    pass_1_path = root / "data/manual/transcriptions/pass_1/ine_trade_transcription_pass_1.csv"
+    pass_2_path = root / "data/manual/transcriptions/pass_2/ine_trade_transcription_pass_2.csv"
     discrepancies = compare_transcription_passes(
-        root / "data/manual/transcriptions/pass_1/ine_trade_transcription_pass_1.csv",
-        root / "data/manual/transcriptions/pass_2/ine_trade_transcription_pass_2.csv",
+        pass_1_path,
+        pass_2_path,
     )
     write_dataframe_with_metadata(
         discrepancies,
@@ -154,19 +156,19 @@ def compare_ine_transcriptions(root: Path) -> list[Path]:
         overwrite=True,
     )
     report_path = root / "results/live/ine_transcription_unresolved.txt"
-    unresolved = len(discrepancies)
     write_text_lf(
         report_path,
-        "\n".join(
-            [
-                "INE historical trade transcription status",
-                "========================================",
-                "",
-                f"Unresolved transcription discrepancies: {unresolved}",
-                "Derived discrepancy outputs are regenerated from the two protected",
-                "human-entry passes on every comparison run.",
-                "",
-            ]
+        _build_ine_transcription_report(
+            discrepancies=discrepancies,
+            source_registry=_read_optional_csv(
+                root / "data/manual/source_documents/source_document_registry.csv",
+                SOURCE_REGISTRY_COLUMNS,
+            ),
+            pass_1=_read_transcription(pass_1_path),
+            pass_2=_read_transcription(pass_2_path),
+            adjudicated=_read_transcription(
+                root / "data/manual/adjudication/ine_trade_adjudicated.csv"
+            ),
         ),
     )
     return [discrepancy_path, report_path]
@@ -245,6 +247,81 @@ def _read_transcription(path: Path) -> pd.DataFrame:
     if not path.exists():
         return pd.DataFrame(columns=TRADE_TEMPLATE_COLUMNS)
     return pd.read_csv(path)
+
+
+def _read_optional_csv(path: Path, columns: list[str]) -> pd.DataFrame:
+    if not path.exists():
+        return pd.DataFrame(columns=columns)
+    return pd.read_csv(path)
+
+
+def _build_ine_transcription_report(
+    *,
+    discrepancies: pd.DataFrame,
+    source_registry: pd.DataFrame,
+    pass_1: pd.DataFrame,
+    pass_2: pd.DataFrame,
+    adjudicated: pd.DataFrame,
+) -> str:
+    missing_source_pdfs = _count_equal(
+        source_registry,
+        "source_document_status",
+        "missing_source_pdf",
+    )
+    missing_pdf_hashes = _count_blank(source_registry, "source_pdf_sha256")
+    unreadable_final_cells = _count_equal(adjudicated, "cell_status", "unreadable")
+    pending_adjudication = _count_not_in(
+        adjudicated,
+        "adjudication_status",
+        {"", "accepted", "adjudicated", "verified"},
+    )
+    footnoted_final_rows = _count_nonblank(adjudicated, "footnote")
+    return "\n".join(
+        [
+            "INE historical trade transcription status",
+            "========================================",
+            "",
+            f"Registered source-year documents: {len(source_registry)}",
+            f"Missing source PDFs: {missing_source_pdfs}",
+            f"Rows without source PDF SHA-256: {missing_pdf_hashes}",
+            f"Pass 1 transcribed rows: {len(pass_1)}",
+            f"Pass 2 transcribed rows: {len(pass_2)}",
+            f"Unresolved transcription discrepancies: {len(discrepancies)}",
+            f"Adjudicated final rows: {len(adjudicated)}",
+            f"Final rows with unreadable cells: {unreadable_final_cells}",
+            f"Final rows pending adjudication: {pending_adjudication}",
+            f"Final rows carrying footnotes: {footnoted_final_rows}",
+            "",
+            "Derived discrepancy outputs are regenerated from the two protected",
+            "human-entry passes on every comparison run.",
+            "",
+        ]
+    )
+
+
+def _count_equal(frame: pd.DataFrame, column: str, value: str) -> int:
+    if frame.empty or column not in frame:
+        return 0
+    return int(frame[column].astype("string").fillna("").eq(value).sum())
+
+
+def _count_not_in(frame: pd.DataFrame, column: str, values: set[str]) -> int:
+    if frame.empty or column not in frame:
+        return 0
+    normalised = frame[column].astype("string").fillna("").str.strip()
+    return int((~normalised.isin(values)).sum())
+
+
+def _count_blank(frame: pd.DataFrame, column: str) -> int:
+    if frame.empty or column not in frame:
+        return 0
+    return int(frame[column].astype("string").fillna("").str.strip().eq("").sum())
+
+
+def _count_nonblank(frame: pd.DataFrame, column: str) -> int:
+    if frame.empty or column not in frame:
+        return 0
+    return int(frame[column].astype("string").fillna("").str.strip().ne("").sum())
 
 
 def _write_if_missing(

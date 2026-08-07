@@ -136,6 +136,81 @@ def test_compare_ine_transcriptions_regenerates_stale_discrepancy_file(tmp_path:
     assert regenerated["resolution_status"].tolist() == ["requires_adjudication"]
 
 
+def test_compare_ine_transcriptions_reports_source_and_adjudication_gaps(
+    tmp_path: Path,
+) -> None:
+    registry_dir = tmp_path / "data/manual/source_documents"
+    registry_dir.mkdir(parents=True)
+    pd.DataFrame(
+        [
+            {
+                "source_id": "ine",
+                "title_pattern": "INE",
+                "expected_year": 1962,
+                "source_pdf_filename": "",
+                "source_pdf_sha256": "",
+                "source_document_status": "missing_source_pdf",
+                "access_conditions": "open",
+                "licence": "unknown",
+                "territorial_definition": "to_be_transcribed_from_source",
+                "notes": "",
+            }
+        ]
+    ).to_csv(registry_dir / "source_document_registry.csv", index=False)
+    pass_1 = tmp_path / "data/manual/transcriptions/pass_1"
+    pass_2 = tmp_path / "data/manual/transcriptions/pass_2"
+    pass_1.mkdir(parents=True)
+    pass_2.mkdir(parents=True)
+    row: dict[str, object] = {column: "" for column in TRADE_TEMPLATE_COLUMNS}
+    row.update(
+        {
+            "source_id": "ine",
+            "publication_year": 1962,
+            "table_title": "Trade",
+            "page_number": 1,
+            "flow": "exports",
+            "partner_name_source": "Angola",
+            "commodity_code_source": "TOTAL",
+            "commodity_label_source": "Total",
+            "value_source": "10",
+        }
+    )
+    pd.DataFrame([row], columns=TRADE_TEMPLATE_COLUMNS).to_csv(
+        pass_1 / "ine_trade_transcription_pass_1.csv",
+        index=False,
+    )
+    pd.DataFrame([row], columns=TRADE_TEMPLATE_COLUMNS).to_csv(
+        pass_2 / "ine_trade_transcription_pass_2.csv",
+        index=False,
+    )
+    adjudication_dir = tmp_path / "data/manual/adjudication"
+    adjudication_dir.mkdir(parents=True)
+    final_row = {
+        **row,
+        "cell_status": "unreadable",
+        "adjudication_status": "requires_review",
+        "footnote": "Illegible source cell",
+    }
+    pd.DataFrame([final_row], columns=TRADE_TEMPLATE_COLUMNS).to_csv(
+        adjudication_dir / "ine_trade_adjudicated.csv",
+        index=False,
+    )
+
+    compare_ine_transcriptions(tmp_path)
+
+    report = (tmp_path / "results/live/ine_transcription_unresolved.txt").read_text(
+        encoding="utf-8"
+    )
+    assert "Registered source-year documents: 1" in report
+    assert "Missing source PDFs: 1" in report
+    assert "Rows without source PDF SHA-256: 1" in report
+    assert "Pass 1 transcribed rows: 1" in report
+    assert "Pass 2 transcribed rows: 1" in report
+    assert "Final rows with unreadable cells: 1" in report
+    assert "Final rows pending adjudication: 1" in report
+    assert "Final rows carrying footnotes: 1" in report
+
+
 def test_build_ine_harmonised_preserves_manual_adjudication(tmp_path: Path) -> None:
     adjudication_dir = tmp_path / "data/manual/adjudication"
     adjudication_dir.mkdir(parents=True)

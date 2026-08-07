@@ -1,6 +1,16 @@
 INE historical trade transcription status
 ========================================
 
+Registered source-year documents: 43
+Missing source PDFs: 43
+Rows without source PDF SHA-256: 43
+Pass 1 transcribed rows: 0
+Pass 2 transcribed rows: 0
 Unresolved transcription discrepancies: 0
+Adjudicated final rows: 0
+Final rows with unreadable cells: 0
+Final rows pending adjudication: 0
+Final rows carrying footnotes: 0
+
 Derived discrepancy outputs are regenerated from the two protected
 human-entry passes on every comparison run.

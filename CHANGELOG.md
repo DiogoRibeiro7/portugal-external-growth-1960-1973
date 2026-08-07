@@ -6,6 +6,11 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
 
 ## [Unreleased]
 
+### Added
+
+- INE transcription status report now includes source-document, checksum, pass-entry,
+  adjudication, unreadable-cell, and footnote counts.
+
 ## [0.1.1] - 2026-08-07
 
 ### Fixed
