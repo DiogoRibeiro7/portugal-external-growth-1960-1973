@@ -6,6 +6,8 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-08-07
+
 ### Fixed
 
 - Incomplete World residual rows no longer populate complete-share columns.
