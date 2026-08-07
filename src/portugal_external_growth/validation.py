@@ -387,6 +387,31 @@ def build_research_readiness_report(root: Path) -> pd.DataFrame:
             )
         )
 
+    registry_path = root / "results/diagnostics/reconciliation/reconciliation_registry.csv"
+    if registry_path.exists():
+        registry = pd.read_csv(registry_path)
+        unresolved_reconciliations = registry.loc[~registry["overall_status"].eq("reconciled")]
+        if not unresolved_reconciliations.empty:
+            issue_ids = "; ".join(
+                str(value)
+                for value in unresolved_reconciliations["reconciliation_id"].dropna().unique()
+            )
+            issues.append(
+                ValidationIssue(
+                    "not_ready",
+                    "research.source_reconciliation",
+                    f"Unresolved source-pair reconciliation blocks remain: {issue_ids}.",
+                )
+            )
+    else:
+        issues.append(
+            ValidationIssue(
+                "not_ready",
+                "research.source_reconciliation",
+                "Source-pair reconciliation registry has not been generated.",
+            )
+        )
+
     mapping_path = root / "results/live/sitc_mapping_coverage.csv"
     if mapping_path.exists():
         mapping = pd.read_csv(mapping_path)

@@ -295,9 +295,9 @@ def load_territorial_definition_registry(path: Path) -> pd.DataFrame:
         if not isinstance(evidence, list):
             evidence = []
         evidence_summary = "; ".join(
-            str(item.get("source_id", ""))
+            str(item.get("source_id") or item.get("source") or "")
             for item in evidence
-            if isinstance(item, dict) and item.get("source_id")
+            if isinstance(item, dict) and (item.get("source_id") or item.get("source"))
         )
         for year in range(int(record["start_year"]), int(record["end_year"]) + 1):
             rows.append(

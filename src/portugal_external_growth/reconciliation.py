@@ -223,9 +223,10 @@ def build_ine_comtrade_1962_reconciliation(root: Path) -> pd.DataFrame:
         )
 
     memberships = _colonial_memberships_1962(root)
-    expected_entities = (
+    configured_entities = (
         sorted(set(memberships["entity_id"].astype(str))) if not memberships.empty else []
     )
+    expected_entities = _ine_ultramar_entities_1962(root, fallback_entities=configured_entities)
     for flow, concept in (("X", "Overseas exports"), ("M", "Overseas imports")):
         ine_row = _ine_aggregate_row(ine, flow=flow, partner_group="Ultramar")
         if ine_row is None:
@@ -249,13 +250,16 @@ def build_ine_comtrade_1962_reconciliation(root: Path) -> pd.DataFrame:
                 source_b_original_value=_ine_pte_value(ine_row),
                 valuation_basis=str(ine_row["valuation_basis"]),
                 territorial_definition_a=(
-                    "Observed Comtrade colonial partner subset; missing partners remain unresolved."
+                    "Observed Comtrade configured colonial partner subset; INE Ultramar "
+                    "territories not returned or not registered as Comtrade areas remain "
+                    "unresolved."
                 ),
                 territorial_definition_b=str(ine_row["territorial_definition"]),
                 status="unresolved",
                 explanation=(
-                    "Comtrade colonial total is an observed lower bound because not all "
-                    "configured overseas entities returned in the 1962 local snapshot."
+                    "Comtrade colonial total is an observed lower bound against the INE "
+                    "Ultramar universe because not all historical overseas entities returned "
+                    "or have a registered Comtrade area in the 1962 local snapshot."
                 ),
                 evidence_reference=(
                     f"INE Volume I PDF page {ine_row['page_number']} "
@@ -576,3 +580,20 @@ def _observed_colonial_comtrade(
         & matrix["entity_id"].astype(str).isin(colonial_entities)
         & matrix["trade_value_usd"].notna()
     ].copy()
+
+
+def _ine_ultramar_entities_1962(root: Path, *, fallback_entities: list[str]) -> list[str]:
+    crosswalk_path = root / "data/interim/live/historical_colonial_partner_crosswalk.csv"
+    if not crosswalk_path.exists():
+        return fallback_entities
+    crosswalk = pd.read_csv(crosswalk_path)
+    required = {"entity_id", "reference_year", "ine_group"}
+    if not required.issubset(crosswalk.columns):
+        return fallback_entities
+    ultramar = crosswalk.loc[
+        crosswalk["reference_year"].eq(1962)
+        & crosswalk["ine_group"].astype("string").eq("Ultramar Portugues")
+    ]
+    if ultramar.empty:
+        return fallback_entities
+    return sorted(set(ultramar["entity_id"].astype(str)))

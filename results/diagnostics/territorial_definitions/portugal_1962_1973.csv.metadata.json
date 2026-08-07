@@ -1,0 +1,51 @@
+{
+  "access_conditions": "local INE scan and public UN Comtrade reference metadata",
+  "columns": [
+    "source_key",
+    "reporter_code",
+    "period",
+    "status",
+    "exact_definition",
+    "evidence_source",
+    "page_section",
+    "methodological_note",
+    "reviewer_note"
+  ],
+  "date_range": null,
+  "file": "results/diagnostics/territorial_definitions/portugal_1962_1973.csv",
+  "input_artifacts": [
+    {
+      "path": "config/territorial_definitions.yml",
+      "sha256": "04deef3ef8e3d81e628f506d63ec7bb09524be27c2162fcba01e899775934696"
+    },
+    {
+      "path": "data/raw/live/un_comtrade_metadata/reporters.json",
+      "sha256": "b4dcc8e9844a98e75222c8e87a8b8bb84f88b35f8fe29029ab6ccf89ecf7114f"
+    },
+    {
+      "path": "data/manual/source_documents/ine_external_trade_1962_volume_i.pdf",
+      "sha256": "4f65453197d811905bcb7fe919926ddb09fe3c850875af5ae232c2c600a948dc"
+    }
+  ],
+  "rows": 3,
+  "schema": {
+    "evidence_source": "object",
+    "exact_definition": "object",
+    "methodological_note": "object",
+    "page_section": "object",
+    "period": "object",
+    "reporter_code": "object",
+    "reviewer_note": "object",
+    "source_key": "object",
+    "status": "object"
+  },
+  "sha256": "e4bab5066c6487d2f42537ec4af0ba1970113e82624764d1651fc4fb7df02d7d",
+  "source_files": [
+    "config/territorial_definitions.yml",
+    "data/raw/live/un_comtrade_metadata/reporters.json",
+    "data/manual/source_documents/ine_external_trade_1962_volume_i.pdf"
+  ],
+  "source_licence": "mixed_official_sources_terms_to_be_confirmed",
+  "stage": "territorial_definition_review",
+  "validation_findings": []
+}

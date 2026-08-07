@@ -1,0 +1,20 @@
+INE aggregate transcription queue, 1965/1970/1973
+=================================================
+
+Queued rows: 20
+
+This file is a controlled staging aid, not a transcription pass.
+Do not treat blank matching values as verified observations.
+
+Workflow
+--------
+1. Copy each queue row into pass_1 and transcribe from the cited PDF page.
+2. Independently copy each queue row into pass_2 and transcribe again.
+3. Run `poetry run peg compare-ine-transcriptions`.
+4. Resolve any discrepancy before harmonisation or reconciliation.
+
+Coverage
+--------
+- 1965 queues World and Ultramar aggregates only; CEE/EFTA needs aggregation.
+- 1970 queues World, overseas provinces, CEE, and EFTA aggregate rows.
+- 1973 queues World, overseas provinces, CEE, and EFTA aggregate rows.

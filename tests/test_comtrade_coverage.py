@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import pandas as pd
+import pytest
 
 from portugal_external_growth.transforms import (
     compile_comtrade_coverage_audit,
@@ -234,3 +235,60 @@ territorial_definitions:
     assert audit.loc[0, "territorial_definition_status"] == "resolved"
     assert audit.loc[0, "territorial_definition"] == "metropolitan_portugal"
     assert audit.loc[0, "territorial_definition_evidence_count"] == 1
+
+
+def test_territorial_definition_registry_rejects_non_list(tmp_path: Path) -> None:
+    registry_path = tmp_path / "territorial_definitions.yml"
+    registry_path.write_text("territorial_definitions: {}\n", encoding="utf-8")
+
+    with pytest.raises(TypeError, match="territorial_definitions list"):
+        load_territorial_definition_registry(registry_path)
+
+
+def test_territorial_definition_registry_accepts_source_evidence_key(
+    tmp_path: Path,
+) -> None:
+    registry_path = tmp_path / "territorial_definitions.yml"
+    registry_path.write_text(
+        """
+territorial_definitions:
+  - source_key: un_comtrade_portugal
+    reporter_code: 620
+    start_year: 1962
+    end_year: 1962
+    status: partially_resolved
+    definition: code_label_only
+    evidence:
+      - source: UN Comtrade reference Reporters.json
+        note: Code label only.
+""",
+        encoding="utf-8",
+    )
+
+    result = load_territorial_definition_registry(registry_path)
+
+    assert result["evidence_count"].tolist() == [1]
+    assert result["evidence_summary"].tolist() == ["UN Comtrade reference Reporters.json"]
+
+
+def test_territorial_definition_registry_ignores_malformed_records(tmp_path: Path) -> None:
+    registry_path = tmp_path / "territorial_definitions.yml"
+    registry_path.write_text(
+        """
+territorial_definitions:
+  - ignored
+  - source_key: un_comtrade_portugal
+    reporter_code: 620
+    start_year: 1962
+    end_year: 1962
+    status: partially_resolved
+    definition: code_label_only
+    evidence: invalid
+""",
+        encoding="utf-8",
+    )
+
+    result = load_territorial_definition_registry(registry_path)
+
+    assert result["evidence_count"].tolist() == [0]
+    assert result["evidence_summary"].tolist() == [""]

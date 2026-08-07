@@ -3,6 +3,18 @@ territorial_definitions:
     reporter_code: 620
     start_year: 1962
     end_year: 1973
-    status: unresolved
-    definition:
-    evidence: []
+    status: partially_resolved
+    definition: Official UN Comtrade reference metadata identifies reporter code 620 as Portugal, but the reference endpoint does not specify whether the 1962-1973 reporter territory is mainland Portugal, mainland plus adjacent islands, metropolitan Portugal, or another customs/statistical area.
+    evidence:
+      - source: UN Comtrade reference Reporters.json
+        local_file: data/raw/live/un_comtrade_metadata/reporters.json
+        page_or_section: reporterCode 620
+        note: reporterCode 620 is labelled Portugal, reporterNote Portugal, ISO alpha-3 PRT, isGroup false, entryEffectiveDate 1900-01-01.
+      - source: INE Estatisticas do Comercio Externo 1962, Volume I
+        local_file: data/manual/source_documents/ine_external_trade_1962_volume_i.pdf
+        page_or_section: PDF pages 5-6
+        note: Introductory note says the country/statistical-territory list begins with Portuguese overseas territories and that Azores/Madeira special trade is presented separately in tables XII-XVII.
+      - source: INE Estatisticas do Comercio Externo 1962, Volume I
+        local_file: data/manual/source_documents/ine_external_trade_1962_volume_i.pdf
+        page_or_section: PDF page 23
+        note: INE statistical-territory list separates Ultramar Portugues from foreign countries and prints OECD/EEC/EFTA groupings separately.

@@ -88,14 +88,16 @@ def test_ine_comtrade_1962_reconciliation_marks_overseas_lower_bound(
     _write_ine_1962_aggregates(tmp_path)
     _write_comtrade_1962_inputs(tmp_path)
     _write_colonial_group_config(tmp_path)
+    _write_historical_colonial_crosswalk(tmp_path)
 
     result = build_ine_comtrade_1962_reconciliation(tmp_path)
 
     overseas_exports = result.loc[result["concept"].eq("Overseas exports")].iloc[0]
     assert overseas_exports["source_a_value"] == 83098353.0
-    assert overseas_exports["expected_partner_count"] == 7
+    assert overseas_exports["expected_partner_count"] == 8
     assert overseas_exports["observed_partner_count"] == 4
-    assert overseas_exports["coverage_ratio"] == 4 / 7
+    assert overseas_exports["coverage_ratio"] == 4 / 8
+    assert "portuguese_india" in overseas_exports["missing_partner_entities"]
     assert overseas_exports["reconciliation_status"] == "unresolved"
     assert "lower bound" in overseas_exports["explanation"]
 
@@ -241,6 +243,47 @@ def _write_colonial_group_config(root: Path) -> None:
         ),
         encoding="utf-8",
     )
+
+
+def _write_historical_colonial_crosswalk(root: Path) -> None:
+    output_dir = root / "data/interim/live"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    pd.DataFrame(
+        [
+            {"entity_id": "angola", "reference_year": 1962, "ine_group": "Ultramar Portugues"},
+            {
+                "entity_id": "cabo_verde",
+                "reference_year": 1962,
+                "ine_group": "Ultramar Portugues",
+            },
+            {
+                "entity_id": "guinea_bissau",
+                "reference_year": 1962,
+                "ine_group": "Ultramar Portugues",
+            },
+            {"entity_id": "macao", "reference_year": 1962, "ine_group": "Ultramar Portugues"},
+            {
+                "entity_id": "mozambique",
+                "reference_year": 1962,
+                "ine_group": "Ultramar Portugues",
+            },
+            {
+                "entity_id": "portuguese_india",
+                "reference_year": 1962,
+                "ine_group": "Ultramar Portugues",
+            },
+            {
+                "entity_id": "sao_tome_principe",
+                "reference_year": 1962,
+                "ine_group": "Ultramar Portugues",
+            },
+            {
+                "entity_id": "timor_leste",
+                "reference_year": 1962,
+                "ine_group": "Ultramar Portugues",
+            },
+        ]
+    ).to_csv(output_dir / "historical_colonial_partner_crosswalk.csv", index=False)
 
 
 def _area(entity_id: str, code: int) -> str:

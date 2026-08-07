@@ -1,0 +1,73 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "year",
+    "flow",
+    "ine_overseas_value_usd_diag",
+    "comtrade_observed_colonies_usd",
+    "missing_colonies_residual_usd_diag",
+    "missing_colonies_residual_pte_diag",
+    "conversion_method",
+    "ine_expected_territory_count",
+    "configured_comtrade_expected_count",
+    "comtrade_observed_count",
+    "configured_not_returned_entities",
+    "ine_ultramar_entity_not_configured",
+    "coverage_ratio_against_ine_territories",
+    "estimate_status",
+    "incompleteness_reason",
+    "evidence_reference"
+  ],
+  "date_range": {
+    "end_year": 1962,
+    "start_year": 1962
+  },
+  "file": "results/diagnostics/missing_colonial_partners/missing_colonies_1962_diagnostic.csv",
+  "input_artifacts": [
+    {
+      "path": "data/interim/live/ine_comtrade_1962_reconciliation.csv",
+      "sha256": "396abc32b484d15603abc2863f4c507af4cc63efe75405f210b2ab2cd87667dc"
+    },
+    {
+      "path": "data/interim/live/historical_colonial_partner_crosswalk.csv",
+      "sha256": "1a94373d96dd3f2a49c02608452df295df86b65ca9c116c2115ac23433d36cb9"
+    },
+    {
+      "path": "data/interim/live/comtrade_coverage_matrix.csv",
+      "sha256": "290fb75344b2196f35a7dd494b5051d2448ebd08e8e4d34f333aeb2dc467bb52"
+    },
+    {
+      "path": "results/diagnostics/comtrade_coverage/requested_not_returned.csv",
+      "sha256": "58d85e825c01c1a7bf7facaed7b09639142a2b3ca9537120a52dd02cff867f51"
+    }
+  ],
+  "rows": 2,
+  "schema": {
+    "comtrade_observed_colonies_usd": "float64",
+    "comtrade_observed_count": "int64",
+    "configured_comtrade_expected_count": "int64",
+    "configured_not_returned_entities": "object",
+    "conversion_method": "object",
+    "coverage_ratio_against_ine_territories": "float64",
+    "estimate_status": "object",
+    "evidence_reference": "object",
+    "flow": "object",
+    "incompleteness_reason": "object",
+    "ine_expected_territory_count": "int64",
+    "ine_overseas_value_usd_diag": "float64",
+    "ine_ultramar_entity_not_configured": "object",
+    "missing_colonies_residual_pte_diag": "float64",
+    "missing_colonies_residual_usd_diag": "float64",
+    "year": "int64"
+  },
+  "sha256": "c70584d2563460be4d2c2068d8efa4091dd99eb9b0abde6d374b9594fe35913f",
+  "source_files": [
+    "data/interim/live/ine_comtrade_1962_reconciliation.csv",
+    "data/interim/live/historical_colonial_partner_crosswalk.csv",
+    "data/interim/live/comtrade_coverage_matrix.csv",
+    "results/diagnostics/comtrade_coverage/requested_not_returned.csv"
+  ],
+  "source_licence": "mixed_official_sources_terms_to_be_confirmed",
+  "stage": "missing_colonial_partners_diagnostic",
+  "validation_findings": []
+}

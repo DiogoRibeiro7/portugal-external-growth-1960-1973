@@ -1,0 +1,24 @@
+INE 1970 source acquisition and page-discovery audit
+================================================
+
+Status: source acquired; aggregate table page candidates located; transcription not started.
+
+Catalogue record: https://www.ine.pt/xurl/pub/260534859
+Publication year: 1971
+Statistical reference year: 1970
+
+Located page candidates
+-----------------------
+- Methodology/source notes: Volume I PDF page 8
+- Statistical-territory list: Volume I PDF page 18
+- World imports: Volume I PDF page 24 (Quadro n.o 1 - Movimento comercial por seccoes da CMCE)
+- World exports: Volume I PDF page 24 (Quadro n.o 1 - Movimento comercial por seccoes da CMCE)
+- Overseas imports: Volume I PDF page 25 (Quadro n.o 2 - Comercio especial por paises e territorios estatisticos)
+- Overseas exports: Volume I PDF page 25 (Quadro n.o 2 - Comercio especial por paises e territorios estatisticos)
+- EEC/EFTA evidence: Volume I PDF page 25 (aggregate_rows_located_pending_transcription)
+
+Validation status
+-----------------
+No numeric aggregate values were transcribed in this step.
+The next required step is two independent manual transcription passes.
+Do not use these page candidates as validated observations.

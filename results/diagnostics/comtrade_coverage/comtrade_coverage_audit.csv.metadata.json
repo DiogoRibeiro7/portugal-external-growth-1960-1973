@@ -33,7 +33,7 @@
     },
     {
       "path": "config/territorial_definitions.yml",
-      "sha256": "72486fe5972752846e20bf15aee7b5f0f0beee329cff8b02b51182bece33ba63"
+      "sha256": "04deef3ef8e3d81e628f506d63ec7bb09524be27c2162fcba01e899775934696"
     }
   ],
   "rows": 24,
@@ -58,7 +58,7 @@
     "world_value_usd": "float64",
     "year": "int64"
   },
-  "sha256": "1bc232a6edcbf21a82b0e4ca7e5062f72e9e88b57c2040d32cde46b40e2631cb",
+  "sha256": "c153c4bd97dff973d1315d0710e93c880ccb83d922efac96bebb6d234cbe140f",
   "source_files": [
     "data/interim/live/comtrade_coverage_matrix.csv",
     "config/territorial_definitions.yml"

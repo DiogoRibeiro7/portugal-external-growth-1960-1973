@@ -1,0 +1,24 @@
+INE 1965 source acquisition and page-discovery audit
+================================================
+
+Status: source acquired; aggregate table page candidates located; transcription not started.
+
+Catalogue record: https://www.ine.pt/xurl/pub/260537851
+Publication year: 1966
+Statistical reference year: 1965
+
+Located page candidates
+-----------------------
+- Methodology/source notes: Volume I PDF pages 9-10
+- Statistical-territory list: Volume I PDF page 23
+- World imports: Volume I PDF page 30 (Quadro I - Comercio especial. Importacao)
+- World exports: Volume I PDF page 38 (Quadro II - Comercio especial. Exportacao)
+- Overseas imports: Volume I PDF page 48 (Quadro III - Comercio especial por territorios estatisticos - Importacao)
+- Overseas exports: Volume I PDF page 50 (Quadro III - Comercio especial por territorios estatisticos - Exportacao)
+- EEC/EFTA evidence: Volume I PDF pages 23, 48, and 50 (group_membership_present_no_aggregate_row_verified)
+
+Validation status
+-----------------
+No numeric aggregate values were transcribed in this step.
+The next required step is two independent manual transcription passes.
+Do not use these page candidates as validated observations.

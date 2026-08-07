@@ -1,0 +1,95 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "source_id",
+    "source_pdf_filename",
+    "source_pdf_sha256",
+    "publication_year",
+    "reference_year",
+    "table_title",
+    "page_number",
+    "flow",
+    "partner_group_source",
+    "series_name_source",
+    "value_source",
+    "printed_total_value_source",
+    "currency_source",
+    "unit_source",
+    "unit_multiplier",
+    "valuation_basis",
+    "territorial_definition",
+    "cell_status",
+    "footnote",
+    "transcriber",
+    "transcription_date",
+    "entry_pass",
+    "adjudication_status",
+    "target_pass_1_path",
+    "target_pass_2_path",
+    "required_action",
+    "queue_note"
+  ],
+  "date_range": {
+    "end_year": 1974,
+    "start_year": 1966
+  },
+  "file": "data/manual/templates/ine_aggregate_transcription_queue_1965_1970_1973.csv",
+  "input_artifacts": [
+    {
+      "path": "results/diagnostics/historical_sources/ine_1965_source_audit.csv",
+      "sha256": "6e9ce4f7e44becc8662829ab1d0b7650485f70791c9a7d1c797e3a9b8e03caf0"
+    },
+    {
+      "path": "results/diagnostics/historical_sources/ine_1970_source_audit.csv",
+      "sha256": "04fd757b786261861e56607ee6d5ba200fb21f8456e340106fe6e6f0f562e44d"
+    },
+    {
+      "path": "results/diagnostics/historical_sources/ine_1973_source_audit.csv",
+      "sha256": "611bbe7638d4379b7555819a291cef0dd42a440a2ff12b3478572b51a162571e"
+    },
+    {
+      "path": "data/manual/source_documents/source_document_registry.csv",
+      "sha256": "1117eb2db582fe0cd62feeb2934c9d431c8e9a58ba8d6e940a77cb63dac92e66"
+    }
+  ],
+  "rows": 20,
+  "schema": {
+    "adjudication_status": "object",
+    "cell_status": "object",
+    "currency_source": "object",
+    "entry_pass": "object",
+    "flow": "object",
+    "footnote": "object",
+    "page_number": "int64",
+    "partner_group_source": "object",
+    "printed_total_value_source": "object",
+    "publication_year": "int64",
+    "queue_note": "object",
+    "reference_year": "int64",
+    "required_action": "object",
+    "series_name_source": "object",
+    "source_id": "object",
+    "source_pdf_filename": "object",
+    "source_pdf_sha256": "object",
+    "table_title": "object",
+    "target_pass_1_path": "object",
+    "target_pass_2_path": "object",
+    "territorial_definition": "object",
+    "transcriber": "object",
+    "transcription_date": "object",
+    "unit_multiplier": "int64",
+    "unit_source": "object",
+    "valuation_basis": "object",
+    "value_source": "object"
+  },
+  "sha256": "9218256b5bdd9f95677f0b43de386a9ac464b4d1c10e8133bddf435825eff8ec",
+  "source_files": [
+    "results/diagnostics/historical_sources/ine_1965_source_audit.csv",
+    "results/diagnostics/historical_sources/ine_1970_source_audit.csv",
+    "results/diagnostics/historical_sources/ine_1973_source_audit.csv",
+    "data/manual/source_documents/source_document_registry.csv"
+  ],
+  "source_licence": "not_specified",
+  "stage": "manual_aggregate_transcription_queue",
+  "validation_findings": []
+}

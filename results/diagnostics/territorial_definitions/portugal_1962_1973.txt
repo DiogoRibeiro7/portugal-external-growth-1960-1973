@@ -1,0 +1,20 @@
+Portugal territorial-definition review, 1962-1973
+=================================================
+
+Status: partially_resolved.
+
+UN Comtrade reporter code 620 is officially labelled Portugal in the public
+Reporters.json reference endpoint, with ISO alpha-3 PRT and isGroup false. The
+reference metadata does not state whether 1962-1973 observations cover mainland
+Portugal only, mainland plus adjacent islands, metropolitan Portugal, Portugal
+plus any overseas territories, or another customs/statistical area.
+
+INE 1962 evidence confirms that the Portuguese source uses explicit statistical
+territory tables. Volume I page 23 lists Ultramar Portugues before foreign
+countries, and pages 38-39 print Ultramar aggregates in Quadro III. Pages 5-6
+also identify special treatment for Azores and Madeira and point to tables
+XII-XVII.
+
+Research-readiness implication: keep the Comtrade reporter-territory block open
+until UN/OECD/Banco de Portugal/EFTA evidence explicitly defines reporter code
+620 for the benchmark period.

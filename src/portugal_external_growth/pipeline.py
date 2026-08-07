@@ -826,6 +826,8 @@ def reconcile_trade_sources(settings: Settings) -> None:
                 "results/diagnostics/comtrade_coverage/comtrade_coverage_audit.csv",
                 "data/interim/live/comtrade_coverage_matrix.csv",
                 "config/historical_groups.yml",
+                "config/comtrade_partner_areas.yml",
+                "data/interim/live/historical_colonial_partner_crosswalk.csv",
             ],
             "stage": "ine_comtrade_1962_reconciliation",
         },

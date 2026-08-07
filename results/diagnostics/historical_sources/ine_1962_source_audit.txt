@@ -1,7 +1,7 @@
 INE 1962 source acquisition audit
 =================================
 
-Status: source acquired; aggregate first pass started.
+Status: source acquired; World and Ultramar aggregate totals double-entry verified.
 
 Official source
 ---------------
@@ -42,10 +42,10 @@ redistribution outside this repository context.
 Page/table status
 -----------------
 
-The PDFs are image scans. `pdftotext` returned no usable text for the opening
-pages, so aggregate table discovery requires OCR or manual page inspection.
+The PDFs are image scans. Machine text is not reliable, so table discovery is
+based on manual image inspection of rendered PDF pages.
 
-Verified page-reference leads:
+Verified source and methodological leads:
 
 - Volume I, PDF page 5: introductory note discusses the list of countries and
   statistical territories, beginning with Portuguese overseas territories.
@@ -53,24 +53,28 @@ Verified page-reference leads:
   using the OECD structure, including EEC and EFTA groups.
 - Volume I, PDF pages 5-6: introductory note discusses special trade treatment
   for Azores and Madeira and points to tables XII to XVII.
+- Volume I, PDF page 23: the list of statistical territories separates
+  Ultramar Portugues from foreign countries and lists EEC/EFTA groups.
+- Volume I, PDF pages 9-11: explanatory notes define special trade, country of
+  origin/consumption treatment, and value conventions.
 
-First-pass aggregate rows entered:
+Double-entry verified aggregate rows:
 
-- Volume I, PDF page 29, Quadro I: 1962 special-trade total imports,
+- Volume I, PDF page 29 / page 38: 1962 special-trade total imports,
   current-money value 16,829,535 in 1,000 escudos.
-- Volume I, PDF page 33, Quadro II: 1962 special-trade total exports,
+- Volume I, PDF page 33 / page 39: 1962 special-trade total exports,
   current-money value 10,631,829 in 1,000 escudos.
+- Volume I, PDF page 38: 1962 Ultramar imports, current-money value
+  2,122,236 in 1,000 escudos.
+- Volume I, PDF page 39: 1962 Ultramar exports, current-money value
+  2,390,852 in 1,000 escudos.
 
-These two rows are first-pass transcription only. They are not validated
-aggregate values until an independent second pass is entered and all
-discrepancies are adjudicated.
+EEC and EFTA
+------------
 
-Pending before aggregate reconciliation:
-
-- overseas or colonial aggregate trade page/table;
-- EFTA aggregate trade page/table;
-- EEC aggregate trade page/table;
-- valuation basis definitions, including FOB/CIF where applicable;
-- currency and unit conventions.
+The source identifies EEC and EFTA groupings, and Quadro III prints individual
+country rows, but no directly printed 1962 aggregate EEC/EFTA row has been
+verified. These totals remain pending a controlled source-specific aggregation
+workflow.
 
 Detailed product rows have not been transcribed.

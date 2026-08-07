@@ -1,0 +1,27 @@
+{
+  "access_conditions": "public_reference_endpoint",
+  "content_type": "application/json",
+  "etag": "0x8DDA3D816EBC831",
+  "http_status": 200,
+  "last_modified": "Thu, 05 Jun 2025 02:24:24 GMT",
+  "notes": "Reference endpoint confirms code labels but does not by itself define historical statistical territory for Portugal in 1962-1973.",
+  "portugal_entries": [
+    {
+      "PartnerCode": 620,
+      "PartnerCodeIsoAlpha2": "PT",
+      "PartnerCodeIsoAlpha3": "PRT",
+      "PartnerDesc": "Portugal",
+      "entryEffectiveDate": "1900-01-01T00:00:00",
+      "id": 620,
+      "isGroup": false,
+      "partnerNote": "Portugal",
+      "text": "Portugal"
+    }
+  ],
+  "raw_sha256": "89b8f9c9e734b309b95284dbf2f8ef40209d88cc01ad07fd6b2db7e600463e0a",
+  "retrieved_at_utc": "2026-08-07T21:07:05.839038+00:00",
+  "rows": 310,
+  "source": "UN Comtrade reference data",
+  "source_licence": "subject_to_un_comtrade_terms",
+  "source_url": "https://comtradeapi.un.org/files/v1/app/reference/partnerAreas.json"
+}

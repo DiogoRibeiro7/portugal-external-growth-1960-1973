@@ -41,7 +41,7 @@
     },
     {
       "path": "results/diagnostics/comtrade_coverage/comtrade_coverage_audit.csv",
-      "sha256": "1bc232a6edcbf21a82b0e4ca7e5062f72e9e88b57c2040d32cde46b40e2631cb"
+      "sha256": "c153c4bd97dff973d1315d0710e93c880ccb83d922efac96bebb6d234cbe140f"
     },
     {
       "path": "data/interim/live/comtrade_coverage_matrix.csv",
@@ -50,6 +50,14 @@
     {
       "path": "config/historical_groups.yml",
       "sha256": "f1d7ab80828e7b2c5a86a894c022c61e5b2b2654f779c1769a1a310b013ae984"
+    },
+    {
+      "path": "config/comtrade_partner_areas.yml",
+      "sha256": "9c87944f318ed502502d41ffb5a535f40a311d791ce77d340fca6e73263a49b1"
+    },
+    {
+      "path": "data/interim/live/historical_colonial_partner_crosswalk.csv",
+      "sha256": "1a94373d96dd3f2a49c02608452df295df86b65ca9c116c2115ac23433d36cb9"
     }
   ],
   "rows": 4,
@@ -82,12 +90,14 @@
     "valuation_basis": "object",
     "year": "int64"
   },
-  "sha256": "396abc32b484d15603abc2863f4c507af4cc63efe75405f210b2ab2cd87667dc",
+  "sha256": "0cbf57bd22412216ddfe7ae649fc19a81cd361e10dd4018d39abf8cdf85431a4",
   "source_files": [
     "data/processed/live/ine_1962_aggregate_trade_harmonised.csv",
     "results/diagnostics/comtrade_coverage/comtrade_coverage_audit.csv",
     "data/interim/live/comtrade_coverage_matrix.csv",
-    "config/historical_groups.yml"
+    "config/historical_groups.yml",
+    "config/comtrade_partner_areas.yml",
+    "data/interim/live/historical_colonial_partner_crosswalk.csv"
   ],
   "source_licence": "not_specified",
   "stage": "ine_comtrade_1962_reconciliation",

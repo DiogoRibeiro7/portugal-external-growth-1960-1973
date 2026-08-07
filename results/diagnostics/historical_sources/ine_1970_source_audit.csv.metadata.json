@@ -1,0 +1,66 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "audit_item",
+    "status",
+    "source_id",
+    "statistical_reference_year",
+    "publication_year",
+    "volume",
+    "local_filename",
+    "sha256",
+    "pages",
+    "catalogue_url",
+    "original_url",
+    "page_reference",
+    "table_reference",
+    "evidence_reference",
+    "notes"
+  ],
+  "date_range": {
+    "end_year": 1971,
+    "start_year": 1971
+  },
+  "file": "results/diagnostics/historical_sources/ine_1970_source_audit.csv",
+  "input_artifacts": [
+    {
+      "path": "data/manual/source_documents/source_document_registry.csv",
+      "sha256": "08104b3a79e2421f7b94d6aafeea7b52fa4797e58cf5be036a633cc2bb3aafff"
+    },
+    {
+      "path": "data/manual/source_documents/ine_external_trade_1970_volume_i.pdf",
+      "sha256": "465a1d41cc1ebff60c479337d6214100a2c2ebf3b1cad16b3e609408a890d454"
+    },
+    {
+      "path": "data/manual/source_documents/ine_external_trade_1970_volume_ii.pdf",
+      "sha256": "168f1d0dbe0de4bcac8c721ab99a6d8450d3fa22336f43cbfaabce2933d56cc8"
+    }
+  ],
+  "rows": 12,
+  "schema": {
+    "audit_item": "object",
+    "catalogue_url": "object",
+    "evidence_reference": "object",
+    "local_filename": "object",
+    "notes": "object",
+    "original_url": "object",
+    "page_reference": "object",
+    "pages": "object",
+    "publication_year": "int64",
+    "sha256": "object",
+    "source_id": "object",
+    "statistical_reference_year": "int64",
+    "status": "object",
+    "table_reference": "object",
+    "volume": "object"
+  },
+  "sha256": "04fd757b786261861e56607ee6d5ba200fb21f8456e340106fe6e6f0f562e44d",
+  "source_files": [
+    "data/manual/source_documents/source_document_registry.csv",
+    "data/manual/source_documents/ine_external_trade_1970_volume_i.pdf",
+    "data/manual/source_documents/ine_external_trade_1970_volume_ii.pdf"
+  ],
+  "source_licence": "not_specified",
+  "stage": "historical_source_page_discovery_audit",
+  "validation_findings": []
+}

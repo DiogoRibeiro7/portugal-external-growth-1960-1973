@@ -12,7 +12,7 @@ Maximum World relative difference after diagnostic conversion: 0.00005143
 Overseas comparison
 -------------------
 Comtrade overseas partner sums remain lower bounds until missing partner records are resolved.
-Minimum observed overseas partner coverage ratio: 0.571429
+Minimum observed overseas partner coverage ratio: 0.500000
 
 Status
 ------

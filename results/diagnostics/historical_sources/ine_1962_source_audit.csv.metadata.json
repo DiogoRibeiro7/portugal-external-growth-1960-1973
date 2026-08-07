@@ -18,8 +18,8 @@
     "notes"
   ],
   "date_range": {
-    "end_year": 1962,
-    "start_year": 1962
+    "end_year": 1963,
+    "start_year": 1963
   },
   "file": "results/diagnostics/historical_sources/ine_1962_source_audit.csv",
   "input_artifacts": [
@@ -34,6 +34,18 @@
     {
       "path": "data/manual/source_documents/ine_external_trade_1962_volume_ii.pdf",
       "sha256": "02542c6e1808cdc6da956a82089b5921afe37109b6f01a367af2a41e760bebd8"
+    },
+    {
+      "path": "data/manual/transcriptions/pass_1/ine_aggregate_transcription_pass_1.csv",
+      "sha256": "d96cb0d483f23c8d18ea8250b942a167d89f903ae4ab1102346d58e4875d48a1"
+    },
+    {
+      "path": "data/manual/transcriptions/pass_2/ine_aggregate_transcription_pass_2.csv",
+      "sha256": "729de73a6e78fb2aa228076d726f2eeb8c12b69e598a9a07b807b2609fa87476"
+    },
+    {
+      "path": "data/interim/live/ine_aggregate_transcription_discrepancies.csv",
+      "sha256": "2059d73a15145569e49593662e0f48863e77550d2c535c343440a6da6888e092"
     }
   ],
   "rows": 14,
@@ -46,19 +58,22 @@
     "original_url": "string",
     "page_reference": "string",
     "pages": "string",
-    "publication_year": "int64",
+    "publication_year": "string",
     "sha256": "string",
     "source_id": "string",
-    "statistical_reference_year": "int64",
+    "statistical_reference_year": "string",
     "status": "string",
     "table_reference": "string",
     "volume": "string"
   },
-  "sha256": "adccc535efb0c3ee0ea4e1e0f0b9a0b97419b225158a124d46c378a64ccffe64",
+  "sha256": "ff26ae0bfbc4d6511b6a528f05c6b657f1695c834284ea73ed51ba32625b613b",
   "source_files": [
     "data/manual/source_documents/source_document_registry.csv",
     "data/manual/source_documents/ine_external_trade_1962_volume_i.pdf",
-    "data/manual/source_documents/ine_external_trade_1962_volume_ii.pdf"
+    "data/manual/source_documents/ine_external_trade_1962_volume_ii.pdf",
+    "data/manual/transcriptions/pass_1/ine_aggregate_transcription_pass_1.csv",
+    "data/manual/transcriptions/pass_2/ine_aggregate_transcription_pass_2.csv",
+    "data/interim/live/ine_aggregate_transcription_discrepancies.csv"
   ],
   "source_licence": "to_be_confirmed_from_source",
   "stage": "historical_source_acquisition_audit",

@@ -2,9 +2,9 @@ INE historical trade transcription status
 ========================================
 
 Registered source-year documents: 43
-Missing source PDFs: 42
-Catalogue records identified: 3
-Rows without source PDF SHA-256: 42
+Missing source PDFs: 39
+Catalogue records identified: 1
+Rows without source PDF SHA-256: 39
 Pass 1 transcribed rows: 0
 Pass 2 transcribed rows: 0
 Aggregate pass 1 transcribed rows: 4

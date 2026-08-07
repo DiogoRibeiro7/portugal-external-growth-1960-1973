@@ -111,6 +111,27 @@ manual_sources:
     assert "research.manual_source_documents" in report["check"].tolist()
 
 
+def test_research_readiness_reports_unresolved_reconciliation_registry(
+    tmp_path: Path,
+) -> None:
+    registry_dir = tmp_path / "results/diagnostics/reconciliation"
+    registry_dir.mkdir(parents=True)
+    pd.DataFrame(
+        [
+            {
+                "reconciliation_id": "ine_comtrade_1962",
+                "overall_status": "unresolved",
+            }
+        ]
+    ).to_csv(registry_dir / "reconciliation_registry.csv", index=False)
+
+    report = build_research_readiness_report(tmp_path)
+
+    row = report.loc[report["check"].eq("research.source_reconciliation")].iloc[0]
+    assert row["severity"] == "not_ready"
+    assert "ine_comtrade_1962" in row["message"]
+
+
 def test_manual_source_document_inventory_falls_back_to_config(tmp_path: Path) -> None:
     config = tmp_path / "config"
     config.mkdir()

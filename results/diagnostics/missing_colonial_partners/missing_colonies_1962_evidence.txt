@@ -1,0 +1,22 @@
+Missing colonial partners diagnostic, 1962
+==========================================
+
+Status: unresolved; residual calculated but not allocated.
+
+The 1962 INE source provides a complete Ultramar aggregate in Quadro III:
+imports on Volume I PDF page 38 and exports on PDF page 39. The source-specific
+Ultramar list on PDF page 23 contains eight rows: Cabo Verde, Guine,
+S. Tome e Principe, Angola, Mocambique, India, Macau, and Timor.
+
+The current UN Comtrade S1 snapshot for Portugal reporter 620 returns only four
+configured colonial partner rows in 1962. Cabo Verde, Macao, and Sao Tome and
+Principe were requested but not returned. Portuguese India appears in the INE
+Ultramar list, but no separate Comtrade area has been registered for that
+source-specific historical entity in this repository.
+
+The INE-minus-observed-Comtrade residual is preserved in
+missing_colonies_1962_diagnostic.csv. It is not allocated among missing
+territories because the source evidence does not justify allocation and because
+partner-code comparability remains unresolved.
+
+No missing colonial observation has been converted to zero.
