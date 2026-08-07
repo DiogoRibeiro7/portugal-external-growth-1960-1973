@@ -6,6 +6,8 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-08-07
+
 ### Added
 
 - Initial reproducible data pipeline for Portuguese external economic linkages, 1960-1973.
