@@ -14,7 +14,7 @@
   "created_at_utc": "2026-08-06T11:51:59.361635+00:00",
   "file": "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\manual\\source_documents\\source_document_registry.csv",
   "rows": 43,
-  "sha256": "aac213410d765eb7b2feb0e5541f4f7a940b8341614e8c154cb177f66b3dadc5",
+  "sha256": "e2da50f44a9151a2708892b426d9f1992d77129dc995a534c3b5620e41872677",
   "source_files": [
     "config/manual_sources.yml"
   ],

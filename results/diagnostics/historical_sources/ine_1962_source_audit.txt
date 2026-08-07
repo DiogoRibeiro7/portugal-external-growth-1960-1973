@@ -1,0 +1,67 @@
+INE 1962 source acquisition audit
+=================================
+
+Status: source acquired; aggregate transcription not started.
+
+Official source
+---------------
+
+Catalogue record:
+https://www.ine.pt/xurl/pub/260578492
+
+Publication title: Estatisticas do Comercio Externo - 1962
+Issuing institution: Instituto Nacional de Estatistica
+Publication year: 1963
+Statistical reference year: 1962
+
+Local files
+-----------
+
+Volume I:
+data/manual/source_documents/ine_external_trade_1962_volume_i.pdf
+SHA-256: 4f65453197d811905bcb7fe919926ddb09fe3c850875af5ae232c2c600a948dc
+Pages: 567
+Official attachment endpoint:
+https://censos.ine.pt/ngt_server/attachfileu.jsp?look_parentBoui=260578679&att_display=n&att_download=y
+
+Volume II:
+data/manual/source_documents/ine_external_trade_1962_volume_ii.pdf
+SHA-256: 02542c6e1808cdc6da956a82089b5921afe37109b6f01a367af2a41e760bebd8
+Pages: 577
+Official attachment endpoint:
+https://censos.ine.pt/ngt_server/attachfileu.jsp?look_parentBoui=260578905&att_display=n&att_download=y
+
+Access and licence
+------------------
+
+Both files were downloaded from official public INE attachment endpoints on
+2026-08-07. Reuse/licence terms remain recorded as
+to_be_confirmed_from_source; source attribution is required before any
+redistribution outside this repository context.
+
+Page/table status
+-----------------
+
+The PDFs are image scans. `pdftotext` returned no usable text for the opening
+pages, so aggregate table discovery requires OCR or manual page inspection.
+
+Verified page-reference leads:
+
+- Volume I, PDF page 5: introductory note discusses the list of countries and
+  statistical territories, beginning with Portuguese overseas territories.
+- Volume I, PDF page 5: introductory note states that countries are grouped
+  using the OECD structure, including EEC and EFTA groups.
+- Volume I, PDF pages 5-6: introductory note discusses special trade treatment
+  for Azores and Madeira and points to tables XII to XVII.
+
+Pending before transcription:
+
+- total imports page/table;
+- total exports page/table;
+- overseas or colonial aggregate trade page/table;
+- EFTA aggregate trade page/table;
+- EEC aggregate trade page/table;
+- valuation basis definitions, including FOB/CIF where applicable;
+- currency and unit conventions.
+
+No aggregate value has been transcribed in this commit.

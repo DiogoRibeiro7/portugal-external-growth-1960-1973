@@ -226,6 +226,59 @@ def test_manual_source_document_inventory_verifies_local_file_and_checksum(
     ]
 
 
+def test_manual_source_document_inventory_accepts_verified_multi_volume_source(
+    tmp_path: Path,
+) -> None:
+    registry_dir = tmp_path / "data/manual/source_documents"
+    registry_dir.mkdir(parents=True)
+    volume_i = registry_dir / "volume_i.pdf"
+    volume_ii = registry_dir / "volume_ii.pdf"
+    volume_i.write_text("first volume\n", encoding="utf-8")
+    volume_ii.write_text("second volume\n", encoding="utf-8")
+    pd.DataFrame(
+        [
+            {
+                "source_id": "ine",
+                "title_pattern": "INE",
+                "expected_year": 1962,
+                "source_pdf_filename": "volume_i.pdf;volume_ii.pdf",
+                "source_pdf_sha256": f"{sha256_file(volume_i)};{sha256_file(volume_ii)}",
+                "source_document_status": "available",
+            }
+        ]
+    ).to_csv(registry_dir / "source_document_registry.csv", index=False)
+
+    inventory = build_manual_source_document_inventory(tmp_path)
+
+    assert inventory.loc[0, "is_available"]
+    assert inventory.loc[0, "blocking_reason"] == ""
+
+
+def test_manual_source_document_inventory_flags_multi_volume_count_mismatch(
+    tmp_path: Path,
+) -> None:
+    registry_dir = tmp_path / "data/manual/source_documents"
+    registry_dir.mkdir(parents=True)
+    (registry_dir / "volume_i.pdf").write_text("first volume\n", encoding="utf-8")
+    pd.DataFrame(
+        [
+            {
+                "source_id": "ine",
+                "title_pattern": "INE",
+                "expected_year": 1962,
+                "source_pdf_filename": "volume_i.pdf;volume_ii.pdf",
+                "source_pdf_sha256": "1" * 64,
+                "source_document_status": "available",
+            }
+        ]
+    ).to_csv(registry_dir / "source_document_registry.csv", index=False)
+
+    inventory = build_manual_source_document_inventory(tmp_path)
+
+    assert not inventory.loc[0, "is_available"]
+    assert inventory.loc[0, "blocking_reason"] == "source_file_count_mismatch"
+
+
 def test_validate_manual_transcription_source_hashes_requires_registry_match(
     tmp_path: Path,
 ) -> None:

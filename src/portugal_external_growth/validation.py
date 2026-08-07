@@ -533,19 +533,27 @@ def _manual_document_inventory_from_config(root: Path, columns: list[str]) -> pd
 def _manual_document_blocking_reason(row: pd.Series, *, source_root: Path) -> str:
     status = _normalise_cell(row["source_document_status"])
     if status in {"registered", "available"}:
-        filename = _normalise_cell(row["source_pdf_filename"])
-        recorded_sha256 = _normalise_cell(row["source_pdf_sha256"])
-        if not filename:
+        filenames = _split_registry_cell(row["source_pdf_filename"])
+        recorded_sha256s = _split_registry_cell(row["source_pdf_sha256"])
+        if not filenames:
             return "filename_not_recorded"
-        if not recorded_sha256:
+        if not recorded_sha256s:
             return "sha256_not_recorded"
-        if VALID_SHA256_RE.fullmatch(recorded_sha256) is None:
+        if len(filenames) != len(recorded_sha256s):
+            return "source_file_count_mismatch"
+        if any(
+            VALID_SHA256_RE.fullmatch(recorded_sha256) is None
+            for recorded_sha256 in recorded_sha256s
+        ):
             return "invalid_sha256"
-        pdf_path = source_root / filename
-        if not pdf_path.is_file():
-            return "file_not_found"
-        if sha256_file(pdf_path).lower() != recorded_sha256.lower():
-            return "sha256_mismatch"
+        for filename in filenames:
+            pdf_path = source_root / filename
+            if not pdf_path.is_file():
+                return "file_not_found"
+        for filename, recorded_sha256 in zip(filenames, recorded_sha256s, strict=True):
+            pdf_path = source_root / filename
+            if sha256_file(pdf_path).lower() != recorded_sha256.lower():
+                return "sha256_mismatch"
         return ""
     if not status or status == "<NA>":
         return "source_document_status_missing"
@@ -559,11 +567,17 @@ def _source_registry_checksum_lookup(
     for row in registry.to_dict(orient="records"):
         source_id = _normalise_cell(row.get("source_id"))
         expected_year = _optional_int(row.get("expected_year"))
-        filename = _normalise_cell(row.get("source_pdf_filename"))
-        recorded_sha256 = _normalise_cell(row.get("source_pdf_sha256"))
-        if expected_year is None or not source_id or not filename or not recorded_sha256:
+        filenames = _split_registry_cell(row.get("source_pdf_filename"))
+        recorded_sha256s = _split_registry_cell(row.get("source_pdf_sha256"))
+        if (
+            expected_year is None
+            or not source_id
+            or not filenames
+            or len(filenames) != len(recorded_sha256s)
+        ):
             continue
-        lookup[(source_id, expected_year, filename)] = recorded_sha256
+        for filename, recorded_sha256 in zip(filenames, recorded_sha256s, strict=True):
+            lookup[(source_id, expected_year, filename)] = recorded_sha256
     return lookup
 
 
@@ -582,6 +596,13 @@ def _normalise_cell(value: object) -> str:
     if text in {"", "<NA>", "NaN", "nan", "None"}:
         return ""
     return text
+
+
+def _split_registry_cell(value: object) -> list[str]:
+    text = _normalise_cell(value)
+    if not text:
+        return []
+    return [part.strip() for part in text.split(";") if part.strip()]
 
 
 def _optional_int(value: object) -> int | None:
