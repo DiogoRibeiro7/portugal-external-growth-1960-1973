@@ -7,6 +7,7 @@ Catalogue records identified: 4
 Rows without source PDF SHA-256: 43
 Pass 1 transcribed rows: 0
 Pass 2 transcribed rows: 0
+Workflow status: not_started
 Unresolved transcription discrepancies: 0
 Adjudicated final rows: 0
 Final rows with unreadable cells: 0

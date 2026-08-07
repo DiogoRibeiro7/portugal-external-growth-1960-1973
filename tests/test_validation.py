@@ -4,11 +4,13 @@ from pathlib import Path
 
 import pandas as pd
 
+from portugal_external_growth.io_utils import sha256_file
 from portugal_external_growth.validation import (
     build_file_manifest,
     build_manual_source_document_inventory,
     build_research_readiness_report,
     issues_to_frame,
+    validate_manual_transcription_source_hashes,
     validate_preliminary_trade_shares,
     validate_trade_shares,
     validate_unique,
@@ -137,6 +139,9 @@ def test_manual_source_document_inventory_flags_incomplete_registered_metadata(
 ) -> None:
     registry_dir = tmp_path / "data/manual/source_documents"
     registry_dir.mkdir(parents=True)
+    available_pdf = registry_dir / "ine_1961.pdf"
+    available_pdf.write_text("source document\n", encoding="utf-8")
+    available_sha256 = sha256_file(available_pdf)
     pd.DataFrame(
         [
             {
@@ -152,7 +157,7 @@ def test_manual_source_document_inventory_flags_incomplete_registered_metadata(
                 "title_pattern": "INE",
                 "expected_year": 1961,
                 "source_pdf_filename": "ine_1961.pdf",
-                "source_pdf_sha256": "abc",
+                "source_pdf_sha256": available_sha256,
                 "source_document_status": "available",
             },
         ]
@@ -162,3 +167,95 @@ def test_manual_source_document_inventory_flags_incomplete_registered_metadata(
 
     assert inventory["is_available"].tolist() == [False, True]
     assert inventory["blocking_reason"].tolist() == ["sha256_not_recorded", ""]
+
+
+def test_manual_source_document_inventory_verifies_local_file_and_checksum(
+    tmp_path: Path,
+) -> None:
+    registry_dir = tmp_path / "data/manual/source_documents"
+    registry_dir.mkdir(parents=True)
+    valid_pdf = registry_dir / "valid.pdf"
+    valid_pdf.write_text("registered source\n", encoding="utf-8")
+    valid_sha256 = sha256_file(valid_pdf)
+    wrong_sha256 = "0" * 64
+    pd.DataFrame(
+        [
+            {
+                "source_id": "ine",
+                "title_pattern": "INE",
+                "expected_year": 1960,
+                "source_pdf_filename": "missing.pdf",
+                "source_pdf_sha256": valid_sha256,
+                "source_document_status": "registered",
+            },
+            {
+                "source_id": "ine",
+                "title_pattern": "INE",
+                "expected_year": 1961,
+                "source_pdf_filename": "valid.pdf",
+                "source_pdf_sha256": "abc",
+                "source_document_status": "registered",
+            },
+            {
+                "source_id": "ine",
+                "title_pattern": "INE",
+                "expected_year": 1962,
+                "source_pdf_filename": "valid.pdf",
+                "source_pdf_sha256": wrong_sha256,
+                "source_document_status": "registered",
+            },
+            {
+                "source_id": "ine",
+                "title_pattern": "INE",
+                "expected_year": 1963,
+                "source_pdf_filename": "valid.pdf",
+                "source_pdf_sha256": valid_sha256,
+                "source_document_status": "registered",
+            },
+        ]
+    ).to_csv(registry_dir / "source_document_registry.csv", index=False)
+
+    inventory = build_manual_source_document_inventory(tmp_path)
+
+    assert inventory["is_available"].tolist() == [False, False, False, True]
+    assert inventory["blocking_reason"].tolist() == [
+        "file_not_found",
+        "invalid_sha256",
+        "sha256_mismatch",
+        "",
+    ]
+
+
+def test_validate_manual_transcription_source_hashes_requires_registry_match(
+    tmp_path: Path,
+) -> None:
+    registry_dir = tmp_path / "data/manual/source_documents"
+    registry_dir.mkdir(parents=True)
+    pd.DataFrame(
+        [
+            {
+                "source_id": "ine",
+                "title_pattern": "INE",
+                "expected_year": 1962,
+                "source_pdf_filename": "ine_1962.pdf",
+                "source_pdf_sha256": "1" * 64,
+                "source_document_status": "registered",
+            }
+        ]
+    ).to_csv(registry_dir / "source_document_registry.csv", index=False)
+    pass_dir = tmp_path / "data/manual/transcriptions/pass_1"
+    pass_dir.mkdir(parents=True)
+    pd.DataFrame(
+        [
+            {
+                "source_id": "ine",
+                "publication_year": 1962,
+                "source_pdf_filename": "ine_1962.pdf",
+                "source_pdf_sha256": "2" * 64,
+            }
+        ]
+    ).to_csv(pass_dir / "ine_trade_transcription_pass_1.csv", index=False)
+
+    issues = validate_manual_transcription_source_hashes(tmp_path)
+
+    assert [issue.check for issue in issues] == ["manual_transcription.source_checksum_mismatch"]

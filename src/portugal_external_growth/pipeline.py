@@ -64,6 +64,7 @@ from portugal_external_growth.validation import (
     build_research_readiness_report,
     has_error,
     issues_to_frame,
+    validate_manual_transcription_source_hashes,
     validate_preliminary_trade_shares,
     validate_unique,
     validate_year_range,
@@ -742,6 +743,7 @@ def validate(settings: Settings) -> bool:
                 ),
             )
         )
+    issues += validate_manual_transcription_source_hashes(root)
     write_dataframe_with_metadata(
         issues_to_frame(issues),
         root / "results/validation/data_integrity_report.csv",

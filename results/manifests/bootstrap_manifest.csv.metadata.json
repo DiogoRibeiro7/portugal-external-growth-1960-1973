@@ -16,7 +16,7 @@
     "size_bytes": "int64"
   },
   "scope": "bootstrap",
-  "sha256": "03bd7806e52afe73790c97cc35f1676b93faf5406d90a9320ff250ab81b94a46",
+  "sha256": "3a24a9752f9c74e28d17c5b32b9aa0707743e2b2ba9c740a00803bd465bcdd7a",
   "source_licence": "not_specified",
   "stage": "manifest",
   "validation_findings": []

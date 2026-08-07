@@ -29,7 +29,7 @@
   "schema": {
     "blocking_reason": "object",
     "expected_year": "int64",
-    "is_available": "boolean",
+    "is_available": "bool",
     "source_document_status": "string",
     "source_id": "object",
     "source_pdf_filename": "string",

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -9,6 +10,8 @@ import pandas as pd
 
 from portugal_external_growth.config import load_yaml
 from portugal_external_growth.io_utils import sha256_file
+
+VALID_SHA256_RE = re.compile(r"[0-9a-fA-F]{64}")
 
 
 @dataclass(frozen=True)
@@ -140,6 +143,100 @@ def validate_preliminary_trade_shares(frame: pd.DataFrame) -> list[ValidationIss
                 "World residual cannot be negative.",
             )
         )
+    return issues
+
+
+def validate_manual_transcription_source_hashes(root: Path) -> list[ValidationIssue]:
+    """Ensure manual transcription rows cite the registered source checksum."""
+
+    registry_path = root / "data/manual/source_documents/source_document_registry.csv"
+    if not registry_path.exists():
+        return []
+    registry = pd.read_csv(registry_path)
+    required_registry_columns = {
+        "source_id",
+        "expected_year",
+        "source_pdf_filename",
+        "source_pdf_sha256",
+    }
+    if not required_registry_columns.issubset(registry.columns):
+        return [
+            ValidationIssue(
+                "error",
+                "manual_transcription.source_registry_schema",
+                "Source document registry is missing checksum-reference columns.",
+            )
+        ]
+
+    registry_lookup = _source_registry_checksum_lookup(registry)
+    issues: list[ValidationIssue] = []
+    for path in _manual_transcription_paths(root):
+        if not path.exists():
+            continue
+        frame = pd.read_csv(path)
+        if frame.empty:
+            continue
+        required_columns = {
+            "source_id",
+            "source_pdf_filename",
+            "source_pdf_sha256",
+            "publication_year",
+        }
+        if not required_columns.issubset(frame.columns):
+            issues.append(
+                ValidationIssue(
+                    "error",
+                    "manual_transcription.source_reference_schema",
+                    f"{path.relative_to(root).as_posix()} is missing source-reference columns.",
+                )
+            )
+            continue
+        missing_reference_rows = 0
+        unknown_reference_rows = 0
+        mismatch_rows = 0
+        for row in frame.to_dict(orient="records"):
+            filename = _normalise_cell(row.get("source_pdf_filename"))
+            recorded_sha256 = _normalise_cell(row.get("source_pdf_sha256"))
+            source_id = _normalise_cell(row.get("source_id"))
+            publication_year = _optional_int(row.get("publication_year"))
+            if publication_year is None or not source_id or not filename or not recorded_sha256:
+                missing_reference_rows += 1
+                continue
+            key = (source_id, publication_year, filename)
+            registry_sha256 = registry_lookup.get(key)
+            if registry_sha256 is None:
+                unknown_reference_rows += 1
+                continue
+            if recorded_sha256.lower() != registry_sha256.lower():
+                mismatch_rows += 1
+        relative = path.relative_to(root).as_posix()
+        if missing_reference_rows:
+            issues.append(
+                ValidationIssue(
+                    "error",
+                    "manual_transcription.source_reference_missing",
+                    f"{relative} has {missing_reference_rows} rows without source file/checksum.",
+                )
+            )
+        if unknown_reference_rows:
+            issues.append(
+                ValidationIssue(
+                    "error",
+                    "manual_transcription.source_reference_unknown",
+                    (
+                        f"{relative} has {unknown_reference_rows} rows not found in "
+                        "the source registry."
+                    ),
+                )
+            )
+        if mismatch_rows:
+            issues.append(
+                ValidationIssue(
+                    "error",
+                    "manual_transcription.source_checksum_mismatch",
+                    f"{relative} has {mismatch_rows} rows with checksum mismatches.",
+                )
+            )
     return issues
 
 
@@ -383,13 +480,18 @@ def build_manual_source_document_inventory(root: Path) -> pd.DataFrame:
         if column not in registry:
             registry[column] = ""
     registry["source_document_status"] = registry["source_document_status"].astype("string")
-    registry["source_pdf_filename"] = registry["source_pdf_filename"].astype("string").fillna("")
-    registry["source_pdf_sha256"] = registry["source_pdf_sha256"].astype("string").fillna("")
-    has_registered_status = registry["source_document_status"].isin(["registered", "available"])
-    has_filename = registry["source_pdf_filename"].str.len() > 0
-    has_checksum = registry["source_pdf_sha256"].str.len() > 0
-    registry["is_available"] = has_registered_status & has_filename & has_checksum
-    registry["blocking_reason"] = registry.apply(_manual_document_blocking_reason, axis=1)
+    registry["source_pdf_filename"] = (
+        registry["source_pdf_filename"].astype("string").fillna("").str.strip()
+    )
+    registry["source_pdf_sha256"] = (
+        registry["source_pdf_sha256"].astype("string").fillna("").str.strip()
+    )
+    source_root = source_registry_path.parent
+    registry["blocking_reason"] = registry.apply(
+        lambda row: _manual_document_blocking_reason(row, source_root=source_root),
+        axis=1,
+    )
+    registry["is_available"] = registry["blocking_reason"].eq("")
     return (
         registry[columns]
         .sort_values(["source_id", "expected_year"], na_position="last")
@@ -428,17 +530,71 @@ def _manual_document_inventory_from_config(root: Path, columns: list[str]) -> pd
     return pd.DataFrame.from_records(records, columns=columns)
 
 
-def _manual_document_blocking_reason(row: pd.Series) -> str:
-    status = str(row["source_document_status"])
+def _manual_document_blocking_reason(row: pd.Series, *, source_root: Path) -> str:
+    status = _normalise_cell(row["source_document_status"])
     if status in {"registered", "available"}:
-        if not str(row["source_pdf_filename"]):
+        filename = _normalise_cell(row["source_pdf_filename"])
+        recorded_sha256 = _normalise_cell(row["source_pdf_sha256"])
+        if not filename:
             return "filename_not_recorded"
-        if not str(row["source_pdf_sha256"]):
+        if not recorded_sha256:
             return "sha256_not_recorded"
+        if VALID_SHA256_RE.fullmatch(recorded_sha256) is None:
+            return "invalid_sha256"
+        pdf_path = source_root / filename
+        if not pdf_path.is_file():
+            return "file_not_found"
+        if sha256_file(pdf_path).lower() != recorded_sha256.lower():
+            return "sha256_mismatch"
         return ""
     if not status or status == "<NA>":
         return "source_document_status_missing"
     return status
+
+
+def _source_registry_checksum_lookup(
+    registry: pd.DataFrame,
+) -> dict[tuple[str, int, str], str]:
+    lookup: dict[tuple[str, int, str], str] = {}
+    for row in registry.to_dict(orient="records"):
+        source_id = _normalise_cell(row.get("source_id"))
+        expected_year = _optional_int(row.get("expected_year"))
+        filename = _normalise_cell(row.get("source_pdf_filename"))
+        recorded_sha256 = _normalise_cell(row.get("source_pdf_sha256"))
+        if expected_year is None or not source_id or not filename or not recorded_sha256:
+            continue
+        lookup[(source_id, expected_year, filename)] = recorded_sha256
+    return lookup
+
+
+def _manual_transcription_paths(root: Path) -> tuple[Path, ...]:
+    return (
+        root / "data/manual/transcriptions/pass_1/ine_trade_transcription_pass_1.csv",
+        root / "data/manual/transcriptions/pass_2/ine_trade_transcription_pass_2.csv",
+        root / "data/manual/adjudication/ine_trade_adjudicated.csv",
+    )
+
+
+def _normalise_cell(value: object) -> str:
+    if value is None:
+        return ""
+    text = str(value).strip()
+    if text in {"", "<NA>", "NaN", "nan", "None"}:
+        return ""
+    return text
+
+
+def _optional_int(value: object) -> int | None:
+    text = _normalise_cell(value)
+    if not text:
+        return None
+    try:
+        number = float(text)
+    except ValueError:
+        return None
+    if not number.is_integer():
+        return None
+    return int(number)
 
 
 def _artifact_role(relative_path: str) -> str:

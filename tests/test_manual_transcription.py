@@ -207,6 +207,7 @@ def test_compare_ine_transcriptions_reports_source_and_adjudication_gaps(
     assert "Rows without source PDF SHA-256: 1" in report
     assert "Pass 1 transcribed rows: 1" in report
     assert "Pass 2 transcribed rows: 1" in report
+    assert "Workflow status: in_progress" in report
     assert "Final rows with unreadable cells: 1" in report
     assert "Final rows pending adjudication: 1" in report
     assert "Final rows carrying footnotes: 1" in report

@@ -277,6 +277,13 @@ def _build_ine_transcription_report(
         {"", "accepted", "adjudicated", "verified"},
     )
     footnoted_final_rows = _count_nonblank(adjudicated, "footnote")
+    workflow_status = _ine_workflow_status(
+        discrepancies=discrepancies,
+        pass_1=pass_1,
+        pass_2=pass_2,
+        adjudicated=adjudicated,
+        pending_adjudication=pending_adjudication,
+    )
     return "\n".join(
         [
             "INE historical trade transcription status",
@@ -288,6 +295,7 @@ def _build_ine_transcription_report(
             f"Rows without source PDF SHA-256: {missing_pdf_hashes}",
             f"Pass 1 transcribed rows: {len(pass_1)}",
             f"Pass 2 transcribed rows: {len(pass_2)}",
+            f"Workflow status: {workflow_status}",
             f"Unresolved transcription discrepancies: {len(discrepancies)}",
             f"Adjudicated final rows: {len(adjudicated)}",
             f"Final rows with unreadable cells: {unreadable_final_cells}",
@@ -299,6 +307,23 @@ def _build_ine_transcription_report(
             "",
         ]
     )
+
+
+def _ine_workflow_status(
+    *,
+    discrepancies: pd.DataFrame,
+    pass_1: pd.DataFrame,
+    pass_2: pd.DataFrame,
+    adjudicated: pd.DataFrame,
+    pending_adjudication: int,
+) -> str:
+    if pass_1.empty and pass_2.empty and adjudicated.empty:
+        return "not_started"
+    if not discrepancies.empty or pending_adjudication > 0:
+        return "in_progress"
+    if not pass_1.empty and not pass_2.empty and len(adjudicated) >= max(len(pass_1), len(pass_2)):
+        return "complete"
+    return "in_progress"
 
 
 def _count_equal(frame: pd.DataFrame, column: str, value: str) -> int:
