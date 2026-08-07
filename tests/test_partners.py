@@ -196,6 +196,7 @@ def test_requested_partner_status_reports_source_area_not_returned(tmp_path: Pat
                 "flow_code": "X",
                 "classification_code": "S1",
                 "partner_code": 0,
+                "trade_value_usd": 100.0,
             }
         ]
     )
@@ -211,6 +212,7 @@ def test_requested_partner_status_reports_source_area_not_returned(tmp_path: Pat
     france = status.loc[status["entity_id"] == "france"].iloc[0]
     assert not bool(france["returned"])
     assert france["requested_partner_code"] == 251
+    assert france["absence_scope"] == "partner_not_returned"
     assert france["resolution"] == "not_returned_by_api"
 
 
@@ -223,6 +225,7 @@ def test_requested_partner_status_marks_stale_unrequested_area(tmp_path: Path) -
                 "flow_code": "X",
                 "classification_code": "S1",
                 "partner_code": 0,
+                "trade_value_usd": 100.0,
             }
         ]
     )
@@ -240,7 +243,34 @@ def test_requested_partner_status_marks_stale_unrequested_area(tmp_path: Path) -
     france = status.loc[status["entity_id"] == "france"].iloc[0]
     assert not bool(france["snapshot_requested"])
     assert france["snapshot_status"] == "stale_against_current_configuration"
+    assert france["absence_scope"] == "stale_request"
     assert france["resolution"] == "not_requested_in_source_snapshot"
+
+
+def test_requested_partner_status_marks_classification_unavailable(tmp_path: Path) -> None:
+    _write_area_config(tmp_path)
+    coverage = pd.DataFrame(
+        [
+            {
+                "year": 1962,
+                "flow_code": "X",
+                "classification_code": "S1",
+                "partner_code": 0,
+                "trade_value_usd": 100.0,
+            }
+        ]
+    )
+
+    status = build_requested_partner_return_status(
+        coverage,
+        tmp_path / "comtrade_partner_areas.yml",
+        years=(1962,),
+        flows=("X",),
+        classification_codes=("S1", "S2"),
+    )
+
+    s2_rows = status.loc[status["classification_code"] == "S2"]
+    assert set(s2_rows["absence_scope"]) == {"classification_unavailable"}
 
 
 def test_load_comtrade_partner_areas_rejects_duplicate_keys(tmp_path: Path) -> None:

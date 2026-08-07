@@ -15,8 +15,9 @@ Audit Portugal's UN Comtrade coverage for 1962–1973 before expanding the trade
 
 - `data/raw/live/comtrade_availability/*.json`
 - `data/interim/live/comtrade_coverage_matrix.csv`
-- `results/live/comtrade_coverage_audit.csv`
-- `results/live/comtrade_coverage_notes.txt`
+- `results/diagnostics/comtrade_coverage/comtrade_coverage_audit.csv`
+- `results/diagnostics/comtrade_coverage/comtrade_coverage_notes.txt`
+- `results/diagnostics/comtrade_coverage/requested_not_returned.csv`
 - tests for missing years, duplicate keys, and classification changes
 
 Do not proceed to causal modelling. Do not infer absence from an empty API response until metadata and historical reporting practices have been checked.

@@ -79,8 +79,12 @@ def _build_world_denominator_groups(
         }
         for scheme, groups in schemes.items():
             assigned_total = 0.0
+            selected_groups_complete = True
             for group_name, codes in groups.items():
                 observed_codes = codes.intersection(partner_values)
+                selected_groups_complete = selected_groups_complete and len(observed_codes) == len(
+                    codes
+                )
                 value = sum(partner_values[code] for code in observed_codes)
                 assigned_total += value
                 records.append(
@@ -97,12 +101,15 @@ def _build_world_denominator_groups(
                     )
                 )
             residual = world_value - assigned_total
+            residual_group = (
+                "true_rest_of_world" if selected_groups_complete else "unassigned_world_residual"
+            )
             records.append(
                 _world_share_record(
                     year_int,
                     str(flow_code),
                     scheme,
-                    "true_rest_of_world",
+                    residual_group,
                     residual,
                     world_value,
                     "world_total_minus_selected_groups",
@@ -131,7 +138,7 @@ def _world_share_record(
         and expected_count is not None
         and observed_count == expected_count
     )
-    is_residual = group_name == "true_rest_of_world"
+    is_residual = group_name in {"true_rest_of_world", "unassigned_world_residual"}
     complete_value = value if complete or is_residual else pd.NA
     observed_share = value / world_value if world_value else pd.NA
     complete_share = (
@@ -155,15 +162,17 @@ def _world_share_record(
             if observed_count is not None and expected_count is not None and expected_count
             else pd.NA
         ),
-        "estimate_status": _estimate_status(complete=complete, is_residual=is_residual),
+        "estimate_status": _estimate_status(complete=complete, group_name=group_name),
         "value_method": value_method,
         "source_quality": "preliminary_from_comtrade_coverage_snapshot",
     }
 
 
-def _estimate_status(*, complete: bool, is_residual: bool) -> str:
-    if is_residual:
-        return "residual_against_observed_selected_groups"
+def _estimate_status(*, complete: bool, group_name: str) -> str:
+    if group_name == "true_rest_of_world":
+        return "complete_residual"
+    if group_name == "unassigned_world_residual":
+        return "residual_with_incomplete_selected_group"
     if complete:
         return "complete_partner_coverage"
     return "incomplete_partner_lower_bound"

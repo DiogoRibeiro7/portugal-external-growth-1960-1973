@@ -181,6 +181,16 @@ def build_requested_partner_return_status(
         )
         for row in returned.to_dict(orient="records")
     }
+    available = coverage_matrix.loc[
+        coverage_matrix.get("trade_value_usd", pd.Series(dtype=object)).notna()
+    ]
+    available_classifications = {
+        (int(row["year"]), str(row["flow_code"]), str(row["classification_code"]))
+        for row in available.to_dict(orient="records")
+    }
+    available_reporters = {
+        (int(row["year"]), str(row["flow_code"])) for row in available.to_dict(orient="records")
+    }
     for year in years:
         active = areas.loc[(areas["start_year"] <= year) & (areas["end_year"] >= year)]
         for flow_code in flows:
@@ -201,6 +211,8 @@ def build_requested_partner_return_status(
                     code = int(area["comtrade_area_code"])
                     is_returned = (year, flow_code, classification_code, code) in returned_codes
                     was_requested = code in snapshot_codes
+                    classification_available = key in available_classifications
+                    reporter_available = (year, flow_code) in available_reporters
                     rows.append(
                         {
                             "year": year,
@@ -220,6 +232,12 @@ def build_requested_partner_return_status(
                             "snapshot_status": snapshot_status,
                             "mapping_status": area["mapping_status"],
                             "mapping_source": area["mapping_source"],
+                            "absence_scope": _absence_scope(
+                                is_returned=is_returned,
+                                was_requested=was_requested,
+                                reporter_available=reporter_available,
+                                classification_available=classification_available,
+                            ),
                             "resolution": _return_resolution(is_returned, was_requested),
                         }
                     )
@@ -239,3 +257,21 @@ def _return_resolution(is_returned: bool, was_requested: bool) -> str:
     if not was_requested:
         return "not_requested_in_source_snapshot"
     return "not_returned_by_api"
+
+
+def _absence_scope(
+    *,
+    is_returned: bool,
+    was_requested: bool,
+    reporter_available: bool,
+    classification_available: bool,
+) -> str:
+    if is_returned:
+        return "returned"
+    if not was_requested:
+        return "stale_request"
+    if not reporter_available:
+        return "reporter_unavailable"
+    if not classification_available:
+        return "classification_unavailable"
+    return "partner_not_returned"

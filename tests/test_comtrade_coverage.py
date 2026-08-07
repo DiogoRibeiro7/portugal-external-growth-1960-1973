@@ -1,8 +1,13 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 import pandas as pd
 
-from portugal_external_growth.transforms import compile_comtrade_coverage_audit
+from portugal_external_growth.transforms import (
+    compile_comtrade_coverage_audit,
+    load_territorial_definition_registry,
+)
 
 
 def test_comtrade_coverage_flags_missing_years() -> None:
@@ -182,3 +187,50 @@ def test_comtrade_coverage_falls_back_and_calculates_selected_partner_ratio() ->
     assert audit.loc[0, "unselected_world_value_usd"] == 75.0
     assert audit.loc[0, "coverage_status"] == "selected_partner_subset"
     assert audit.loc[0, "colonial_partner_codes_present"] == "24"
+
+
+def test_comtrade_coverage_uses_territorial_definition_registry(tmp_path: Path) -> None:
+    registry_path = tmp_path / "territorial_definitions.yml"
+    registry_path.write_text(
+        """
+territorial_definitions:
+  - source_key: un_comtrade_portugal
+    reporter_code: 620
+    start_year: 1962
+    end_year: 1962
+    status: resolved
+    definition: metropolitan_portugal
+    evidence:
+      - source_id: ine_trade_1962
+        page: 4
+        note: Statistical territory reviewed.
+""",
+        encoding="utf-8",
+    )
+    matrix = pd.DataFrame(
+        [
+            {
+                "year": 1962,
+                "flow_code": "X",
+                "classification_code": "S1",
+                "reporter_code": 620,
+                "partner_code": 0,
+                "partner_desc": "World",
+                "trade_value_usd": 100.0,
+                "is_world_record": True,
+                "raw_records": 1,
+            }
+        ]
+    )
+
+    _, audit, _ = compile_comtrade_coverage_audit(
+        [matrix],
+        colonial_partner_codes=(24,),
+        expected_years=(1962,),
+        expected_flow_codes=("X",),
+        territorial_definitions=load_territorial_definition_registry(registry_path),
+    )
+
+    assert audit.loc[0, "territorial_definition_status"] == "resolved"
+    assert audit.loc[0, "territorial_definition"] == "metropolitan_portugal"
+    assert audit.loc[0, "territorial_definition_evidence_count"] == 1

@@ -56,6 +56,13 @@ def atomic_write_json(path: Path, payload: Mapping[str, Any], *, overwrite: bool
     atomic_write_bytes(path, encoded, overwrite=overwrite)
 
 
+def write_text_lf(path: Path, text: str, *, overwrite: bool = True) -> None:
+    """Write UTF-8 text using deterministic LF line endings."""
+
+    payload = text.replace("\r\n", "\n").replace("\r", "\n").encode("utf-8")
+    atomic_write_bytes(path, payload, overwrite=overwrite)
+
+
 def write_dataframe_with_metadata(
     frame: pd.DataFrame,
     csv_path: Path,

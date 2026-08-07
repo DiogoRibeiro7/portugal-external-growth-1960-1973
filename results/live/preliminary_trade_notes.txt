@@ -2,7 +2,8 @@ Preliminary trade-orientation results
 =====================================
 
 The live preliminary tables use UN Comtrade World totals as the denominator.
-The true_rest_of_world row is calculated as World minus selected group totals.
+The residual row is labelled true_rest_of_world only when selected partner
+coverage is complete; otherwise it is an unassigned World residual.
 European and institutional group-share rows are withheld from live preliminary
 results until the Comtrade source-area crosswalk has been reviewed against
 returned partner-area metadata for every requested year and flow.

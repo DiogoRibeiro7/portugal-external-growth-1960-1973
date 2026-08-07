@@ -7,7 +7,7 @@ from pathlib import Path
 import pandas as pd
 
 from portugal_external_growth.config import load_yaml
-from portugal_external_growth.io_utils import write_dataframe_with_metadata
+from portugal_external_growth.io_utils import write_dataframe_with_metadata, write_text_lf
 
 TRADE_TEMPLATE_COLUMNS = [
     "source_id",
@@ -154,9 +154,9 @@ def compare_ine_transcriptions(root: Path) -> list[Path]:
         overwrite=True,
     )
     report_path = root / "results/live/ine_transcription_unresolved.txt"
-    report_path.parent.mkdir(parents=True, exist_ok=True)
     unresolved = len(discrepancies)
-    report_path.write_text(
+    write_text_lf(
+        report_path,
         "\n".join(
             [
                 "INE historical trade transcription status",
@@ -168,7 +168,6 @@ def compare_ine_transcriptions(root: Path) -> list[Path]:
                 "",
             ]
         ),
-        encoding="utf-8",
     )
     return [discrepancy_path, report_path]
 

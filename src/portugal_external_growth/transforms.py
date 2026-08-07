@@ -28,6 +28,16 @@ OPTIONAL_COMTRADE_COLUMNS = {
     "legacy_estimation_flag",
 }
 
+TERRITORIAL_DEFINITION_COLUMNS = [
+    "source_key",
+    "reporter_code",
+    "year",
+    "status",
+    "definition",
+    "evidence_count",
+    "evidence_summary",
+]
+
 
 def _select_column(frame: pd.DataFrame, candidates: tuple[str, ...], target: str) -> pd.Series:
     for candidate in candidates:
@@ -130,6 +140,7 @@ def compile_comtrade_coverage_audit(
     expected_years: tuple[int, ...],
     expected_flow_codes: tuple[str, ...],
     preferred_classification_codes: tuple[str, ...] = ("S1", "S2"),
+    territorial_definitions: pd.DataFrame | None = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame, str]:
     """Summarise raw Comtrade availability responses into audit tables and notes."""
 
@@ -230,7 +241,11 @@ def compile_comtrade_coverage_audit(
                     "valuation_note": (
                         "Comtrade convention: imports CIF, exports FOB; verify in source metadata."
                     ),
-                    "territorial_definition_status": "requires_historical_metadata_review",
+                    **_territorial_definition_fields(
+                        territorial_definitions,
+                        reporter_code=620,
+                        year=year,
+                    ),
                 }
             )
 
@@ -261,6 +276,74 @@ def compile_comtrade_coverage_audit(
         ]
     )
     return matrix, audit, notes
+
+
+def load_territorial_definition_registry(path: Path) -> pd.DataFrame:
+    """Expand reviewed territorial-definition evidence to reporter-year rows."""
+
+    if not path.exists():
+        return pd.DataFrame(columns=TERRITORIAL_DEFINITION_COLUMNS)
+    payload = load_yaml(path)
+    records = payload.get("territorial_definitions")
+    if not isinstance(records, list):
+        raise TypeError("territorial_definitions.yml must contain a territorial_definitions list")
+    rows: list[dict[str, object]] = []
+    for record in records:
+        if not isinstance(record, dict):
+            continue
+        evidence = record.get("evidence", [])
+        if not isinstance(evidence, list):
+            evidence = []
+        evidence_summary = "; ".join(
+            str(item.get("source_id", ""))
+            for item in evidence
+            if isinstance(item, dict) and item.get("source_id")
+        )
+        for year in range(int(record["start_year"]), int(record["end_year"]) + 1):
+            rows.append(
+                {
+                    "source_key": str(record["source_key"]),
+                    "reporter_code": int(record["reporter_code"]),
+                    "year": year,
+                    "status": str(record["status"]),
+                    "definition": str(record.get("definition") or ""),
+                    "evidence_count": len(evidence),
+                    "evidence_summary": evidence_summary,
+                }
+            )
+    return pd.DataFrame.from_records(rows, columns=TERRITORIAL_DEFINITION_COLUMNS)
+
+
+def _territorial_definition_fields(
+    territorial_definitions: pd.DataFrame | None,
+    *,
+    reporter_code: int,
+    year: int,
+) -> dict[str, object]:
+    default = {
+        "territorial_definition_status": "requires_historical_metadata_review",
+        "territorial_definition": "",
+        "territorial_definition_evidence_count": 0,
+        "territorial_definition_evidence_summary": "",
+    }
+    if territorial_definitions is None or territorial_definitions.empty:
+        return default
+    matches = territorial_definitions.loc[
+        (territorial_definitions["reporter_code"].eq(reporter_code))
+        & (territorial_definitions["year"].eq(year))
+    ]
+    if matches.empty:
+        return default
+    match = matches.iloc[0]
+    status = str(match["status"])
+    return {
+        "territorial_definition_status": (
+            "resolved" if status == "resolved" else "requires_historical_metadata_review"
+        ),
+        "territorial_definition": str(match["definition"]),
+        "territorial_definition_evidence_count": int(match["evidence_count"]),
+        "territorial_definition_evidence_summary": str(match["evidence_summary"]),
+    }
 
 
 def _preferred_classification(

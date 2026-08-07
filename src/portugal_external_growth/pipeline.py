@@ -21,7 +21,11 @@ from portugal_external_growth.empirical import (
     empty_diagnostics,
 )
 from portugal_external_growth.http import build_session
-from portugal_external_growth.io_utils import sha256_file, write_dataframe_with_metadata
+from portugal_external_growth.io_utils import (
+    sha256_file,
+    write_dataframe_with_metadata,
+    write_text_lf,
+)
 from portugal_external_growth.manual import (
     build_ine_harmonised,
     compare_ine_transcriptions,
@@ -49,6 +53,7 @@ from portugal_external_growth.registry import (
 from portugal_external_growth.settings import Settings
 from portugal_external_growth.transforms import (
     compile_comtrade_coverage_audit,
+    load_territorial_definition_registry,
     normalise_comtrade,
     summarise_gdp_growth,
 )
@@ -148,8 +153,7 @@ def bootstrap(root: Path) -> None:
         "BPstat results: NOT YET PRODUCED; reviewed series registry required.\n"
     )
     output = root / "results/bootstrap/cross_checks.txt"
-    output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(text, encoding="utf-8")
+    write_text_lf(output, text)
 
 
 def extract_world_bank(settings: Settings, *, overwrite: bool) -> None:
@@ -302,6 +306,9 @@ def audit_comtrade_coverage(settings: Settings, *, overwrite: bool) -> None:
         expected_years=years,
         expected_flow_codes=flows,
         preferred_classification_codes=preferred_classification_codes,
+        territorial_definitions=load_territorial_definition_registry(
+            root / "config/territorial_definitions.yml"
+        ),
     )
     write_dataframe_with_metadata(
         coverage_matrix,
@@ -311,7 +318,12 @@ def audit_comtrade_coverage(settings: Settings, *, overwrite: bool) -> None:
     write_dataframe_with_metadata(
         audit,
         root / "results/diagnostics/comtrade_coverage/comtrade_coverage_audit.csv",
-        metadata={"source_files": ["data/interim/live/comtrade_coverage_matrix.csv"]},
+        metadata={
+            "source_files": [
+                "data/interim/live/comtrade_coverage_matrix.csv",
+                "config/territorial_definitions.yml",
+            ]
+        },
     )
     area_path = root / "config/comtrade_partner_areas.yml"
     if area_path.exists():
@@ -334,8 +346,7 @@ def audit_comtrade_coverage(settings: Settings, *, overwrite: bool) -> None:
             },
         )
     notes_path = root / "results/diagnostics/comtrade_coverage/comtrade_coverage_notes.txt"
-    notes_path.parent.mkdir(parents=True, exist_ok=True)
-    notes_path.write_text(notes, encoding="utf-8")
+    write_text_lf(notes_path, notes)
 
 
 def rebuild_comtrade_coverage_audit_from_local(settings: Settings) -> None:
@@ -372,6 +383,9 @@ def rebuild_comtrade_coverage_audit_from_local(settings: Settings) -> None:
         expected_years=years,
         expected_flow_codes=flows,
         preferred_classification_codes=preferred_classification_codes,
+        territorial_definitions=load_territorial_definition_registry(
+            root / "config/territorial_definitions.yml"
+        ),
     )
     write_dataframe_with_metadata(
         coverage_matrix,
@@ -384,7 +398,12 @@ def rebuild_comtrade_coverage_audit_from_local(settings: Settings) -> None:
     write_dataframe_with_metadata(
         audit,
         root / "results/diagnostics/comtrade_coverage/comtrade_coverage_audit.csv",
-        metadata={"source_files": ["data/interim/live/comtrade_coverage_matrix.csv"]},
+        metadata={
+            "source_files": [
+                "data/interim/live/comtrade_coverage_matrix.csv",
+                "config/territorial_definitions.yml",
+            ]
+        },
     )
     if area_path.exists():
         classification_codes = tuple(
@@ -410,8 +429,7 @@ def rebuild_comtrade_coverage_audit_from_local(settings: Settings) -> None:
             },
         )
     notes_path = root / "results/diagnostics/comtrade_coverage/comtrade_coverage_notes.txt"
-    notes_path.parent.mkdir(parents=True, exist_ok=True)
-    notes_path.write_text(notes, encoding="utf-8")
+    write_text_lf(notes_path, notes)
 
 
 def _colonial_partner_codes(root: Path) -> tuple[int, ...]:
@@ -664,8 +682,7 @@ def review_bpstat_registry(settings: Settings) -> None:
     )
     report = build_bpstat_registry_review(registry)
     output = root / "results/live/bpstat_registry_review.txt"
-    output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(report, encoding="utf-8")
+    write_text_lf(output, report)
 
 
 def build(settings: Settings) -> None:
@@ -814,8 +831,7 @@ def reconcile_trade_sources(settings: Settings) -> None:
     )
     notes = build_trade_reconciliation_notes(reconciliation)
     output = root / "results/live/trade_reconciliation_notes.txt"
-    output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(notes, encoding="utf-8")
+    write_text_lf(output, notes)
 
 
 def build_sitc_industry_mapping(settings: Settings) -> None:
@@ -913,14 +929,16 @@ def build_descriptive_results(settings: Settings) -> None:
             },
         )
     notes = root / "results/live/preliminary_trade_notes.txt"
-    notes.write_text(
+    write_text_lf(
+        notes,
         "\n".join(
             [
                 "Preliminary trade-orientation results",
                 "=====================================",
                 "",
                 "The live preliminary tables use UN Comtrade World totals as the denominator.",
-                "The true_rest_of_world row is calculated as World minus selected group totals.",
+                "The residual row is labelled true_rest_of_world only when selected partner",
+                "coverage is complete; otherwise it is an unassigned World residual.",
                 "European and institutional group-share rows are withheld from live preliminary",
                 "results until the Comtrade source-area crosswalk has been reviewed against",
                 "returned partner-area metadata for every requested year and flow.",
@@ -932,7 +950,6 @@ def build_descriptive_results(settings: Settings) -> None:
                 "",
             ]
         ),
-        encoding="utf-8",
     )
 
 
@@ -966,12 +983,12 @@ def prepare_empirical_extension(settings: Settings) -> None:
         metadata={"stage": "coefficients_not_estimated"},
     )
     coefficient_text = root / "results/live/empirical_coefficients.txt"
-    coefficient_text.write_text(
+    write_text_lf(
+        coefficient_text,
         "No coefficients estimated; empirical prerequisites are not satisfied.\n",
-        encoding="utf-8",
     )
     risk_notes = root / "results/live/empirical_assumptions_and_risks.txt"
-    risk_notes.write_text(build_empirical_risk_notes(), encoding="utf-8")
+    write_text_lf(risk_notes, build_empirical_risk_notes())
 
 
 def refresh_sources(settings: Settings, *, overwrite: bool) -> None:

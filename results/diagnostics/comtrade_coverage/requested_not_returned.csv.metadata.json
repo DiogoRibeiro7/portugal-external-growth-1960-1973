@@ -16,6 +16,7 @@
     "snapshot_status",
     "mapping_status",
     "mapping_source",
+    "absence_scope",
     "resolution"
   ],
   "date_range": {
@@ -35,6 +36,7 @@
   ],
   "rows": 576,
   "schema": {
+    "absence_scope": "object",
     "classification_code": "object",
     "configured_partner_codes_sha256": "object",
     "entity_id": "object",
@@ -52,7 +54,7 @@
     "snapshot_status": "object",
     "year": "int64"
   },
-  "sha256": "9f8786d3a27f1f47f03b86e2fb6c8913276bdf94f310bae034145c060049b68d",
+  "sha256": "58d85e825c01c1a7bf7facaed7b09639142a2b3ca9537120a52dd02cff867f51",
   "source_files": [
     "data/interim/live/comtrade_coverage_matrix.csv",
     "config/comtrade_partner_areas.yml"

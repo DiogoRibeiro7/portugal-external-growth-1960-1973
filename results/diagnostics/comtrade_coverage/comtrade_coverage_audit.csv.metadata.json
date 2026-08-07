@@ -16,7 +16,10 @@
     "unselected_world_value_usd",
     "coverage_status",
     "valuation_note",
-    "territorial_definition_status"
+    "territorial_definition_status",
+    "territorial_definition",
+    "territorial_definition_evidence_count",
+    "territorial_definition_evidence_summary"
   ],
   "date_range": {
     "end_year": 1973,
@@ -27,6 +30,10 @@
     {
       "path": "data/interim/live/comtrade_coverage_matrix.csv",
       "sha256": "290fb75344b2196f35a7dd494b5051d2448ebd08e8e4d34f333aeb2dc467bb52"
+    },
+    {
+      "path": "config/territorial_definitions.yml",
+      "sha256": "72486fe5972752846e20bf15aee7b5f0f0beee329cff8b02b51182bece33ba63"
     }
   ],
   "rows": 24,
@@ -42,15 +49,19 @@
     "reporter_code": "int64",
     "selected_coverage_ratio": "float64",
     "selected_partner_sum_usd": "float64",
+    "territorial_definition": "object",
+    "territorial_definition_evidence_count": "int64",
+    "territorial_definition_evidence_summary": "object",
     "territorial_definition_status": "object",
     "unselected_world_value_usd": "float64",
     "valuation_note": "object",
     "world_value_usd": "float64",
     "year": "int64"
   },
-  "sha256": "785aab0a0c608c3d0a98b86fe483afb951169ac27d1d0f06f1c460a7fe20cab1",
+  "sha256": "1bc232a6edcbf21a82b0e4ca7e5062f72e9e88b57c2040d32cde46b40e2631cb",
   "source_files": [
-    "data/interim/live/comtrade_coverage_matrix.csv"
+    "data/interim/live/comtrade_coverage_matrix.csv",
+    "config/territorial_definitions.yml"
   ],
   "source_licence": "not_specified",
   "validation_findings": []

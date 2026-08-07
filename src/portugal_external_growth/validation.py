@@ -117,15 +117,16 @@ def validate_preliminary_trade_shares(frame: pd.DataFrame) -> list[ValidationIss
                 "World-denominator shares must sum to one within each scheme/year/flow.",
             )
         )
-    residual = frame.loc[frame["partner_group"] == "true_rest_of_world"]
+    residual_labels = {"true_rest_of_world", "unassigned_world_residual"}
+    residual = frame.loc[frame["partner_group"].isin(residual_labels)]
     residual_counts = residual.groupby(["year", "flow_code", "classification_scheme"]).size()
     expected_groups = frame.groupby(["year", "flow_code", "classification_scheme"]).size()
     if len(residual_counts) != len(expected_groups) or (residual_counts != 1).any():
         issues.append(
             ValidationIssue(
                 "error",
-                "preliminary_trade.true_residual",
-                "Each scheme/year/flow must contain exactly one true_rest_of_world row.",
+                "preliminary_trade.residual",
+                "Each scheme/year/flow must contain exactly one World residual row.",
             )
         )
     negative_residuals = residual.loc[
@@ -136,7 +137,7 @@ def validate_preliminary_trade_shares(frame: pd.DataFrame) -> list[ValidationIss
             ValidationIssue(
                 "error",
                 "preliminary_trade.negative_residual",
-                "true_rest_of_world cannot be negative.",
+                "World residual cannot be negative.",
             )
         )
     return issues

@@ -1,0 +1,8 @@
+territorial_definitions:
+  - source_key: un_comtrade_portugal
+    reporter_code: 620
+    start_year: 1962
+    end_year: 1973
+    status: unresolved
+    definition:
+    evidence: []

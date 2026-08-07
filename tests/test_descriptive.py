@@ -99,6 +99,9 @@ def test_incomplete_colonial_coverage_is_reported_as_lower_bound() -> None:
     assert colonies["partner_coverage_count"] == 1
     assert colonies["expected_partner_count"] == 2
     assert colonies["estimate_status"] == "incomplete_partner_lower_bound"
+    residual = result.loc[result["partner_group"] == "unassigned_world_residual"].iloc[0]
+    assert residual["trade_value_usd"] == 80.0
+    assert residual["estimate_status"] == "residual_with_incomplete_selected_group"
 
 
 def test_build_descriptive_trade_results_from_local_registry(tmp_path: Path) -> None:

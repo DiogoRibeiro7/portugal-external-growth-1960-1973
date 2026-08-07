@@ -6,7 +6,7 @@ from pathlib import Path
 import pandas as pd
 from pytest import MonkeyPatch
 
-from portugal_external_growth.io_utils import write_dataframe_with_metadata
+from portugal_external_growth.io_utils import write_dataframe_with_metadata, write_text_lf
 
 
 def test_metadata_records_relative_input_hashes_and_schema(
@@ -31,3 +31,11 @@ def test_metadata_records_relative_input_hashes_and_schema(
     assert metadata["input_artifacts"][0]["sha256"]
     assert metadata["schema"] == {"year": "int64", "value": "float64"}
     assert metadata["date_range"] == {"start_year": 1962, "end_year": 1962}
+
+
+def test_write_text_lf_normalises_line_endings(tmp_path: Path) -> None:
+    path = tmp_path / "report.txt"
+
+    write_text_lf(path, "a\r\nb\rc\n")
+
+    assert path.read_bytes() == b"a\nb\nc\n"

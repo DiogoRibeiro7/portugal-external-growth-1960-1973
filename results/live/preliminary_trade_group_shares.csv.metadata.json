@@ -58,7 +58,7 @@
     "world_value_usd": "float64",
     "year": "int64"
   },
-  "sha256": "915efe973b0b9a48f5f7f8ed598bdbb542750f3aaa3c5719721c1319f921d34a",
+  "sha256": "f854880994e52df1172acfbd793ae2dbc95c8322a1878bb6ccb972966df58283",
   "source_files": [
     "data/interim/live/comtrade_coverage_matrix.csv",
     "config/historical_groups.yml",
