@@ -1,0 +1,12 @@
+{
+  "access_conditions": "IMF eLibrary public PDF downloaded for source verification",
+  "date_downloaded": "2026-08-07",
+  "file": "data/manual/source_documents/imf_central_banking_legislation_portugal_ch013.pdf",
+  "local_filename": "imf_central_banking_legislation_portugal_ch013.pdf",
+  "sha256": "3df5459a73b9ffeee9c08979bf43fb38e07103bc54f19a7bf667520dde87f809",
+  "source": "IMF, Central Banking Legislation, Volume 2, Portugal chapter",
+  "source_id": "imf_central_banking_legislation_portugal",
+  "source_url": "https://www.elibrary.imf.org/downloadpdf/display/book/9781451949605/ch013.pdf",
+  "source_status": "registered_local_source",
+  "usage_note": "Used only to document Portugal 1962 IMF par value of 28.75 PTE per USD for benchmark reconciliation."
+}

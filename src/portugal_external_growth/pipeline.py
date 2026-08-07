@@ -7,6 +7,9 @@ from pathlib import Path
 
 import pandas as pd
 
+from portugal_external_growth.aggregate_orientation import (
+    build_validated_aggregate_orientation_outputs,
+)
 from portugal_external_growth.clients.bpstat import BPstatClient, BPstatSeries
 from portugal_external_growth.clients.comtrade import ComtradeClient, ComtradeRequest
 from portugal_external_growth.clients.world_bank import WorldBankClient, WorldBankRequest
@@ -42,6 +45,7 @@ from portugal_external_growth.partners import (
     partner_codes_sha256,
 )
 from portugal_external_growth.reconciliation import (
+    build_exchange_rate_evidence,
     build_ine_comtrade_1962_notes,
     build_ine_comtrade_1962_reconciliation,
     build_reconciliation_registry,
@@ -816,6 +820,17 @@ def reconcile_trade_sources(settings: Settings) -> None:
     """Reconcile annual trade totals without silently merging conflicts."""
 
     root = settings.resolved_root()
+    exchange_rate_evidence = build_exchange_rate_evidence(root)
+    write_dataframe_with_metadata(
+        exchange_rate_evidence,
+        root / "data/interim/live/portugal_exchange_rate_evidence.csv",
+        metadata={
+            "source_files": [
+                "data/manual/source_documents/imf_central_banking_legislation_portugal_ch013.pdf"
+            ],
+            "stage": "exchange_rate_source_evidence",
+        },
+    )
     ine_comtrade_1962 = build_ine_comtrade_1962_reconciliation(root)
     write_dataframe_with_metadata(
         ine_comtrade_1962,
@@ -828,6 +843,7 @@ def reconcile_trade_sources(settings: Settings) -> None:
                 "config/historical_groups.yml",
                 "config/comtrade_partner_areas.yml",
                 "data/interim/live/historical_colonial_partner_crosswalk.csv",
+                "data/interim/live/portugal_exchange_rate_evidence.csv",
             ],
             "stage": "ine_comtrade_1962_reconciliation",
         },
@@ -854,6 +870,7 @@ def reconcile_trade_sources(settings: Settings) -> None:
             "source_files": [
                 "results/diagnostics/comtrade_coverage/comtrade_coverage_audit.csv",
                 "data/processed/live/ine_1962_aggregate_trade_harmonised.csv",
+                "data/interim/live/portugal_exchange_rate_evidence.csv",
             ],
             "stage": "source_preserving_trade_comparison",
         },
@@ -867,6 +884,58 @@ def reconcile_trade_sources(settings: Settings) -> None:
     notes = build_trade_reconciliation_notes(reconciliation)
     output = root / "results/live/trade_reconciliation_notes.txt"
     write_text_lf(output, notes)
+
+
+def build_validated_aggregate_orientation(settings: Settings) -> None:
+    """Build validated annual aggregate external-orientation outputs."""
+
+    root = settings.resolved_root()
+    dataset, status, matrix, source_comparison, notes = (
+        build_validated_aggregate_orientation_outputs(root)
+    )
+    source_files = [
+        "data/processed/live/ine_1962_aggregate_trade_harmonised.csv",
+        "data/interim/live/ine_comtrade_1962_reconciliation.csv",
+        "results/diagnostics/reconciliation/reconciliation_registry.csv",
+        "data/manual/transcriptions/pass_1/ine_aggregate_transcription_pass_1.csv",
+        "data/manual/transcriptions/pass_2/ine_aggregate_transcription_pass_2.csv",
+        "data/manual/source_documents/source_document_registry.csv",
+    ]
+    write_dataframe_with_metadata(
+        dataset,
+        root / "data/processed/live/validated_annual_aggregate_external_orientation.csv",
+        metadata={
+            "source_files": source_files,
+            "stage": "validated_annual_aggregate_external_orientation",
+        },
+    )
+    write_dataframe_with_metadata(
+        status,
+        root / "results/live/annual_aggregate_external_orientation_status.csv",
+        metadata={"source_files": source_files, "stage": "annual_aggregate_coverage_status"},
+    )
+    write_dataframe_with_metadata(
+        matrix,
+        root / "results/live/annual_aggregate_reconciliation_matrix.csv",
+        metadata={
+            "source_files": [
+                "data/interim/live/ine_comtrade_1962_reconciliation.csv",
+                "data/processed/live/ine_1962_aggregate_trade_harmonised.csv",
+            ],
+            "stage": "annual_aggregate_reconciliation_matrix",
+        },
+    )
+    write_dataframe_with_metadata(
+        source_comparison,
+        root / "results/live/annual_aggregate_source_comparison.csv",
+        metadata={
+            "source_files": ["data/interim/live/trade_source_comparison.csv"],
+            "stage": "annual_aggregate_source_comparison",
+        },
+    )
+    write_text_lf(
+        root / "results/live/annual_aggregate_external_orientation_cross_checks.txt", notes
+    )
 
 
 def build_sitc_industry_mapping(settings: Settings) -> None:
@@ -1042,6 +1111,7 @@ def run_diagnostics(settings: Settings) -> None:
     review_bpstat_registry(settings)
     prepare_ine_transcription(settings)
     reconcile_trade_sources(settings)
+    build_validated_aggregate_orientation(settings)
     build_sitc_industry_mapping(settings)
     build_descriptive_results(settings)
     prepare_empirical_extension(settings)

@@ -1,0 +1,71 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "year",
+    "source_document_status",
+    "aggregate_pass_1_rows",
+    "aggregate_pass_2_rows",
+    "validated_aggregate_rows",
+    "required_validated_rows",
+    "source_status",
+    "estimate_status",
+    "reconciliation_status",
+    "blocking_reason"
+  ],
+  "date_range": {
+    "end_year": 1973,
+    "start_year": 1962
+  },
+  "file": "results/live/annual_aggregate_external_orientation_status.csv",
+  "input_artifacts": [
+    {
+      "path": "data/processed/live/ine_1962_aggregate_trade_harmonised.csv",
+      "sha256": "220e6aebb277d5846c026657277c1ea201d6c68b635bffb2956da6bdc49d3ed0"
+    },
+    {
+      "path": "data/interim/live/ine_comtrade_1962_reconciliation.csv",
+      "sha256": "fac74fdfd2c2d9d9569ea46452ce40e18fc26d46f5e9f4a532c0e0f956be0e70"
+    },
+    {
+      "path": "results/diagnostics/reconciliation/reconciliation_registry.csv",
+      "sha256": "3944edfe922a2e781a8195ca9ce1dcbebacb87280f260926cc619f5e02848b39"
+    },
+    {
+      "path": "data/manual/transcriptions/pass_1/ine_aggregate_transcription_pass_1.csv",
+      "sha256": "d3c97f5a4d9d4ce9baa3807671937a736c1c3888c37a9129d0ac779d62cb992d"
+    },
+    {
+      "path": "data/manual/transcriptions/pass_2/ine_aggregate_transcription_pass_2.csv",
+      "sha256": "729de73a6e78fb2aa228076d726f2eeb8c12b69e598a9a07b807b2609fa87476"
+    },
+    {
+      "path": "data/manual/source_documents/source_document_registry.csv",
+      "sha256": "1117eb2db582fe0cd62feeb2934c9d431c8e9a58ba8d6e940a77cb63dac92e66"
+    }
+  ],
+  "rows": 12,
+  "schema": {
+    "aggregate_pass_1_rows": "int64",
+    "aggregate_pass_2_rows": "int64",
+    "blocking_reason": "object",
+    "estimate_status": "object",
+    "reconciliation_status": "object",
+    "required_validated_rows": "int64",
+    "source_document_status": "object",
+    "source_status": "object",
+    "validated_aggregate_rows": "int64",
+    "year": "int64"
+  },
+  "sha256": "b420264709669915761535c7c80d3240c788efab2b8c9eb1e63ae7c21a6db94c",
+  "source_files": [
+    "data/processed/live/ine_1962_aggregate_trade_harmonised.csv",
+    "data/interim/live/ine_comtrade_1962_reconciliation.csv",
+    "results/diagnostics/reconciliation/reconciliation_registry.csv",
+    "data/manual/transcriptions/pass_1/ine_aggregate_transcription_pass_1.csv",
+    "data/manual/transcriptions/pass_2/ine_aggregate_transcription_pass_2.csv",
+    "data/manual/source_documents/source_document_registry.csv"
+  ],
+  "source_licence": "not_specified",
+  "stage": "annual_aggregate_coverage_status",
+  "validation_findings": []
+}

@@ -82,6 +82,29 @@ def test_ine_comtrade_1962_reconciliation_keeps_world_unresolved(
     assert "exchange-rate source" in world_exports["explanation"]
 
 
+def test_ine_comtrade_1962_reconciliation_resolves_with_exchange_rate_evidence(
+    tmp_path: Path,
+) -> None:
+    _write_ine_1962_aggregates(tmp_path)
+    _write_comtrade_1962_inputs(tmp_path)
+    _write_colonial_group_config(tmp_path)
+    _write_historical_colonial_crosswalk(tmp_path)
+    _write_exchange_rate_source(tmp_path)
+
+    reconciliation = build_ine_comtrade_1962_reconciliation(tmp_path)
+    registry = build_reconciliation_registry(reconciliation)
+
+    world_exports = reconciliation.loc[reconciliation["concept"].eq("World exports")].iloc[0]
+    overseas_exports = reconciliation.loc[reconciliation["concept"].eq("Overseas exports")].iloc[0]
+    assert world_exports["reconciliation_status"] == "reconciled_with_conversion"
+    assert (
+        overseas_exports["reconciliation_status"]
+        == "resolved_for_dataset_ine_preferred_complete_aggregate"
+    )
+    assert registry.loc[0, "overall_status"] == "satisfactory_with_caveats"
+    assert registry.loc[0, "blocking_reasons"] == ""
+
+
 def test_ine_comtrade_1962_reconciliation_marks_overseas_lower_bound(
     tmp_path: Path,
 ) -> None:
@@ -98,8 +121,11 @@ def test_ine_comtrade_1962_reconciliation_marks_overseas_lower_bound(
     assert overseas_exports["observed_partner_count"] == 4
     assert overseas_exports["coverage_ratio"] == 4 / 8
     assert "portuguese_india" in overseas_exports["missing_partner_entities"]
-    assert overseas_exports["reconciliation_status"] == "unresolved"
-    assert "lower bound" in overseas_exports["explanation"]
+    assert (
+        overseas_exports["reconciliation_status"]
+        == "resolved_for_dataset_ine_preferred_complete_aggregate"
+    )
+    assert "lower-bound diagnostic" in overseas_exports["explanation"]
 
 
 def test_reconciliation_registry_reports_unresolved_blockers() -> None:
@@ -284,6 +310,14 @@ def _write_historical_colonial_crosswalk(root: Path) -> None:
             },
         ]
     ).to_csv(output_dir / "historical_colonial_partner_crosswalk.csv", index=False)
+
+
+def _write_exchange_rate_source(root: Path) -> None:
+    source_dir = root / "data/manual/source_documents"
+    source_dir.mkdir(parents=True, exist_ok=True)
+    (source_dir / "imf_central_banking_legislation_portugal_ch013.pdf").write_bytes(
+        b"test source placeholder"
+    )
 
 
 def _area(entity_id: str, code: int) -> str:

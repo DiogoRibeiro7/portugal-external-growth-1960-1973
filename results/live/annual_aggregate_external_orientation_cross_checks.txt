@@ -1,0 +1,10 @@
+Validated annual aggregate external-orientation cross-checks
+===========================================================
+
+Validated years: 1962
+Years blocked by first-pass-only aggregate transcription: 1965, 1970, 1973
+Share values outside [0, 1]: 0
+Reconciliation matrix rows: 4
+
+Complete colonial shares are never filled from incomplete Comtrade colonial rows.
+EFTA/EEC variables remain blank until double-entry verified group totals exist.

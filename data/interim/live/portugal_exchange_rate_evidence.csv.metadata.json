@@ -1,0 +1,50 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "year",
+    "currency",
+    "counter_currency",
+    "rate_type",
+    "pte_per_usd",
+    "effective_date",
+    "source",
+    "source_url",
+    "local_file",
+    "source_sha256",
+    "evidence_note",
+    "source_status"
+  ],
+  "date_range": {
+    "end_year": 1962,
+    "start_year": 1962
+  },
+  "file": "data/interim/live/portugal_exchange_rate_evidence.csv",
+  "input_artifacts": [
+    {
+      "path": "data/manual/source_documents/imf_central_banking_legislation_portugal_ch013.pdf",
+      "sha256": "3df5459a73b9ffeee9c08979bf43fb38e07103bc54f19a7bf667520dde87f809"
+    }
+  ],
+  "rows": 1,
+  "schema": {
+    "counter_currency": "object",
+    "currency": "object",
+    "effective_date": "object",
+    "evidence_note": "object",
+    "local_file": "object",
+    "pte_per_usd": "float64",
+    "rate_type": "object",
+    "source": "object",
+    "source_sha256": "object",
+    "source_status": "object",
+    "source_url": "object",
+    "year": "int64"
+  },
+  "sha256": "68b0404e9be16fafe5c70dc7e7c553b2278e09328f28686d552421f282e3b7fe",
+  "source_files": [
+    "data/manual/source_documents/imf_central_banking_legislation_portugal_ch013.pdf"
+  ],
+  "source_licence": "not_specified",
+  "stage": "exchange_rate_source_evidence",
+  "validation_findings": []
+}

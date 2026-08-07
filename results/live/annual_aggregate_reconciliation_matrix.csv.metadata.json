@@ -1,0 +1,53 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "year",
+    "flow",
+    "aggregate_component",
+    "preferred_source",
+    "preferred_value_pte",
+    "comparison_source",
+    "comparison_value_usd",
+    "comparison_status",
+    "coverage_ratio",
+    "use_in_validated_dataset",
+    "note"
+  ],
+  "date_range": {
+    "end_year": 1962,
+    "start_year": 1962
+  },
+  "file": "results/live/annual_aggregate_reconciliation_matrix.csv",
+  "input_artifacts": [
+    {
+      "path": "data/interim/live/ine_comtrade_1962_reconciliation.csv",
+      "sha256": "fac74fdfd2c2d9d9569ea46452ce40e18fc26d46f5e9f4a532c0e0f956be0e70"
+    },
+    {
+      "path": "data/processed/live/ine_1962_aggregate_trade_harmonised.csv",
+      "sha256": "220e6aebb277d5846c026657277c1ea201d6c68b635bffb2956da6bdc49d3ed0"
+    }
+  ],
+  "rows": 4,
+  "schema": {
+    "aggregate_component": "object",
+    "comparison_source": "object",
+    "comparison_status": "object",
+    "comparison_value_usd": "float64",
+    "coverage_ratio": "float64",
+    "flow": "object",
+    "note": "object",
+    "preferred_source": "object",
+    "preferred_value_pte": "float64",
+    "use_in_validated_dataset": "bool",
+    "year": "int64"
+  },
+  "sha256": "60d6966a38125d9116547e0dc0a2edf8211d0790a5b120346f011e1a4c70463f",
+  "source_files": [
+    "data/interim/live/ine_comtrade_1962_reconciliation.csv",
+    "data/processed/live/ine_1962_aggregate_trade_harmonised.csv"
+  ],
+  "source_licence": "not_specified",
+  "stage": "annual_aggregate_reconciliation_matrix",
+  "validation_findings": []
+}

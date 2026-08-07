@@ -17,11 +17,11 @@
   "input_artifacts": [
     {
       "path": "data/interim/live/ine_comtrade_1962_reconciliation.csv",
-      "sha256": "0cbf57bd22412216ddfe7ae649fc19a81cd361e10dd4018d39abf8cdf85431a4"
+      "sha256": "fac74fdfd2c2d9d9569ea46452ce40e18fc26d46f5e9f4a532c0e0f956be0e70"
     },
     {
       "path": "results/diagnostics/reconciliation/ine_comtrade_1962_reconciliation.txt",
-      "sha256": "dbe009fad4945796e67f5db53d65ec681496bc2fb53740af3fbb30d416a74397"
+      "sha256": "4cdcaf8dd44bd7f7b0d71901491897001a49e55a86ee52a845cffe852638ab54"
     }
   ],
   "rows": 1,
@@ -37,7 +37,7 @@
     "source_b": "object",
     "unresolved_row_count": "int64"
   },
-  "sha256": "5fed898695fc9d10c263192fcecaf6c16acc4ce3f897771f7293e0c17af5b9a0",
+  "sha256": "3944edfe922a2e781a8195ca9ce1dcbebacb87280f260926cc619f5e02848b39",
   "source_files": [
     "data/interim/live/ine_comtrade_1962_reconciliation.csv",
     "results/diagnostics/reconciliation/ine_comtrade_1962_reconciliation.txt"

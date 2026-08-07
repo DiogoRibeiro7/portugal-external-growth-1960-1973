@@ -58,6 +58,10 @@
     {
       "path": "data/interim/live/historical_colonial_partner_crosswalk.csv",
       "sha256": "1a94373d96dd3f2a49c02608452df295df86b65ca9c116c2115ac23433d36cb9"
+    },
+    {
+      "path": "data/interim/live/portugal_exchange_rate_evidence.csv",
+      "sha256": "68b0404e9be16fafe5c70dc7e7c553b2278e09328f28686d552421f282e3b7fe"
     }
   ],
   "rows": 4,
@@ -90,14 +94,15 @@
     "valuation_basis": "object",
     "year": "int64"
   },
-  "sha256": "0cbf57bd22412216ddfe7ae649fc19a81cd361e10dd4018d39abf8cdf85431a4",
+  "sha256": "fac74fdfd2c2d9d9569ea46452ce40e18fc26d46f5e9f4a532c0e0f956be0e70",
   "source_files": [
     "data/processed/live/ine_1962_aggregate_trade_harmonised.csv",
     "results/diagnostics/comtrade_coverage/comtrade_coverage_audit.csv",
     "data/interim/live/comtrade_coverage_matrix.csv",
     "config/historical_groups.yml",
     "config/comtrade_partner_areas.yml",
-    "data/interim/live/historical_colonial_partner_crosswalk.csv"
+    "data/interim/live/historical_colonial_partner_crosswalk.csv",
+    "data/interim/live/portugal_exchange_rate_evidence.csv"
   ],
   "source_licence": "not_specified",
   "stage": "ine_comtrade_1962_reconciliation",

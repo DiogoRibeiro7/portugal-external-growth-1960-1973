@@ -32,6 +32,10 @@
     {
       "path": "data/processed/live/ine_1962_aggregate_trade_harmonised.csv",
       "sha256": "220e6aebb277d5846c026657277c1ea201d6c68b635bffb2956da6bdc49d3ed0"
+    },
+    {
+      "path": "data/interim/live/portugal_exchange_rate_evidence.csv",
+      "sha256": "68b0404e9be16fafe5c70dc7e7c553b2278e09328f28686d552421f282e3b7fe"
     }
   ],
   "rows": 120,
@@ -54,10 +58,11 @@
     "territorial_definition": "object",
     "year": "int64"
   },
-  "sha256": "8216dc57ede82e97ebb11695ce4bc7eea91cea3826a52db8da1760667c398b85",
+  "sha256": "945c18fefc295f878dce33ba1cde669257ca16a239d9701ece8bfe0b5e104cb3",
   "source_files": [
     "results/diagnostics/comtrade_coverage/comtrade_coverage_audit.csv",
-    "data/processed/live/ine_1962_aggregate_trade_harmonised.csv"
+    "data/processed/live/ine_1962_aggregate_trade_harmonised.csv",
+    "data/interim/live/portugal_exchange_rate_evidence.csv"
   ],
   "source_licence": "not_specified",
   "stage": "source_preserving_trade_comparison",

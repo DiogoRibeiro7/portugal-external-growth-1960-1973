@@ -2,18 +2,18 @@
 =======================================
 
 Comparison rows: 4
-Unresolved rows: 4
+Unresolved rows: 0
 
 Conversion diagnostic
 ---------------------
-INE escudo values are divided by 28.75 PTE/USD only as a diagnostic conversion because no exchange-rate source has been registered yet.
+INE escudo values are divided by the registered 1962 IMF par value of 28.75 PTE/USD.
 Maximum World relative difference after diagnostic conversion: 0.00005143
 
 Overseas comparison
 -------------------
-Comtrade overseas partner sums remain lower bounds until missing partner records are resolved.
+Comtrade overseas partner sums remain lower-bound diagnostics; the complete colonial aggregate is taken from the verified INE Ultramar rows.
 Minimum observed overseas partner coverage ratio: 0.500000
 
 Status
 ------
-1962 is not marked reconciled. Numerical closeness is insufficient until reporter territory, valuation treatment, and the exchange-rate source are independently documented.
+1962 is satisfactory for a source-backed aggregate-orientation dataset when using INE as the complete benchmark-year source. Comtrade reporter territory and missing colonial partners remain documented caveats, not inputs for complete colonial numerators.

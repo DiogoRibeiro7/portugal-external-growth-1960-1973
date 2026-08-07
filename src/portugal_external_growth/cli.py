@@ -11,6 +11,7 @@ from portugal_external_growth.pipeline import (
     build_descriptive_results,
     build_ine_harmonised_outputs,
     build_sitc_industry_mapping,
+    build_validated_aggregate_orientation,
     compare_ine_transcription_passes,
     extract_bpstat,
     extract_comtrade,
@@ -144,6 +145,13 @@ def build_descriptive_results_command() -> None:
     """Build descriptive trade-orientation result tables."""
 
     build_descriptive_results(_settings())
+
+
+@app.command("build-validated-aggregate-orientation")
+def build_validated_aggregate_orientation_command() -> None:
+    """Build validated annual aggregate external-orientation outputs."""
+
+    build_validated_aggregate_orientation(_settings())
 
 
 @app.command("prepare-empirical-extension")

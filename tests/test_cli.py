@@ -70,6 +70,12 @@ def test_validate_command_exits_zero_on_integrity_pass(
         ("reconcile-trade-sources", "reconcile_trade_sources", False, []),
         ("build-sitc-industry-mapping", "build_sitc_industry_mapping", False, []),
         ("build-descriptive-results", "build_descriptive_results", False, []),
+        (
+            "build-validated-aggregate-orientation",
+            "build_validated_aggregate_orientation",
+            False,
+            [],
+        ),
         ("prepare-empirical-extension", "prepare_empirical_extension", False, []),
         ("build", "build", False, []),
         ("refresh-sources", "refresh_sources", False, ["--overwrite"]),
