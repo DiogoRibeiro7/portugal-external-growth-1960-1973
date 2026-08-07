@@ -9,6 +9,11 @@
     "requested_partner_code",
     "historical_trade_area",
     "returned",
+    "snapshot_requested",
+    "snapshot_partner_codes",
+    "snapshot_partner_codes_sha256",
+    "configured_partner_codes_sha256",
+    "snapshot_status",
     "mapping_status",
     "mapping_source",
     "resolution"
@@ -21,16 +26,17 @@
   "input_artifacts": [
     {
       "path": "data/interim/live/comtrade_coverage_matrix.csv",
-      "sha256": "83d62f09bc64433ba94b5ffc3b72b1cb349fc98a106f5b4f3446034f8e885ff2"
+      "sha256": "290fb75344b2196f35a7dd494b5051d2448ebd08e8e4d34f333aeb2dc467bb52"
     },
     {
       "path": "config/comtrade_partner_areas.yml",
       "sha256": "9c87944f318ed502502d41ffb5a535f40a311d791ce77d340fca6e73263a49b1"
     }
   ],
-  "rows": 696,
+  "rows": 576,
   "schema": {
     "classification_code": "object",
+    "configured_partner_codes_sha256": "object",
     "entity_id": "object",
     "entity_label": "object",
     "flow_code": "object",
@@ -40,9 +46,13 @@
     "requested_partner_code": "int64",
     "resolution": "object",
     "returned": "bool",
+    "snapshot_partner_codes": "object",
+    "snapshot_partner_codes_sha256": "object",
+    "snapshot_requested": "bool",
+    "snapshot_status": "object",
     "year": "int64"
   },
-  "sha256": "19bb8993cef935545cc75b5c0acce6c1e8cb3ff32b43a6f31699a9bda3fceaa6",
+  "sha256": "9f8786d3a27f1f47f03b86e2fb6c8913276bdf94f310bae034145c060049b68d",
   "source_files": [
     "data/interim/live/comtrade_coverage_matrix.csv",
     "config/comtrade_partner_areas.yml"

@@ -7,15 +7,15 @@ groups:
     - {entity_id: guinea_bissau, start_year: 1960, end_year: 1973}
     - {entity_id: timor_leste, start_year: 1960, end_year: 1973}
     - {entity_id: sao_tome_principe, start_year: 1960, end_year: 1973}
-  efta_current_membership:
-    - {entity_id: austria, start_year: 1960, end_year: 1973}
-    - {entity_id: denmark, start_year: 1960, end_year: 1972}
-    - {entity_id: finland, start_year: 1961, end_year: 1973}
-    - {entity_id: iceland, start_year: 1970, end_year: 1973}
-    - {entity_id: norway, start_year: 1960, end_year: 1973}
-    - {entity_id: sweden, start_year: 1960, end_year: 1973}
-    - {entity_id: switzerland_liechtenstein, start_year: 1960, end_year: 1973}
-    - {entity_id: united_kingdom, start_year: 1960, end_year: 1972}
+  efta_participation:
+    - {entity_id: austria, start_year: 1960, end_year: 1973, participation_status: full_member}
+    - {entity_id: denmark, start_year: 1960, end_year: 1972, participation_status: full_member}
+    - {entity_id: finland, start_year: 1961, end_year: 1973, participation_status: associate_member}
+    - {entity_id: iceland, start_year: 1970, end_year: 1973, participation_status: full_member}
+    - {entity_id: norway, start_year: 1960, end_year: 1973, participation_status: full_member}
+    - {entity_id: sweden, start_year: 1960, end_year: 1973, participation_status: full_member}
+    - {entity_id: switzerland_liechtenstein, start_year: 1960, end_year: 1973, participation_status: full_member}
+    - {entity_id: united_kingdom, start_year: 1960, end_year: 1972, participation_status: full_member}
   eec_current_membership:
     - {entity_id: belgium_luxembourg, start_year: 1960, end_year: 1973}
     - {entity_id: denmark, start_year: 1973, end_year: 1973}
@@ -25,7 +25,7 @@ groups:
     - {entity_id: italy, start_year: 1960, end_year: 1973}
     - {entity_id: netherlands, start_year: 1960, end_year: 1973}
     - {entity_id: united_kingdom, start_year: 1973, end_year: 1973}
-  western_europe_fixed_sample:
+  efta_eec_fixed_partner_sample:
     - {entity_id: austria, start_year: 1960, end_year: 1973}
     - {entity_id: belgium_luxembourg, start_year: 1960, end_year: 1973}
     - {entity_id: denmark, start_year: 1960, end_year: 1973}

@@ -1,7 +1,7 @@
 {
   "access_conditions": "not_specified",
   "classification_registry": "config/historical_groups.yml",
-  "classification_registry_sha256": "051f419321f5afc675979b67498c2d0ed0054d67e5267b732a089a8aff58ef9a",
+  "classification_registry_sha256": "f1d7ab80828e7b2c5a86a894c022c61e5b2b2654f779c1769a1a310b013ae984",
   "columns": [
     "year",
     "flow_code",
@@ -10,6 +10,13 @@
     "trade_value_usd",
     "world_value_usd",
     "world_share",
+    "observed_world_share",
+    "complete_group_trade_value_usd",
+    "complete_world_share",
+    "partner_coverage_count",
+    "expected_partner_count",
+    "partner_coverage_ratio",
+    "estimate_status",
     "value_method",
     "source_quality"
   ],
@@ -21,11 +28,11 @@
   "input_artifacts": [
     {
       "path": "data/interim/live/comtrade_coverage_matrix.csv",
-      "sha256": "83d62f09bc64433ba94b5ffc3b72b1cb349fc98a106f5b4f3446034f8e885ff2"
+      "sha256": "290fb75344b2196f35a7dd494b5051d2448ebd08e8e4d34f333aeb2dc467bb52"
     },
     {
       "path": "config/historical_groups.yml",
-      "sha256": "051f419321f5afc675979b67498c2d0ed0054d67e5267b732a089a8aff58ef9a"
+      "sha256": "f1d7ab80828e7b2c5a86a894c022c61e5b2b2654f779c1769a1a310b013ae984"
     },
     {
       "path": "config/comtrade_partner_areas.yml",
@@ -35,7 +42,14 @@
   "rows": 48,
   "schema": {
     "classification_scheme": "object",
+    "complete_group_trade_value_usd": "object",
+    "complete_world_share": "object",
+    "estimate_status": "object",
+    "expected_partner_count": "float64",
     "flow_code": "object",
+    "observed_world_share": "float64",
+    "partner_coverage_count": "float64",
+    "partner_coverage_ratio": "object",
     "partner_group": "object",
     "source_quality": "object",
     "trade_value_usd": "float64",
@@ -44,7 +58,7 @@
     "world_value_usd": "float64",
     "year": "int64"
   },
-  "sha256": "4d92cb55db8cd0ce3553a5f9ec60b3b36d85c41f5393359184cfaaaf71bf1277",
+  "sha256": "915efe973b0b9a48f5f7f8ed598bdbb542750f3aaa3c5719721c1319f921d34a",
   "source_files": [
     "data/interim/live/comtrade_coverage_matrix.csv",
     "config/historical_groups.yml",

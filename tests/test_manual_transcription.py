@@ -7,6 +7,7 @@ import pandas as pd
 from portugal_external_growth.manual import (
     AGGREGATE_TEMPLATE_COLUMNS,
     TRADE_TEMPLATE_COLUMNS,
+    build_ine_harmonised,
     compare_ine_transcriptions,
     compare_transcription_passes,
     initialise_templates,
@@ -89,7 +90,7 @@ manual_sources:
     pass_dir = tmp_path / "data/manual/transcriptions/pass_1"
     pass_dir.mkdir(parents=True)
     pass_file = pass_dir / "ine_trade_transcription_pass_1.csv"
-    row = {column: "" for column in TRADE_TEMPLATE_COLUMNS}
+    row: dict[str, object] = {column: "" for column in TRADE_TEMPLATE_COLUMNS}
     row["source_id"] = "human_entered"
     pd.DataFrame([row], columns=TRADE_TEMPLATE_COLUMNS).to_csv(pass_file, index=False)
     original = pass_file.read_text(encoding="utf-8")
@@ -133,3 +134,19 @@ def test_compare_ine_transcriptions_regenerates_stale_discrepancy_file(tmp_path:
 
     regenerated = pd.read_csv(stale)
     assert regenerated["resolution_status"].tolist() == ["requires_adjudication"]
+
+
+def test_build_ine_harmonised_preserves_manual_adjudication(tmp_path: Path) -> None:
+    adjudication_dir = tmp_path / "data/manual/adjudication"
+    adjudication_dir.mkdir(parents=True)
+    adjudicated = adjudication_dir / "ine_trade_adjudicated.csv"
+    row: dict[str, object] = {column: "" for column in TRADE_TEMPLATE_COLUMNS}
+    row.update({"source_id": "ine", "publication_year": 1962, "value_source": "10"})
+    pd.DataFrame([row], columns=TRADE_TEMPLATE_COLUMNS).to_csv(adjudicated, index=False)
+    original = adjudicated.read_text(encoding="utf-8")
+
+    build_ine_harmonised(tmp_path)
+
+    assert adjudicated.read_text(encoding="utf-8") == original
+    final = pd.read_csv(tmp_path / "data/processed/live/ine_trade_harmonised.csv")
+    assert final.loc[0, "source_id"] == "ine"

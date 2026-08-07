@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 from pathlib import Path
 from typing import cast
 
@@ -30,6 +31,7 @@ MEMBERSHIP_COLUMNS = [
     "historical_trade_area",
     "mapping_status",
     "mapping_source",
+    "participation_status",
 ]
 
 
@@ -113,6 +115,7 @@ def load_historical_group_memberships(group_path: Path, area_path: Path) -> pd.D
                             "historical_trade_area": str(area["comtrade_area_label"]),
                             "mapping_status": str(area["mapping_status"]),
                             "mapping_source": str(area["mapping_source"]),
+                            "participation_status": str(member.get("participation_status", "")),
                         }
                     )
     if not records:
@@ -159,10 +162,14 @@ def build_requested_partner_return_status(
     years: tuple[int, ...],
     flows: tuple[str, ...],
     classification_codes: tuple[str, ...],
+    configured_partner_codes: tuple[int, ...] | None = None,
+    snapshot_partner_codes: dict[tuple[int, str, str], tuple[int, ...]] | None = None,
 ) -> pd.DataFrame:
     """Compare requested Comtrade areas with returned rows."""
 
     areas = load_comtrade_partner_areas(area_path)
+    configured_codes = tuple(sorted(configured_partner_codes or areas["comtrade_area_code"]))
+    configured_hash = partner_codes_sha256(configured_codes)
     rows: list[dict[str, object]] = []
     returned = coverage_matrix.loc[coverage_matrix["partner_code"].notna()].copy()
     returned_codes = {
@@ -178,9 +185,22 @@ def build_requested_partner_return_status(
         active = areas.loc[(areas["start_year"] <= year) & (areas["end_year"] >= year)]
         for flow_code in flows:
             for classification_code in classification_codes:
+                key = (year, flow_code, classification_code)
+                snapshot_codes = (
+                    tuple(sorted(snapshot_partner_codes[key]))
+                    if snapshot_partner_codes and key in snapshot_partner_codes
+                    else configured_codes
+                )
+                snapshot_hash = partner_codes_sha256(snapshot_codes)
+                snapshot_status = (
+                    "current_against_configuration"
+                    if snapshot_codes == configured_codes
+                    else "stale_against_current_configuration"
+                )
                 for area in active.to_dict(orient="records"):
                     code = int(area["comtrade_area_code"])
                     is_returned = (year, flow_code, classification_code, code) in returned_codes
+                    was_requested = code in snapshot_codes
                     rows.append(
                         {
                             "year": year,
@@ -191,9 +211,31 @@ def build_requested_partner_return_status(
                             "requested_partner_code": code,
                             "historical_trade_area": area["comtrade_area_label"],
                             "returned": is_returned,
+                            "snapshot_requested": was_requested,
+                            "snapshot_partner_codes": ",".join(
+                                str(value) for value in snapshot_codes
+                            ),
+                            "snapshot_partner_codes_sha256": snapshot_hash,
+                            "configured_partner_codes_sha256": configured_hash,
+                            "snapshot_status": snapshot_status,
                             "mapping_status": area["mapping_status"],
                             "mapping_source": area["mapping_source"],
-                            "resolution": "returned" if is_returned else "not_returned_by_api",
+                            "resolution": _return_resolution(is_returned, was_requested),
                         }
                     )
     return pd.DataFrame.from_records(rows)
+
+
+def partner_codes_sha256(codes: tuple[int, ...]) -> str:
+    """Return a stable digest for a Comtrade partner-code request set."""
+
+    payload = ",".join(str(code) for code in sorted(codes)).encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()
+
+
+def _return_resolution(is_returned: bool, was_requested: bool) -> str:
+    if is_returned:
+        return "returned"
+    if not was_requested:
+        return "not_requested_in_source_snapshot"
+    return "not_returned_by_api"

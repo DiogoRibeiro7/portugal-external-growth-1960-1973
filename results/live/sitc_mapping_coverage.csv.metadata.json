@@ -13,7 +13,7 @@
   "input_artifacts": [
     {
       "path": "results/live/sitc_unmapped_codes.csv",
-      "sha256": "e23e86991a3924e5064d51436a3d5be8fc924339086ba74d3e46b859b8e9bc96"
+      "sha256": "7ffbe774feacc98263c628ec04bba9c4a8c0fea7d88580da90de7b5db7165cea"
     }
   ],
   "rows": 2,
@@ -25,7 +25,7 @@
     "source_quality": "object",
     "total_trade_value_usd": "float64"
   },
-  "sha256": "286565f1c21d97e55a890aa884bd871d47aaf73b4e9fb45033a3dedd7332e3a1",
+  "sha256": "6b8b601351941d097715b58c2f88fdd1c4c18a72db891ba27a0ded03a3b1c63c",
   "source_files": [
     "results/live/sitc_unmapped_codes.csv"
   ],

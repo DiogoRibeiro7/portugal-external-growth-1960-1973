@@ -1,10 +1,19 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import pandas as pd
 
-from portugal_external_growth.pipeline import build, reproduce_from_local, run_diagnostics, validate
+from portugal_external_growth.pipeline import (
+    _apply_comtrade_snapshot_status,
+    _local_comtrade_coverage_matrices,
+    _snapshot_partner_codes_by_coverage_request,
+    build,
+    reproduce_from_local,
+    run_diagnostics,
+    validate,
+)
 from portugal_external_growth.settings import Settings
 
 
@@ -105,6 +114,147 @@ def test_reproduce_from_local_runs_offline_pipeline(tmp_path: Path) -> None:
     assert passed
     assert (tmp_path / "results/validation/data_integrity_report.csv").exists()
     assert (tmp_path / "results/manifests/current_manifest.csv").exists()
+
+
+def test_local_comtrade_coverage_rebuild_preserves_quality_and_snapshot_status(
+    tmp_path: Path,
+) -> None:
+    config = tmp_path / "config"
+    raw_dir = tmp_path / "data/raw/live/comtrade_availability"
+    config.mkdir(parents=True)
+    raw_dir.mkdir(parents=True)
+    (config / "comtrade.yml").write_text("comtrade: {}\n", encoding="utf-8")
+    (config / "comtrade_partner_areas.yml").write_text(
+        """
+comtrade_partner_areas:
+  - entity_id: world
+    entity_label: World
+    m49_code: 0
+    comtrade_area_code: 0
+    comtrade_area_label: World
+    start_year: 1962
+    end_year: 1973
+    mapping_status: comtrade_total
+    mapping_source: test
+  - entity_id: angola
+    entity_label: Angola
+    m49_code: 24
+    comtrade_area_code: 24
+    comtrade_area_label: Angola
+    start_year: 1962
+    end_year: 1973
+    mapping_status: direct_area_match
+    mapping_source: test
+""",
+        encoding="utf-8",
+    )
+    raw = raw_dir / "PRT_1962_X_S1_TOTAL_coverage.json"
+    raw.write_text(
+        json.dumps(
+            {
+                "data": [
+                    {
+                        "period": 1962,
+                        "reporterCode": 620,
+                        "partnerCode": 24,
+                        "partnerDesc": "Angola",
+                        "flowCode": "X",
+                        "cmdCode": "TOTAL",
+                        "primaryValue": 10.0,
+                        "isReported": True,
+                        "isOriginalClassification": False,
+                        "legacyEstimationFlag": 1,
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    raw.with_suffix(".metadata.json").write_text(
+        json.dumps(
+            {
+                "parameters": {
+                    "year": 1962,
+                    "flow_code": "X",
+                    "classification_code": "S1",
+                    "commodity_code": "TOTAL",
+                    "reporter_code": 620,
+                    "partner_codes": [0, 24],
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    matrices = _local_comtrade_coverage_matrices(tmp_path, (0, 24, 251))
+
+    assert len(matrices) == 1
+    row = matrices[0].iloc[0]
+    assert bool(row["is_reported"])
+    assert not bool(row["is_original_classification"])
+    assert row["legacy_estimation_flag"] == "1"
+    assert row["snapshot_status"] == "stale_against_current_configuration"
+    assert row["entity_id"] == "angola"
+
+
+def test_local_comtrade_coverage_rebuild_records_empty_responses(tmp_path: Path) -> None:
+    raw_dir = tmp_path / "data/raw/live/comtrade_availability"
+    raw_dir.mkdir(parents=True)
+    raw = raw_dir / "PRT_1962_X_S2_TOTAL_coverage.json"
+    raw.write_text(json.dumps({"data": []}), encoding="utf-8")
+    raw.with_suffix(".metadata.json").write_text(
+        json.dumps(
+            {
+                "parameters": {
+                    "year": 1962,
+                    "flow_code": "X",
+                    "classification_code": "S2",
+                    "commodity_code": "TOTAL",
+                    "reporter_code": 620,
+                    "partner_codes": [0, 24],
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    matrices = _local_comtrade_coverage_matrices(tmp_path, (0, 24))
+
+    assert matrices[0].loc[0, "raw_records"] == 0
+    assert matrices[0].loc[0, "snapshot_status"] == "current_against_configuration"
+
+
+def test_apply_comtrade_snapshot_status_uses_metadata_and_keeps_unmatched_rows(
+    tmp_path: Path,
+) -> None:
+    raw_dir = tmp_path / "data/raw/live/comtrade_availability"
+    raw_dir.mkdir(parents=True)
+    (raw_dir / "sample.metadata.json").write_text(
+        json.dumps(
+            {
+                "parameters": {
+                    "year": 1962,
+                    "flow_code": "X",
+                    "classification_code": "S1",
+                    "partner_codes": [0, 24],
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+    frame = pd.DataFrame(
+        [
+            {"year": 1962, "flow_code": "X", "classification_code": "S1"},
+            {"year": 1963, "flow_code": "X", "classification_code": "S1"},
+        ]
+    )
+
+    snapshots = _snapshot_partner_codes_by_coverage_request(tmp_path)
+    result = _apply_comtrade_snapshot_status(frame, tmp_path, (0, 24, 251))
+
+    assert snapshots[(1962, "X", "S1")] == (0, 24)
+    assert result.loc[0, "snapshot_status"] == "stale_against_current_configuration"
+    assert result.loc[1, "snapshot_status"] == ""
 
 
 def _write_bootstrap_gdp(root: Path) -> None:

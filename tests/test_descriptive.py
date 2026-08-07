@@ -76,6 +76,31 @@ def test_preliminary_world_shares_do_not_publish_european_group_rows() -> None:
     assert set(result["partner_group"]) == {"colonies", "true_rest_of_world"}
 
 
+def test_incomplete_colonial_coverage_is_reported_as_lower_bound() -> None:
+    memberships = pd.DataFrame(
+        [
+            {"year": 1962, "partner_code": 24, "partner_group": "colonies"},
+            {"year": 1962, "partner_code": 132, "partner_group": "colonies"},
+        ]
+    )
+    coverage = pd.DataFrame(
+        [
+            {"year": 1962, "flow_code": "X", "partner_code": 0, "trade_value_usd": 100.0},
+            {"year": 1962, "flow_code": "X", "partner_code": 24, "trade_value_usd": 20.0},
+        ]
+    )
+
+    result = _build_world_denominator_groups(coverage, memberships)
+    colonies = result.loc[result["partner_group"] == "colonies"].iloc[0]
+
+    assert colonies["trade_value_usd"] == 20.0
+    assert colonies["world_share"] == 0.2
+    assert pd.isna(colonies["complete_world_share"])
+    assert colonies["partner_coverage_count"] == 1
+    assert colonies["expected_partner_count"] == 2
+    assert colonies["estimate_status"] == "incomplete_partner_lower_bound"
+
+
 def test_build_descriptive_trade_results_from_local_registry(tmp_path: Path) -> None:
     _write_partner_registry(tmp_path)
     coverage_dir = tmp_path / "data/interim/live"
@@ -119,6 +144,8 @@ def test_build_descriptive_trade_results_from_local_registry(tmp_path: Path) -> 
     assert colonial["classification_scheme"].unique().tolist() == [
         "colonial_world_share_preliminary"
     ]
+    assert "observed_colonial_share" in colonial.columns
+    assert "complete_colonial_share" in colonial.columns
     assert set(product["commodity_code_source"]) == {"TOTAL"}
 
 

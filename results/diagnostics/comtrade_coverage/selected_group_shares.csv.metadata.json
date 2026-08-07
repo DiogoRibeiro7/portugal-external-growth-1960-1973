@@ -1,7 +1,7 @@
 {
   "access_conditions": "not_specified",
   "classification_registry": "config/historical_groups.yml",
-  "classification_registry_sha256": "051f419321f5afc675979b67498c2d0ed0054d67e5267b732a089a8aff58ef9a",
+  "classification_registry_sha256": "f1d7ab80828e7b2c5a86a894c022c61e5b2b2654f779c1769a1a310b013ae984",
   "columns": [
     "year",
     "flow_code",
@@ -18,11 +18,11 @@
   "input_artifacts": [
     {
       "path": "data/interim/live/comtrade_coverage_matrix.csv",
-      "sha256": "83d62f09bc64433ba94b5ffc3b72b1cb349fc98a106f5b4f3446034f8e885ff2"
+      "sha256": "290fb75344b2196f35a7dd494b5051d2448ebd08e8e4d34f333aeb2dc467bb52"
     },
     {
       "path": "config/historical_groups.yml",
-      "sha256": "051f419321f5afc675979b67498c2d0ed0054d67e5267b732a089a8aff58ef9a"
+      "sha256": "f1d7ab80828e7b2c5a86a894c022c61e5b2b2654f779c1769a1a310b013ae984"
     },
     {
       "path": "config/comtrade_partner_areas.yml",
@@ -38,7 +38,7 @@
     "trade_value_usd": "float64",
     "year": "int64"
   },
-  "sha256": "3f63861e5fd7c94410e203b9ec795f6b3de4cdf240926039f7ec10737fd0abba",
+  "sha256": "07ca029d3cbd4c3867da8598fcb2ea4c96429120b8506f5ec593c74732c3c684",
   "source_files": [
     "data/interim/live/comtrade_coverage_matrix.csv",
     "config/historical_groups.yml",

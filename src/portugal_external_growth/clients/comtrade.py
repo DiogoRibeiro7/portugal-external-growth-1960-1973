@@ -32,6 +32,10 @@ class ComtradeRequest:
     max_records: int = 500
 
 
+class ComtradeAPIError(ValueError):
+    """Raised when UN Comtrade returns an application-level error."""
+
+
 class ComtradeClient:
     """Access preview or free-key UN Comtrade endpoints."""
 
@@ -71,6 +75,9 @@ class ComtradeClient:
         payload: Any = response.json()
         if not isinstance(payload, dict):
             raise ValueError("Unexpected UN Comtrade response structure")
+        error = payload.get("error")
+        if error:
+            raise ComtradeAPIError(f"UN Comtrade API error: {error}")
         data = payload.get("data")
         if not isinstance(data, list):
             raise ValueError("UN Comtrade response does not contain a data list")
@@ -187,7 +194,8 @@ def _http_provenance(
         "endpoint": endpoint,
         "query_parameters": redacted_parameters,
         "http_status": response.status_code,
-        "content_type": response.headers.get("Content-Type", ""),
+        "content_type": response.headers.get("Content-Type", "application/json")
+        or "application/json",
         "etag": response.headers.get("ETag", ""),
         "last_modified": response.headers.get("Last-Modified", ""),
         "api_version": "UN Comtrade API v1",

@@ -26,6 +26,12 @@
   ],
   "date_range": null,
   "file": "data/processed/live/ine_trade_harmonised.csv",
+  "input_artifacts": [
+    {
+      "path": "data/manual/adjudication/ine_trade_adjudicated.csv",
+      "sha256": "6eb97fa20d610dd74d5a5dab133135ebe7dccd93438bd91b79b82bc0d27245ff"
+    }
+  ],
   "rows": 0,
   "schema": {
     "adjudication_status": "object",
@@ -52,7 +58,10 @@
     "value_source": "object"
   },
   "sha256": "6eb97fa20d610dd74d5a5dab133135ebe7dccd93438bd91b79b82bc0d27245ff",
+  "source_files": [
+    "data/manual/adjudication/ine_trade_adjudicated.csv"
+  ],
   "source_licence": "not_specified",
-  "stage": "harmonisation_pending_human_verification",
+  "stage": "harmonised_from_protected_manual_adjudication",
   "validation_findings": []
 }

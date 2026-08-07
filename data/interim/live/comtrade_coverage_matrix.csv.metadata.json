@@ -7,15 +7,23 @@
     "reporter_code",
     "partner_code",
     "partner_desc",
+    "commodity_code_source",
     "trade_value_usd",
+    "is_reported",
+    "is_original_classification",
+    "legacy_estimation_flag",
     "is_world_record",
     "raw_records",
-    "duplicate_key",
-    "commodity_code_source",
+    "snapshot_partner_codes",
+    "request_partner_codes_sha256",
+    "partner_area_registry_sha256",
+    "comtrade_config_sha256",
+    "snapshot_status",
     "entity_id",
     "historical_trade_area",
     "mapping_status",
-    "mapping_source"
+    "mapping_source",
+    "duplicate_key"
   ],
   "date_range": {
     "end_year": 1973,
@@ -25,216 +33,224 @@
   "input_artifacts": [
     {
       "path": "data/raw/live/comtrade_availability/PRT_1962_X_S1_TOTAL_coverage.json",
-      "sha256": "a2499a23d829105e41570802a57094734b47a2e14895e4b27f06357f0190ef8c"
+      "sha256": "58daa40cb3295769bbd7d5c1dbb38ee1a86ed982bd7814e75714847cee4fc557"
     },
     {
       "path": "data/raw/live/comtrade_availability/PRT_1962_M_S1_TOTAL_coverage.json",
-      "sha256": "7c8ab716f3f70af21de59b7b579988089d19cdd4cc0fcd16cd0f738cbc6779ea"
+      "sha256": "c1b3ed6d07b89177dc009bd5ca936dd3f41ec7010acf340ed65a378998fe1f93"
     },
     {
       "path": "data/raw/live/comtrade_availability/PRT_1963_X_S1_TOTAL_coverage.json",
-      "sha256": "f41a0202a6be78bbab12b3093d84696364733d25ba0b065f902b0327e948cdc5"
+      "sha256": "df5de37bc123678988fd43e08194f676771319ff502c6d4e884c8e407864c0aa"
     },
     {
       "path": "data/raw/live/comtrade_availability/PRT_1963_M_S1_TOTAL_coverage.json",
-      "sha256": "11bd4b6ac2c97870614bc3d01f28b477cdf412d3603a0bbec8ac09beda59ce21"
+      "sha256": "7052eb61c7fad19e0c4f93ad13b72164660107f43ae95a85841aaf097d8a4596"
     },
     {
       "path": "data/raw/live/comtrade_availability/PRT_1964_X_S1_TOTAL_coverage.json",
-      "sha256": "bbadce229ddc52fe4300c6ba56dfc27753e21ebf8f7cf337517fb0c45aaa1847"
+      "sha256": "750482246642ccc705353664f1e536a2869ca62f4d3eddb9076b1523220fc648"
     },
     {
       "path": "data/raw/live/comtrade_availability/PRT_1964_M_S1_TOTAL_coverage.json",
-      "sha256": "106f1749e37db3b124ea3643bd9d012d89a0235886687f2349bdaf11133efb24"
+      "sha256": "0a4dc2b8cd87103b6d5e6732f059c6816c7377e1bcbea883529db7201d911776"
     },
     {
       "path": "data/raw/live/comtrade_availability/PRT_1965_X_S1_TOTAL_coverage.json",
-      "sha256": "9afc07bc13b5d869095e78f7fbb22206c37b5b257ec2e8cc801df2f2882d39fa"
+      "sha256": "384d4fcc0eddc71a0f738a3ce63e8f6d73304894a1e8cfd0397eecbafaf944ff"
     },
     {
       "path": "data/raw/live/comtrade_availability/PRT_1965_M_S1_TOTAL_coverage.json",
-      "sha256": "895628a9517e86e9a812a17b466de8bc78955d412d7110048d87084ace228548"
+      "sha256": "6fb4c4b095ef6828a9a1fa6d3fbfb1208f77948a3be03c68203bfdfbdefbb931"
     },
     {
       "path": "data/raw/live/comtrade_availability/PRT_1966_X_S1_TOTAL_coverage.json",
-      "sha256": "e0c11f86f6497091bb180d2b1594de7f2ac7b826b2d2db89718be1389b6bb288"
+      "sha256": "537e2ee3dd77ccd014c7d3e899b756c26619ddb38317b38372851c52edd38e43"
     },
     {
       "path": "data/raw/live/comtrade_availability/PRT_1966_M_S1_TOTAL_coverage.json",
-      "sha256": "48d69501b2af81883947ec63e309aa74b73ef07337961b7c93999aa9c19ec21f"
+      "sha256": "33029d574c3c2c46a92ad733bea0ed4c622c88150e279ffa611b10416b85ab91"
     },
     {
       "path": "data/raw/live/comtrade_availability/PRT_1967_X_S1_TOTAL_coverage.json",
-      "sha256": "271f87b52495744ffd04b40c9c28371c136d9ddb80bc5826f7d94a1d4f03f233"
+      "sha256": "bc670820414634f8d953162dbd8603a7e486db2bb355477ae00632f8c1f53621"
     },
     {
       "path": "data/raw/live/comtrade_availability/PRT_1967_M_S1_TOTAL_coverage.json",
-      "sha256": "e9892115b1668fbf37c8ecd7afd9ef24548507bf1beba0e921007c41775a2e34"
+      "sha256": "21801735f31e60cd2c729790503bce1c2fbc77e03bc184acc448805dfdeed371"
     },
     {
       "path": "data/raw/live/comtrade_availability/PRT_1968_X_S1_TOTAL_coverage.json",
-      "sha256": "250584226e1e786a0e8f8496f717a778bdfaf01abf5bef248599d686be3cb8ce"
+      "sha256": "7dfa8e6ed6cbf92995b07d3ac0f3914e975413352e671f3d7933439281433ff7"
     },
     {
       "path": "data/raw/live/comtrade_availability/PRT_1968_M_S1_TOTAL_coverage.json",
-      "sha256": "1aa7f826e4f65cb4dc4faa80bf5c3097f4eec5296c6038df3d237959e6fd6b21"
+      "sha256": "16f7beed2be6e2ba0bc47568d3e1b726ecb4c2c841a51f768d533979fd9495f3"
     },
     {
       "path": "data/raw/live/comtrade_availability/PRT_1969_X_S1_TOTAL_coverage.json",
-      "sha256": "a5d1d9480000c2b7a7fda40a1f59bd900e1a31921c3829ec90a8a2026f718f60"
+      "sha256": "f9dde38a50253b5eb0e415d0f763670ec227efc0409389ba8a2e3c97b357211d"
     },
     {
       "path": "data/raw/live/comtrade_availability/PRT_1969_M_S1_TOTAL_coverage.json",
-      "sha256": "cb3b295fda78914bf6b959bc2f00ad8eb08457c2b93efdbd4a7de82397d4aecf"
+      "sha256": "9c2ace29cf0eee1460f64a7a243498836e5860d6321985728656981cdf149407"
     },
     {
       "path": "data/raw/live/comtrade_availability/PRT_1970_X_S1_TOTAL_coverage.json",
-      "sha256": "49b75a19441b7c0475bc098d619b23f9a8b22f3461abf8e3f552d2b3a11f2f57"
+      "sha256": "bddce363902d902e0c6f7e982ef9b8aa12b7eccb455193bae658e7c864b556db"
     },
     {
       "path": "data/raw/live/comtrade_availability/PRT_1970_M_S1_TOTAL_coverage.json",
-      "sha256": "13e169396b0ac9f7ac0a023ea3a04d932eebda4cb6df2c1a1534263b7d899b5d"
+      "sha256": "42e4b29d7eb41d377d047333b4cf97299a016c3ee5a713c70072cbfc25b0cc02"
     },
     {
       "path": "data/raw/live/comtrade_availability/PRT_1971_X_S1_TOTAL_coverage.json",
-      "sha256": "fabaab56b05bf33ce1710b332cc99bc33466fa925536d24bafe785af6733b26e"
+      "sha256": "0f36807212e3c59b7b7aa0d5c3ffee6a040be64bff60439aab42b2e5f2620d47"
     },
     {
       "path": "data/raw/live/comtrade_availability/PRT_1971_M_S1_TOTAL_coverage.json",
-      "sha256": "a8023387aca07c760411d166e6d04daa5626d9f36537297c8c82ceaeedd04688"
+      "sha256": "bbe67e05b7e6456216328cad8487009815181f7ae5b2edc792eb380172c753d8"
     },
     {
       "path": "data/raw/live/comtrade_availability/PRT_1972_X_S1_TOTAL_coverage.json",
-      "sha256": "5a88d4e355c4e3ecc391793a98fda5029a90fd993e6a811ff39c3fd6d8444f81"
+      "sha256": "611bcafde830d1cfc7cd4eab0a28e96a05fc51e76b09aee7b1bfd1797b023977"
     },
     {
       "path": "data/raw/live/comtrade_availability/PRT_1972_M_S1_TOTAL_coverage.json",
-      "sha256": "dd5d97012404b82706c527f332e52fb27f381a1a42d8ae1a4aeaaae5351dddae"
+      "sha256": "1f78419b835df87772b24ba6c4cdcf4119ea4abf9c6c9a290a8aff89c944c319"
     },
     {
       "path": "data/raw/live/comtrade_availability/PRT_1973_X_S1_TOTAL_coverage.json",
-      "sha256": "3223273e246c7ccdde43e10cb7bb8ed7f0cee5e3efb0b93758fe34f363902a38"
+      "sha256": "293e15985a1e664214fc43ee08244e466ea440778b4aac40662aad48b6a9a569"
     },
     {
       "path": "data/raw/live/comtrade_availability/PRT_1973_M_S1_TOTAL_coverage.json",
-      "sha256": "3ddb595a7c592bb634e4dab8ca80484af31cad931948ebe8d91eba72de2204f6"
+      "sha256": "7aa810318138916629b998f7b3dcc2648b90d826b6eb4354b11c61a80c8ded41"
     },
     {
       "path": "data/raw/live/comtrade_availability/PRT_1962_X_S2_TOTAL_coverage.json",
-      "sha256": "aa2dc316a84f6f209139f722e1e2da8e42f4ce7f06dc6ba7a7cb5223a8598af5"
-    },
-    {
-      "path": "data/raw/live/comtrade_availability/PRT_1962_M_S2_TOTAL_coverage.json",
       "sha256": "29436ff532ed5d391eb2c942ecf170d387a8e21878c0be47c8735fad6d6a2cf6"
     },
     {
-      "path": "data/raw/live/comtrade_availability/PRT_1963_X_S2_TOTAL_coverage.json",
-      "sha256": "65a09982fd54f10976d88d3d5859795c3b14b5c30954a226066a3fbadd2973de"
-    },
-    {
-      "path": "data/raw/live/comtrade_availability/PRT_1963_M_S2_TOTAL_coverage.json",
-      "sha256": "26b093947f504a0ada440a2c8640062cc206501e2be7be8d40b93bb94f18e50c"
-    },
-    {
-      "path": "data/raw/live/comtrade_availability/PRT_1964_X_S2_TOTAL_coverage.json",
+      "path": "data/raw/live/comtrade_availability/PRT_1962_M_S2_TOTAL_coverage.json",
       "sha256": "d5b6bec2ca12c01d3de898153073fea5196e40f417bf4617352282e5478ee1bd"
     },
     {
-      "path": "data/raw/live/comtrade_availability/PRT_1964_M_S2_TOTAL_coverage.json",
-      "sha256": "e264d124fb2d407dc0328ee61ff1ece8a5021cd533a150cfd81c0cac2b8ae976"
-    },
-    {
-      "path": "data/raw/live/comtrade_availability/PRT_1965_X_S2_TOTAL_coverage.json",
-      "sha256": "48f94f2dbede23c1916af170bf9eaa4f10d23f0633610c5c6ddcf9c35d37f964"
-    },
-    {
-      "path": "data/raw/live/comtrade_availability/PRT_1965_M_S2_TOTAL_coverage.json",
+      "path": "data/raw/live/comtrade_availability/PRT_1963_X_S2_TOTAL_coverage.json",
       "sha256": "74fb9e013d2918f975bfabd9d7de6ec6c766547ddfcbaed48bfea66fe1eb2e96"
     },
     {
+      "path": "data/raw/live/comtrade_availability/PRT_1963_M_S2_TOTAL_coverage.json",
+      "sha256": "d5b6bec2ca12c01d3de898153073fea5196e40f417bf4617352282e5478ee1bd"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1964_X_S2_TOTAL_coverage.json",
+      "sha256": "d0921c08888e4e2c81b093eb88a3901a5baccbe8cc3163b9fb49ac4fb39814bc"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1964_M_S2_TOTAL_coverage.json",
+      "sha256": "0f48794e774fadb67770df6eadb0f3844d14aca4dc4c12226de2e63facc771ad"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1965_X_S2_TOTAL_coverage.json",
+      "sha256": "f3680a1dd8407c30d82902892c8744a6b5c616f6f817fbcff9545710ea68f763"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1965_M_S2_TOTAL_coverage.json",
+      "sha256": "29436ff532ed5d391eb2c942ecf170d387a8e21878c0be47c8735fad6d6a2cf6"
+    },
+    {
       "path": "data/raw/live/comtrade_availability/PRT_1966_X_S2_TOTAL_coverage.json",
-      "sha256": "abfcedadc0d00b569b74638799519831d5e902e849c7a0e480ad2bf9740c068f"
+      "sha256": "d0921c08888e4e2c81b093eb88a3901a5baccbe8cc3163b9fb49ac4fb39814bc"
     },
     {
       "path": "data/raw/live/comtrade_availability/PRT_1966_M_S2_TOTAL_coverage.json",
-      "sha256": "cb37289c748151394165fc868c98cf4949e12c588f76bb973a7170a364d1774d"
+      "sha256": "4a5e638b0ee822382130b4a9684ca9529d854576b80395a0427ba188dfeadcc9"
     },
     {
       "path": "data/raw/live/comtrade_availability/PRT_1967_X_S2_TOTAL_coverage.json",
-      "sha256": "d57e2b40bb3b619be0bc32b3e286369aa0934f18d6de3352168eb895a7ffeac2"
-    },
-    {
-      "path": "data/raw/live/comtrade_availability/PRT_1967_M_S2_TOTAL_coverage.json",
-      "sha256": "48f94f2dbede23c1916af170bf9eaa4f10d23f0633610c5c6ddcf9c35d37f964"
-    },
-    {
-      "path": "data/raw/live/comtrade_availability/PRT_1968_X_S2_TOTAL_coverage.json",
-      "sha256": "df1e6fe3a5459749ff6c7d55116ee25b3419c45f614d714013baef7d21c98174"
-    },
-    {
-      "path": "data/raw/live/comtrade_availability/PRT_1968_M_S2_TOTAL_coverage.json",
-      "sha256": "fb5db5e9c0761c5aee04f5999411c157325318b2ab34dc2f3dee5bce90d77ebe"
-    },
-    {
-      "path": "data/raw/live/comtrade_availability/PRT_1969_X_S2_TOTAL_coverage.json",
       "sha256": "65a09982fd54f10976d88d3d5859795c3b14b5c30954a226066a3fbadd2973de"
     },
     {
+      "path": "data/raw/live/comtrade_availability/PRT_1967_M_S2_TOTAL_coverage.json",
+      "sha256": "6349c4ac02f7e06118a67911981e43188fd28493340c09769449e8b5d4ad48f0"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1968_X_S2_TOTAL_coverage.json",
+      "sha256": "74fb9e013d2918f975bfabd9d7de6ec6c766547ddfcbaed48bfea66fe1eb2e96"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1968_M_S2_TOTAL_coverage.json",
+      "sha256": "c3e776ec66c37dfeb575ddb3f01ab6f629514979350bc0b302892f98ee740cbb"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1969_X_S2_TOTAL_coverage.json",
+      "sha256": "c3e776ec66c37dfeb575ddb3f01ab6f629514979350bc0b302892f98ee740cbb"
+    },
+    {
       "path": "data/raw/live/comtrade_availability/PRT_1969_M_S2_TOTAL_coverage.json",
-      "sha256": "a4125e67f48773eac9ac4f799ec0969870631163b6c1f90638da7ff5a24c90a5"
+      "sha256": "d0921c08888e4e2c81b093eb88a3901a5baccbe8cc3163b9fb49ac4fb39814bc"
     },
     {
       "path": "data/raw/live/comtrade_availability/PRT_1970_X_S2_TOTAL_coverage.json",
-      "sha256": "0001fd9e2ce2777ac8c6345c0d7ee4d1fcf3262174e5464cea916cb1ba34d549"
+      "sha256": "f3680a1dd8407c30d82902892c8744a6b5c616f6f817fbcff9545710ea68f763"
     },
     {
       "path": "data/raw/live/comtrade_availability/PRT_1970_M_S2_TOTAL_coverage.json",
-      "sha256": "ebd184a0ac3fa055a0a100f05368c726d5768bfcfbadccff51c0c58ef83ea963"
+      "sha256": "0f48794e774fadb67770df6eadb0f3844d14aca4dc4c12226de2e63facc771ad"
     },
     {
       "path": "data/raw/live/comtrade_availability/PRT_1971_X_S2_TOTAL_coverage.json",
-      "sha256": "0d18aee8bbdb2081ce896841ef76a1c2ab685c14db3d827fe79a8ee11996426d"
+      "sha256": "a4125e67f48773eac9ac4f799ec0969870631163b6c1f90638da7ff5a24c90a5"
     },
     {
       "path": "data/raw/live/comtrade_availability/PRT_1971_M_S2_TOTAL_coverage.json",
-      "sha256": "d0921c08888e4e2c81b093eb88a3901a5baccbe8cc3163b9fb49ac4fb39814bc"
-    },
-    {
-      "path": "data/raw/live/comtrade_availability/PRT_1972_X_S2_TOTAL_coverage.json",
-      "sha256": "abfcedadc0d00b569b74638799519831d5e902e849c7a0e480ad2bf9740c068f"
-    },
-    {
-      "path": "data/raw/live/comtrade_availability/PRT_1972_M_S2_TOTAL_coverage.json",
       "sha256": "a2c52b3d8d49175d77926b2be215d8e3450996fe24265ea31b6ba73222a18533"
     },
     {
+      "path": "data/raw/live/comtrade_availability/PRT_1972_X_S2_TOTAL_coverage.json",
+      "sha256": "d0921c08888e4e2c81b093eb88a3901a5baccbe8cc3163b9fb49ac4fb39814bc"
+    },
+    {
+      "path": "data/raw/live/comtrade_availability/PRT_1972_M_S2_TOTAL_coverage.json",
+      "sha256": "74fb9e013d2918f975bfabd9d7de6ec6c766547ddfcbaed48bfea66fe1eb2e96"
+    },
+    {
       "path": "data/raw/live/comtrade_availability/PRT_1973_X_S2_TOTAL_coverage.json",
-      "sha256": "eb3dee940a78f23484887c7c4d0f3347f74c98cfaa0275bea5bdc3298562c1e1"
+      "sha256": "a2c52b3d8d49175d77926b2be215d8e3450996fe24265ea31b6ba73222a18533"
     },
     {
       "path": "data/raw/live/comtrade_availability/PRT_1973_M_S2_TOTAL_coverage.json",
-      "sha256": "d0921c08888e4e2c81b093eb88a3901a5baccbe8cc3163b9fb49ac4fb39814bc"
+      "sha256": "f3680a1dd8407c30d82902892c8744a6b5c616f6f817fbcff9545710ea68f763"
     }
   ],
-  "rows": 384,
+  "rows": 504,
   "schema": {
     "classification_code": "object",
     "commodity_code_source": "object",
+    "comtrade_config_sha256": "object",
     "duplicate_key": "bool",
     "entity_id": "object",
     "flow_code": "object",
     "historical_trade_area": "object",
+    "is_original_classification": "object",
+    "is_reported": "object",
     "is_world_record": "bool",
+    "legacy_estimation_flag": "object",
     "mapping_source": "object",
     "mapping_status": "object",
+    "partner_area_registry_sha256": "object",
     "partner_code": "float64",
-    "partner_desc": "float64",
+    "partner_desc": "object",
     "raw_records": "int64",
     "reporter_code": "int64",
+    "request_partner_codes_sha256": "object",
+    "snapshot_partner_codes": "object",
+    "snapshot_status": "object",
     "trade_value_usd": "float64",
     "year": "int64"
   },
-  "sha256": "83d62f09bc64433ba94b5ffc3b72b1cb349fc98a106f5b4f3446034f8e885ff2",
+  "sha256": "290fb75344b2196f35a7dd494b5051d2448ebd08e8e4d34f333aeb2dc467bb52",
   "source_files": [
     "data/raw/live/comtrade_availability/PRT_1962_X_S1_TOTAL_coverage.json",
     "data/raw/live/comtrade_availability/PRT_1962_M_S1_TOTAL_coverage.json",

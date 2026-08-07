@@ -196,7 +196,8 @@ Partner groups are time-aware. The project does not use current EU membership to
 
 - Portuguese colonies and overseas territories;
 - founding EFTA members and later associates/members during the sample;
-- the six EEC members during 1960–1973;
+- the six founding EEC members and the 1973 enlargement members;
+- a fixed EFTA/EEC analytical partner sample for selected diagnostics;
 - the rest of the world.
 
 The classification registry must be reviewed against contemporary Portuguese statistical definitions, especially the treatment of the escudo area and overseas provinces.

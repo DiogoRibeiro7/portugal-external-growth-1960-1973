@@ -17,6 +17,15 @@ COMTRADE_COLUMN_CANDIDATES: dict[str, tuple[str, ...]] = {
     "flow_code": ("flowCode",),
     "commodity_code": ("cmdCode",),
     "trade_value_usd": ("primaryValue", "TradeValue", "tradeValue"),
+    "is_reported": ("isReported",),
+    "is_original_classification": ("isOriginalClassification",),
+    "legacy_estimation_flag": ("legacyEstimationFlag",),
+}
+
+OPTIONAL_COMTRADE_COLUMNS = {
+    "is_reported",
+    "is_original_classification",
+    "legacy_estimation_flag",
 }
 
 
@@ -26,6 +35,8 @@ def _select_column(frame: pd.DataFrame, candidates: tuple[str, ...], target: str
             return frame[candidate]
     if target == "partner_desc":
         return pd.Series([""] * len(frame), index=frame.index, dtype="string")
+    if target in OPTIONAL_COMTRADE_COLUMNS:
+        return pd.Series([pd.NA] * len(frame), index=frame.index, dtype="object")
     raise ValueError(f"Unable to map required Comtrade column '{target}' from {candidates}")
 
 
@@ -46,6 +57,9 @@ def normalise_comtrade(frame: pd.DataFrame) -> pd.DataFrame:
     output["partner_desc"] = output["partner_desc"].astype("string")
     output["flow_code"] = output["flow_code"].astype("string")
     output["commodity_code"] = output["commodity_code"].astype("string")
+    for column in ("is_reported", "is_original_classification"):
+        output[column] = output[column].astype("boolean")
+    output["legacy_estimation_flag"] = output["legacy_estimation_flag"].astype("string")
     output["source"] = "UN Comtrade"
     return output.sort_values(["year", "flow_code", "partner_code"]).reset_index(drop=True)
 
@@ -133,10 +147,21 @@ def compile_comtrade_coverage_audit(
                 "partner_desc",
                 "commodity_code_source",
                 "trade_value_usd",
+                "is_reported",
+                "is_original_classification",
+                "legacy_estimation_flag",
                 "is_world_record",
                 "raw_records",
+                "snapshot_partner_codes",
+                "request_partner_codes_sha256",
+                "partner_area_registry_sha256",
+                "comtrade_config_sha256",
+                "snapshot_status",
             ]
         )
+    for column in ("is_reported", "is_original_classification", "legacy_estimation_flag"):
+        if column not in matrix:
+            matrix[column] = pd.NA
 
     key_columns = ["year", "flow_code", "classification_code", "partner_code"]
     matrix["duplicate_key"] = matrix.duplicated(key_columns, keep=False)

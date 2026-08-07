@@ -24,12 +24,18 @@ def test_normalise_comtrade_maps_api_columns() -> None:
             "flowCode": ["X"],
             "cmdCode": ["TOTAL"],
             "primaryValue": [125.0],
+            "isReported": [True],
+            "isOriginalClassification": [False],
+            "legacyEstimationFlag": ["N"],
         }
     )
     result = normalise_comtrade(source)
     assert result.loc[0, "year"] == 1970
     assert result.loc[0, "trade_value_usd"] == pytest.approx(125.0)
     assert result.loc[0, "partner_desc"] == "Angola"
+    assert bool(result.loc[0, "is_reported"])
+    assert not bool(result.loc[0, "is_original_classification"])
+    assert result.loc[0, "legacy_estimation_flag"] == "N"
 
 
 def test_normalise_comtrade_keeps_partner_descriptions_aligned_after_sort() -> None:
@@ -88,6 +94,9 @@ def test_normalise_comtrade_empty_frame_returns_stable_schema() -> None:
         "flow_code",
         "commodity_code",
         "trade_value_usd",
+        "is_reported",
+        "is_original_classification",
+        "legacy_estimation_flag",
         "source",
     ]
 

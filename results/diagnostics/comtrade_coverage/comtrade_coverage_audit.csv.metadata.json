@@ -26,7 +26,7 @@
   "input_artifacts": [
     {
       "path": "data/interim/live/comtrade_coverage_matrix.csv",
-      "sha256": "83d62f09bc64433ba94b5ffc3b72b1cb349fc98a106f5b4f3446034f8e885ff2"
+      "sha256": "290fb75344b2196f35a7dd494b5051d2448ebd08e8e4d34f333aeb2dc467bb52"
     }
   ],
   "rows": 24,
@@ -48,7 +48,7 @@
     "world_value_usd": "float64",
     "year": "int64"
   },
-  "sha256": "946a7b2eacd6537c42572872791960f2b6644d65c0c16d36df019d4e3938dd54",
+  "sha256": "785aab0a0c608c3d0a98b86fe483afb951169ac27d1d0f06f1c460a7fe20cab1",
   "source_files": [
     "data/interim/live/comtrade_coverage_matrix.csv"
   ],

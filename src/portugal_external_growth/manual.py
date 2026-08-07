@@ -174,21 +174,24 @@ def compare_ine_transcriptions(root: Path) -> list[Path]:
 
 
 def build_ine_harmonised(root: Path) -> list[Path]:
-    """Regenerate derived placeholder harmonised outputs pending adjudication."""
+    """Regenerate derived harmonised outputs from protected adjudication decisions."""
 
-    adjudicated_path = root / "data/interim/live/ine_trade_adjudicated.csv"
+    adjudicated_path = root / "data/manual/adjudication/ine_trade_adjudicated.csv"
     final_path = root / "data/processed/live/ine_trade_harmonised.csv"
-    empty_final = pd.DataFrame(columns=TRADE_TEMPLATE_COLUMNS)
-    write_dataframe_with_metadata(
-        empty_final,
+    empty_adjudication = pd.DataFrame(columns=TRADE_TEMPLATE_COLUMNS)
+    _write_if_missing(
+        empty_adjudication,
         adjudicated_path,
-        metadata={"stage": "manual_adjudication_pending"},
-        overwrite=True,
+        metadata={"stage": "protected_manual_adjudication_decisions"},
     )
+    adjudicated = _read_transcription(adjudicated_path)
     write_dataframe_with_metadata(
-        empty_final,
+        adjudicated,
         final_path,
-        metadata={"stage": "harmonisation_pending_human_verification"},
+        metadata={
+            "source_files": ["data/manual/adjudication/ine_trade_adjudicated.csv"],
+            "stage": "harmonised_from_protected_manual_adjudication",
+        },
         overwrite=True,
     )
     return [adjudicated_path, final_path]

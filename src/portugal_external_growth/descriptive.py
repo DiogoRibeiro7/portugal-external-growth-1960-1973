@@ -41,8 +41,10 @@ def build_descriptive_trade_results(root: Path) -> dict[str, pd.DataFrame]:
     ].copy()
     colonial = colonial.rename(
         columns={
-            "trade_value_usd": "colonial_trade_value_usd",
-            "world_share": "colonial_world_share",
+            "trade_value_usd": "observed_colonial_trade_value_usd",
+            "world_share": "observed_colonial_share",
+            "complete_group_trade_value_usd": "complete_colonial_trade_value_usd",
+            "complete_world_share": "complete_colonial_share",
         }
     )
     return {
@@ -78,7 +80,8 @@ def _build_world_denominator_groups(
         for scheme, groups in schemes.items():
             assigned_total = 0.0
             for group_name, codes in groups.items():
-                value = sum(partner_values.get(code, 0.0) for code in codes)
+                observed_codes = codes.intersection(partner_values)
+                value = sum(partner_values[code] for code in observed_codes)
                 assigned_total += value
                 records.append(
                     _world_share_record(
@@ -89,6 +92,8 @@ def _build_world_denominator_groups(
                         value,
                         world_value,
                         "selected_partner_sum",
+                        observed_count=len(observed_codes),
+                        expected_count=len(codes),
                     )
                 )
             residual = world_value - assigned_total
@@ -101,6 +106,8 @@ def _build_world_denominator_groups(
                     residual,
                     world_value,
                     "world_total_minus_selected_groups",
+                    observed_count=None,
+                    expected_count=None,
                 )
             )
     return pd.DataFrame.from_records(records).sort_values(
@@ -116,7 +123,20 @@ def _world_share_record(
     value: float,
     world_value: float,
     value_method: str,
+    observed_count: int | None,
+    expected_count: int | None,
 ) -> dict[str, object]:
+    complete = (
+        observed_count is not None
+        and expected_count is not None
+        and observed_count == expected_count
+    )
+    is_residual = group_name == "true_rest_of_world"
+    complete_value = value if complete or is_residual else pd.NA
+    observed_share = value / world_value if world_value else pd.NA
+    complete_share = (
+        complete_value / world_value if (complete or is_residual) and world_value else pd.NA
+    )
     return {
         "year": year,
         "flow_code": flow_code,
@@ -124,10 +144,29 @@ def _world_share_record(
         "partner_group": group_name,
         "trade_value_usd": value,
         "world_value_usd": world_value,
-        "world_share": value / world_value if world_value else pd.NA,
+        "world_share": observed_share,
+        "observed_world_share": observed_share,
+        "complete_group_trade_value_usd": complete_value,
+        "complete_world_share": complete_share,
+        "partner_coverage_count": observed_count,
+        "expected_partner_count": expected_count,
+        "partner_coverage_ratio": (
+            observed_count / expected_count
+            if observed_count is not None and expected_count is not None and expected_count
+            else pd.NA
+        ),
+        "estimate_status": _estimate_status(complete=complete, is_residual=is_residual),
         "value_method": value_method,
         "source_quality": "preliminary_from_comtrade_coverage_snapshot",
     }
+
+
+def _estimate_status(*, complete: bool, is_residual: bool) -> str:
+    if is_residual:
+        return "residual_against_observed_selected_groups"
+    if complete:
+        return "complete_partner_coverage"
+    return "incomplete_partner_lower_bound"
 
 
 def _build_selected_partner_diagnostics(

@@ -10,7 +10,11 @@ import requests
 import responses
 
 from portugal_external_growth.clients.bpstat import BPstatClient, flatten_jsonstat
-from portugal_external_growth.clients.comtrade import ComtradeClient, ComtradeRequest
+from portugal_external_growth.clients.comtrade import (
+    ComtradeAPIError,
+    ComtradeClient,
+    ComtradeRequest,
+)
 from portugal_external_growth.clients.world_bank import WorldBankClient, WorldBankRequest
 
 
@@ -155,6 +159,20 @@ def test_comtrade_client_rejects_missing_data_list() -> None:
     request = ComtradeRequest(year=1962, reporter_code=620, partner_codes=(0,), flow_code="X")
 
     with pytest.raises(ValueError, match="does not contain a data list"):
+        client.fetch(request)
+
+
+@responses.activate
+def test_comtrade_client_rejects_api_error_payload() -> None:
+    responses.add(
+        responses.GET,
+        "https://comtradeapi.un.org/public/v1/preview/C/A/S1",
+        json={"data": [], "error": "invalid reporter"},
+    )
+    client = ComtradeClient(requests.Session())
+    request = ComtradeRequest(year=1962, reporter_code=620, partner_codes=(0,), flow_code="X")
+
+    with pytest.raises(ComtradeAPIError, match="invalid reporter"):
         client.fetch(request)
 
 

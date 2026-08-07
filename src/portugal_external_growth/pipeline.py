@@ -35,6 +35,7 @@ from portugal_external_growth.partners import (
     build_requested_partner_return_status,
     configured_comtrade_partner_codes,
     load_historical_group_memberships,
+    partner_codes_sha256,
 )
 from portugal_external_growth.reconciliation import (
     build_trade_reconciliation_notes,
@@ -222,6 +223,7 @@ def audit_comtrade_coverage(settings: Settings, *, overwrite: bool) -> None:
     years = tuple(int(year) for year in config["years"])
     flows = tuple(str(flow_code) for flow_code in config["flow_codes"])
     partners = configured_comtrade_partner_codes(root, years)
+    request_snapshot_fields = _comtrade_request_snapshot_fields(root, partners, partners)
 
     matrix_inputs: list[pd.DataFrame] = []
     raw_paths: list[str] = []
@@ -263,6 +265,7 @@ def audit_comtrade_coverage(settings: Settings, *, overwrite: bool) -> None:
                                     "trade_value_usd": pd.NA,
                                     "is_world_record": False,
                                     "raw_records": 0,
+                                    **request_snapshot_fields,
                                 }
                             ]
                         )
@@ -280,8 +283,12 @@ def audit_comtrade_coverage(settings: Settings, *, overwrite: bool) -> None:
                         "partner_desc": normalised["partner_desc"],
                         "commodity_code_source": normalised["commodity_code"],
                         "trade_value_usd": normalised["trade_value_usd"],
+                        "is_reported": normalised["is_reported"],
+                        "is_original_classification": normalised["is_original_classification"],
+                        "legacy_estimation_flag": normalised["legacy_estimation_flag"],
                         "is_world_record": normalised["partner_code"].eq(0),
                         "raw_records": len(frame),
+                        **request_snapshot_fields,
                     }
                 )
                 area_path = root / "config/comtrade_partner_areas.yml"
@@ -314,6 +321,7 @@ def audit_comtrade_coverage(settings: Settings, *, overwrite: bool) -> None:
             years=years,
             flows=flows,
             classification_codes=classification_codes,
+            configured_partner_codes=partners,
         )
         write_dataframe_with_metadata(
             requested_status.loc[~requested_status["returned"]].copy(),
@@ -331,29 +339,35 @@ def audit_comtrade_coverage(settings: Settings, *, overwrite: bool) -> None:
 
 
 def rebuild_comtrade_coverage_audit_from_local(settings: Settings) -> None:
-    """Regenerate Comtrade coverage-audit outputs from the committed local matrix."""
+    """Regenerate Comtrade coverage-audit outputs from committed local snapshots."""
 
     root = settings.resolved_root()
     matrix_path = root / "data/interim/live/comtrade_coverage_matrix.csv"
-    if not matrix_path.exists():
+    raw_snapshot_dir = root / "data/raw/live/comtrade_availability"
+    if not matrix_path.exists() and not raw_snapshot_dir.exists():
         return
     payload = load_yaml(root / "config/comtrade.yml")
     config = payload.get("comtrade")
     if not isinstance(config, dict):
         raise TypeError("comtrade.yml is invalid")
-    coverage_matrix = pd.read_csv(matrix_path)
-    if "commodity_code_source" not in coverage_matrix.columns:
-        coverage_matrix["commodity_code_source"] = str(config["commodity_codes"][0])
     years = tuple(int(year) for year in config["years"])
     flows = tuple(str(flow_code) for flow_code in config["flow_codes"])
+    partners = configured_comtrade_partner_codes(root, years)
     preferred_classification_codes = tuple(
         str(value) for value in config.get("preferred_coverage_classification_codes", ["S1", "S2"])
     )
     area_path = root / "config/comtrade_partner_areas.yml"
-    if area_path.exists():
-        coverage_matrix = annotate_comtrade_partner_areas(coverage_matrix, area_path)
+    matrix_inputs = _local_comtrade_coverage_matrices(root, partners)
+    if not matrix_inputs:
+        coverage_matrix = pd.read_csv(matrix_path)
+        if "commodity_code_source" not in coverage_matrix.columns:
+            coverage_matrix["commodity_code_source"] = str(config["commodity_codes"][0])
+        if area_path.exists():
+            coverage_matrix = annotate_comtrade_partner_areas(coverage_matrix, area_path)
+        coverage_matrix = _apply_comtrade_snapshot_status(coverage_matrix, root, partners)
+        matrix_inputs = [coverage_matrix]
     coverage_matrix, audit, notes = compile_comtrade_coverage_audit(
-        [coverage_matrix],
+        matrix_inputs,
         colonial_partner_codes=_colonial_partner_codes(root),
         expected_years=years,
         expected_flow_codes=flows,
@@ -382,6 +396,8 @@ def rebuild_comtrade_coverage_audit_from_local(settings: Settings) -> None:
             years=years,
             flows=flows,
             classification_codes=classification_codes,
+            configured_partner_codes=partners,
+            snapshot_partner_codes=_snapshot_partner_codes_by_coverage_request(root),
         )
         write_dataframe_with_metadata(
             requested_status.loc[~requested_status["returned"]].copy(),
@@ -422,6 +438,159 @@ def _colonial_partner_codes(root: Path) -> tuple[int, ...]:
         for member in group.get("members", [])
         if isinstance(member, dict)
     )
+
+
+def _comtrade_request_snapshot_fields(
+    root: Path,
+    snapshot_partner_codes: tuple[int, ...],
+    configured_partner_codes: tuple[int, ...],
+) -> dict[str, str]:
+    snapshot_codes = tuple(sorted(snapshot_partner_codes))
+    configured_codes = tuple(sorted(configured_partner_codes))
+    area_path = root / "config/comtrade_partner_areas.yml"
+    config_path = root / "config/comtrade.yml"
+    return {
+        "snapshot_partner_codes": ",".join(str(code) for code in snapshot_codes),
+        "request_partner_codes_sha256": partner_codes_sha256(snapshot_codes),
+        "partner_area_registry_sha256": sha256_file(area_path) if area_path.exists() else "",
+        "comtrade_config_sha256": sha256_file(config_path) if config_path.exists() else "",
+        "snapshot_status": (
+            "current_against_configuration"
+            if snapshot_codes == configured_codes
+            else "stale_against_current_configuration"
+        ),
+    }
+
+
+def _local_comtrade_coverage_matrices(
+    root: Path,
+    configured_partner_codes: tuple[int, ...],
+) -> list[pd.DataFrame]:
+    matrices: list[pd.DataFrame] = []
+    area_path = root / "config/comtrade_partner_areas.yml"
+    for raw_path in sorted((root / "data/raw/live/comtrade_availability").glob("*.json")):
+        metadata_path = raw_path.with_suffix(".metadata.json")
+        if not metadata_path.exists():
+            continue
+        metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+        parameters = metadata.get("parameters")
+        if not isinstance(parameters, dict):
+            continue
+        year = int(parameters["year"])
+        flow_code = str(parameters["flow_code"])
+        classification_code = str(parameters["classification_code"])
+        commodity_code = str(parameters.get("commodity_code", "TOTAL"))
+        reporter_code = int(parameters["reporter_code"])
+        partner_codes = parameters.get("partner_codes")
+        if not isinstance(partner_codes, list):
+            continue
+        snapshot_codes = tuple(sorted(int(code) for code in partner_codes))
+        snapshot_fields = _comtrade_request_snapshot_fields(
+            root,
+            snapshot_codes,
+            configured_partner_codes,
+        )
+        payload = json.loads(raw_path.read_text(encoding="utf-8"))
+        data = payload.get("data") if isinstance(payload, dict) else None
+        if not isinstance(data, list):
+            continue
+        if not data:
+            matrices.append(
+                pd.DataFrame(
+                    [
+                        {
+                            "year": year,
+                            "flow_code": flow_code,
+                            "classification_code": classification_code,
+                            "reporter_code": reporter_code,
+                            "partner_code": pd.NA,
+                            "partner_desc": "",
+                            "commodity_code_source": commodity_code,
+                            "trade_value_usd": pd.NA,
+                            "is_reported": pd.NA,
+                            "is_original_classification": pd.NA,
+                            "legacy_estimation_flag": pd.NA,
+                            "is_world_record": False,
+                            "raw_records": 0,
+                            **snapshot_fields,
+                        }
+                    ]
+                )
+            )
+            continue
+        normalised = normalise_comtrade(pd.json_normalize(data))
+        matrix = pd.DataFrame(
+            {
+                "year": normalised["year"],
+                "flow_code": normalised["flow_code"],
+                "classification_code": classification_code,
+                "reporter_code": reporter_code,
+                "partner_code": normalised["partner_code"],
+                "partner_desc": normalised["partner_desc"],
+                "commodity_code_source": normalised["commodity_code"],
+                "trade_value_usd": normalised["trade_value_usd"],
+                "is_reported": normalised["is_reported"],
+                "is_original_classification": normalised["is_original_classification"],
+                "legacy_estimation_flag": normalised["legacy_estimation_flag"],
+                "is_world_record": normalised["partner_code"].eq(0),
+                "raw_records": len(data),
+                **snapshot_fields,
+            }
+        )
+        if area_path.exists():
+            matrix = annotate_comtrade_partner_areas(matrix, area_path)
+        matrices.append(matrix)
+    return matrices
+
+
+def _apply_comtrade_snapshot_status(
+    coverage_matrix: pd.DataFrame,
+    root: Path,
+    configured_partner_codes: tuple[int, ...],
+) -> pd.DataFrame:
+    snapshots = _snapshot_partner_codes_by_coverage_request(root)
+    if not snapshots:
+        return coverage_matrix
+    output = coverage_matrix.copy()
+    for column in (
+        "snapshot_partner_codes",
+        "request_partner_codes_sha256",
+        "partner_area_registry_sha256",
+        "comtrade_config_sha256",
+        "snapshot_status",
+    ):
+        if column not in output:
+            output[column] = ""
+    for index, row in output.iterrows():
+        key = (int(row["year"]), str(row["flow_code"]), str(row["classification_code"]))
+        snapshot_codes = snapshots.get(key)
+        if snapshot_codes is None:
+            continue
+        fields = _comtrade_request_snapshot_fields(root, snapshot_codes, configured_partner_codes)
+        for column, value in fields.items():
+            output.at[index, column] = value
+    return output
+
+
+def _snapshot_partner_codes_by_coverage_request(
+    root: Path,
+) -> dict[tuple[int, str, str], tuple[int, ...]]:
+    snapshots: dict[tuple[int, str, str], tuple[int, ...]] = {}
+    for path in sorted((root / "data/raw/live/comtrade_availability").glob("*.metadata.json")):
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        parameters = payload.get("parameters")
+        if not isinstance(parameters, dict):
+            continue
+        partner_codes = parameters.get("partner_codes")
+        if not isinstance(partner_codes, list):
+            continue
+        key = (
+            int(parameters["year"]),
+            str(parameters["flow_code"]),
+            str(parameters["classification_code"]),
+        )
+        snapshots[key] = tuple(sorted(int(code) for code in partner_codes))
+    return snapshots
 
 
 def _existing_metadata_source_files(path: Path) -> list[str]:
