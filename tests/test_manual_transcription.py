@@ -7,8 +7,8 @@ import pandas as pd
 from portugal_external_growth.manual import (
     AGGREGATE_TEMPLATE_COLUMNS,
     TRADE_TEMPLATE_COLUMNS,
-    compare_aggregate_transcription_passes,
     build_ine_harmonised,
+    compare_aggregate_transcription_passes,
     compare_ine_transcriptions,
     compare_transcription_passes,
     initialise_templates,
