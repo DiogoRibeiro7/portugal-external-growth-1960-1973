@@ -6,10 +6,19 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-08-07
+
 ### Added
 
+- Official two-volume 1962 INE external-trade source scans and provenance sidecars.
+- Historical-source audit outputs for the 1962 INE acquisition milestone.
 - INE transcription status report now includes source-document, checksum, pass-entry,
   adjudication, unreadable-cell, and footnote counts.
+
+### Fixed
+
+- Manual source-document availability now verifies local files and SHA-256 checksums.
+- Multi-volume manual source records require matching filename and checksum counts.
 
 ## [0.1.1] - 2026-08-07
 
