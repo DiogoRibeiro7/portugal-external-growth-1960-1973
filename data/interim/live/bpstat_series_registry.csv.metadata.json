@@ -17,7 +17,10 @@
     "methodological_breaks",
     "source_status",
     "review_status",
-    "rejection_or_hold_reason"
+    "rejection_or_hold_reason",
+    "project_period_coverage_status",
+    "project_period_overlap_start_year",
+    "project_period_overlap_end_year"
   ],
   "date_range": null,
   "file": "data/interim/live/bpstat_series_registry.csv",
@@ -38,6 +41,9 @@
     "last_observation": "object",
     "methodological_breaks": "object",
     "price_basis": "object",
+    "project_period_coverage_status": "object",
+    "project_period_overlap_end_year": "Int64",
+    "project_period_overlap_start_year": "Int64",
     "reconstruction_method": "object",
     "rejection_or_hold_reason": "object",
     "review_status": "object",
@@ -47,7 +53,7 @@
     "territorial_definition": "object",
     "units": "object"
   },
-  "sha256": "ab12e4a2da70ea2cf19d90264a5f95f5b283c9d2ca1e5805c6e74c5ac02abcea",
+  "sha256": "9f3ddc5bcd7f9d3b23aab2bf7548d5eac5213201e73aadf8824f1cc2d5a1fc38",
   "source_files": [
     "config/bpstat_series.yml"
   ],

@@ -23,9 +23,12 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
   territorial-definition review, source reconciliation, and product mapping.
 - Territorial-definition evidence registry for resolving Portugal reporter-territory status.
 - LF-normalized text-output writer for cross-platform manifest stability.
+- BPstat registry project-period coverage fields and per-candidate review details.
 
 ### Changed
 
 - Comtrade coverage diagnostics now live under `results/diagnostics/comtrade_coverage/`.
 - Missing requested partners distinguish stale requests, unavailable classifications, unavailable
   reporters, and partner-level absences.
+- BPstat candidate review validation now rejects blank mandatory fields, invalid identifiers,
+  invalid observation windows, and accepted candidates outside 1960-1973.
