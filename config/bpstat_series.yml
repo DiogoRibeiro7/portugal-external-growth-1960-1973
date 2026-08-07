@@ -2,6 +2,244 @@
 series: []
 
 reviewed_candidates:
+  - slug: gdp_current_prices_annual
+    series_id: 12518356
+    concept: nominal_gdp
+    label: GDP at market prices-CP-A
+    domain_id: 54
+    dataset_id: ce3e4e50cda325537eff729ef64037cd
+    frequency: annual
+    units: millions of euros
+    price_basis: current_prices
+    first_observation: "1953-12-31"
+    last_observation: "2025-12-31"
+    territorial_definition: Portugal reference territory in BPstat metadata; historical treatment of overseas territories not yet independently reviewed
+    reconstruction_method: national_accounts_expenditure_approach_historical_series
+    methodological_breaks: not_reviewed_in_source_notes
+    source_status: reconstructed_or_harmonised_not_yet_confirmed
+    review_status: accepted_for_context_not_enabled_for_extraction
+    rejection_or_hold_reason: Accepted for context only; extraction disabled until territorial and methodological definitions are reviewed.
+  - slug: real_gdp_chain_linked_annual
+    series_id: 12518324
+    concept: real_gdp
+    label: GDP at market prices-CLV-A
+    domain_id: 54
+    dataset_id: ce3e4e50cda325537eff729ef64037cd
+    frequency: annual
+    units: millions of euros
+    price_basis: chain_linked_volume
+    first_observation: "1954-12-31"
+    last_observation: "2025-12-31"
+    territorial_definition: Portugal reference territory in BPstat metadata; historical treatment of overseas territories not yet independently reviewed
+    reconstruction_method: national_accounts_expenditure_approach_historical_series
+    methodological_breaks: not_reviewed_in_source_notes
+    source_status: reconstructed_or_harmonised_not_yet_confirmed
+    review_status: accepted_for_context_not_enabled_for_extraction
+    rejection_or_hold_reason: Accepted for context only; extraction disabled until territorial and methodological definitions are reviewed.
+  - slug: gdp_growth_chain_volume_yoy_annual
+    series_id: 12518303
+    concept: gdp_growth
+    label: GDP at market prices-Annual-Chained volume-YoY
+    domain_id: 54
+    dataset_id: ce3e4e50cda325537eff729ef64037cd
+    frequency: annual
+    units: year_over_year_percent_change
+    price_basis: chain_linked_volume_yoy
+    first_observation: "1954-12-31"
+    last_observation: "2025-12-31"
+    territorial_definition: Portugal reference territory in BPstat metadata; historical treatment of overseas territories not yet independently reviewed
+    reconstruction_method: national_accounts_expenditure_approach_historical_series
+    methodological_breaks: not_reviewed_in_source_notes
+    source_status: reconstructed_or_harmonised_not_yet_confirmed
+    review_status: accepted_for_context_not_enabled_for_extraction
+    rejection_or_hold_reason: Accepted for context only; extraction disabled until territorial and methodological definitions are reviewed.
+  - slug: gdp_deflator_annual
+    series_id: 12706851
+    concept: gdp_deflator
+    label: Deflators of GDP at market prices-annual
+    domain_id: 181
+    dataset_id: 0623eb9d3bebc56c07359ba1fa875039
+    frequency: annual
+    units: index
+    price_basis: deflator
+    first_observation: "1953-12-31"
+    last_observation: "2025-12-31"
+    territorial_definition: Portugal reference territory in BPstat metadata; historical treatment of overseas territories not yet independently reviewed
+    reconstruction_method: national_accounts_deflator_historical_series
+    methodological_breaks: not_reviewed_in_source_notes
+    source_status: reconstructed_or_harmonised_not_yet_confirmed
+    review_status: accepted_for_context_not_enabled_for_extraction
+    rejection_or_hold_reason: Accepted for context only; extraction disabled until territorial and methodological definitions are reviewed.
+  - slug: gdp_deflator_yoy_annual
+    series_id: 12706759
+    concept: gdp_deflator_growth
+    label: Deflators of GDP at market prices-YoY-annual
+    domain_id: 181
+    dataset_id: 0623eb9d3bebc56c07359ba1fa875039
+    frequency: annual
+    units: year_over_year_percent_change
+    price_basis: deflator_yoy
+    first_observation: "1954-12-31"
+    last_observation: "2025-12-31"
+    territorial_definition: Portugal reference territory in BPstat metadata; historical treatment of overseas territories not yet independently reviewed
+    reconstruction_method: national_accounts_deflator_historical_series
+    methodological_breaks: not_reviewed_in_source_notes
+    source_status: reconstructed_or_harmonised_not_yet_confirmed
+    review_status: accepted_for_context_not_enabled_for_extraction
+    rejection_or_hold_reason: Accepted for context only; extraction disabled until territorial and methodological definitions are reviewed.
+  - slug: exports_goods_services_current_annual
+    series_id: 12518352
+    concept: exports_goods_services
+    label: Exports of goods and services-CP-A
+    domain_id: 54
+    dataset_id: ce3e4e50cda325537eff729ef64037cd
+    frequency: annual
+    units: millions of euros
+    price_basis: current_prices
+    first_observation: "1953-12-31"
+    last_observation: "2025-12-31"
+    territorial_definition: Portugal reference territory in BPstat metadata; national-accounts goods-and-services concept, not merchandise-only trade
+    reconstruction_method: national_accounts_expenditure_approach_historical_series
+    methodological_breaks: not_reviewed_in_source_notes
+    source_status: reconstructed_or_harmonised_not_yet_confirmed
+    review_status: accepted_for_context_not_enabled_for_extraction
+    rejection_or_hold_reason: Accepted for macro context only; not a replacement for INE/Comtrade merchandise-trade totals.
+  - slug: imports_goods_services_current_annual
+    series_id: 12518343
+    concept: imports_goods_services
+    label: Imports of goods and services-CP-A
+    domain_id: 54
+    dataset_id: ce3e4e50cda325537eff729ef64037cd
+    frequency: annual
+    units: millions of euros
+    price_basis: current_prices
+    first_observation: "1953-12-31"
+    last_observation: "2025-12-31"
+    territorial_definition: Portugal reference territory in BPstat metadata; national-accounts goods-and-services concept, not merchandise-only trade
+    reconstruction_method: national_accounts_expenditure_approach_historical_series
+    methodological_breaks: not_reviewed_in_source_notes
+    source_status: reconstructed_or_harmonised_not_yet_confirmed
+    review_status: accepted_for_context_not_enabled_for_extraction
+    rejection_or_hold_reason: Accepted for macro context only; not a replacement for INE/Comtrade merchandise-trade totals.
+  - slug: exports_goods_services_chain_linked_annual
+    series_id: 12518320
+    concept: real_exports_goods_services
+    label: Exports of goods and services-CLV-A
+    domain_id: 54
+    dataset_id: ce3e4e50cda325537eff729ef64037cd
+    frequency: annual
+    units: millions of euros
+    price_basis: chain_linked_volume
+    first_observation: "1954-12-31"
+    last_observation: "2025-12-31"
+    territorial_definition: Portugal reference territory in BPstat metadata; national-accounts goods-and-services concept, not merchandise-only trade
+    reconstruction_method: national_accounts_expenditure_approach_historical_series
+    methodological_breaks: not_reviewed_in_source_notes
+    source_status: reconstructed_or_harmonised_not_yet_confirmed
+    review_status: accepted_for_context_not_enabled_for_extraction
+    rejection_or_hold_reason: Accepted for macro context only; not a replacement for INE/Comtrade merchandise-trade totals.
+  - slug: imports_goods_services_chain_linked_annual
+    series_id: 12518323
+    concept: real_imports_goods_services
+    label: Imports of goods and services-CLV-A
+    domain_id: 54
+    dataset_id: ce3e4e50cda325537eff729ef64037cd
+    frequency: annual
+    units: millions of euros
+    price_basis: chain_linked_volume
+    first_observation: "1954-12-31"
+    last_observation: "2025-12-31"
+    territorial_definition: Portugal reference territory in BPstat metadata; national-accounts goods-and-services concept, not merchandise-only trade
+    reconstruction_method: national_accounts_expenditure_approach_historical_series
+    methodological_breaks: not_reviewed_in_source_notes
+    source_status: reconstructed_or_harmonised_not_yet_confirmed
+    review_status: accepted_for_context_not_enabled_for_extraction
+    rejection_or_hold_reason: Accepted for macro context only; not a replacement for INE/Comtrade merchandise-trade totals.
+  - slug: gross_fixed_capital_formation_current_annual
+    series_id: 12518349
+    concept: gross_fixed_capital_formation
+    label: Gross fixed capital formation-CP-A
+    domain_id: 54
+    dataset_id: ce3e4e50cda325537eff729ef64037cd
+    frequency: annual
+    units: millions of euros
+    price_basis: current_prices
+    first_observation: "1953-12-31"
+    last_observation: "2025-12-31"
+    territorial_definition: Portugal reference territory in BPstat metadata; historical treatment of overseas territories not yet independently reviewed
+    reconstruction_method: national_accounts_expenditure_approach_historical_series
+    methodological_breaks: not_reviewed_in_source_notes
+    source_status: reconstructed_or_harmonised_not_yet_confirmed
+    review_status: accepted_for_context_not_enabled_for_extraction
+    rejection_or_hold_reason: Accepted for context only; extraction disabled until territorial and methodological definitions are reviewed.
+  - slug: gross_fixed_capital_formation_chain_linked_annual
+    series_id: 12518329
+    concept: real_gross_fixed_capital_formation
+    label: Gross fixed capital formation-CLV-A
+    domain_id: 54
+    dataset_id: ce3e4e50cda325537eff729ef64037cd
+    frequency: annual
+    units: millions of euros
+    price_basis: chain_linked_volume
+    first_observation: "1954-12-31"
+    last_observation: "2025-12-31"
+    territorial_definition: Portugal reference territory in BPstat metadata; historical treatment of overseas territories not yet independently reviewed
+    reconstruction_method: national_accounts_expenditure_approach_historical_series
+    methodological_breaks: not_reviewed_in_source_notes
+    source_status: reconstructed_or_harmonised_not_yet_confirmed
+    review_status: accepted_for_context_not_enabled_for_extraction
+    rejection_or_hold_reason: Accepted for context only; extraction disabled until territorial and methodological definitions are reviewed.
+  - slug: manufacturing_gva_current_annual
+    series_id: 12706416
+    concept: manufacturing_value_added
+    label: GVA-Manufacturing-annual-current prices
+    domain_id: 55
+    dataset_id: db0366b1f32fc6842a7541885fcb5600
+    frequency: annual
+    units: millions of euros
+    price_basis: current_prices
+    first_observation: "1953-12-31"
+    last_observation: "2025-12-31"
+    territorial_definition: Portugal reference territory in BPstat metadata; historical industrial classification comparability not yet independently reviewed
+    reconstruction_method: national_accounts_production_approach_historical_series
+    methodological_breaks: not_reviewed_in_source_notes
+    source_status: reconstructed_or_harmonised_not_yet_confirmed
+    review_status: accepted_for_context_not_enabled_for_extraction
+    rejection_or_hold_reason: Accepted for context only; extraction disabled until industry classification breaks are reviewed.
+  - slug: manufacturing_gva_chain_linked_annual
+    series_id: 12706415
+    concept: real_manufacturing_value_added
+    label: GVA-Manufacturing-annual-chain-linked values
+    domain_id: 55
+    dataset_id: db0366b1f32fc6842a7541885fcb5600
+    frequency: annual
+    units: millions of euros
+    price_basis: chain_linked_volume
+    first_observation: "1954-12-31"
+    last_observation: "2025-12-31"
+    territorial_definition: Portugal reference territory in BPstat metadata; historical industrial classification comparability not yet independently reviewed
+    reconstruction_method: national_accounts_production_approach_historical_series
+    methodological_breaks: not_reviewed_in_source_notes
+    source_status: reconstructed_or_harmonised_not_yet_confirmed
+    review_status: accepted_for_context_not_enabled_for_extraction
+    rejection_or_hold_reason: Accepted for context only; extraction disabled until industry classification breaks are reviewed.
+  - slug: manufacturing_gva_deflator_yoy_annual
+    series_id: 12706642
+    concept: manufacturing_value_added_deflator_growth
+    label: Deflators of GVA-Manufacturing-YoY-annual
+    domain_id: 181
+    dataset_id: f8d9de1f6eafa76afc24ab71b570bf4c
+    frequency: annual
+    units: year_over_year_percent_change
+    price_basis: deflator_yoy
+    first_observation: "1954-12-31"
+    last_observation: "2025-12-31"
+    territorial_definition: Portugal reference territory in BPstat metadata; historical industrial classification comparability not yet independently reviewed
+    reconstruction_method: national_accounts_deflator_historical_series
+    methodological_breaks: not_reviewed_in_source_notes
+    source_status: reconstructed_or_harmonised_not_yet_confirmed
+    review_status: accepted_for_context_not_enabled_for_extraction
+    rejection_or_hold_reason: Accepted for context only; extraction disabled until industry classification breaks are reviewed.
   - slug: resident_population_total
     series_id: 12711757
     concept: population
@@ -19,15 +257,15 @@ reviewed_candidates:
     source_status: original_or_harmonised_not_yet_confirmed
     review_status: accepted_for_context_not_enabled_for_extraction
     rejection_or_hold_reason: Confirm historical treatment of overseas territories before analytical use.
-  - slug: gfcf_current_prices
-    series_id: 12562572
-    concept: gross_fixed_capital_formation
-    label: TSPE-GFCF-Total-Quarterly-Current prices-M€
-    domain_id: 31
-    dataset_id: 8a9766347128321e0bd8a7806d8d2c02
+  - slug: total_employment_national_accounts_quarterly
+    series_id: 12562670
+    concept: employment
+    label: TSPE-Employment Total-Quarterly-Thousands of people
+    domain_id: 134
+    dataset_id: e1bc26e910f42ba278827b0ad804be2a
     frequency: quarterly
-    units: millions of euros
-    price_basis: current_prices
+    units: thousands of people
+    price_basis: not_applicable
     first_observation: "1977-03-31"
     last_observation: "2024-12-31"
     territorial_definition: Portugal reference territory in BPstat metadata
@@ -36,36 +274,19 @@ reviewed_candidates:
     source_status: original_or_harmonised_not_yet_confirmed
     review_status: rejected_for_1960_1973
     rejection_or_hold_reason: Coverage starts after the project period.
-  - slug: gfcf_deflator
-    series_id: 12562605
-    concept: gdp_deflator_component
-    label: TSPE-GFCF-Total-Quarterly-Deflator (2016=1)
-    domain_id: 31
-    dataset_id: 911c96b897efe17121383bc621c3966e
+  - slug: manufacturing_employment
+    series_id: 5739362
+    concept: manufacturing_employment
+    label: Employment-16 to 89 years (thousands)-Mining and manufacturing-Quarterly
+    domain_id: 13
+    dataset_id: c95282a6e897efdc36832d5611fac100
     frequency: quarterly
-    units: index
-    price_basis: deflator_2016_equals_1
-    first_observation: "1977-03-31"
-    last_observation: "2024-12-31"
+    units: thousands of people
+    price_basis: not_applicable
+    first_observation: "2011-03-31"
+    last_observation: "2026-03-31"
     territorial_definition: Portugal reference territory in BPstat metadata
-    reconstruction_method: time_series_for_the_portuguese_economy
-    methodological_breaks: not_reviewed_in_source_notes
-    source_status: original_or_harmonised_not_yet_confirmed
-    review_status: rejected_for_1960_1973
-    rejection_or_hold_reason: Coverage starts after the project period and is not a total GDP deflator.
-  - slug: exports_goods_services_deflator
-    series_id: 12562610
-    concept: exports_goods_services_deflator
-    label: TSPE-Exports of goods and services-Total-Quarterly-Deflator (2016=1)
-    domain_id: 31
-    dataset_id: 911c96b897efe17121383bc621c3966e
-    frequency: quarterly
-    units: index
-    price_basis: deflator_2016_equals_1
-    first_observation: "1977-03-31"
-    last_observation: "2024-12-31"
-    territorial_definition: Portugal reference territory in BPstat metadata
-    reconstruction_method: time_series_for_the_portuguese_economy
+    reconstruction_method: labour_market_quarterly_series
     methodological_breaks: not_reviewed_in_source_notes
     source_status: original_or_harmonised_not_yet_confirmed
     review_status: rejected_for_1960_1973
@@ -82,6 +303,23 @@ reviewed_candidates:
     first_observation: "1996-01-31"
     last_observation: "2026-05-31"
     territorial_definition: Portugal reference territory; all countries counterparty
+    reconstruction_method: balance_of_payments_monthly_series
+    methodological_breaks: not_reviewed_in_source_notes
+    source_status: original_or_harmonised_not_yet_confirmed
+    review_status: rejected_for_1960_1973
+    rejection_or_hold_reason: Coverage starts after the project period.
+  - slug: travel_credit
+    series_id: 12511581
+    concept: tourism_exports
+    label: Travel-Credit-Seasonally and calendar effects adjusted-Monthly-M€
+    domain_id: 3
+    dataset_id: 4c4e01bce4a325307e95143e099a1a50
+    frequency: monthly
+    units: millions of euros
+    price_basis: current_prices
+    first_observation: "1996-01-31"
+    last_observation: "2026-05-31"
+    territorial_definition: Portugal reference territory; non-resident counterparty scope
     reconstruction_method: balance_of_payments_monthly_series
     methodological_breaks: not_reviewed_in_source_notes
     source_status: original_or_harmonised_not_yet_confirmed
@@ -104,20 +342,37 @@ reviewed_candidates:
     source_status: original_or_harmonised_not_yet_confirmed
     review_status: rejected_for_1960_1973
     rejection_or_hold_reason: Coverage starts after the project period.
-  - slug: manufacturing_employment
-    series_id: 5739362
-    concept: manufacturing_employment
-    label: Employment-16 to 89 years (thousands)-Mining and manufacturing-Quarterly
-    domain_id: 13
-    dataset_id: c95282a6e897efdc36832d5611fac100
+  - slug: tspe_gdp_current_prices_quarterly
+    series_id: 12562584
+    concept: nominal_gdp
+    label: TSPE-GDP-Quarterly-Current prices-M€
+    domain_id: 31
+    dataset_id: 8a9766347128321e0bd8a7806d8d2c02
     frequency: quarterly
-    units: thousands of people
-    price_basis: not_applicable
-    first_observation: "2011-03-31"
-    last_observation: "2026-03-31"
+    units: millions of euros
+    price_basis: current_prices
+    first_observation: "1977-03-31"
+    last_observation: "2024-12-31"
     territorial_definition: Portugal reference territory in BPstat metadata
-    reconstruction_method: labour_market_quarterly_series
+    reconstruction_method: time_series_for_the_portuguese_economy
     methodological_breaks: not_reviewed_in_source_notes
     source_status: original_or_harmonised_not_yet_confirmed
     review_status: rejected_for_1960_1973
-    rejection_or_hold_reason: Coverage starts after the project period.
+    rejection_or_hold_reason: Coverage starts after the project period; annual domain 54 candidate covers the project period instead.
+  - slug: tspe_gdp_deflator_quarterly
+    series_id: 12562616
+    concept: gdp_deflator
+    label: TSPE-GDP-Quarterly-Deflator (2016=1)
+    domain_id: 31
+    dataset_id: 911c96b897efe17121383bc621c3966e
+    frequency: quarterly
+    units: index
+    price_basis: deflator_2016_equals_1
+    first_observation: "1977-03-31"
+    last_observation: "2024-12-31"
+    territorial_definition: Portugal reference territory in BPstat metadata
+    reconstruction_method: time_series_for_the_portuguese_economy
+    methodological_breaks: not_reviewed_in_source_notes
+    source_status: original_or_harmonised_not_yet_confirmed
+    review_status: rejected_for_1960_1973
+    rejection_or_hold_reason: Coverage starts after the project period; annual domain 181 candidate covers the project period instead.

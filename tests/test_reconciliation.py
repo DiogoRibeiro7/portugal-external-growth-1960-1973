@@ -113,7 +113,7 @@ def test_reconciliation_registry_reports_unresolved_blockers() -> None:
     result = build_reconciliation_registry(reconciliation)
 
     assert result.loc[0, "overall_status"] == "unresolved"
-    assert "colonial_partner_coverage_incomplete" in result.loc[0, "blocking_reasons"]
+    assert "colonial_partner_coverage_incomplete" in str(result.loc[0, "blocking_reasons"])
 
 
 def test_trade_reconciliation_notes_list_missing_sources() -> None:

@@ -27,10 +27,10 @@
   "input_artifacts": [
     {
       "path": "config/bpstat_series.yml",
-      "sha256": "917bf72ee479983872489ec3fbf78af752f683281bc7a9bdf56f975210889933"
+      "sha256": "a3ab5ffbe0d56e977e479d4d226a3a6e1f6ad1071421e4769fbcbce5a6e3e790"
     }
   ],
-  "rows": 7,
+  "rows": 22,
   "schema": {
     "concept": "object",
     "dataset_id": "object",
@@ -53,7 +53,7 @@
     "territorial_definition": "object",
     "units": "object"
   },
-  "sha256": "9f3ddc5bcd7f9d3b23aab2bf7548d5eac5213201e73aadf8824f1cc2d5a1fc38",
+  "sha256": "1fee41fa8a6fb19057feca05b9364bb1e049d96b0b12371c002b984597e6ae4e",
   "source_files": [
     "config/bpstat_series.yml"
   ],

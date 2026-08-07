@@ -70,6 +70,31 @@ reviewed_candidates:
     assert frame["project_period_overlap_end_year"].tolist() == [1973, 1973]
 
 
+def test_project_bpstat_registry_covers_required_concepts() -> None:
+    root = Path(__file__).resolve().parents[1]
+
+    frame = load_bpstat_reviewed_candidates(root / "config/bpstat_series.yml")
+
+    required_concepts = {
+        "nominal_gdp",
+        "real_gdp",
+        "gdp_growth",
+        "gdp_deflator",
+        "exports_goods_services",
+        "imports_goods_services",
+        "gross_fixed_capital_formation",
+        "manufacturing_value_added",
+        "population",
+        "employment",
+        "current_account",
+        "tourism_exports",
+        "investment_income",
+    }
+    assert required_concepts.issubset(set(frame["concept"]))
+    assert frame["slug"].is_unique
+    assert frame["series_id"].is_unique
+
+
 def test_bpstat_registry_rejects_incomplete_candidates(tmp_path: Path) -> None:
     path = tmp_path / "bpstat.yml"
     path.write_text(
