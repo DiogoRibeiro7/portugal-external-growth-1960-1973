@@ -1,0 +1,95 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "year",
+    "flow",
+    "concept",
+    "source_a",
+    "source_b",
+    "source_a_value",
+    "source_b_value",
+    "absolute_difference",
+    "relative_difference",
+    "unit",
+    "valuation_basis",
+    "territorial_definition_a",
+    "territorial_definition_b",
+    "reconciliation_status",
+    "explanation",
+    "evidence_reference",
+    "signed_difference",
+    "relative_difference_denominator",
+    "source_a_original_value",
+    "source_a_currency",
+    "source_b_original_value",
+    "source_b_currency",
+    "conversion_method",
+    "expected_partner_count",
+    "observed_partner_count",
+    "coverage_ratio",
+    "missing_partner_entities"
+  ],
+  "date_range": {
+    "end_year": 1962,
+    "start_year": 1962
+  },
+  "file": "data/interim/live/ine_comtrade_1962_reconciliation.csv",
+  "input_artifacts": [
+    {
+      "path": "data/processed/live/ine_1962_aggregate_trade_harmonised.csv",
+      "sha256": "220e6aebb277d5846c026657277c1ea201d6c68b635bffb2956da6bdc49d3ed0"
+    },
+    {
+      "path": "results/diagnostics/comtrade_coverage/comtrade_coverage_audit.csv",
+      "sha256": "1bc232a6edcbf21a82b0e4ca7e5062f72e9e88b57c2040d32cde46b40e2631cb"
+    },
+    {
+      "path": "data/interim/live/comtrade_coverage_matrix.csv",
+      "sha256": "290fb75344b2196f35a7dd494b5051d2448ebd08e8e4d34f333aeb2dc467bb52"
+    },
+    {
+      "path": "config/historical_groups.yml",
+      "sha256": "f1d7ab80828e7b2c5a86a894c022c61e5b2b2654f779c1769a1a310b013ae984"
+    }
+  ],
+  "rows": 4,
+  "schema": {
+    "absolute_difference": "float64",
+    "concept": "object",
+    "conversion_method": "object",
+    "coverage_ratio": "object",
+    "evidence_reference": "object",
+    "expected_partner_count": "object",
+    "explanation": "object",
+    "flow": "object",
+    "missing_partner_entities": "object",
+    "observed_partner_count": "object",
+    "reconciliation_status": "object",
+    "relative_difference": "float64",
+    "relative_difference_denominator": "object",
+    "signed_difference": "float64",
+    "source_a": "object",
+    "source_a_currency": "object",
+    "source_a_original_value": "float64",
+    "source_a_value": "float64",
+    "source_b": "object",
+    "source_b_currency": "object",
+    "source_b_original_value": "float64",
+    "source_b_value": "float64",
+    "territorial_definition_a": "object",
+    "territorial_definition_b": "object",
+    "unit": "object",
+    "valuation_basis": "object",
+    "year": "int64"
+  },
+  "sha256": "396abc32b484d15603abc2863f4c507af4cc63efe75405f210b2ab2cd87667dc",
+  "source_files": [
+    "data/processed/live/ine_1962_aggregate_trade_harmonised.csv",
+    "results/diagnostics/comtrade_coverage/comtrade_coverage_audit.csv",
+    "data/interim/live/comtrade_coverage_matrix.csv",
+    "config/historical_groups.yml"
+  ],
+  "source_licence": "not_specified",
+  "stage": "ine_comtrade_1962_reconciliation",
+  "validation_findings": []
+}

@@ -17,3 +17,4 @@ dist/
 data/work/
 data/cache/
 results/work/
+.tmp/

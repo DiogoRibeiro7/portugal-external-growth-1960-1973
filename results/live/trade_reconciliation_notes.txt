@@ -2,7 +2,8 @@ Trade source reconciliation
 ===========================
 
 Rows are source-preserving. Conflicting totals are not averaged.
-UN Comtrade World partner totals are used only as the current benchmark
-because no local INE, OECD, EFTA, or CEPII structured total is available yet.
+UN Comtrade World partner totals are used only as the current benchmark.
+Validated 1962 INE aggregates are included with a diagnostic conversion;
+OECD, EFTA, and CEPII structured totals are not available locally yet.
 
-Missing structured sources: CEPII TRADHIST, EFTA, INE, OECD
+Sources with at least one missing structured row: CEPII TRADHIST, EFTA, INE, OECD

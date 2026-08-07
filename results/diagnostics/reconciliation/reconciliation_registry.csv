@@ -1,0 +1,2 @@
+reconciliation_id,benchmark_year,source_a,source_b,row_count,reconciled_row_count,unresolved_row_count,overall_status,blocking_reasons,evidence_reference
+ine_comtrade_1962,1962,UN Comtrade,INE,4,0,4,unresolved,exchange_rate_source_not_registered;comtrade_reporter_territory_unresolved;colonial_partner_coverage_incomplete,data/interim/live/ine_comtrade_1962_reconciliation.csv; results/diagnostics/reconciliation/ine_comtrade_1962_reconciliation.txt

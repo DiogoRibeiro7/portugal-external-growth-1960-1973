@@ -42,6 +42,9 @@ from portugal_external_growth.partners import (
     partner_codes_sha256,
 )
 from portugal_external_growth.reconciliation import (
+    build_ine_comtrade_1962_notes,
+    build_ine_comtrade_1962_reconciliation,
+    build_reconciliation_registry,
     build_trade_reconciliation_notes,
     build_trade_source_comparison,
     finalise_trade_reconciliation,
@@ -813,6 +816,34 @@ def reconcile_trade_sources(settings: Settings) -> None:
     """Reconcile annual trade totals without silently merging conflicts."""
 
     root = settings.resolved_root()
+    ine_comtrade_1962 = build_ine_comtrade_1962_reconciliation(root)
+    write_dataframe_with_metadata(
+        ine_comtrade_1962,
+        root / "data/interim/live/ine_comtrade_1962_reconciliation.csv",
+        metadata={
+            "source_files": [
+                "data/processed/live/ine_1962_aggregate_trade_harmonised.csv",
+                "results/diagnostics/comtrade_coverage/comtrade_coverage_audit.csv",
+                "data/interim/live/comtrade_coverage_matrix.csv",
+                "config/historical_groups.yml",
+            ],
+            "stage": "ine_comtrade_1962_reconciliation",
+        },
+    )
+    notes = build_ine_comtrade_1962_notes(ine_comtrade_1962)
+    output = root / "results/diagnostics/reconciliation/ine_comtrade_1962_reconciliation.txt"
+    write_text_lf(output, notes)
+    write_dataframe_with_metadata(
+        build_reconciliation_registry(ine_comtrade_1962),
+        root / "results/diagnostics/reconciliation/reconciliation_registry.csv",
+        metadata={
+            "source_files": [
+                "data/interim/live/ine_comtrade_1962_reconciliation.csv",
+                "results/diagnostics/reconciliation/ine_comtrade_1962_reconciliation.txt",
+            ],
+            "stage": "reconciliation_readiness_registry",
+        },
+    )
     comparison = build_trade_source_comparison(root)
     write_dataframe_with_metadata(
         comparison,
@@ -820,7 +851,7 @@ def reconcile_trade_sources(settings: Settings) -> None:
         metadata={
             "source_files": [
                 "results/diagnostics/comtrade_coverage/comtrade_coverage_audit.csv",
-                "data/processed/live/ine_trade_harmonised.csv",
+                "data/processed/live/ine_1962_aggregate_trade_harmonised.csv",
             ],
             "stage": "source_preserving_trade_comparison",
         },

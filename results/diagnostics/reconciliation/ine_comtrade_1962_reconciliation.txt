@@ -1,0 +1,19 @@
+1962 INE and UN Comtrade reconciliation
+=======================================
+
+Comparison rows: 4
+Unresolved rows: 4
+
+Conversion diagnostic
+---------------------
+INE escudo values are divided by 28.75 PTE/USD only as a diagnostic conversion because no exchange-rate source has been registered yet.
+Maximum World relative difference after diagnostic conversion: 0.00005143
+
+Overseas comparison
+-------------------
+Comtrade overseas partner sums remain lower bounds until missing partner records are resolved.
+Minimum observed overseas partner coverage ratio: 0.571429
+
+Status
+------
+1962 is not marked reconciled. Numerical closeness is insufficient until reporter territory, valuation treatment, and the exchange-rate source are independently documented.

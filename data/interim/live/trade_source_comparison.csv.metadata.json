@@ -30,8 +30,8 @@
       "sha256": "1bc232a6edcbf21a82b0e4ca7e5062f72e9e88b57c2040d32cde46b40e2631cb"
     },
     {
-      "path": "data/processed/live/ine_trade_harmonised.csv",
-      "sha256": "6eb97fa20d610dd74d5a5dab133135ebe7dccd93438bd91b79b82bc0d27245ff"
+      "path": "data/processed/live/ine_1962_aggregate_trade_harmonised.csv",
+      "sha256": "220e6aebb277d5846c026657277c1ea201d6c68b635bffb2956da6bdc49d3ed0"
     }
   ],
   "rows": 120,
@@ -54,10 +54,10 @@
     "territorial_definition": "object",
     "year": "int64"
   },
-  "sha256": "ec66284b4f9df2d35830a3d90ced5a53ccd65bdd0941b59c83371f2369f30c10",
+  "sha256": "8216dc57ede82e97ebb11695ce4bc7eea91cea3826a52db8da1760667c398b85",
   "source_files": [
     "results/diagnostics/comtrade_coverage/comtrade_coverage_audit.csv",
-    "data/processed/live/ine_trade_harmonised.csv"
+    "data/processed/live/ine_1962_aggregate_trade_harmonised.csv"
   ],
   "source_licence": "not_specified",
   "stage": "source_preserving_trade_comparison",
