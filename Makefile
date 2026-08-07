@@ -1,4 +1,6 @@
-.PHONY: install bootstrap extract build validate refresh-sources reproduce run-diagnostics run-all run-all-available test quality clean
+.PHONY: install bootstrap extract build validate refresh-sources reproduce run-diagnostics run-all run-all-available test quality release-archive clean
+
+VERSION ?= $(shell poetry version -s)
 
 install:
 	poetry install
@@ -58,6 +60,10 @@ quality:
 	poetry run ruff format --check .
 	poetry run ruff check .
 	poetry run mypy src tests
+
+release-archive:
+	mkdir -p dist
+	git archive --format=zip --output=dist/portugal-external-growth-$(VERSION).zip HEAD
 
 clean:
 	rm -rf .pytest_cache .mypy_cache .ruff_cache htmlcov .coverage dist

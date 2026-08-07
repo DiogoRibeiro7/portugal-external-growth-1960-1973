@@ -138,11 +138,13 @@ def _world_share_record(
         and expected_count is not None
         and observed_count == expected_count
     )
-    is_residual = group_name in {"true_rest_of_world", "unassigned_world_residual"}
-    complete_value = value if complete or is_residual else pd.NA
+    is_complete_residual = group_name == "true_rest_of_world"
+    complete_value = value if complete or is_complete_residual else pd.NA
     observed_share = value / world_value if world_value else pd.NA
     complete_share = (
-        complete_value / world_value if (complete or is_residual) and world_value else pd.NA
+        complete_value / world_value
+        if (complete or is_complete_residual) and world_value
+        else pd.NA
     )
     return {
         "year": year,

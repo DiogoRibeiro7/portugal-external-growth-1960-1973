@@ -6,6 +6,12 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
 
 ## [Unreleased]
 
+### Fixed
+
+- Incomplete World residual rows no longer populate complete-share columns.
+- Release archives can be built from tracked Git files only.
+- Zenodo metadata now distinguishes current source integrations from future supported sources.
+
 ## [0.1.0] - 2026-08-07
 
 ### Added
