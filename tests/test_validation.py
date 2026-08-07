@@ -80,6 +80,7 @@ def test_manifest_excludes_manifest_outputs_and_uses_posix_paths(tmp_path: Path)
     assert "src/package/module.py" in manifest["relative_path"].tolist()
     assert "pyproject.toml" in manifest["relative_path"].tolist()
     assert not any(path.startswith("results/manifests/") for path in manifest["relative_path"])
+    assert manifest["relative_path"].tolist() == sorted(manifest["relative_path"].tolist())
 
 
 def test_empty_integrity_issues_do_not_claim_research_readiness() -> None:

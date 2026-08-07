@@ -190,7 +190,7 @@ def build_file_manifest(root: Path) -> pd.DataFrame:
                 "artifact_role": _artifact_role(path.name),
             }
         )
-    return pd.DataFrame.from_records(records)
+    return pd.DataFrame.from_records(records).sort_values("relative_path").reset_index(drop=True)
 
 
 def _excluded_from_manifest(path: Path, relative_path: str) -> bool:
