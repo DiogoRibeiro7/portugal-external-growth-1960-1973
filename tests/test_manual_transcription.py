@@ -44,6 +44,34 @@ def test_transcription_pass_comparison_flags_value_disagreement(tmp_path: Path) 
     assert result.loc[0, "resolution_status"] == "requires_adjudication"
 
 
+def test_transcription_pass_comparison_accepts_integer_float_formatting(
+    tmp_path: Path,
+) -> None:
+    pass_1 = tmp_path / "pass_1.csv"
+    pass_2 = tmp_path / "pass_2.csv"
+    base: dict[str, object] = {column: "" for column in TRADE_TEMPLATE_COLUMNS}
+    base.update(
+        {
+            "source_id": "ine",
+            "publication_year": 1962,
+            "table_title": "Trade",
+            "page_number": 1,
+            "flow": "imports",
+            "partner_name_source": "World",
+            "commodity_code_source": "TOTAL",
+            "commodity_label_source": "Total",
+        }
+    )
+    row_1 = {**base, "value_source": "16829535", "entry_pass": "pass_1"}
+    row_2 = {**base, "value_source": "16829535.0", "entry_pass": "pass_2"}
+    pd.DataFrame([row_1], columns=TRADE_TEMPLATE_COLUMNS).to_csv(pass_1, index=False)
+    pd.DataFrame([row_2], columns=TRADE_TEMPLATE_COLUMNS).to_csv(pass_2, index=False)
+
+    result = compare_transcription_passes(pass_1, pass_2)
+
+    assert result.empty
+
+
 def test_aggregate_transcription_pass_comparison_flags_value_disagreement(
     tmp_path: Path,
 ) -> None:
@@ -75,6 +103,31 @@ def test_aggregate_transcription_pass_comparison_flags_value_disagreement(
     assert len(result) == 1
     assert result.loc[0, "flow"] == "X"
     assert result.loc[0, "resolution_status"] == "requires_adjudication"
+
+
+def test_aggregate_transcription_pass_comparison_accepts_integer_float_formatting(
+    tmp_path: Path,
+) -> None:
+    pass_1 = tmp_path / "aggregate_1.csv"
+    pass_2 = tmp_path / "aggregate_2.csv"
+    base: dict[str, object] = {column: "" for column in AGGREGATE_TEMPLATE_COLUMNS}
+    base.update(
+        {
+            "source_id": "ine",
+            "reference_year": 1962,
+            "flow": "M",
+            "partner_group_source": "World",
+            "series_name_source": "total_imports",
+        }
+    )
+    row_1 = {**base, "value_source": "16829535", "entry_pass": "pass_1"}
+    row_2 = {**base, "value_source": "16829535.0", "entry_pass": "pass_2"}
+    pd.DataFrame([row_1], columns=AGGREGATE_TEMPLATE_COLUMNS).to_csv(pass_1, index=False)
+    pd.DataFrame([row_2], columns=AGGREGATE_TEMPLATE_COLUMNS).to_csv(pass_2, index=False)
+
+    result = compare_aggregate_transcription_passes(pass_1, pass_2)
+
+    assert result.empty
 
 
 def test_aggregate_transcription_pass_comparison_accepts_matching_values(
@@ -285,3 +338,43 @@ def test_build_ine_harmonised_preserves_manual_adjudication(tmp_path: Path) -> N
     assert adjudicated.read_text(encoding="utf-8") == original
     final = pd.read_csv(tmp_path / "data/processed/live/ine_trade_harmonised.csv")
     assert final.loc[0, "source_id"] == "ine"
+
+
+def test_build_ine_harmonised_keeps_verified_aggregate_rows_with_later_gaps(
+    tmp_path: Path,
+) -> None:
+    pass_1_dir = tmp_path / "data/manual/transcriptions/pass_1"
+    pass_2_dir = tmp_path / "data/manual/transcriptions/pass_2"
+    pass_1_dir.mkdir(parents=True)
+    pass_2_dir.mkdir(parents=True)
+    verified: dict[str, object] = {column: "" for column in AGGREGATE_TEMPLATE_COLUMNS}
+    verified.update(
+        {
+            "source_id": "ine",
+            "reference_year": 1962,
+            "flow": "X",
+            "partner_group_source": "World",
+            "series_name_source": "total_exports",
+            "value_source": "10631829",
+            "entry_pass": "pass_1",
+        }
+    )
+    one_sided = {
+        **verified,
+        "reference_year": 1965,
+        "value_source": "16572637",
+    }
+    pd.DataFrame(
+        [verified, one_sided],
+        columns=AGGREGATE_TEMPLATE_COLUMNS,
+    ).to_csv(pass_1_dir / "ine_aggregate_transcription_pass_1.csv", index=False)
+    pd.DataFrame(
+        [{**verified, "entry_pass": "pass_2"}],
+        columns=AGGREGATE_TEMPLATE_COLUMNS,
+    ).to_csv(pass_2_dir / "ine_aggregate_transcription_pass_2.csv", index=False)
+
+    build_ine_harmonised(tmp_path)
+
+    final = pd.read_csv(tmp_path / "data/processed/live/ine_1962_aggregate_trade_harmonised.csv")
+    assert final["reference_year"].tolist() == [1962]
+    assert final.loc[0, "adjudication_status"] == "double_entry_verified"

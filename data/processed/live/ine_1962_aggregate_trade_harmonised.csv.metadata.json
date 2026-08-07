@@ -33,7 +33,7 @@
   "input_artifacts": [
     {
       "path": "data/manual/transcriptions/pass_1/ine_aggregate_transcription_pass_1.csv",
-      "sha256": "d96cb0d483f23c8d18ea8250b942a167d89f903ae4ab1102346d58e4875d48a1"
+      "sha256": "d3c97f5a4d9d4ce9baa3807671937a736c1c3888c37a9129d0ac779d62cb992d"
     },
     {
       "path": "data/manual/transcriptions/pass_2/ine_aggregate_transcription_pass_2.csv",
@@ -41,7 +41,7 @@
     },
     {
       "path": "data/interim/live/ine_aggregate_transcription_discrepancies.csv",
-      "sha256": "2059d73a15145569e49593662e0f48863e77550d2c535c343440a6da6888e092"
+      "sha256": "9123a43ff27209f045637fdb52dda1b759aae5914a2fcca341199779fd92dd15"
     }
   ],
   "rows": 4,

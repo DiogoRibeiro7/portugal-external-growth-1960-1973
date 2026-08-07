@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
+from typing import Any
 
 import pandas as pd
 
@@ -305,7 +307,9 @@ def compare_transcription_passes(pass_1_path: Path, pass_2_path: Path) -> pd.Dat
     for row in merged.to_dict(orient="records"):
         value_1 = row.get("value_source_pass_1")
         value_2 = row.get("value_source_pass_2")
-        if row["_merge"] == "both" and str(value_1) == str(value_2):
+        if row["_merge"] == "both" and _normalise_transcribed_value(
+            value_1
+        ) == _normalise_transcribed_value(value_2):
             continue
         records.append(
             {
@@ -347,7 +351,9 @@ def compare_aggregate_transcription_passes(pass_1_path: Path, pass_2_path: Path)
     for row in merged.to_dict(orient="records"):
         value_1 = row.get("value_source_pass_1")
         value_2 = row.get("value_source_pass_2")
-        if row["_merge"] == "both" and str(value_1) == str(value_2):
+        if row["_merge"] == "both" and _normalise_transcribed_value(
+            value_1
+        ) == _normalise_transcribed_value(value_2):
             continue
         records.append(
             {
@@ -372,15 +378,51 @@ def _build_verified_aggregate_harmonised(root: Path) -> pd.DataFrame:
     pass_2 = _read_aggregate_transcription(
         root / "data/manual/transcriptions/pass_2/ine_aggregate_transcription_pass_2.csv"
     )
-    discrepancies = compare_aggregate_transcription_passes(
-        root / "data/manual/transcriptions/pass_1/ine_aggregate_transcription_pass_1.csv",
-        root / "data/manual/transcriptions/pass_2/ine_aggregate_transcription_pass_2.csv",
-    )
-    if pass_1.empty or pass_2.empty or not discrepancies.empty:
+    if pass_1.empty or pass_2.empty:
         return pd.DataFrame(columns=AGGREGATE_TEMPLATE_COLUMNS)
-    verified = pass_1.copy()
+    key_columns = [
+        "source_id",
+        "reference_year",
+        "flow",
+        "partner_group_source",
+        "series_name_source",
+    ]
+    merged = pass_1.merge(
+        pass_2,
+        on=key_columns,
+        how="inner",
+        suffixes=("_pass_1", "_pass_2"),
+    )
+    if merged.empty:
+        return pd.DataFrame(columns=AGGREGATE_TEMPLATE_COLUMNS)
+    matched = merged.loc[
+        merged["value_source_pass_1"].map(_normalise_transcribed_value)
+        == merged["value_source_pass_2"].map(_normalise_transcribed_value)
+    ]
+    if matched.empty:
+        return pd.DataFrame(columns=AGGREGATE_TEMPLATE_COLUMNS)
+    verified = pd.DataFrame(
+        {
+            column: (
+                matched[column] if column in key_columns else matched.get(f"{column}_pass_1", pd.NA)
+            )
+            for column in AGGREGATE_TEMPLATE_COLUMNS
+        }
+    )
     verified["adjudication_status"] = "double_entry_verified"
-    return verified
+    return verified.reset_index(drop=True)
+
+
+def _normalise_transcribed_value(value: Any) -> str:
+    if pd.isna(value):
+        return ""
+    text = str(value).strip()
+    if not text:
+        return ""
+    try:
+        return format(Decimal(text).normalize(), "f")
+    except InvalidOperation:
+        return text
 
 
 def _read_transcription(path: Path) -> pd.DataFrame:
