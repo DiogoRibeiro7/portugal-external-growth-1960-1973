@@ -1,0 +1,82 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "source_id",
+    "source_pdf_filename",
+    "source_pdf_sha256",
+    "publication_year",
+    "reference_year",
+    "table_title",
+    "page_number",
+    "flow",
+    "partner_group_source",
+    "series_name_source",
+    "value_source",
+    "printed_total_value_source",
+    "currency_source",
+    "unit_source",
+    "unit_multiplier",
+    "valuation_basis",
+    "territorial_definition",
+    "cell_status",
+    "footnote",
+    "transcriber",
+    "transcription_date",
+    "entry_pass",
+    "adjudication_status"
+  ],
+  "date_range": {
+    "end_year": 1963,
+    "start_year": 1963
+  },
+  "file": "data/processed/live/ine_1962_aggregate_trade_harmonised.csv",
+  "input_artifacts": [
+    {
+      "path": "data/manual/transcriptions/pass_1/ine_aggregate_transcription_pass_1.csv",
+      "sha256": "d96cb0d483f23c8d18ea8250b942a167d89f903ae4ab1102346d58e4875d48a1"
+    },
+    {
+      "path": "data/manual/transcriptions/pass_2/ine_aggregate_transcription_pass_2.csv",
+      "sha256": "729de73a6e78fb2aa228076d726f2eeb8c12b69e598a9a07b807b2609fa87476"
+    },
+    {
+      "path": "data/interim/live/ine_aggregate_transcription_discrepancies.csv",
+      "sha256": "2059d73a15145569e49593662e0f48863e77550d2c535c343440a6da6888e092"
+    }
+  ],
+  "rows": 4,
+  "schema": {
+    "adjudication_status": "object",
+    "cell_status": "object",
+    "currency_source": "object",
+    "entry_pass": "object",
+    "flow": "object",
+    "footnote": "object",
+    "page_number": "int64",
+    "partner_group_source": "object",
+    "printed_total_value_source": "int64",
+    "publication_year": "int64",
+    "reference_year": "int64",
+    "series_name_source": "object",
+    "source_id": "object",
+    "source_pdf_filename": "object",
+    "source_pdf_sha256": "object",
+    "table_title": "object",
+    "territorial_definition": "object",
+    "transcriber": "object",
+    "transcription_date": "object",
+    "unit_multiplier": "int64",
+    "unit_source": "object",
+    "valuation_basis": "object",
+    "value_source": "int64"
+  },
+  "sha256": "220e6aebb277d5846c026657277c1ea201d6c68b635bffb2956da6bdc49d3ed0",
+  "source_files": [
+    "data/manual/transcriptions/pass_1/ine_aggregate_transcription_pass_1.csv",
+    "data/manual/transcriptions/pass_2/ine_aggregate_transcription_pass_2.csv",
+    "data/interim/live/ine_aggregate_transcription_discrepancies.csv"
+  ],
+  "source_licence": "not_specified",
+  "stage": "harmonised_aggregate_from_matching_double_entry",
+  "validation_findings": []
+}

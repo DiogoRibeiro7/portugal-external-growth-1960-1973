@@ -180,9 +180,9 @@ def validate_manual_transcription_source_hashes(root: Path) -> list[ValidationIs
             "source_id",
             "source_pdf_filename",
             "source_pdf_sha256",
-            "publication_year",
         }
-        if not required_columns.issubset(frame.columns):
+        has_year_column = "publication_year" in frame.columns or "reference_year" in frame.columns
+        if not required_columns.issubset(frame.columns) or not has_year_column:
             issues.append(
                 ValidationIssue(
                     "error",
@@ -198,11 +198,13 @@ def validate_manual_transcription_source_hashes(root: Path) -> list[ValidationIs
             filename = _normalise_cell(row.get("source_pdf_filename"))
             recorded_sha256 = _normalise_cell(row.get("source_pdf_sha256"))
             source_id = _normalise_cell(row.get("source_id"))
-            publication_year = _optional_int(row.get("publication_year"))
-            if publication_year is None or not source_id or not filename or not recorded_sha256:
+            source_year = _optional_int(row.get("reference_year"))
+            if source_year is None:
+                source_year = _optional_int(row.get("publication_year"))
+            if source_year is None or not source_id or not filename or not recorded_sha256:
                 missing_reference_rows += 1
                 continue
-            key = (source_id, publication_year, filename)
+            key = (source_id, source_year, filename)
             registry_sha256 = registry_lookup.get(key)
             if registry_sha256 is None:
                 unknown_reference_rows += 1
@@ -585,6 +587,8 @@ def _manual_transcription_paths(root: Path) -> tuple[Path, ...]:
     return (
         root / "data/manual/transcriptions/pass_1/ine_trade_transcription_pass_1.csv",
         root / "data/manual/transcriptions/pass_2/ine_trade_transcription_pass_2.csv",
+        root / "data/manual/transcriptions/pass_1/ine_aggregate_transcription_pass_1.csv",
+        root / "data/manual/transcriptions/pass_2/ine_aggregate_transcription_pass_2.csv",
         root / "data/manual/adjudication/ine_trade_adjudicated.csv",
     )
 

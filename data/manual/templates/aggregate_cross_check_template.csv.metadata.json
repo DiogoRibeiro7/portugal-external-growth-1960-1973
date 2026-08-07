@@ -4,13 +4,18 @@
     "source_pdf_filename",
     "source_pdf_sha256",
     "publication_year",
+    "reference_year",
     "table_title",
     "page_number",
+    "flow",
+    "partner_group_source",
     "series_name_source",
-    "year",
     "value_source",
     "printed_total_value_source",
+    "currency_source",
     "unit_source",
+    "unit_multiplier",
+    "valuation_basis",
     "territorial_definition",
     "cell_status",
     "footnote",
@@ -23,5 +28,5 @@
   "file": "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\manual\\templates\\aggregate_cross_check_template.csv",
   "purpose": "Independent aggregate cross-check transcription",
   "rows": 0,
-  "sha256": "c3b2408418977d84d877b094fa5bf9e2abb52c7d132afc0d2a7d210d9caf95f5"
+  "sha256": "55bd206f1cc9171e5d6d1ae77fdbca6b03c47327b59071b78f54a0c48be3858d"
 }

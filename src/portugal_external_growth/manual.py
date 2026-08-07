@@ -39,13 +39,18 @@ AGGREGATE_TEMPLATE_COLUMNS = [
     "source_pdf_filename",
     "source_pdf_sha256",
     "publication_year",
+    "reference_year",
     "table_title",
     "page_number",
+    "flow",
+    "partner_group_source",
     "series_name_source",
-    "year",
     "value_source",
     "printed_total_value_source",
+    "currency_source",
     "unit_source",
+    "unit_multiplier",
+    "valuation_basis",
     "territorial_definition",
     "cell_status",
     "footnote",
@@ -53,6 +58,22 @@ AGGREGATE_TEMPLATE_COLUMNS = [
     "transcription_date",
     "entry_pass",
     "adjudication_status",
+]
+
+AGGREGATE_DISCREPANCY_COLUMNS = [
+    "source_id",
+    "reference_year",
+    "flow",
+    "partner_group_source",
+    "series_name_source",
+    "pass_1_value_source",
+    "pass_2_value_source",
+    "pass_1_table_title",
+    "pass_2_table_title",
+    "pass_1_page_number",
+    "pass_2_page_number",
+    "discrepancy_type",
+    "resolution_status",
 ]
 
 SOURCE_REGISTRY_COLUMNS = [
@@ -136,6 +157,15 @@ def init_ine_transcription(root: Path) -> list[Path]:
             metadata={"purpose": f"INE trade double-entry transcription pass {pass_number}"},
         )
         created.append(pass_path)
+        aggregate_path = pass_dir / f"ine_aggregate_transcription_pass_{pass_number}.csv"
+        aggregate = pd.DataFrame(columns=AGGREGATE_TEMPLATE_COLUMNS)
+        aggregate["entry_pass"] = pd.Series(dtype="object")
+        _write_if_missing(
+            aggregate,
+            aggregate_path,
+            metadata={"purpose": f"INE aggregate double-entry transcription pass {pass_number}"},
+        )
+        created.append(aggregate_path)
     return created
 
 
@@ -149,10 +179,29 @@ def compare_ine_transcriptions(root: Path) -> list[Path]:
         pass_1_path,
         pass_2_path,
     )
+    aggregate_pass_1_path = (
+        root / "data/manual/transcriptions/pass_1/ine_aggregate_transcription_pass_1.csv"
+    )
+    aggregate_pass_2_path = (
+        root / "data/manual/transcriptions/pass_2/ine_aggregate_transcription_pass_2.csv"
+    )
+    aggregate_discrepancy_path = (
+        root / "data/interim/live/ine_aggregate_transcription_discrepancies.csv"
+    )
+    aggregate_discrepancies = compare_aggregate_transcription_passes(
+        aggregate_pass_1_path,
+        aggregate_pass_2_path,
+    )
     write_dataframe_with_metadata(
         discrepancies,
         discrepancy_path,
         metadata={"stage": "ine_double_entry_discrepancy_check"},
+        overwrite=True,
+    )
+    write_dataframe_with_metadata(
+        aggregate_discrepancies,
+        aggregate_discrepancy_path,
+        metadata={"stage": "ine_aggregate_double_entry_discrepancy_check"},
         overwrite=True,
     )
     report_path = root / "results/live/ine_transcription_unresolved.txt"
@@ -160,18 +209,32 @@ def compare_ine_transcriptions(root: Path) -> list[Path]:
         report_path,
         _build_ine_transcription_report(
             discrepancies=discrepancies,
+            aggregate_discrepancies=aggregate_discrepancies,
             source_registry=_read_optional_csv(
                 root / "data/manual/source_documents/source_document_registry.csv",
                 SOURCE_REGISTRY_COLUMNS,
             ),
             pass_1=_read_transcription(pass_1_path),
             pass_2=_read_transcription(pass_2_path),
+            aggregate_pass_1=_read_aggregate_transcription(aggregate_pass_1_path),
+            aggregate_pass_2=_read_aggregate_transcription(aggregate_pass_2_path),
             adjudicated=_read_transcription(
                 root / "data/manual/adjudication/ine_trade_adjudicated.csv"
             ),
         ),
     )
-    return [discrepancy_path, report_path]
+    aggregate_report_path = (
+        root / "results/diagnostics/historical_sources/ine_1962_aggregate_transcription.txt"
+    )
+    write_text_lf(
+        aggregate_report_path,
+        _build_aggregate_transcription_report(
+            aggregate_pass_1=_read_aggregate_transcription(aggregate_pass_1_path),
+            aggregate_pass_2=_read_aggregate_transcription(aggregate_pass_2_path),
+            aggregate_discrepancies=aggregate_discrepancies,
+        ),
+    )
+    return [discrepancy_path, aggregate_discrepancy_path, report_path, aggregate_report_path]
 
 
 def build_ine_harmonised(root: Path) -> list[Path]:
@@ -195,7 +258,22 @@ def build_ine_harmonised(root: Path) -> list[Path]:
         },
         overwrite=True,
     )
-    return [adjudicated_path, final_path]
+    aggregate_final_path = root / "data/processed/live/ine_1962_aggregate_trade_harmonised.csv"
+    aggregate_final = _build_verified_aggregate_harmonised(root)
+    write_dataframe_with_metadata(
+        aggregate_final,
+        aggregate_final_path,
+        metadata={
+            "source_files": [
+                "data/manual/transcriptions/pass_1/ine_aggregate_transcription_pass_1.csv",
+                "data/manual/transcriptions/pass_2/ine_aggregate_transcription_pass_2.csv",
+                "data/interim/live/ine_aggregate_transcription_discrepancies.csv",
+            ],
+            "stage": "harmonised_aggregate_from_matching_double_entry",
+        },
+        overwrite=True,
+    )
+    return [adjudicated_path, final_path, aggregate_final_path]
 
 
 def compare_transcription_passes(pass_1_path: Path, pass_2_path: Path) -> pd.DataFrame:
@@ -243,9 +321,77 @@ def compare_transcription_passes(pass_1_path: Path, pass_2_path: Path) -> pd.Dat
     return pd.DataFrame.from_records(records, columns=DISCREPANCY_COLUMNS)
 
 
+def compare_aggregate_transcription_passes(pass_1_path: Path, pass_2_path: Path) -> pd.DataFrame:
+    """Compare two aggregate transcription passes and return unresolved discrepancies."""
+
+    pass_1 = _read_aggregate_transcription(pass_1_path)
+    pass_2 = _read_aggregate_transcription(pass_2_path)
+    if pass_1.empty and pass_2.empty:
+        return pd.DataFrame(columns=AGGREGATE_DISCREPANCY_COLUMNS)
+
+    key_columns = [
+        "source_id",
+        "reference_year",
+        "flow",
+        "partner_group_source",
+        "series_name_source",
+    ]
+    merged = pass_1.merge(
+        pass_2,
+        on=key_columns,
+        how="outer",
+        suffixes=("_pass_1", "_pass_2"),
+        indicator=True,
+    )
+    records: list[dict[str, object]] = []
+    for row in merged.to_dict(orient="records"):
+        value_1 = row.get("value_source_pass_1")
+        value_2 = row.get("value_source_pass_2")
+        if row["_merge"] == "both" and str(value_1) == str(value_2):
+            continue
+        records.append(
+            {
+                **{column: row.get(column) for column in key_columns},
+                "pass_1_value_source": value_1,
+                "pass_2_value_source": value_2,
+                "pass_1_table_title": row.get("table_title_pass_1"),
+                "pass_2_table_title": row.get("table_title_pass_2"),
+                "pass_1_page_number": row.get("page_number_pass_1"),
+                "pass_2_page_number": row.get("page_number_pass_2"),
+                "discrepancy_type": str(row["_merge"]),
+                "resolution_status": "requires_adjudication",
+            }
+        )
+    return pd.DataFrame.from_records(records, columns=AGGREGATE_DISCREPANCY_COLUMNS)
+
+
+def _build_verified_aggregate_harmonised(root: Path) -> pd.DataFrame:
+    pass_1 = _read_aggregate_transcription(
+        root / "data/manual/transcriptions/pass_1/ine_aggregate_transcription_pass_1.csv"
+    )
+    pass_2 = _read_aggregate_transcription(
+        root / "data/manual/transcriptions/pass_2/ine_aggregate_transcription_pass_2.csv"
+    )
+    discrepancies = compare_aggregate_transcription_passes(
+        root / "data/manual/transcriptions/pass_1/ine_aggregate_transcription_pass_1.csv",
+        root / "data/manual/transcriptions/pass_2/ine_aggregate_transcription_pass_2.csv",
+    )
+    if pass_1.empty or pass_2.empty or not discrepancies.empty:
+        return pd.DataFrame(columns=AGGREGATE_TEMPLATE_COLUMNS)
+    verified = pass_1.copy()
+    verified["adjudication_status"] = "double_entry_verified"
+    return verified
+
+
 def _read_transcription(path: Path) -> pd.DataFrame:
     if not path.exists():
         return pd.DataFrame(columns=TRADE_TEMPLATE_COLUMNS)
+    return pd.read_csv(path)
+
+
+def _read_aggregate_transcription(path: Path) -> pd.DataFrame:
+    if not path.exists():
+        return pd.DataFrame(columns=AGGREGATE_TEMPLATE_COLUMNS)
     return pd.read_csv(path)
 
 
@@ -258,9 +404,12 @@ def _read_optional_csv(path: Path, columns: list[str]) -> pd.DataFrame:
 def _build_ine_transcription_report(
     *,
     discrepancies: pd.DataFrame,
+    aggregate_discrepancies: pd.DataFrame,
     source_registry: pd.DataFrame,
     pass_1: pd.DataFrame,
     pass_2: pd.DataFrame,
+    aggregate_pass_1: pd.DataFrame,
+    aggregate_pass_2: pd.DataFrame,
     adjudicated: pd.DataFrame,
 ) -> str:
     missing_source_pdfs = _count_blank(source_registry, "source_pdf_filename")
@@ -279,8 +428,11 @@ def _build_ine_transcription_report(
     footnoted_final_rows = _count_nonblank(adjudicated, "footnote")
     workflow_status = _ine_workflow_status(
         discrepancies=discrepancies,
+        aggregate_discrepancies=aggregate_discrepancies,
         pass_1=pass_1,
         pass_2=pass_2,
+        aggregate_pass_1=aggregate_pass_1,
+        aggregate_pass_2=aggregate_pass_2,
         adjudicated=adjudicated,
         pending_adjudication=pending_adjudication,
     )
@@ -295,8 +447,11 @@ def _build_ine_transcription_report(
             f"Rows without source PDF SHA-256: {missing_pdf_hashes}",
             f"Pass 1 transcribed rows: {len(pass_1)}",
             f"Pass 2 transcribed rows: {len(pass_2)}",
+            f"Aggregate pass 1 transcribed rows: {len(aggregate_pass_1)}",
+            f"Aggregate pass 2 transcribed rows: {len(aggregate_pass_2)}",
             f"Workflow status: {workflow_status}",
             f"Unresolved transcription discrepancies: {len(discrepancies)}",
+            f"Unresolved aggregate transcription discrepancies: {len(aggregate_discrepancies)}",
             f"Adjudicated final rows: {len(adjudicated)}",
             f"Final rows with unreadable cells: {unreadable_final_cells}",
             f"Final rows pending adjudication: {pending_adjudication}",
@@ -309,17 +464,50 @@ def _build_ine_transcription_report(
     )
 
 
+def _build_aggregate_transcription_report(
+    *,
+    aggregate_pass_1: pd.DataFrame,
+    aggregate_pass_2: pd.DataFrame,
+    aggregate_discrepancies: pd.DataFrame,
+) -> str:
+    return "\n".join(
+        [
+            "INE 1962 aggregate transcription status",
+            "=======================================",
+            "",
+            f"Pass 1 aggregate rows: {len(aggregate_pass_1)}",
+            f"Pass 2 aggregate rows: {len(aggregate_pass_2)}",
+            f"Unresolved aggregate discrepancies: {len(aggregate_discrepancies)}",
+            "",
+            "The current aggregate rows cover World and Ultramar import/export values",
+            "located in Volume I. EEC and EFTA aggregate rows are not yet entered because",
+            "no directly printed aggregate group total has been identified in the located",
+            "tables; individual-country rows require a separate controlled aggregation step.",
+            "",
+        ]
+    )
+
+
 def _ine_workflow_status(
     *,
     discrepancies: pd.DataFrame,
+    aggregate_discrepancies: pd.DataFrame,
     pass_1: pd.DataFrame,
     pass_2: pd.DataFrame,
+    aggregate_pass_1: pd.DataFrame,
+    aggregate_pass_2: pd.DataFrame,
     adjudicated: pd.DataFrame,
     pending_adjudication: int,
 ) -> str:
-    if pass_1.empty and pass_2.empty and adjudicated.empty:
+    if (
+        pass_1.empty
+        and pass_2.empty
+        and aggregate_pass_1.empty
+        and aggregate_pass_2.empty
+        and adjudicated.empty
+    ):
         return "not_started"
-    if not discrepancies.empty or pending_adjudication > 0:
+    if not discrepancies.empty or not aggregate_discrepancies.empty or pending_adjudication > 0:
         return "in_progress"
     if not pass_1.empty and not pass_2.empty and len(adjudicated) >= max(len(pass_1), len(pass_2)):
         return "complete"

@@ -7,6 +7,7 @@ import pandas as pd
 from portugal_external_growth.manual import (
     AGGREGATE_TEMPLATE_COLUMNS,
     TRADE_TEMPLATE_COLUMNS,
+    compare_aggregate_transcription_passes,
     build_ine_harmonised,
     compare_ine_transcriptions,
     compare_transcription_passes,
@@ -41,6 +42,63 @@ def test_transcription_pass_comparison_flags_value_disagreement(tmp_path: Path) 
 
     assert len(result) == 1
     assert result.loc[0, "resolution_status"] == "requires_adjudication"
+
+
+def test_aggregate_transcription_pass_comparison_flags_value_disagreement(
+    tmp_path: Path,
+) -> None:
+    pass_1 = tmp_path / "aggregate_1.csv"
+    pass_2 = tmp_path / "aggregate_2.csv"
+    base: dict[str, object] = {column: "" for column in AGGREGATE_TEMPLATE_COLUMNS}
+    base.update(
+        {
+            "source_id": "ine",
+            "reference_year": 1962,
+            "flow": "X",
+            "partner_group_source": "World",
+            "series_name_source": "total_exports",
+            "table_title": "Trade",
+            "page_number": 33,
+        }
+    )
+    pd.DataFrame(
+        [{**base, "value_source": "10631829", "entry_pass": "pass_1"}],
+        columns=AGGREGATE_TEMPLATE_COLUMNS,
+    ).to_csv(pass_1, index=False)
+    pd.DataFrame(
+        [{**base, "value_source": "10631828", "entry_pass": "pass_2"}],
+        columns=AGGREGATE_TEMPLATE_COLUMNS,
+    ).to_csv(pass_2, index=False)
+
+    result = compare_aggregate_transcription_passes(pass_1, pass_2)
+
+    assert len(result) == 1
+    assert result.loc[0, "flow"] == "X"
+    assert result.loc[0, "resolution_status"] == "requires_adjudication"
+
+
+def test_aggregate_transcription_pass_comparison_accepts_matching_values(
+    tmp_path: Path,
+) -> None:
+    pass_1 = tmp_path / "aggregate_1.csv"
+    pass_2 = tmp_path / "aggregate_2.csv"
+    row: dict[str, object] = {column: "" for column in AGGREGATE_TEMPLATE_COLUMNS}
+    row.update(
+        {
+            "source_id": "ine",
+            "reference_year": 1962,
+            "flow": "M",
+            "partner_group_source": "World",
+            "series_name_source": "total_imports",
+            "value_source": "16829535",
+        }
+    )
+    pd.DataFrame([row], columns=AGGREGATE_TEMPLATE_COLUMNS).to_csv(pass_1, index=False)
+    pd.DataFrame([row], columns=AGGREGATE_TEMPLATE_COLUMNS).to_csv(pass_2, index=False)
+
+    result = compare_aggregate_transcription_passes(pass_1, pass_2)
+
+    assert result.empty
 
 
 def test_initialise_templates_writes_trade_and_aggregate_schemas(tmp_path: Path) -> None:

@@ -54,7 +54,7 @@
     "table_reference": "string",
     "volume": "string"
   },
-  "sha256": "f8b1e677b138cbbe7032670944195cc4201a2bad2e4f3f23b8a1e427f454e241",
+  "sha256": "adccc535efb0c3ee0ea4e1e0f0b9a0b97419b225158a124d46c378a64ccffe64",
   "source_files": [
     "data/manual/source_documents/source_document_registry.csv",
     "data/manual/source_documents/ine_external_trade_1962_volume_i.pdf",

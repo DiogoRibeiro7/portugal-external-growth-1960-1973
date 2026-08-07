@@ -1,0 +1,41 @@
+{
+  "columns": [
+    "source_id",
+    "source_pdf_filename",
+    "source_pdf_sha256",
+    "publication_year",
+    "reference_year",
+    "table_title",
+    "page_number",
+    "flow",
+    "partner_group_source",
+    "series_name_source",
+    "value_source",
+    "printed_total_value_source",
+    "currency_source",
+    "unit_source",
+    "unit_multiplier",
+    "valuation_basis",
+    "territorial_definition",
+    "cell_status",
+    "footnote",
+    "transcriber",
+    "transcription_date",
+    "entry_pass",
+    "adjudication_status"
+  ],
+  "file": "data/manual/transcriptions/pass_2/ine_aggregate_transcription_pass_2.csv",
+  "input_artifacts": [
+    {
+      "path": "data/manual/source_documents/ine_external_trade_1962_volume_i.pdf",
+      "sha256": "4f65453197d811905bcb7fe919926ddb09fe3c850875af5ae232c2c600a948dc"
+    }
+  ],
+  "purpose": "INE aggregate double-entry transcription pass 2",
+  "rows": 4,
+  "sha256": "729de73a6e78fb2aa228076d726f2eeb8c12b69e598a9a07b807b2609fa87476",
+  "source_files": [
+    "data/manual/source_documents/ine_external_trade_1962_volume_i.pdf"
+  ],
+  "stage": "protected_manual_aggregate_transcription"
+}

@@ -1,0 +1,40 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "source_id",
+    "reference_year",
+    "flow",
+    "partner_group_source",
+    "series_name_source",
+    "pass_1_value_source",
+    "pass_2_value_source",
+    "pass_1_table_title",
+    "pass_2_table_title",
+    "pass_1_page_number",
+    "pass_2_page_number",
+    "discrepancy_type",
+    "resolution_status"
+  ],
+  "date_range": null,
+  "file": "data/interim/live/ine_aggregate_transcription_discrepancies.csv",
+  "rows": 0,
+  "schema": {
+    "discrepancy_type": "object",
+    "flow": "object",
+    "partner_group_source": "object",
+    "pass_1_page_number": "object",
+    "pass_1_table_title": "object",
+    "pass_1_value_source": "object",
+    "pass_2_page_number": "object",
+    "pass_2_table_title": "object",
+    "pass_2_value_source": "object",
+    "reference_year": "object",
+    "resolution_status": "object",
+    "series_name_source": "object",
+    "source_id": "object"
+  },
+  "sha256": "2059d73a15145569e49593662e0f48863e77550d2c535c343440a6da6888e092",
+  "source_licence": "not_specified",
+  "stage": "ine_aggregate_double_entry_discrepancy_check",
+  "validation_findings": []
+}
