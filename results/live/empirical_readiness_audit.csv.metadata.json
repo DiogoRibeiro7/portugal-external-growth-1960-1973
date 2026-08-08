@@ -1,0 +1,55 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "requirement",
+    "required",
+    "available",
+    "coverage",
+    "status",
+    "blocking_reason"
+  ],
+  "date_range": null,
+  "file": "results/live/empirical_readiness_audit.csv",
+  "input_artifacts": [
+    {
+      "path": "data/processed/live/validated_annual_aggregate_external_orientation.csv",
+      "sha256": "3e2c8bcb3819a318d7915f1380244066f7662f60f65c37ae0fd1cee9ba49bacb"
+    },
+    {
+      "path": "results/live/comtrade_product_extraction_status.csv",
+      "sha256": "971dd382b1e05948b2667f6fa67796e6b1d4821f138253ef44082cedd516d65b"
+    },
+    {
+      "path": "results/diagnostics/product_industry_mapping/product_mapping_status.csv",
+      "sha256": "dedcde453aed2a88425a3c38b1fda0c19dd9af5388252eb99139de23552db8d6"
+    },
+    {
+      "path": "data/processed/live/industry_trade_panel.csv",
+      "sha256": "06b249dcafcf5bdd942aa9b58e4b2c970bae62b04f1c2a8a82ea7d54d751d65a"
+    },
+    {
+      "path": "results/diagnostics/industry_exposure/industry_exposure_coverage.csv",
+      "sha256": "00ffc33b09c076612363745e4ce728d877ec979be5ec1778c130d3b05eac557a"
+    }
+  ],
+  "rows": 15,
+  "schema": {
+    "available": "float64",
+    "blocking_reason": "object",
+    "coverage": "float64",
+    "required": "int64",
+    "requirement": "object",
+    "status": "object"
+  },
+  "sha256": "d27107ffb5934af46833684dc91f7e5f4e38f4ef113cb4ee62b74a68aa5051c4",
+  "source_files": [
+    "data/processed/live/validated_annual_aggregate_external_orientation.csv",
+    "results/live/comtrade_product_extraction_status.csv",
+    "results/diagnostics/product_industry_mapping/product_mapping_status.csv",
+    "data/processed/live/industry_trade_panel.csv",
+    "results/diagnostics/industry_exposure/industry_exposure_coverage.csv"
+  ],
+  "source_licence": "not_specified",
+  "stage": "empirical_readiness_audit",
+  "validation_findings": []
+}

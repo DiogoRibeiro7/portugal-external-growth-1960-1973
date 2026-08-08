@@ -1,0 +1,27 @@
+Empirical-design readiness audit
+================================
+
+Requirements checked: 15
+Satisfied requirements: 0
+Blocked requirements: 15
+
+No causal regressions, tariff effects, or fitted model coefficients are produced.
+The repository remains blocked for empirical estimation until every required
+coverage and reconciliation row is satisfied by source-grounded evidence.
+
+Blocking reasons:
+- annual_trade_coverage: annual year-flow aggregate trade coverage is incomplete
+- colonial_partner_completeness: pre-1970 colonial coverage remains incomplete or lower-bound only
+- european_partner_completeness: European partner completeness is not fully established
+- product_level_coverage: COMTRADE_SUBSCRIPTION_KEY_missing;commodity_code_batches_not_registered
+- product_to_industry_mapping_coverage: product_extraction_status_blocked;product_industry_mapping_coverage_zero;product_industry_mapping_not_registered;product_level_trade_not_validated
+- sectoral_output_coverage: reviewed sectoral output panel is not enabled for empirical analysis
+- price_deflator_coverage: price/deflator series are not reviewed for sector-level empirical use
+- territorial_consistency: Comtrade reporter/partner territorial definitions remain unresolved
+- cross_source_reconciliation: source-pair reconciliations remain unresolved
+- efta_policy_tariff_data_availability: EFTA policy/tariff dataset is not registered
+- usable_industries: industry trade panel is empty
+- usable_years: industry trade panel is empty
+- missingness_structure_documented: missingness structure remains dominated by blocked product/industry data
+- classification_breaks_documented: stable historical product classification is not validated
+- identification_variables_available: empirical design matrix is empty

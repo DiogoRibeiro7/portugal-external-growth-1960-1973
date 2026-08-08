@@ -21,6 +21,8 @@ from portugal_external_growth.config import load_yaml
 from portugal_external_growth.descriptive import build_descriptive_trade_results
 from portugal_external_growth.empirical import (
     build_empirical_prerequisite_status,
+    build_empirical_readiness_audit,
+    build_empirical_readiness_audit_notes,
     build_empirical_risk_notes,
     build_model_specification_registry,
     empty_coefficients,
@@ -1355,6 +1357,25 @@ def prepare_empirical_extension(settings: Settings) -> None:
         build_empirical_prerequisite_status(),
         root / "results/live/empirical_prerequisite_status.csv",
         metadata={"stage": "empirical_readiness"},
+    )
+    audit = build_empirical_readiness_audit(root)
+    write_dataframe_with_metadata(
+        audit,
+        root / "results/live/empirical_readiness_audit.csv",
+        metadata={
+            "source_files": [
+                "data/processed/live/validated_annual_aggregate_external_orientation.csv",
+                "results/live/comtrade_product_extraction_status.csv",
+                "results/diagnostics/product_industry_mapping/product_mapping_status.csv",
+                "data/processed/live/industry_trade_panel.csv",
+                "results/diagnostics/industry_exposure/industry_exposure_coverage.csv",
+            ],
+            "stage": "empirical_readiness_audit",
+        },
+    )
+    write_text_lf(
+        root / "results/live/empirical_readiness_audit.txt",
+        build_empirical_readiness_audit_notes(audit),
     )
     write_dataframe_with_metadata(
         empty_diagnostics(),
