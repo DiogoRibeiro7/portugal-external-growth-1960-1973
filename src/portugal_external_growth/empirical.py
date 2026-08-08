@@ -6,6 +6,8 @@ from pathlib import Path
 
 import pandas as pd
 
+from portugal_external_growth.config import load_yaml
+
 PREREQUISITES = [
     "reviewed_bilateral_trade_panel",
     "stable_product_classification",
@@ -458,17 +460,66 @@ def _missingness_structure(root: Path) -> dict[str, object]:
 
 
 def _classification_breaks(root: Path) -> dict[str, object]:
-    evidence_paths = [
-        root / "results/diagnostics/comtrade_product/product_coverage_diagnostics.csv",
-        root / "results/live/product_industry_mapping_documentation.txt",
-        root / "config/product_industry_mapping.yml",
-    ]
-    available = int(all(path.exists() for path in evidence_paths))
+    reasons: list[str] = []
+    diagnostics = _read_csv(
+        root / "results/diagnostics/comtrade_product/product_coverage_diagnostics.csv"
+    )
+    if diagnostics.empty:
+        reasons.append("product classification coverage diagnostics missing or empty")
+    else:
+        classification = diagnostics.get("classification_code", pd.Series(dtype=object))
+        classifications = classification.astype(str).str.strip()
+        if classifications.empty or classifications.str.lower().isin({"", "nan", "none"}).all():
+            reasons.append("product source classifications are not documented")
+        original_rows = pd.to_numeric(
+            diagnostics.get("original_classification_rows", pd.Series(dtype=object)),
+            errors="coerce",
+        ).fillna(0)
+        if original_rows.empty or not bool((original_rows > 0).any()):
+            reasons.append("original product-classification rows are not documented")
+
+    mapping_status = _read_csv(
+        root / "results/diagnostics/product_industry_mapping/product_mapping_status.csv"
+    )
+    status = (
+        str(mapping_status.get("status", pd.Series(["missing"])).iloc[0])
+        if not mapping_status.empty
+        else "missing"
+    )
+    if status != "ready":
+        reasons.append(f"product mapping status is {status}")
+
+    mapping_config_path = root / "config/product_industry_mapping.yml"
+    try:
+        mapping_config = load_yaml(mapping_config_path) if mapping_config_path.exists() else {}
+    except (OSError, TypeError, ValueError) as exc:
+        mapping_config = {}
+        reasons.append(f"product mapping configuration is unreadable: {exc}")
+    mappings = mapping_config.get("mappings") if isinstance(mapping_config, dict) else None
+    config_status = (
+        str(mapping_config.get("mapping_status", "missing"))
+        if isinstance(mapping_config, dict)
+        else "missing"
+    )
+    if config_status.startswith("blocked") or not isinstance(mappings, list) or not mappings:
+        reasons.append("source-grounded product classification mapping is not registered")
+
+    documentation_path = root / "results/live/product_industry_mapping_documentation.txt"
+    documentation = (
+        documentation_path.read_text(encoding="utf-8").lower()
+        if documentation_path.exists()
+        else ""
+    )
+    blocked_markers = ("status: blocked", "remains empty", "not yet validated")
+    if not documentation or any(marker in documentation for marker in blocked_markers):
+        reasons.append("classification documentation is missing or blocked")
+
+    available = int(not reasons)
     return _record(
         "classification_breaks_documented",
         1,
         available,
-        "stable historical product classification documentation is incomplete",
+        ";".join(reasons) or "stable historical product classification documentation is incomplete",
     )
 
 

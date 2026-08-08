@@ -8,7 +8,7 @@
   ],
   "date_range": null,
   "file": "results/manifests/bootstrap_manifest.csv",
-  "rows": 475,
+  "rows": 10,
   "schema": {
     "artifact_role": "object",
     "relative_path": "object",
@@ -16,7 +16,7 @@
     "size_bytes": "int64"
   },
   "scope": "bootstrap",
-  "sha256": "9b7f969249fbaefeda77eebc3086f8b4068e49953d7661d43c907b3b5c11c828",
+  "sha256": "137d2f5d125b76c5ef7879a6f6254fe5dadab6ef87c0d8003ab49e1af6a030ab",
   "source_licence": "not_specified",
   "stage": "manifest",
   "validation_findings": []

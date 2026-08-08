@@ -293,6 +293,25 @@ def build_file_manifest(root: Path) -> pd.DataFrame:
     return pd.DataFrame.from_records(records).sort_values("relative_path").reset_index(drop=True)
 
 
+def build_scoped_file_manifest(root: Path, relative_paths: list[str]) -> pd.DataFrame:
+    """Create a checksum manifest for an explicit set of repository-relative files."""
+
+    records: list[dict[str, object]] = []
+    for relative_path in sorted(dict.fromkeys(relative_paths)):
+        path = root / relative_path
+        if not path.is_file() or _excluded_from_manifest(path, relative_path):
+            continue
+        records.append(
+            {
+                "relative_path": relative_path,
+                "size_bytes": path.stat().st_size,
+                "sha256": sha256_file(path),
+                "artifact_role": _artifact_role(relative_path),
+            }
+        )
+    return pd.DataFrame.from_records(records).sort_values("relative_path").reset_index(drop=True)
+
+
 def _excluded_from_manifest(path: Path, relative_path: str) -> bool:
     if relative_path.startswith("results/manifests/"):
         return True

@@ -89,6 +89,7 @@ from portugal_external_growth.validation import (
     build_file_manifest,
     build_manual_source_document_inventory,
     build_research_readiness_report,
+    build_scoped_file_manifest,
     has_error,
     issues_to_frame,
     validate_manual_transcription_source_hashes,
@@ -161,12 +162,6 @@ def bootstrap(root: Path) -> None:
         root / "results/bootstrap/validation_report.csv",
         metadata={"stage": "bootstrap_validation"},
     )
-    manifest = build_file_manifest(root)
-    write_dataframe_with_metadata(
-        manifest,
-        root / "results/manifests/bootstrap_manifest.csv",
-        metadata={"stage": "manifest", "scope": "bootstrap"},
-    )
     summary_row = summary.iloc[0]
     text = (
         "BOOTSTRAP CROSS-CHECK REPORT\n"
@@ -182,6 +177,26 @@ def bootstrap(root: Path) -> None:
     )
     output = root / "results/bootstrap/cross_checks.txt"
     write_text_lf(output, text)
+    manifest = build_scoped_file_manifest(
+        root,
+        [
+            "data/raw/bootstrap/world_bank_gdp_growth_portugal_1961_1973.csv",
+            "data/interim/bootstrap/world_bank_macro_long.csv",
+            "data/interim/bootstrap/world_bank_macro_long.csv.metadata.json",
+            "data/processed/bootstrap/portugal_gdp_growth_summary.csv",
+            "data/processed/bootstrap/portugal_gdp_growth_summary.csv.metadata.json",
+            "results/bootstrap/data_coverage_status.csv",
+            "results/bootstrap/data_coverage_status.csv.metadata.json",
+            "results/bootstrap/validation_report.csv",
+            "results/bootstrap/validation_report.csv.metadata.json",
+            "results/bootstrap/cross_checks.txt",
+        ],
+    )
+    write_dataframe_with_metadata(
+        manifest,
+        root / "results/manifests/bootstrap_manifest.csv",
+        metadata={"stage": "manifest", "scope": "bootstrap"},
+    )
 
 
 def extract_world_bank(settings: Settings, *, overwrite: bool) -> None:
@@ -1371,7 +1386,10 @@ def prepare_empirical_extension(settings: Settings) -> None:
             "source_files": [
                 "data/processed/live/validated_annual_aggregate_external_orientation.csv",
                 "results/live/comtrade_product_extraction_status.csv",
+                "results/diagnostics/comtrade_product/product_coverage_diagnostics.csv",
                 "results/diagnostics/product_industry_mapping/product_mapping_status.csv",
+                "results/live/product_industry_mapping_documentation.txt",
+                "config/product_industry_mapping.yml",
                 "data/processed/live/industry_trade_panel.csv",
                 "results/diagnostics/industry_exposure/industry_exposure_coverage.csv",
             ],

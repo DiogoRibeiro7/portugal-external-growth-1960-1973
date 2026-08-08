@@ -11,6 +11,7 @@ from portugal_external_growth.pipeline import (
     _apply_comtrade_snapshot_status,
     _local_comtrade_coverage_matrices,
     _snapshot_partner_codes_by_coverage_request,
+    bootstrap,
     build,
     extract_comtrade_products,
     reproduce_from_local,
@@ -117,6 +118,31 @@ def test_reproduce_from_local_runs_offline_pipeline(tmp_path: Path) -> None:
     assert passed
     assert (tmp_path / "results/validation/data_integrity_report.csv").exists()
     assert (tmp_path / "results/manifests/current_manifest.csv").exists()
+
+
+def test_bootstrap_manifest_is_scoped_to_bootstrap_artifacts(tmp_path: Path) -> None:
+    _write_bootstrap_gdp(tmp_path)
+    unrelated = tmp_path / "results/live/unrelated.csv"
+    unrelated.parent.mkdir(parents=True)
+    unrelated.write_text("value\n1\n", encoding="utf-8")
+
+    bootstrap(tmp_path)
+
+    manifest = pd.read_csv(tmp_path / "results/manifests/bootstrap_manifest.csv")
+    paths = set(manifest["relative_path"])
+    assert "results/live/unrelated.csv" not in paths
+    assert "results/bootstrap/cross_checks.txt" in paths
+    assert all(
+        path.startswith(
+            (
+                "data/raw/bootstrap/",
+                "data/interim/bootstrap/",
+                "data/processed/bootstrap/",
+                "results/bootstrap/",
+            )
+        )
+        for path in paths
+    )
 
 
 def test_extract_comtrade_products_requires_subscription_key(tmp_path: Path) -> None:

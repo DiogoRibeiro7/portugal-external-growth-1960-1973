@@ -117,16 +117,41 @@ def test_empirical_readiness_audit_uses_available_artifacts(tmp_path: Path) -> N
     ).to_csv(interim / "empirical_design_matrix.csv", index=False)
     (tmp_path / "config").mkdir()
     (tmp_path / "config/product_industry_mapping.yml").write_text(
-        "mapping_version: test\n",
+        "\n".join(
+            [
+                "mapping_version: test",
+                "mapping_status: ready",
+                "mappings:",
+                "  - source_classification: S2",
+                '    commodity_code: "001"',
+                "    target_industry_code: agriculture",
+            ]
+        ),
         encoding="utf-8",
     )
     (diagnostics / "comtrade_product").mkdir(parents=True)
-    pd.DataFrame([{"year": 1962, "status": "documented"}]).to_csv(
+    pd.DataFrame(
+        [
+            {
+                "year": 1962,
+                "flow_code": "X",
+                "classification_code": "S2",
+                "commodity_code": "001",
+                "partner_count": 1,
+                "reported_rows": 1,
+                "original_classification_rows": 1,
+                "estimated_rows": 0,
+                "aggregate_rows": 0,
+                "trade_value_usd": 100.0,
+                "coverage_status": "reported_product_rows",
+            }
+        ]
+    ).to_csv(
         diagnostics / "comtrade_product/product_coverage_diagnostics.csv",
         index=False,
     )
     (live / "product_industry_mapping_documentation.txt").write_text(
-        "classification breaks documented\n",
+        "Status: ready\nHistorical classification breaks documented for S2 product rows.\n",
         encoding="utf-8",
     )
 
@@ -137,6 +162,7 @@ def test_empirical_readiness_audit_uses_available_artifacts(tmp_path: Path) -> N
     assert "product_level_coverage" in satisfied
     assert "product_to_industry_mapping_coverage" in satisfied
     assert "usable_years" in satisfied
+    assert "classification_breaks_documented" in satisfied
     assert "identification_variables_available" in satisfied
 
 
@@ -172,3 +198,60 @@ def test_partner_completeness_uses_year_flow_denominators(tmp_path: Path) -> Non
     assert european["required"] == 24
     assert european["available"] == 12
     assert european["status"] == "blocked"
+
+
+def test_classification_breaks_block_placeholder_artifacts(tmp_path: Path) -> None:
+    diagnostics = tmp_path / "results/diagnostics"
+    live = tmp_path / "results/live"
+    config = tmp_path / "config"
+    (diagnostics / "comtrade_product").mkdir(parents=True)
+    (diagnostics / "product_industry_mapping").mkdir(parents=True)
+    live.mkdir(parents=True)
+    config.mkdir(parents=True)
+
+    pd.DataFrame(
+        columns=[
+            "year",
+            "flow_code",
+            "classification_code",
+            "commodity_code",
+            "partner_count",
+            "reported_rows",
+            "original_classification_rows",
+            "estimated_rows",
+            "aggregate_rows",
+            "trade_value_usd",
+            "coverage_status",
+        ]
+    ).to_csv(diagnostics / "comtrade_product/product_coverage_diagnostics.csv", index=False)
+    pd.DataFrame(
+        [
+            {
+                "status": "blocked",
+                "max_mapping_coverage_share": 0.0,
+                "blocking_reason": "product_industry_mapping_not_registered",
+            }
+        ]
+    ).to_csv(diagnostics / "product_industry_mapping/product_mapping_status.csv", index=False)
+    (config / "product_industry_mapping.yml").write_text(
+        "\n".join(
+            [
+                "mapping_version: placeholder",
+                "mapping_status: blocked_until_product_level_trade_is_validated",
+                "mappings: []",
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    (live / "product_industry_mapping_documentation.txt").write_text(
+        "Status: blocked\nThe industry panel remains empty until product rows are validated.\n",
+        encoding="utf-8",
+    )
+
+    audit = build_empirical_readiness_audit(tmp_path)
+
+    classification = audit.loc[audit["requirement"].eq("classification_breaks_documented")].iloc[0]
+    assert classification["status"] == "blocked"
+    assert "missing or empty" in classification["blocking_reason"]
+    assert "product mapping status is blocked" in classification["blocking_reason"]

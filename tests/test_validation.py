@@ -9,6 +9,7 @@ from portugal_external_growth.validation import (
     build_file_manifest,
     build_manual_source_document_inventory,
     build_research_readiness_report,
+    build_scoped_file_manifest,
     issues_to_frame,
     validate_manual_transcription_source_hashes,
     validate_preliminary_trade_shares,
@@ -83,6 +84,30 @@ def test_manifest_excludes_manifest_outputs_and_uses_posix_paths(tmp_path: Path)
     assert "pyproject.toml" in manifest["relative_path"].tolist()
     assert not any(path.startswith("results/manifests/") for path in manifest["relative_path"])
     assert manifest["relative_path"].tolist() == sorted(manifest["relative_path"].tolist())
+
+
+def test_scoped_manifest_only_includes_requested_existing_files(tmp_path: Path) -> None:
+    data = tmp_path / "data/raw/bootstrap"
+    manifests = tmp_path / "results/manifests"
+    data.mkdir(parents=True)
+    manifests.mkdir(parents=True)
+    (data / "source.csv").write_text("value\n1\n", encoding="utf-8")
+    (data / "other.csv").write_text("value\n2\n", encoding="utf-8")
+    (manifests / "bootstrap_manifest.csv").write_text("old\n", encoding="utf-8")
+
+    manifest = build_scoped_file_manifest(
+        tmp_path,
+        [
+            "data/raw/bootstrap/source.csv",
+            "data/raw/bootstrap/source.csv",
+            "data/raw/bootstrap/missing.csv",
+            "results/manifests/bootstrap_manifest.csv",
+        ],
+    )
+
+    assert manifest["relative_path"].tolist() == ["data/raw/bootstrap/source.csv"]
+    assert manifest.loc[0, "artifact_role"] == "data"
+    assert len(str(manifest.loc[0, "sha256"])) == 64
 
 
 def test_empty_integrity_issues_do_not_claim_research_readiness() -> None:
