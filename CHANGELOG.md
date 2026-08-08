@@ -6,6 +6,19 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-08-08
+
+### Added
+
+- Guarded UN Comtrade product-level extraction design and blocked extraction status.
+- Guarded product-to-industry mapping, industry exposure, empirical-readiness audit, and EFTA
+  policy/tariff readiness outputs.
+- Final research-data freeze reports with a `NOT_READY` declaration and machine-readable blockers.
+
+### Changed
+
+- Release archives are ignored locally so large generated zip files are not committed to Git.
+
 ## [0.1.2] - 2026-08-07
 
 ### Added
