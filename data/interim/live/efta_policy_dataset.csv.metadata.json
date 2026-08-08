@@ -1,0 +1,62 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "year",
+    "source_classification",
+    "commodity_code",
+    "commodity_description",
+    "product_group",
+    "tariff_before",
+    "tariff_after",
+    "scheduled_reduction",
+    "actual_reduction",
+    "exception_status",
+    "portuguese_special_treatment_status",
+    "quota_restriction_status",
+    "source_id",
+    "page",
+    "table",
+    "notes",
+    "estimate_status"
+  ],
+  "date_range": null,
+  "file": "data/interim/live/efta_policy_dataset.csv",
+  "input_artifacts": [
+    {
+      "path": "results/live/empirical_readiness_audit.csv",
+      "sha256": "c54cb8d835923667143321fd036e8c4ebb9a78fb10db46ee394371380d7df061"
+    },
+    {
+      "path": "config/data_sources.yml",
+      "sha256": "43437288332ef5887fd8a87d4f689e9b72b02f808e8c097d34d31715fbdd59c6"
+    }
+  ],
+  "rows": 0,
+  "schema": {
+    "actual_reduction": "object",
+    "commodity_code": "object",
+    "commodity_description": "object",
+    "estimate_status": "object",
+    "exception_status": "object",
+    "notes": "object",
+    "page": "object",
+    "portuguese_special_treatment_status": "object",
+    "product_group": "object",
+    "quota_restriction_status": "object",
+    "scheduled_reduction": "object",
+    "source_classification": "object",
+    "source_id": "object",
+    "table": "object",
+    "tariff_after": "object",
+    "tariff_before": "object",
+    "year": "object"
+  },
+  "sha256": "58cf7a78057bf358c18738288a2fce6772785fe87198dd6c95bf2b127c6dce5e",
+  "source_files": [
+    "results/live/empirical_readiness_audit.csv",
+    "config/data_sources.yml"
+  ],
+  "source_licence": "not_specified",
+  "stage": "efta_policy_blocked_empty_dataset",
+  "validation_findings": []
+}

@@ -1,0 +1,4 @@
+dataset,required,available,coverage_ratio,status,blocking_reason
+efta_policy_sources,1,0,0.0,blocked,empirical_readiness_audit_blocks_efta_policy_dataset
+efta_tariff_policy_rows,1,0,0.0,blocked,empirical_readiness_audit_blocks_efta_policy_dataset
+efta_policy_product_mapping,1,0,0.0,blocked,empirical_readiness_audit_blocks_efta_policy_dataset

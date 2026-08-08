@@ -397,16 +397,21 @@ def _cross_source_reconciliation(root: Path) -> dict[str, object]:
 
 
 def _efta_policy_availability(root: Path) -> dict[str, object]:
-    candidates = [
-        root / "data/interim/live/efta_policy_dataset.csv",
-        root / "results/live/efta_policy_coverage.csv",
-    ]
-    available = int(any(path.exists() for path in candidates))
+    status = _read_csv(root / "results/diagnostics/efta_policy/efta_policy_status.csv")
+    if not status.empty and "status" in status.columns:
+        available = int(status["status"].astype(str).eq("ready").any())
+        reason = str(
+            status.get("blocking_reason", pd.Series(["EFTA policy dataset blocked"])).iloc[0]
+        )
+    else:
+        policy = _read_csv(root / "data/interim/live/efta_policy_dataset.csv")
+        available = int(not policy.empty)
+        reason = "EFTA policy/tariff dataset is not registered"
     return _record(
         "efta_policy_tariff_data_availability",
         1,
         available,
-        "EFTA policy/tariff dataset is not registered",
+        reason,
     )
 
 

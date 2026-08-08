@@ -11,6 +11,7 @@ from portugal_external_growth.pipeline import (
     build_bpstat_macro,
     build_descriptive_industry_exposure,
     build_descriptive_results,
+    build_efta_policy_dataset,
     build_ine_harmonised_outputs,
     build_product_industry_mapping,
     build_sitc_industry_mapping,
@@ -201,6 +202,13 @@ def prepare_empirical_extension_command() -> None:
     """Prepare empirical design artefacts without fitting models."""
 
     prepare_empirical_extension(_settings())
+
+
+@app.command("build-efta-policy-dataset")
+def build_efta_policy_dataset_command() -> None:
+    """Build guarded EFTA policy and tariff dataset outputs."""
+
+    build_efta_policy_dataset(_settings())
 
 
 @app.command("build")

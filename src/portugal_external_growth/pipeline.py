@@ -19,6 +19,7 @@ from portugal_external_growth.clients.comtrade import (
 from portugal_external_growth.clients.world_bank import WorldBankClient, WorldBankRequest
 from portugal_external_growth.config import load_yaml
 from portugal_external_growth.descriptive import build_descriptive_trade_results
+from portugal_external_growth.efta_policy import build_efta_policy_outputs
 from portugal_external_growth.empirical import (
     build_empirical_prerequisite_status,
     build_empirical_readiness_audit,
@@ -1396,6 +1397,40 @@ def prepare_empirical_extension(settings: Settings) -> None:
     write_text_lf(risk_notes, build_empirical_risk_notes())
 
 
+def build_efta_policy_dataset(settings: Settings) -> None:
+    """Build guarded EFTA policy/tariff outputs without inferring rates."""
+
+    root = settings.resolved_root()
+    sources, policy, product_mapping, coverage, status, notes = build_efta_policy_outputs(root)
+    source_files = ["results/live/empirical_readiness_audit.csv", "config/data_sources.yml"]
+    write_dataframe_with_metadata(
+        sources,
+        root / "data/raw/live/efta_policy/source_registry.csv",
+        metadata={"source_files": source_files, "stage": "efta_policy_source_registry"},
+    )
+    write_dataframe_with_metadata(
+        policy,
+        root / "data/interim/live/efta_policy_dataset.csv",
+        metadata={"source_files": source_files, "stage": "efta_policy_blocked_empty_dataset"},
+    )
+    write_dataframe_with_metadata(
+        product_mapping,
+        root / "data/interim/live/efta_policy_product_mapping.csv",
+        metadata={"source_files": source_files, "stage": "efta_policy_product_mapping"},
+    )
+    write_dataframe_with_metadata(
+        coverage,
+        root / "results/diagnostics/efta_policy/efta_policy_coverage.csv",
+        metadata={"source_files": source_files},
+    )
+    write_dataframe_with_metadata(
+        status,
+        root / "results/diagnostics/efta_policy/efta_policy_status.csv",
+        metadata={"source_files": ["results/diagnostics/efta_policy/efta_policy_coverage.csv"]},
+    )
+    write_text_lf(root / "results/live/efta_policy_readiness.txt", notes)
+
+
 def refresh_sources(settings: Settings, *, overwrite: bool) -> None:
     """Refresh configured network sources and source-coverage snapshots."""
 
@@ -1418,6 +1453,8 @@ def run_diagnostics(settings: Settings) -> None:
     build_descriptive_industry_exposure(settings)
     build_sitc_industry_mapping(settings)
     build_descriptive_results(settings)
+    prepare_empirical_extension(settings)
+    build_efta_policy_dataset(settings)
     prepare_empirical_extension(settings)
 
 

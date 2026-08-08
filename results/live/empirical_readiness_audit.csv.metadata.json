@@ -41,7 +41,7 @@
     "requirement": "object",
     "status": "object"
   },
-  "sha256": "d27107ffb5934af46833684dc91f7e5f4e38f4ef113cb4ee62b74a68aa5051c4",
+  "sha256": "c54cb8d835923667143321fd036e8c4ebb9a78fb10db46ee394371380d7df061",
   "source_files": [
     "data/processed/live/validated_annual_aggregate_external_orientation.csv",
     "results/live/comtrade_product_extraction_status.csv",

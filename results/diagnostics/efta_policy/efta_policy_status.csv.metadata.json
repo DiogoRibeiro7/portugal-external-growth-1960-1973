@@ -1,0 +1,34 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "status",
+    "readiness_audit_status",
+    "policy_rows",
+    "source_rows",
+    "product_mapping_rows",
+    "blocking_reason"
+  ],
+  "date_range": null,
+  "file": "results/diagnostics/efta_policy/efta_policy_status.csv",
+  "input_artifacts": [
+    {
+      "path": "results/diagnostics/efta_policy/efta_policy_coverage.csv",
+      "sha256": "42c67a18c81d8edd694f5c73b124ec9ea78675087108ebdfa2bbf74b94c4c62e"
+    }
+  ],
+  "rows": 1,
+  "schema": {
+    "blocking_reason": "object",
+    "policy_rows": "int64",
+    "product_mapping_rows": "int64",
+    "readiness_audit_status": "object",
+    "source_rows": "int64",
+    "status": "object"
+  },
+  "sha256": "c4e1c81cfbe9390cab0346567e4ba87f003060959fcacbde6d694979f78a2431",
+  "source_files": [
+    "results/diagnostics/efta_policy/efta_policy_coverage.csv"
+  ],
+  "source_licence": "not_specified",
+  "validation_findings": []
+}

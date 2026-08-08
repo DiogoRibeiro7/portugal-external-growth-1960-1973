@@ -78,6 +78,7 @@ def test_validate_command_exits_zero_on_integrity_pass(
             [],
         ),
         ("build-descriptive-results", "build_descriptive_results", False, []),
+        ("build-efta-policy-dataset", "build_efta_policy_dataset", False, []),
         ("build-bpstat-macro", "build_bpstat_macro", False, []),
         (
             "design-product-comtrade-extraction",

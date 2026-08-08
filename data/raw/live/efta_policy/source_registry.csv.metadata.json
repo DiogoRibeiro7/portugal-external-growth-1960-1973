@@ -1,0 +1,52 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "source_id",
+    "source_title",
+    "issuing_institution",
+    "publication_year",
+    "source_type",
+    "url_or_catalogue_reference",
+    "local_filename",
+    "sha256",
+    "licence",
+    "access_conditions",
+    "registration_status",
+    "notes"
+  ],
+  "date_range": null,
+  "file": "data/raw/live/efta_policy/source_registry.csv",
+  "input_artifacts": [
+    {
+      "path": "results/live/empirical_readiness_audit.csv",
+      "sha256": "c54cb8d835923667143321fd036e8c4ebb9a78fb10db46ee394371380d7df061"
+    },
+    {
+      "path": "config/data_sources.yml",
+      "sha256": "43437288332ef5887fd8a87d4f689e9b72b02f808e8c097d34d31715fbdd59c6"
+    }
+  ],
+  "rows": 1,
+  "schema": {
+    "access_conditions": "object",
+    "issuing_institution": "object",
+    "licence": "object",
+    "local_filename": "object",
+    "notes": "object",
+    "publication_year": "object",
+    "registration_status": "object",
+    "sha256": "object",
+    "source_id": "object",
+    "source_title": "object",
+    "source_type": "object",
+    "url_or_catalogue_reference": "object"
+  },
+  "sha256": "b75125a2ec79c28334d17aeca4884516607bc802841d726cef525338010e020a",
+  "source_files": [
+    "results/live/empirical_readiness_audit.csv",
+    "config/data_sources.yml"
+  ],
+  "source_licence": "not_specified",
+  "stage": "efta_policy_source_registry",
+  "validation_findings": []
+}

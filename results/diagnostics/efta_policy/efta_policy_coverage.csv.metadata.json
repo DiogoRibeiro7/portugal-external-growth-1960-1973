@@ -1,0 +1,39 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "dataset",
+    "required",
+    "available",
+    "coverage_ratio",
+    "status",
+    "blocking_reason"
+  ],
+  "date_range": null,
+  "file": "results/diagnostics/efta_policy/efta_policy_coverage.csv",
+  "input_artifacts": [
+    {
+      "path": "results/live/empirical_readiness_audit.csv",
+      "sha256": "c54cb8d835923667143321fd036e8c4ebb9a78fb10db46ee394371380d7df061"
+    },
+    {
+      "path": "config/data_sources.yml",
+      "sha256": "43437288332ef5887fd8a87d4f689e9b72b02f808e8c097d34d31715fbdd59c6"
+    }
+  ],
+  "rows": 3,
+  "schema": {
+    "available": "int64",
+    "blocking_reason": "object",
+    "coverage_ratio": "float64",
+    "dataset": "object",
+    "required": "int64",
+    "status": "object"
+  },
+  "sha256": "42c67a18c81d8edd694f5c73b124ec9ea78675087108ebdfa2bbf74b94c4c62e",
+  "source_files": [
+    "results/live/empirical_readiness_audit.csv",
+    "config/data_sources.yml"
+  ],
+  "source_licence": "not_specified",
+  "validation_findings": []
+}
