@@ -2,10 +2,10 @@ Research data readiness declaration
 ===================================
 
 Declaration: NOT_READY
-Release version: 0.1.3+20e9c35
-Source commit: 20e9c35466e56b6dd8356625ada0c4ee930e7643
-Source commit timestamp: 2026-08-08T22:51:35+01:00
-Release archive: release/research-data-freeze-0.1.3+20e9c35.zip
+Release version: 0.1.3+de94884
+Source commit: de948847d70b0bfba1d942b3836d3cddfca64baa
+Source commit timestamp: 2026-08-08T23:32:41+01:00
+Release archive: release/research-data-freeze-0.1.3+de94884.zip
 Release archive SHA-256: not_created
 
 Machine-readable blockers: results/releases/current/freeze_blocking_reasons.csv
@@ -29,13 +29,13 @@ Checklist status:
 - 15. Produce final RESEARCH_DATA_READINESS.txt: passed
 
 Blocking reasons:
-- verification_format: stale_commit: verification evidence missing: C:/Users/diogo/work_code/portugal-external-growth-1960-1973/results/releases/current/verification_evidence.csv
-- verification_lint: stale_commit: verification evidence missing: C:/Users/diogo/work_code/portugal-external-growth-1960-1973/results/releases/current/verification_evidence.csv
-- verification_manifest: stale_commit: verification evidence missing: C:/Users/diogo/work_code/portugal-external-growth-1960-1973/results/releases/current/verification_evidence.csv
-- verification_reproduction: stale_commit: verification evidence missing: C:/Users/diogo/work_code/portugal-external-growth-1960-1973/results/releases/current/verification_evidence.csv
-- verification_tests: stale_commit: verification evidence missing: C:/Users/diogo/work_code/portugal-external-growth-1960-1973/results/releases/current/verification_evidence.csv
-- verification_typecheck: stale_commit: verification evidence missing: C:/Users/diogo/work_code/portugal-external-growth-1960-1973/results/releases/current/verification_evidence.csv
-- verification_validation: stale_commit: verification evidence missing: C:/Users/diogo/work_code/portugal-external-growth-1960-1973/results/releases/current/verification_evidence.csv
+- verification_format: stale_commit: verification evidence missing: results/releases/current/verification_evidence.csv
+- verification_lint: stale_commit: verification evidence missing: results/releases/current/verification_evidence.csv
+- verification_manifest: stale_commit: verification evidence missing: results/releases/current/verification_evidence.csv
+- verification_reproduction: stale_commit: verification evidence missing: results/releases/current/verification_evidence.csv
+- verification_tests: stale_commit: verification evidence missing: results/releases/current/verification_evidence.csv
+- verification_typecheck: stale_commit: verification evidence missing: results/releases/current/verification_evidence.csv
+- verification_validation: stale_commit: verification evidence missing: results/releases/current/verification_evidence.csv
 - research_research.empirical_prerequisites: 0/6 empirical prerequisites are satisfied.
 - research_research.manual_source_documents: 4/43 expected manual source documents are available.
 - research_research.cross_source_comparison: 92/120 cross-source comparison rows have missing source coverage.

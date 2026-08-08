@@ -31,7 +31,7 @@
     "source_commit": "object",
     "source_commit_timestamp_utc": "object"
   },
-  "sha256": "f9e171466df0781cfb38f830aa9803d146578867d5756036de58090dcc14fd1b",
+  "sha256": "9fcf1703e1f9d908c61f86d6890ecf420b34b470f018290d15b53008b0bb8332",
   "source_files": [
     "results/validation/research_readiness_report.csv",
     "results/live/empirical_readiness_audit.csv"

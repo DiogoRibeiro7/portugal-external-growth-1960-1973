@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import math
 import re
 import subprocess
 import tomllib
@@ -289,6 +290,7 @@ def build_freeze_verification_evidence(
     }
     if evidence_path is None:
         evidence_path = root / "results/releases/current/verification_evidence.csv"
+    evidence_reference = repo_relative_path(evidence_path, root=root)
     if not evidence_path.exists():
         return pd.DataFrame(
             [
@@ -299,7 +301,7 @@ def build_freeze_verification_evidence(
                     "source_commit": source_commit,
                     "tool_version": "",
                     "verification_timestamp_utc": "",
-                    "notes": f"verification evidence missing: {evidence_path.as_posix()}",
+                    "notes": f"verification evidence missing: {evidence_reference}",
                 }
                 for check, command in required_checks.items()
             ],
@@ -310,6 +312,7 @@ def build_freeze_verification_evidence(
         if column not in evidence:
             evidence[column] = ""
     evidence = evidence[VERIFICATION_EVIDENCE_COLUMNS].copy()
+    evidence["notes"] = evidence["notes"].map(lambda value: _portable_note(value, root=root))
     recorded_checks = set(evidence["check"].astype(str))
     missing_checks = required_checks.keys() - recorded_checks
     missing_rows = [
@@ -329,9 +332,65 @@ def build_freeze_verification_evidence(
             [evidence, pd.DataFrame.from_records(missing_rows)],
             ignore_index=True,
         )
+    for index, row in evidence.iterrows():
+        check = str(row["check"])
+        if check not in required_checks or str(row["status"]) != "passed":
+            continue
+        expected_command = required_checks[check]
+        if str(row["command"]) != expected_command:
+            evidence.at[index, "status"] = "command_mismatch"
+            evidence.at[index, "notes"] = _append_note(
+                row["notes"],
+                f"expected command: {expected_command}",
+            )
+        elif _blank_cell(row["tool_version"]):
+            evidence.at[index, "status"] = "missing_tool_version"
+            evidence.at[index, "notes"] = _append_note(
+                row["notes"],
+                "tool version is required for passed verification evidence",
+            )
+        elif _blank_cell(row["verification_timestamp_utc"]):
+            evidence.at[index, "status"] = "missing_verification_timestamp"
+            evidence.at[index, "notes"] = _append_note(
+                row["notes"],
+                "verification timestamp is required for passed verification evidence",
+            )
     stale = evidence["source_commit"].astype(str).ne(source_commit)
     evidence.loc[stale, "status"] = "stale_commit"
     return evidence.sort_values("check").reset_index(drop=True)
+
+
+def _append_note(existing: object, addition: str) -> str:
+    text = "" if existing is None or existing is pd.NA else str(existing).strip()
+    if not text or text.lower() in {"nan", "<na>"}:
+        return addition
+    return f"{text}; {addition}"
+
+
+def _blank_cell(value: object) -> bool:
+    if value is None or value is pd.NA:
+        return True
+    if isinstance(value, float) and math.isnan(value):
+        return True
+    return not str(value).strip()
+
+
+def _portable_note(value: object, *, root: Path) -> str:
+    if value is None or value is pd.NA:
+        return ""
+    if isinstance(value, float) and math.isnan(value):
+        return ""
+    text = str(value)
+    root_resolved = root.resolve()
+    replacements = (
+        (root_resolved.as_posix() + "/", ""),
+        (str(root_resolved) + "\\", ""),
+        (root_resolved.as_posix(), "."),
+        (str(root_resolved), "."),
+    )
+    for old, new in replacements:
+        text = text.replace(old, new)
+    return text.replace("\\", "/")
 
 
 def build_final_result_table_provenance(

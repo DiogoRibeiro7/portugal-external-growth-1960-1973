@@ -37,6 +37,12 @@ def test_research_data_freeze_declares_not_ready_with_machine_blockers(
     assert dictionaries["dictionary_status"].isin(["missing", "available"]).any()
     assert archive.loc[0, "archive_status"] == "not_created"
     assert set(evidence["status"]) == {"missing"}
+    assert "results/releases/current/verification_evidence.csv" in ";".join(
+        evidence["notes"].astype(str)
+    )
+    assert str(tmp_path) not in ";".join(evidence["notes"].astype(str))
+    assert str(tmp_path) not in ";".join(blockers["blocking_reason"].astype(str))
+    assert str(tmp_path) not in notes
     assert "verification_tests" in blockers["blocker_id"].tolist()
     assert checklist.loc[checklist["requirement_id"].eq("1"), "status"].iloc[0] == "blocked"
     assert checklist.loc[checklist["requirement_id"].eq("10"), "status"].iloc[0] == "blocked"
@@ -93,6 +99,113 @@ def test_research_data_freeze_accepts_current_commit_verification_evidence(
     assert not any(str(value).startswith("verification_") for value in blockers["blocker_id"])
     assert checklist.loc[checklist["requirement_id"].eq("1"), "status"].iloc[0] == "passed"
     assert checklist.loc[checklist["requirement_id"].eq("5"), "status"].iloc[0] == "passed"
+
+
+def test_research_data_freeze_rewrites_stale_evidence_notes_as_relative_paths(
+    tmp_path: Path,
+    monkeypatch: MonkeyPatch,
+) -> None:
+    _write_pyproject(tmp_path)
+    _write_research_readiness(tmp_path)
+    _write_empirical_audit(tmp_path)
+    _write_live_result_table(tmp_path)
+    _write_transcription_status(tmp_path)
+    _write_analytical_dataset(tmp_path)
+    evidence_path = tmp_path / "results/releases/current/verification_evidence.csv"
+    evidence_path.parent.mkdir(parents=True)
+    pd.DataFrame(
+        [
+            {
+                "check": "tests",
+                "status": "missing",
+                "command": "poetry run pytest --cov",
+                "source_commit": "old",
+                "tool_version": "",
+                "verification_timestamp_utc": "",
+                "notes": f"verification evidence missing: {evidence_path.as_posix()}",
+            }
+        ]
+    ).to_csv(evidence_path, index=False)
+    monkeypatch.setattr(
+        "portugal_external_growth.release_freeze._git_stdout",
+        lambda _root, args: "new" if args == ["rev-parse", "HEAD"] else "",
+    )
+
+    _declaration, blockers, _checklist, _provenance, _dictionaries, _archive, evidence, notes = (
+        build_research_data_freeze_outputs(tmp_path, create_archive=False)
+    )
+
+    assert set(evidence["status"]) == {"missing", "stale_commit"}
+    assert "results/releases/current/verification_evidence.csv" in ";".join(
+        evidence["notes"].astype(str)
+    )
+    assert str(tmp_path) not in ";".join(evidence["notes"].astype(str))
+    assert str(tmp_path) not in ";".join(blockers["blocking_reason"].astype(str))
+    assert str(tmp_path) not in notes
+
+
+def test_research_data_freeze_rejects_incomplete_passed_verification_evidence(
+    tmp_path: Path,
+    monkeypatch: MonkeyPatch,
+) -> None:
+    _write_pyproject(tmp_path)
+    _write_research_readiness(tmp_path)
+    _write_empirical_audit(tmp_path)
+    _write_live_result_table(tmp_path)
+    _write_transcription_status(tmp_path)
+    _write_analytical_dataset(tmp_path)
+    source_commit = "abc123"
+    evidence_path = tmp_path / "verification.csv"
+    pd.DataFrame(
+        [
+            {
+                "check": "tests",
+                "status": "passed",
+                "command": "pytest",
+                "source_commit": source_commit,
+                "tool_version": "pytest 8",
+                "verification_timestamp_utc": "2026-08-08T00:00:00Z",
+                "notes": "",
+            },
+            {
+                "check": "lint",
+                "status": "passed",
+                "command": "poetry run ruff check .",
+                "source_commit": source_commit,
+                "tool_version": "",
+                "verification_timestamp_utc": "2026-08-08T00:00:00Z",
+                "notes": "",
+            },
+            {
+                "check": "typecheck",
+                "status": "passed",
+                "command": "poetry run mypy src tests",
+                "source_commit": source_commit,
+                "tool_version": "mypy 1",
+                "verification_timestamp_utc": "",
+                "notes": "",
+            },
+        ]
+    ).to_csv(evidence_path, index=False)
+    monkeypatch.setattr(
+        "portugal_external_growth.release_freeze._git_stdout",
+        lambda _root, args: source_commit if args == ["rev-parse", "HEAD"] else "",
+    )
+
+    _declaration, blockers, checklist, *_rest = build_research_data_freeze_outputs(
+        tmp_path,
+        verification_evidence_path=evidence_path,
+        create_archive=False,
+    )
+
+    blocker_reasons = ";".join(blockers["blocking_reason"].astype(str))
+    assert "verification_tests" in blockers["blocker_id"].tolist()
+    assert "command_mismatch: expected command: poetry run pytest --cov" in blocker_reasons
+    assert "verification_lint" in blockers["blocker_id"].tolist()
+    assert "missing_tool_version" in blocker_reasons
+    assert "verification_typecheck" in blockers["blocker_id"].tolist()
+    assert "missing_verification_timestamp" in blocker_reasons
+    assert checklist.loc[checklist["requirement_id"].eq("1"), "status"].iloc[0] == "blocked"
 
 
 def test_research_data_freeze_blocks_unresolved_source_redistribution_rights(
