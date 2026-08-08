@@ -512,22 +512,32 @@ def _build_aggregate_transcription_report(
     aggregate_pass_2: pd.DataFrame,
     aggregate_discrepancies: pd.DataFrame,
 ) -> str:
+    unresolved_years = _format_unique_values(aggregate_discrepancies, "reference_year")
+    unresolved_groups = _format_unique_values(aggregate_discrepancies, "partner_group_source")
     return "\n".join(
         [
-            "INE 1962 aggregate transcription status",
-            "=======================================",
+            "INE aggregate transcription status",
+            "==================================",
             "",
             f"Pass 1 aggregate rows: {len(aggregate_pass_1)}",
             f"Pass 2 aggregate rows: {len(aggregate_pass_2)}",
             f"Unresolved aggregate discrepancies: {len(aggregate_discrepancies)}",
+            f"Unresolved reference years: {unresolved_years}",
+            f"Unresolved partner groups: {unresolved_groups}",
             "",
-            "The current aggregate rows cover World and Ultramar import/export values",
-            "located in Volume I. EEC and EFTA aggregate rows are not yet entered because",
-            "no directly printed aggregate group total has been identified in the located",
-            "tables; individual-country rows require a separate controlled aggregation step.",
+            "Verified aggregate rows are limited to entries independently keyed in both",
+            "protected transcription passes. Remaining discrepancies are pass-1-only queue",
+            "rows awaiting independent visual pass-2 verification or controlled aggregation.",
             "",
         ]
     )
+
+
+def _format_unique_values(frame: pd.DataFrame, column: str) -> str:
+    if frame.empty or column not in frame.columns:
+        return "none"
+    values = sorted({str(value) for value in frame[column].dropna().tolist()})
+    return ";".join(values) if values else "none"
 
 
 def _ine_workflow_status(

@@ -1,11 +1,12 @@
-INE 1962 aggregate transcription status
-=======================================
+INE aggregate transcription status
+==================================
 
 Pass 1 aggregate rows: 24
-Pass 2 aggregate rows: 8
-Unresolved aggregate discrepancies: 16
+Pass 2 aggregate rows: 16
+Unresolved aggregate discrepancies: 8
+Unresolved reference years: 1973
+Unresolved partner groups: CEE;EFTA;Provincias Ultramarinas;World
 
-The current aggregate rows cover World and Ultramar import/export values
-located in Volume I. EEC and EFTA aggregate rows are not yet entered because
-no directly printed aggregate group total has been identified in the located
-tables; individual-country rows require a separate controlled aggregation step.
+Verified aggregate rows are limited to entries independently keyed in both
+protected transcription passes. Remaining discrepancies are pass-1-only queue
+rows awaiting independent visual pass-2 verification or controlled aggregation.

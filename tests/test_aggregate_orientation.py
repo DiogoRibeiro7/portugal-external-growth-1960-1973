@@ -48,6 +48,37 @@ def test_validated_aggregate_orientation_uses_only_verified_ine_rows(
     assert "Complete colonial shares are never filled" in notes
 
 
+def test_validated_aggregate_orientation_accepts_provincias_ultramarinas_label(
+    tmp_path: Path,
+) -> None:
+    _write_validated_ine_1962(
+        tmp_path,
+        extra_rows=[
+            _ine_row("M", "World", 45495031, year=1970),
+            _ine_row("X", "World", 27298661, year=1970),
+            _ine_row("M", "Provincias Ultramarinas", 6716990, year=1970),
+            _ine_row("X", "Provincias Ultramarinas", 6687814, year=1970),
+        ],
+    )
+    _write_reconciliation(tmp_path)
+    _write_registry(tmp_path)
+    _write_pass_rows(tmp_path)
+    _write_source_registry(tmp_path)
+
+    dataset, status, _matrix, _source_comparison, _notes = (
+        build_validated_aggregate_orientation_outputs(tmp_path)
+    )
+
+    row_1970 = dataset.loc[dataset["year"].eq(1970)].iloc[0]
+    status_1970 = status.loc[status["year"].eq(1970)].iloc[0]
+    assert row_1970["world_exports_pte"] == 27298661000
+    assert row_1970["colonial_exports_complete_pte"] == 6687814000
+    assert row_1970["complete_colonial_export_share"] == 6687814000 / 27298661000
+    assert row_1970["estimate_status"] == "observed_no_estimation"
+    assert status_1970["source_status"] == "validated_ine_aggregate"
+    assert status_1970["blocking_reason"] == ""
+
+
 def test_pipeline_writes_validated_aggregate_orientation_outputs(tmp_path: Path) -> None:
     _write_validated_ine_1962(tmp_path)
     _write_reconciliation(tmp_path)
@@ -66,7 +97,9 @@ def test_pipeline_writes_validated_aggregate_orientation_outputs(tmp_path: Path)
     ).exists()
 
 
-def _write_validated_ine_1962(root: Path) -> None:
+def _write_validated_ine_1962(
+    root: Path, *, extra_rows: list[dict[str, object]] | None = None
+) -> None:
     output = root / "data/processed/live"
     output.mkdir(parents=True)
     rows = [
@@ -75,12 +108,13 @@ def _write_validated_ine_1962(root: Path) -> None:
         _ine_row("M", "Ultramar", 2122236),
         _ine_row("X", "Ultramar", 2390852),
     ]
+    rows.extend(extra_rows or [])
     pd.DataFrame(rows).to_csv(output / "ine_1962_aggregate_trade_harmonised.csv", index=False)
 
 
-def _ine_row(flow: str, partner_group: str, value: int) -> dict[str, object]:
+def _ine_row(flow: str, partner_group: str, value: int, *, year: int = 1962) -> dict[str, object]:
     return {
-        "reference_year": 1962,
+        "reference_year": year,
         "flow": flow,
         "partner_group_source": partner_group,
         "value_source": value,

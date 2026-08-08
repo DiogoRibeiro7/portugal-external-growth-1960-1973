@@ -27,7 +27,7 @@
     "source_commit_timestamp_utc": "object",
     "tracked_file_count": "int64"
   },
-  "sha256": "8ad477a3e731cb6bcc5648d615e0f24181a52898ad57aa81d782a057551402dd",
+  "sha256": "5bf57c742f836d46af1a6f1a880ff4f1fdfc3dd6d286221347df1c1cf40af718",
   "source_licence": "not_specified",
   "stage": "tracked_file_release_archive_manifest",
   "validation_findings": []

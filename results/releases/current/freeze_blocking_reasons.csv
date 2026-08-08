@@ -8,7 +8,7 @@ verification_typecheck,freeze.verification.typecheck,not_ready,stale_commit: ver
 verification_validation,freeze.verification.validation,not_ready,stale_commit: verification evidence missing: results/releases/current/verification_evidence.csv,results/releases/current/verification_evidence.csv
 research_research.empirical_prerequisites,research.empirical_prerequisites,not_ready,0/6 empirical prerequisites are satisfied.,results/validation/research_readiness_report.csv
 research_research.manual_source_documents,research.manual_source_documents,not_ready,4/43 expected manual source documents are available.,results/validation/research_readiness_report.csv
-research_research.cross_source_comparison,research.cross_source_comparison,not_ready,92/120 cross-source comparison rows have missing source coverage.,results/validation/research_readiness_report.csv
+research_research.cross_source_comparison,research.cross_source_comparison,not_ready,90/120 cross-source comparison rows have missing source coverage.,results/validation/research_readiness_report.csv
 research_research.source_reconciliation,research.source_reconciliation,not_ready,Unresolved source-pair reconciliation blocks remain: ine_comtrade_1962.,results/validation/research_readiness_report.csv
 research_research.product_industry_mapping,research.product_industry_mapping,not_ready,Product-to-industry mapping coverage is zero.,results/validation/research_readiness_report.csv
 research_research.territorial_definition,research.territorial_definition,not_ready,24 Comtrade coverage rows still require territorial-definition review.,results/validation/research_readiness_report.csv

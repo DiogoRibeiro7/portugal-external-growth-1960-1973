@@ -71,6 +71,8 @@ MATRIX_COLUMNS = [
     "note",
 ]
 
+COLONIAL_PARTNER_GROUPS = frozenset({"Ultramar", "Provincias Ultramarinas"})
+
 
 def build_validated_aggregate_orientation_outputs(
     root: Path,
@@ -118,7 +120,7 @@ def _build_dataset(
             record["estimate_status"] = "observed_no_estimation"
             record["source_status"] = "validated_ine_aggregate"
             record["notes"] = (
-                "Validated values use double-entry verified INE World and Ultramar aggregates. "
+                "Validated values use double-entry verified INE World and overseas aggregates. "
                 "Observed Comtrade colonial shares are retained only as lower-bound diagnostics."
             )
         else:
@@ -307,10 +309,15 @@ def _build_cross_check_notes(
 
 
 def _has_complete_world_colonial_flows(frame: pd.DataFrame) -> bool:
-    keys = {
-        (str(row["flow"]), str(row["partner_group_source"])) for row in frame.to_dict("records")
-    }
-    return {("X", "World"), ("M", "World"), ("X", "Ultramar"), ("M", "Ultramar")}.issubset(keys)
+    return all(
+        not _aggregate_rows(frame, flow=flow, partner_group=partner_group).empty
+        for flow, partner_group in (
+            ("X", "World"),
+            ("M", "World"),
+            ("X", "Ultramar"),
+            ("M", "Ultramar"),
+        )
+    )
 
 
 def _validated_year_rows(frame: pd.DataFrame, year: int) -> pd.DataFrame:
@@ -323,13 +330,22 @@ def _validated_year_rows(frame: pd.DataFrame, year: int) -> pd.DataFrame:
 
 
 def _aggregate_value(frame: pd.DataFrame, *, flow: str, partner_group: str) -> float:
-    if frame.empty or not {"flow", "partner_group_source"}.issubset(frame.columns):
-        return float("nan")
-    rows = frame.loc[frame["flow"].eq(flow) & frame["partner_group_source"].eq(partner_group)]
+    rows = _aggregate_rows(frame, flow=flow, partner_group=partner_group)
     if rows.empty:
         return float("nan")
     row = rows.iloc[0]
     return _optional_float(row["value_source"]) * _optional_float(row["unit_multiplier"])
+
+
+def _aggregate_rows(frame: pd.DataFrame, *, flow: str, partner_group: str) -> pd.DataFrame:
+    if frame.empty or not {"flow", "partner_group_source"}.issubset(frame.columns):
+        return pd.DataFrame()
+    partner_groups = frame["partner_group_source"].astype(str)
+    if partner_group in COLONIAL_PARTNER_GROUPS:
+        partner_mask = partner_groups.isin(COLONIAL_PARTNER_GROUPS)
+    else:
+        partner_mask = partner_groups.eq(partner_group)
+    return frame.loc[frame["flow"].eq(flow) & partner_mask]
 
 
 def _reconciliation_row(frame: pd.DataFrame, *, concept: str) -> dict[str, object] | None:

@@ -1,5 +1,5 @@
 requirement,required,available,coverage,status,blocking_reason
-annual_trade_coverage,24,4.0,0.16666666666666666,blocked,annual year-flow aggregate trade coverage is incomplete
+annual_trade_coverage,24,6.0,0.25,blocked,annual year-flow aggregate trade coverage is incomplete
 colonial_partner_completeness,24,0.0,0.0,blocked,pre-1970 colonial coverage remains incomplete or lower-bound only
 european_partner_completeness,24,0.0,0.0,blocked,European partner completeness is not fully established
 product_level_coverage,1,0.0,0.0,blocked,COMTRADE_SUBSCRIPTION_KEY_missing;commodity_code_batches_not_registered
