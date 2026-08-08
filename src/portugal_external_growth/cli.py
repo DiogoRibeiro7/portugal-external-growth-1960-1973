@@ -11,6 +11,7 @@ from portugal_external_growth.pipeline import (
     build_bpstat_macro,
     build_descriptive_results,
     build_ine_harmonised_outputs,
+    build_product_industry_mapping,
     build_sitc_industry_mapping,
     build_validated_aggregate_orientation,
     compare_ine_transcription_passes,
@@ -150,6 +151,13 @@ def build_sitc_industry_mapping_command() -> None:
     """Build product-to-industry mapping outputs."""
 
     build_sitc_industry_mapping(_settings())
+
+
+@app.command("build-product-industry-mapping")
+def build_product_industry_mapping_command() -> None:
+    """Build guarded product-to-industry mapping outputs."""
+
+    build_product_industry_mapping(_settings())
 
 
 @app.command("build-descriptive-results")

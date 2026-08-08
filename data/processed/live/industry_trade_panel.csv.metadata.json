@@ -1,0 +1,66 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "year",
+    "flow_code",
+    "source_classification",
+    "mapping_scope",
+    "mapping_version",
+    "target_industry_code",
+    "target_industry_group",
+    "target_industry_label",
+    "partner_group",
+    "trade_value_usd",
+    "product_count",
+    "mapping_weight",
+    "coverage_count",
+    "expected_count",
+    "coverage_ratio",
+    "estimate_status",
+    "source_quality"
+  ],
+  "date_range": null,
+  "file": "data/processed/live/industry_trade_panel.csv",
+  "input_artifacts": [
+    {
+      "path": "config/product_industry_mapping.yml",
+      "sha256": "6f41bb44fc93fb75a5be9a9eee1527239a6fde9c10f2c2348ea27c8ae0e4b281"
+    },
+    {
+      "path": "data/interim/live/comtrade_product_normalised.csv",
+      "sha256": "0d5aa730a7c95823fcbb33bb19a292a9af193e6701d4527a0a79eef2bbde1c62"
+    },
+    {
+      "path": "results/live/comtrade_product_extraction_status.csv",
+      "sha256": "971dd382b1e05948b2667f6fa67796e6b1d4821f138253ef44082cedd516d65b"
+    }
+  ],
+  "rows": 0,
+  "schema": {
+    "coverage_count": "object",
+    "coverage_ratio": "object",
+    "estimate_status": "object",
+    "expected_count": "object",
+    "flow_code": "object",
+    "mapping_scope": "object",
+    "mapping_version": "object",
+    "mapping_weight": "object",
+    "partner_group": "object",
+    "product_count": "object",
+    "source_classification": "object",
+    "source_quality": "object",
+    "target_industry_code": "object",
+    "target_industry_group": "object",
+    "target_industry_label": "object",
+    "trade_value_usd": "object",
+    "year": "object"
+  },
+  "sha256": "06b249dcafcf5bdd942aa9b58e4b2c970bae62b04f1c2a8a82ea7d54d751d65a",
+  "source_files": [
+    "config/product_industry_mapping.yml",
+    "data/interim/live/comtrade_product_normalised.csv",
+    "results/live/comtrade_product_extraction_status.csv"
+  ],
+  "source_licence": "not_specified",
+  "validation_findings": []
+}

@@ -1,0 +1,2 @@
+status,product_rows,mapping_rows,coverage_rows,industry_panel_rows,max_mapping_coverage_share,blocking_reason
+blocked,0,0,0,0,0.0,product_extraction_status_blocked;product_industry_mapping_coverage_zero;product_industry_mapping_not_registered;product_level_trade_not_validated

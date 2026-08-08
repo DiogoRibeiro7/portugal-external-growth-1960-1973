@@ -70,6 +70,7 @@ def test_validate_command_exits_zero_on_integrity_pass(
         ("build-ine-harmonised", "build_ine_harmonised_outputs", False, []),
         ("reconcile-trade-sources", "reconcile_trade_sources", False, []),
         ("build-sitc-industry-mapping", "build_sitc_industry_mapping", False, []),
+        ("build-product-industry-mapping", "build_product_industry_mapping", False, []),
         ("build-descriptive-results", "build_descriptive_results", False, []),
         ("build-bpstat-macro", "build_bpstat_macro", False, []),
         (

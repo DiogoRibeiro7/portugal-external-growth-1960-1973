@@ -1,0 +1,41 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "status",
+    "product_rows",
+    "mapping_rows",
+    "coverage_rows",
+    "industry_panel_rows",
+    "max_mapping_coverage_share",
+    "blocking_reason"
+  ],
+  "date_range": null,
+  "file": "results/diagnostics/product_industry_mapping/product_mapping_status.csv",
+  "input_artifacts": [
+    {
+      "path": "results/diagnostics/product_industry_mapping/product_mapping_coverage.csv",
+      "sha256": "0655a1e4b0310d4631ad736fb2db57c368b9bb695944c56d1ae6dcb65ce3c527"
+    },
+    {
+      "path": "data/processed/live/industry_trade_panel.csv",
+      "sha256": "06b249dcafcf5bdd942aa9b58e4b2c970bae62b04f1c2a8a82ea7d54d751d65a"
+    }
+  ],
+  "rows": 1,
+  "schema": {
+    "blocking_reason": "object",
+    "coverage_rows": "int64",
+    "industry_panel_rows": "int64",
+    "mapping_rows": "int64",
+    "max_mapping_coverage_share": "float64",
+    "product_rows": "int64",
+    "status": "object"
+  },
+  "sha256": "dedcde453aed2a88425a3c38b1fda0c19dd9af5388252eb99139de23552db8d6",
+  "source_files": [
+    "results/diagnostics/product_industry_mapping/product_mapping_coverage.csv",
+    "data/processed/live/industry_trade_panel.csv"
+  ],
+  "source_licence": "not_specified",
+  "validation_findings": []
+}

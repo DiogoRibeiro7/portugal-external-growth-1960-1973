@@ -1,0 +1,14 @@
+Product-to-industry mapping readiness
+=====================================
+
+Status: blocked
+Blocking reason: product_extraction_status_blocked;product_industry_mapping_coverage_zero;product_industry_mapping_not_registered;product_level_trade_not_validated
+Product rows: 0
+Mapping rows: 0
+Coverage rows: 0
+Industry panel rows: 0
+Reconciliation rows: 0
+
+The industry panel remains empty until product-level Comtrade rows are
+validated and source-grounded commodity-to-industry mappings are registered.
+Unobserved product records are not interpreted as zero trade.

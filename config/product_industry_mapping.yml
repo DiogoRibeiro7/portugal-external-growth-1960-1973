@@ -1,0 +1,7 @@
+mapping_version: product_industry_mapping_v0
+mapping_status: blocked_until_product_level_trade_is_validated
+notes: >
+  No product-to-industry mapping is registered because product-level UN Comtrade
+  extraction is not yet validated. Register source-grounded commodity mappings
+  only after product-level rows reconcile back to aggregate World totals.
+mappings: []

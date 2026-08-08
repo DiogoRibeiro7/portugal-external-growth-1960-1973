@@ -1,0 +1,54 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "mapping_version",
+    "source_classification",
+    "commodity_code",
+    "commodity_description",
+    "target_industry_code",
+    "target_industry_group",
+    "target_industry_label",
+    "mapping_scope",
+    "mapping_method",
+    "mapping_confidence",
+    "mapping_weight",
+    "evidence_source",
+    "evidence_reference",
+    "one_to_many",
+    "many_to_one",
+    "notes"
+  ],
+  "date_range": null,
+  "file": "data/interim/live/product_industry_mapping.csv",
+  "input_artifacts": [
+    {
+      "path": "config/product_industry_mapping.yml",
+      "sha256": "6f41bb44fc93fb75a5be9a9eee1527239a6fde9c10f2c2348ea27c8ae0e4b281"
+    }
+  ],
+  "rows": 0,
+  "schema": {
+    "commodity_code": "object",
+    "commodity_description": "object",
+    "evidence_reference": "object",
+    "evidence_source": "object",
+    "many_to_one": "object",
+    "mapping_confidence": "object",
+    "mapping_method": "object",
+    "mapping_scope": "object",
+    "mapping_version": "object",
+    "mapping_weight": "object",
+    "notes": "object",
+    "one_to_many": "object",
+    "source_classification": "object",
+    "target_industry_code": "object",
+    "target_industry_group": "object",
+    "target_industry_label": "object"
+  },
+  "sha256": "6d0899b468d0bbef69a7362475d8f0707c246f6ee30d75ccfb91e069bbbba587",
+  "source_files": [
+    "config/product_industry_mapping.yml"
+  ],
+  "source_licence": "not_specified",
+  "validation_findings": []
+}

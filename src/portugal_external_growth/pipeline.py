@@ -49,6 +49,9 @@ from portugal_external_growth.partners import (
     load_historical_group_memberships,
     partner_codes_sha256,
 )
+from portugal_external_growth.product_industry_mapping import (
+    build_product_industry_mapping_outputs,
+)
 from portugal_external_growth.product_trade import (
     build_product_extraction_design_outputs,
     product_source_files,
@@ -1171,6 +1174,56 @@ def build_sitc_industry_mapping(settings: Settings) -> None:
     )
 
 
+def build_product_industry_mapping(settings: Settings) -> None:
+    """Build guarded product-to-industry mapping outputs."""
+
+    root = settings.resolved_root()
+    mapping, unmapped, coverage, panel, reconciliation, status, notes = (
+        build_product_industry_mapping_outputs(root)
+    )
+    source_files = [
+        "config/product_industry_mapping.yml",
+        "data/interim/live/comtrade_product_normalised.csv",
+        "results/live/comtrade_product_extraction_status.csv",
+    ]
+    write_dataframe_with_metadata(
+        mapping,
+        root / "data/interim/live/product_industry_mapping.csv",
+        metadata={"source_files": ["config/product_industry_mapping.yml"]},
+    )
+    write_dataframe_with_metadata(
+        unmapped,
+        root / "results/diagnostics/product_industry_mapping/unmapped_products.csv",
+        metadata={"source_files": source_files},
+    )
+    write_dataframe_with_metadata(
+        coverage,
+        root / "results/diagnostics/product_industry_mapping/product_mapping_coverage.csv",
+        metadata={"source_files": source_files},
+    )
+    write_dataframe_with_metadata(
+        panel,
+        root / "data/processed/live/industry_trade_panel.csv",
+        metadata={"source_files": source_files},
+    )
+    write_dataframe_with_metadata(
+        reconciliation,
+        root / "results/diagnostics/product_industry_mapping/industry_trade_reconciliation.csv",
+        metadata={"source_files": source_files},
+    )
+    write_dataframe_with_metadata(
+        status,
+        root / "results/diagnostics/product_industry_mapping/product_mapping_status.csv",
+        metadata={
+            "source_files": [
+                "results/diagnostics/product_industry_mapping/product_mapping_coverage.csv",
+                "data/processed/live/industry_trade_panel.csv",
+            ]
+        },
+    )
+    write_text_lf(root / "results/live/product_industry_mapping_documentation.txt", notes)
+
+
 def build_descriptive_results(settings: Settings) -> None:
     """Build stable descriptive trade-orientation tables."""
 
@@ -1296,6 +1349,7 @@ def run_diagnostics(settings: Settings) -> None:
     reconcile_trade_sources(settings)
     build_validated_aggregate_orientation(settings)
     design_product_comtrade_extraction(settings)
+    build_product_industry_mapping(settings)
     build_sitc_industry_mapping(settings)
     build_descriptive_results(settings)
     prepare_empirical_extension(settings)
