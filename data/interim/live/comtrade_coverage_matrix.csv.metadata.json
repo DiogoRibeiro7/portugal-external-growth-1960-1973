@@ -250,7 +250,7 @@
     "trade_value_usd": "float64",
     "year": "int64"
   },
-  "sha256": "290fb75344b2196f35a7dd494b5051d2448ebd08e8e4d34f333aeb2dc467bb52",
+  "sha256": "e6fe1bc42dd7055d27a8d156f04a8c88b142d2c7ac080dcce8df678b3c3cf62f",
   "source_files": [
     "data/raw/live/comtrade_availability/PRT_1962_X_S1_TOTAL_coverage.json",
     "data/raw/live/comtrade_availability/PRT_1962_M_S1_TOTAL_coverage.json",

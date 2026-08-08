@@ -1,0 +1,1 @@
+year,flow_code,classification_code,commodity_code,commodity_description,reporter_code,reporter_desc,partner_code,partner_desc,trade_value_usd,quantity,quantity_unit_code,quantity_unit_abbr,net_weight,gross_weight,is_reported,is_original_classification,legacy_estimation_flag,is_aggregate,aggregate_level,source_file

@@ -1,0 +1,7 @@
+request_id,year,flow_code,classification_code,reporter_code,partner_code,commodity_code_batch,commodity_code_count,max_records,endpoint_mode,requires_subscription_key,plan_status,blocking_reason
+PRT-1962-X-S1-P0-B1,1962,X,S1,620,0,,0,250000,subscription_final_data,True,blocked,COMTRADE_SUBSCRIPTION_KEY_missing;commodity_code_batches_not_registered
+PRT-1962-M-S1-P0-B1,1962,M,S1,620,0,,0,250000,subscription_final_data,True,blocked,COMTRADE_SUBSCRIPTION_KEY_missing;commodity_code_batches_not_registered
+PRT-1970-X-S1-P0-B1,1970,X,S1,620,0,,0,250000,subscription_final_data,True,blocked,COMTRADE_SUBSCRIPTION_KEY_missing;commodity_code_batches_not_registered
+PRT-1970-M-S1-P0-B1,1970,M,S1,620,0,,0,250000,subscription_final_data,True,blocked,COMTRADE_SUBSCRIPTION_KEY_missing;commodity_code_batches_not_registered
+PRT-1973-X-S1-P0-B1,1973,X,S1,620,0,,0,250000,subscription_final_data,True,blocked,COMTRADE_SUBSCRIPTION_KEY_missing;commodity_code_batches_not_registered
+PRT-1973-M-S1-P0-B1,1973,M,S1,620,0,,0,250000,subscription_final_data,True,blocked,COMTRADE_SUBSCRIPTION_KEY_missing;commodity_code_batches_not_registered

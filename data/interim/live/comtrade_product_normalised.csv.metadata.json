@@ -1,0 +1,65 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "year",
+    "flow_code",
+    "classification_code",
+    "commodity_code",
+    "commodity_description",
+    "reporter_code",
+    "reporter_desc",
+    "partner_code",
+    "partner_desc",
+    "trade_value_usd",
+    "quantity",
+    "quantity_unit_code",
+    "quantity_unit_abbr",
+    "net_weight",
+    "gross_weight",
+    "is_reported",
+    "is_original_classification",
+    "legacy_estimation_flag",
+    "is_aggregate",
+    "aggregate_level",
+    "source_file"
+  ],
+  "date_range": null,
+  "file": "data/interim/live/comtrade_product_normalised.csv",
+  "input_artifacts": [
+    {
+      "path": "config/comtrade.yml",
+      "sha256": "6d18ab294940328d994a5a2c139336f49ae43a2f873b94d4f46fe2b628d95d3b"
+    }
+  ],
+  "rows": 0,
+  "schema": {
+    "aggregate_level": "object",
+    "classification_code": "object",
+    "commodity_code": "object",
+    "commodity_description": "object",
+    "flow_code": "object",
+    "gross_weight": "object",
+    "is_aggregate": "object",
+    "is_original_classification": "object",
+    "is_reported": "object",
+    "legacy_estimation_flag": "object",
+    "net_weight": "object",
+    "partner_code": "object",
+    "partner_desc": "object",
+    "quantity": "object",
+    "quantity_unit_abbr": "object",
+    "quantity_unit_code": "object",
+    "reporter_code": "object",
+    "reporter_desc": "object",
+    "source_file": "object",
+    "trade_value_usd": "object",
+    "year": "object"
+  },
+  "sha256": "0d5aa730a7c95823fcbb33bb19a292a9af193e6701d4527a0a79eef2bbde1c62",
+  "source_files": [
+    "config/comtrade.yml"
+  ],
+  "source_licence": "not_specified",
+  "stage": "comtrade_product_normalised",
+  "validation_findings": []
+}

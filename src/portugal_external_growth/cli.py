@@ -14,8 +14,10 @@ from portugal_external_growth.pipeline import (
     build_sitc_industry_mapping,
     build_validated_aggregate_orientation,
     compare_ine_transcription_passes,
+    design_product_comtrade_extraction,
     extract_bpstat,
     extract_comtrade,
+    extract_comtrade_products,
     extract_world_bank,
     init_ine_transcription_inputs,
     init_manual_templates,
@@ -65,6 +67,15 @@ def extract_comtrade_command(
     """Download bounded UN Comtrade requests."""
 
     extract_comtrade(_settings(), overwrite=overwrite)
+
+
+@app.command("extract-comtrade-products")
+def extract_comtrade_products_command(
+    overwrite: bool = typer.Option(False, help="Replace existing product raw snapshots."),
+) -> None:
+    """Download guarded subscription-key UN Comtrade product requests."""
+
+    extract_comtrade_products(_settings(), overwrite=overwrite)
 
 
 @app.command("audit-comtrade-coverage")
@@ -153,6 +164,13 @@ def build_bpstat_macro_command() -> None:
     """Build BPstat macro and broad-sector context outputs."""
 
     build_bpstat_macro(_settings())
+
+
+@app.command("design-product-comtrade-extraction")
+def design_product_comtrade_extraction_command() -> None:
+    """Build guarded product-level Comtrade extraction design outputs."""
+
+    design_product_comtrade_extraction(_settings())
 
 
 @app.command("build-validated-aggregate-orientation")

@@ -34,3 +34,16 @@ comtrade:
   max_records: 500
   aggregate_by: partner_and_year
   note: Verify Portugal's historical reporting coverage and the treatment of overseas territories before analysis.
+  product_extraction:
+    status: design_only_until_subscription_key_and_commodity_batches_are_registered
+    classification_code: S1
+    years: [1962, 1970, 1973]
+    flow_codes: [X, M]
+    reporter_code: 620
+    partner_codes: [0]
+    commodity_code_batches: []
+    max_records: 250000
+    breakdown_mode: classic
+    aggregate_by:
+    include_desc: true
+    note: Register explicit SITC Rev.1 commodity-code batches before running subscription-key product extraction.

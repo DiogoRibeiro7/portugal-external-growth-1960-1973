@@ -4,12 +4,15 @@ import json
 from pathlib import Path
 
 import pandas as pd
+import pytest
+import responses
 
 from portugal_external_growth.pipeline import (
     _apply_comtrade_snapshot_status,
     _local_comtrade_coverage_matrices,
     _snapshot_partner_codes_by_coverage_request,
     build,
+    extract_comtrade_products,
     reproduce_from_local,
     run_diagnostics,
     validate,
@@ -114,6 +117,68 @@ def test_reproduce_from_local_runs_offline_pipeline(tmp_path: Path) -> None:
     assert passed
     assert (tmp_path / "results/validation/data_integrity_report.csv").exists()
     assert (tmp_path / "results/manifests/current_manifest.csv").exists()
+
+
+def test_extract_comtrade_products_requires_subscription_key(tmp_path: Path) -> None:
+    with pytest.raises(ValueError, match="COMTRADE_SUBSCRIPTION_KEY"):
+        extract_comtrade_products(Settings(root=tmp_path), overwrite=True)
+
+
+@responses.activate
+def test_extract_comtrade_products_saves_mocked_subscription_snapshot(tmp_path: Path) -> None:
+    config = tmp_path / "config"
+    config.mkdir()
+    (config / "comtrade.yml").write_text(
+        """
+comtrade:
+  reporter_code: 620
+  flow_codes: [X]
+  years: [1962]
+  classification_code: S1
+  product_extraction:
+    years: [1962]
+    flow_codes: [X]
+    reporter_code: 620
+    partner_codes: [0]
+    classification_code: S1
+    commodity_code_batches:
+      - ["0"]
+    max_records: 2
+    aggregate_by: partner_and_year
+""",
+        encoding="utf-8",
+    )
+    url = "https://comtradeapi.un.org/data/v1/get/C/A/S1"
+    responses.add(responses.GET, url, json={"count": 1, "data": []})
+    responses.add(
+        responses.GET,
+        url,
+        json={
+            "count": 1,
+            "data": [
+                {
+                    "refYear": 1962,
+                    "flowCode": "X",
+                    "classificationCode": "S1",
+                    "cmdCode": "0",
+                    "reporterCode": 620,
+                    "partnerCode": 0,
+                    "primaryValue": 100.0,
+                }
+            ],
+        },
+    )
+
+    extract_comtrade_products(
+        Settings(root=tmp_path, comtrade_subscription_key="secret-key"),
+        overwrite=True,
+    )
+
+    raw = tmp_path / "data/raw/live/comtrade_product/PRT_1962_X_S1_P0_0.json"
+    metadata = json.loads(raw.with_suffix(".metadata.json").read_text(encoding="utf-8"))
+    assert raw.exists()
+    assert metadata["rows"] == 1
+    assert metadata["query_parameters"]["aggregateBy"] == "partner_and_year"
 
 
 def test_local_comtrade_coverage_rebuild_preserves_quality_and_snapshot_status(

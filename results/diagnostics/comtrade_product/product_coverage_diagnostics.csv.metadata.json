@@ -1,0 +1,44 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "year",
+    "flow_code",
+    "classification_code",
+    "commodity_code",
+    "partner_count",
+    "reported_rows",
+    "original_classification_rows",
+    "estimated_rows",
+    "aggregate_rows",
+    "trade_value_usd",
+    "coverage_status"
+  ],
+  "date_range": null,
+  "file": "results/diagnostics/comtrade_product/product_coverage_diagnostics.csv",
+  "input_artifacts": [
+    {
+      "path": "data/interim/live/comtrade_product_normalised.csv",
+      "sha256": "0d5aa730a7c95823fcbb33bb19a292a9af193e6701d4527a0a79eef2bbde1c62"
+    }
+  ],
+  "rows": 0,
+  "schema": {
+    "aggregate_rows": "object",
+    "classification_code": "object",
+    "commodity_code": "object",
+    "coverage_status": "object",
+    "estimated_rows": "object",
+    "flow_code": "object",
+    "original_classification_rows": "object",
+    "partner_count": "object",
+    "reported_rows": "object",
+    "trade_value_usd": "object",
+    "year": "object"
+  },
+  "sha256": "c733b0f09026fafde837cace8335b5750643c24085abb80511d456e89b7efe66",
+  "source_files": [
+    "data/interim/live/comtrade_product_normalised.csv"
+  ],
+  "source_licence": "not_specified",
+  "validation_findings": []
+}

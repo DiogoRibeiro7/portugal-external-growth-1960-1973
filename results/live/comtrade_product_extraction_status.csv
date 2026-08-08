@@ -1,0 +1,2 @@
+status,subscription_key_present,planned_requests,raw_product_snapshots,normalised_rows,blocking_reason
+blocked,False,6,0,0,COMTRADE_SUBSCRIPTION_KEY_missing;commodity_code_batches_not_registered

@@ -1,0 +1,52 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "request_id",
+    "year",
+    "flow_code",
+    "classification_code",
+    "reporter_code",
+    "partner_code",
+    "commodity_code_batch",
+    "commodity_code_count",
+    "max_records",
+    "endpoint_mode",
+    "requires_subscription_key",
+    "plan_status",
+    "blocking_reason"
+  ],
+  "date_range": {
+    "end_year": 1973,
+    "start_year": 1962
+  },
+  "file": "results/live/comtrade_product_extraction_plan.csv",
+  "input_artifacts": [
+    {
+      "path": "config/comtrade.yml",
+      "sha256": "6d18ab294940328d994a5a2c139336f49ae43a2f873b94d4f46fe2b628d95d3b"
+    }
+  ],
+  "rows": 6,
+  "schema": {
+    "blocking_reason": "object",
+    "classification_code": "object",
+    "commodity_code_batch": "object",
+    "commodity_code_count": "int64",
+    "endpoint_mode": "object",
+    "flow_code": "object",
+    "max_records": "int64",
+    "partner_code": "int64",
+    "plan_status": "object",
+    "reporter_code": "int64",
+    "request_id": "object",
+    "requires_subscription_key": "bool",
+    "year": "int64"
+  },
+  "sha256": "7865b530d162f12209d7dc02af52fe065c1462edca3f544f1712519da741f18a",
+  "source_files": [
+    "config/comtrade.yml"
+  ],
+  "source_licence": "not_specified",
+  "stage": "comtrade_product_plan",
+  "validation_findings": []
+}

@@ -60,6 +60,7 @@ def test_validate_command_exits_zero_on_integrity_pass(
         ("init-manual-templates", "init_manual_templates", True, []),
         ("extract-world-bank", "extract_world_bank", False, ["--overwrite"]),
         ("extract-comtrade", "extract_comtrade", False, ["--overwrite"]),
+        ("extract-comtrade-products", "extract_comtrade_products", False, ["--overwrite"]),
         ("audit-comtrade-coverage", "audit_comtrade_coverage", False, ["--overwrite"]),
         ("extract-bpstat", "extract_bpstat", False, ["--overwrite"]),
         ("review-bpstat-registry", "review_bpstat_registry", False, []),
@@ -71,6 +72,12 @@ def test_validate_command_exits_zero_on_integrity_pass(
         ("build-sitc-industry-mapping", "build_sitc_industry_mapping", False, []),
         ("build-descriptive-results", "build_descriptive_results", False, []),
         ("build-bpstat-macro", "build_bpstat_macro", False, []),
+        (
+            "design-product-comtrade-extraction",
+            "design_product_comtrade_extraction",
+            False,
+            [],
+        ),
         (
             "build-validated-aggregate-orientation",
             "build_validated_aggregate_orientation",

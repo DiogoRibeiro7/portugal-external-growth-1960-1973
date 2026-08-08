@@ -13,7 +13,10 @@ from portugal_external_growth.clients.bpstat import BPstatClient, flatten_jsonst
 from portugal_external_growth.clients.comtrade import (
     ComtradeAPIError,
     ComtradeClient,
+    ComtradePartialResponseError,
+    ComtradeProductRequest,
     ComtradeRequest,
+    ComtradeSubscriptionKeyRequired,
 )
 from portugal_external_growth.clients.world_bank import WorldBankClient, WorldBankRequest
 
@@ -174,6 +177,161 @@ def test_comtrade_client_rejects_api_error_payload() -> None:
 
     with pytest.raises(ComtradeAPIError, match="invalid reporter"):
         client.fetch(request)
+
+
+def test_comtrade_product_fetch_requires_subscription_key() -> None:
+    client = ComtradeClient(requests.Session())
+    request = ComtradeProductRequest(
+        year=1962,
+        reporter_code=620,
+        partner_code=0,
+        flow_code="X",
+        commodity_codes=("0", "1"),
+    )
+
+    with pytest.raises(ComtradeSubscriptionKeyRequired):
+        client.fetch_product(request)
+
+
+@responses.activate
+def test_comtrade_product_fetch_count_checks_and_saves(tmp_path: Path) -> None:
+    url = "https://comtradeapi.un.org/data/v1/get/C/A/S1"
+    responses.add(responses.GET, url, json={"count": 1, "data": []})
+    responses.add(
+        responses.GET,
+        url,
+        json={
+            "count": 1,
+            "data": [
+                {
+                    "refYear": 1962,
+                    "flowCode": "X",
+                    "classificationCode": "S1",
+                    "cmdCode": "0",
+                    "cmdDesc": "Food",
+                    "reporterCode": 620,
+                    "partnerCode": 0,
+                    "primaryValue": 100.0,
+                    "isReported": True,
+                    "isOriginalClassification": True,
+                    "legacyEstimationFlag": 0,
+                    "isAggregate": False,
+                }
+            ],
+        },
+    )
+    client = ComtradeClient(requests.Session(), subscription_key="secret-key")
+    request = ComtradeProductRequest(
+        year=1962,
+        reporter_code=620,
+        partner_code=0,
+        flow_code="X",
+        commodity_codes=("0",),
+        max_records=250000,
+    )
+
+    raw, frame, request_url, metadata = client.fetch_product(request)
+    raw_path, csv_path = client.save_product_response(
+        request,
+        raw,
+        frame,
+        request_url,
+        metadata,
+        tmp_path,
+        overwrite=True,
+    )
+
+    assert frame.loc[0, "cmdCode"] == "0"
+    assert raw_path.exists()
+    assert csv_path.exists()
+    sidecar = json.loads(raw_path.with_suffix(".metadata.json").read_text(encoding="utf-8"))
+    assert sidecar["endpoint_mode"] == "subscription_final_data"
+    assert sidecar["query_parameters"]["subscription-key"] == "***REDACTED***"
+    assert "secret-key" not in sidecar["request_url"]
+
+
+@responses.activate
+def test_comtrade_product_fetch_rejects_over_limit_count() -> None:
+    responses.add(
+        responses.GET,
+        "https://comtradeapi.un.org/data/v1/get/C/A/S1",
+        json={"count": 501, "data": []},
+    )
+    client = ComtradeClient(requests.Session(), subscription_key="secret-key")
+    request = ComtradeProductRequest(
+        year=1962,
+        reporter_code=620,
+        partner_code=0,
+        flow_code="X",
+        commodity_codes=("0",),
+        max_records=500,
+    )
+
+    with pytest.raises(ComtradePartialResponseError, match="split the query further"):
+        client.fetch_product(request)
+
+
+@responses.activate
+def test_comtrade_product_fetch_rejects_missing_count() -> None:
+    responses.add(
+        responses.GET,
+        "https://comtradeapi.un.org/data/v1/get/C/A/S1",
+        json={"data": []},
+    )
+    client = ComtradeClient(requests.Session(), subscription_key="secret-key")
+    request = ComtradeProductRequest(
+        year=1962,
+        reporter_code=620,
+        partner_code=0,
+        flow_code="X",
+        commodity_codes=("0",),
+    )
+
+    with pytest.raises(ValueError, match="missing integer count"):
+        client.fetch_product_count(request)
+
+
+@responses.activate
+def test_comtrade_product_fetch_rejects_partial_data_response() -> None:
+    url = "https://comtradeapi.un.org/data/v1/get/C/A/S1"
+    responses.add(responses.GET, url, json={"count": 2, "data": []})
+    responses.add(
+        responses.GET,
+        url,
+        json={"count": 2, "data": [{"cmdCode": "0"}]},
+    )
+    client = ComtradeClient(requests.Session(), subscription_key="secret-key")
+    request = ComtradeProductRequest(
+        year=1962,
+        reporter_code=620,
+        partner_code=0,
+        flow_code="X",
+        commodity_codes=("0",),
+        max_records=2,
+    )
+
+    with pytest.raises(ComtradePartialResponseError, match="response may be partial"):
+        client.fetch_product(request)
+
+
+@responses.activate
+def test_comtrade_product_fetch_rejects_application_error() -> None:
+    responses.add(
+        responses.GET,
+        "https://comtradeapi.un.org/data/v1/get/C/A/S1",
+        json={"data": [], "error": "invalid commodity"},
+    )
+    client = ComtradeClient(requests.Session(), subscription_key="secret-key")
+    request = ComtradeProductRequest(
+        year=1962,
+        reporter_code=620,
+        partner_code=0,
+        flow_code="X",
+        commodity_codes=("bad",),
+    )
+
+    with pytest.raises(ComtradeAPIError, match="invalid commodity"):
+        client.fetch_product_count(request)
 
 
 @responses.activate

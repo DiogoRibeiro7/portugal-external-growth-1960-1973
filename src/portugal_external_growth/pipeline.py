@@ -11,7 +11,11 @@ from portugal_external_growth.aggregate_orientation import (
     build_validated_aggregate_orientation_outputs,
 )
 from portugal_external_growth.clients.bpstat import BPstatClient, BPstatSeries
-from portugal_external_growth.clients.comtrade import ComtradeClient, ComtradeRequest
+from portugal_external_growth.clients.comtrade import (
+    ComtradeClient,
+    ComtradeProductRequest,
+    ComtradeRequest,
+)
 from portugal_external_growth.clients.world_bank import WorldBankClient, WorldBankRequest
 from portugal_external_growth.config import load_yaml
 from portugal_external_growth.descriptive import build_descriptive_trade_results
@@ -44,6 +48,10 @@ from portugal_external_growth.partners import (
     configured_comtrade_partner_codes,
     load_historical_group_memberships,
     partner_codes_sha256,
+)
+from portugal_external_growth.product_trade import (
+    build_product_extraction_design_outputs,
+    product_source_files,
 )
 from portugal_external_growth.reconciliation import (
     build_exchange_rate_evidence,
@@ -213,6 +221,73 @@ def extract_comtrade(settings: Settings, *, overwrite: bool) -> None:
             )
             raw, frame, url, http_metadata = client.fetch(request)
             client.save(request, raw, frame, url, http_metadata, root, overwrite=overwrite)
+
+
+def extract_comtrade_products(settings: Settings, *, overwrite: bool) -> None:
+    """Extract subscription-key product-level Comtrade snapshots."""
+
+    if not settings.comtrade_subscription_key:
+        raise ValueError("COMTRADE_SUBSCRIPTION_KEY is required for product-level extraction.")
+    root = settings.resolved_root()
+    payload = load_yaml(root / "config/comtrade.yml")
+    config = payload.get("comtrade")
+    if not isinstance(config, dict):
+        raise TypeError("comtrade.yml is invalid")
+    product = config.get("product_extraction")
+    if not isinstance(product, dict):
+        raise TypeError("comtrade.yml is missing product_extraction")
+    commodity_batches = product.get("commodity_code_batches", [])
+    if not isinstance(commodity_batches, list):
+        commodity_batches = []
+    batches = [
+        tuple(str(code) for code in batch)
+        for batch in commodity_batches
+        if isinstance(batch, list) and batch
+    ]
+    if not batches:
+        raise ValueError("Register product_extraction.commodity_code_batches before extraction.")
+    client = ComtradeClient(
+        build_session(),
+        timeout_seconds=settings.http_timeout_seconds,
+        subscription_key=settings.comtrade_subscription_key,
+    )
+    years_value = product.get("years", config.get("years", []))
+    flows_value = product.get("flow_codes", config.get("flow_codes", []))
+    partners_value = product.get("partner_codes", [0])
+    years = [int(year) for year in years_value] if isinstance(years_value, list) else []
+    flows = [str(flow) for flow in flows_value] if isinstance(flows_value, list) else []
+    partners = [int(code) for code in partners_value] if isinstance(partners_value, list) else []
+    reporter_code = int(str(product.get("reporter_code", config.get("reporter_code", 620))))
+    classification_code = str(
+        product.get("classification_code", config.get("classification_code", "S1"))
+    )
+    aggregate_by = product.get("aggregate_by")
+    for year in years:
+        for flow_code in flows:
+            for partner_code in partners:
+                for commodity_codes in batches:
+                    request = ComtradeProductRequest(
+                        year=year,
+                        reporter_code=reporter_code,
+                        partner_code=partner_code,
+                        flow_code=flow_code,
+                        commodity_codes=commodity_codes,
+                        classification_code=classification_code,
+                        max_records=int(product.get("max_records", 250000)),
+                        aggregate_by=aggregate_by if isinstance(aggregate_by, str) else None,
+                        breakdown_mode=str(product.get("breakdown_mode", "classic")),
+                        include_desc=bool(product.get("include_desc", True)),
+                    )
+                    raw, frame, url, http_metadata = client.fetch_product(request)
+                    client.save_product_response(
+                        request,
+                        raw,
+                        frame,
+                        url,
+                        http_metadata,
+                        root,
+                        overwrite=overwrite,
+                    )
 
 
 def audit_comtrade_coverage(settings: Settings, *, overwrite: bool) -> None:
@@ -774,6 +849,52 @@ def build_bpstat_macro(settings: Settings) -> None:
     write_text_lf(root / "results/live/bpstat_macro_cross_checks.txt", notes)
 
 
+def design_product_comtrade_extraction(settings: Settings) -> None:
+    """Build guarded product-level Comtrade extraction design outputs."""
+
+    root = settings.resolved_root()
+    plan, product, coverage, world_reconciliation, status, notes = (
+        build_product_extraction_design_outputs(
+            root,
+            subscription_key_present=bool(settings.comtrade_subscription_key),
+        )
+    )
+    raw_sources = product_source_files(root)
+    source_files = ["config/comtrade.yml", *raw_sources]
+    write_dataframe_with_metadata(
+        plan,
+        root / "results/live/comtrade_product_extraction_plan.csv",
+        metadata={"source_files": ["config/comtrade.yml"], "stage": "comtrade_product_plan"},
+    )
+    write_dataframe_with_metadata(
+        status,
+        root / "results/live/comtrade_product_extraction_status.csv",
+        metadata={"source_files": ["results/live/comtrade_product_extraction_plan.csv"]},
+    )
+    write_dataframe_with_metadata(
+        product,
+        root / "data/interim/live/comtrade_product_normalised.csv",
+        metadata={"source_files": source_files, "stage": "comtrade_product_normalised"},
+    )
+    write_dataframe_with_metadata(
+        coverage,
+        root / "results/diagnostics/comtrade_product/product_coverage_diagnostics.csv",
+        metadata={"source_files": ["data/interim/live/comtrade_product_normalised.csv"]},
+    )
+    write_dataframe_with_metadata(
+        world_reconciliation,
+        root / "results/diagnostics/comtrade_product/product_world_reconciliation.csv",
+        metadata={
+            "source_files": [
+                "data/interim/live/comtrade_product_normalised.csv",
+                "data/interim/live/ine_comtrade_1962_reconciliation.csv",
+            ],
+            "stage": "comtrade_product_world_reconciliation",
+        },
+    )
+    write_text_lf(root / "results/live/comtrade_product_extraction_notes.txt", notes)
+
+
 def validate(settings: Settings) -> bool:
     """Run local contract checks and write a persistent validation report."""
 
@@ -1174,6 +1295,7 @@ def run_diagnostics(settings: Settings) -> None:
     prepare_ine_transcription(settings)
     reconcile_trade_sources(settings)
     build_validated_aggregate_orientation(settings)
+    design_product_comtrade_extraction(settings)
     build_sitc_industry_mapping(settings)
     build_descriptive_results(settings)
     prepare_empirical_extension(settings)

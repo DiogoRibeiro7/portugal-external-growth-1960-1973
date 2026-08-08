@@ -32,8 +32,32 @@ class ComtradeRequest:
     max_records: int = 500
 
 
+@dataclass(frozen=True)
+class ComtradeProductRequest:
+    """Parameters for one subscription-key product extraction request."""
+
+    year: int
+    reporter_code: int
+    partner_code: int
+    flow_code: str
+    commodity_codes: tuple[str, ...]
+    classification_code: str = "S1"
+    max_records: int = 250000
+    aggregate_by: str | None = None
+    breakdown_mode: str = "classic"
+    include_desc: bool = True
+
+
 class ComtradeAPIError(ValueError):
     """Raised when UN Comtrade returns an application-level error."""
+
+
+class ComtradeSubscriptionKeyRequired(ValueError):
+    """Raised when a research extraction is attempted without a subscription key."""
+
+
+class ComtradePartialResponseError(ValueError):
+    """Raised when Comtrade reports more records than a bounded request can return."""
 
 
 class ComtradeClient:
@@ -93,6 +117,138 @@ class ComtradeClient:
                 subscription_key=self._subscription_key,
             ),
         )
+
+    def fetch_product_count(self, request: ComtradeProductRequest) -> int:
+        """Count product-level records before downloading a bounded request."""
+
+        self._require_subscription_key()
+        raw, _frame, _url, _metadata = self._fetch_product(request, count_only=True)
+        payload: Any = raw.json()
+        count = payload.get("count")
+        if not isinstance(count, int):
+            raise ValueError("UN Comtrade count response is missing integer count")
+        return count
+
+    def fetch_product(
+        self, request: ComtradeProductRequest
+    ) -> tuple[bytes, pd.DataFrame, str, dict[str, object]]:
+        """Fetch product-level final data with a subscription key and truncation check."""
+
+        self._require_subscription_key()
+        expected_count = self.fetch_product_count(request)
+        if expected_count > request.max_records:
+            raise ComtradePartialResponseError(
+                f"UN Comtrade request would return {expected_count} records, "
+                f"above maxRecords={request.max_records}; split the query further."
+            )
+        response, frame, url, metadata = self._fetch_product(request, count_only=False)
+        payload: Any = response.json()
+        actual_count = payload.get("count")
+        if isinstance(actual_count, int) and actual_count > len(frame):
+            raise ComtradePartialResponseError(
+                f"UN Comtrade returned {len(frame)} rows for count={actual_count}; "
+                "response may be partial."
+            )
+        return response.content, frame, url, metadata
+
+    def _fetch_product(
+        self, request: ComtradeProductRequest, *, count_only: bool
+    ) -> tuple[Any, pd.DataFrame, str, dict[str, object]]:
+        endpoint = "data/v1/get"
+        url = f"https://comtradeapi.un.org/{endpoint}/C/A/{request.classification_code}"
+        params: dict[str, str | int | bool] = {
+            "period": request.year,
+            "reporterCode": request.reporter_code,
+            "partnerCode": request.partner_code,
+            "flowCode": request.flow_code,
+            "cmdCode": ",".join(request.commodity_codes),
+            "maxRecords": request.max_records,
+            "countOnly": count_only,
+            "includeDesc": request.include_desc,
+            "breakdownMode": request.breakdown_mode,
+            "subscription-key": self._subscription_key or "",
+        }
+        if request.aggregate_by:
+            params["aggregateBy"] = request.aggregate_by
+        response = get_bytes(
+            self._session,
+            url,
+            params=params,
+            timeout_seconds=self._timeout_seconds,
+        )
+        payload: Any = response.json()
+        if not isinstance(payload, dict):
+            raise ValueError("Unexpected UN Comtrade response structure")
+        error = payload.get("error")
+        if error:
+            raise ComtradeAPIError(f"UN Comtrade API error: {error}")
+        data = payload.get("data", [])
+        if not isinstance(data, list):
+            raise ValueError("UN Comtrade response does not contain a data list")
+        frame = pd.json_normalize(data)
+        return (
+            response,
+            frame,
+            response.url,
+            _http_provenance(
+                response,
+                endpoint=url,
+                query_parameters=params,
+                subscription_key=self._subscription_key,
+            ),
+        )
+
+    def save_product_response(
+        self,
+        request: ComtradeProductRequest,
+        raw_json: bytes,
+        frame: pd.DataFrame,
+        request_url: str,
+        http_metadata: dict[str, object],
+        root: Path,
+        *,
+        overwrite: bool,
+    ) -> tuple[Path, Path]:
+        """Persist one product-level raw response and flattened snapshot."""
+
+        stem = (
+            f"PRT_{request.year}_{request.flow_code}_{request.classification_code}_"
+            f"P{request.partner_code}_{_commodity_stem(request.commodity_codes)}"
+        )
+        raw_path = root / "data/raw/live/comtrade_product" / f"{stem}.json"
+        csv_path = root / "data/raw/live/comtrade_product" / f"{stem}.csv"
+        atomic_write_bytes(raw_path, raw_json, overwrite=overwrite)
+        atomic_write_bytes(
+            csv_path,
+            frame.to_csv(index=False, lineterminator="\n").encode(),
+            overwrite=overwrite,
+        )
+        atomic_write_json(
+            raw_path.with_suffix(".metadata.json"),
+            {
+                "source": "UN Comtrade",
+                "purpose": "product_level_research_extraction",
+                "request_url": sanitise_url(request_url, (self._subscription_key or "",)),
+                "extracted_at_utc": utc_now_iso(),
+                **http_metadata,
+                "raw_sha256": sha256_file(raw_path),
+                "csv_sha256": sha256_file(csv_path),
+                "rows": len(frame),
+                "parameters": {
+                    **request.__dict__,
+                    "commodity_codes": list(request.commodity_codes),
+                },
+                "endpoint_mode": "subscription_final_data",
+            },
+            overwrite=overwrite,
+        )
+        return raw_path, csv_path
+
+    def _require_subscription_key(self) -> None:
+        if not self._subscription_key:
+            raise ComtradeSubscriptionKeyRequired(
+                "COMTRADE_SUBSCRIPTION_KEY is required for product-level research extraction."
+            )
 
     def save(
         self,
@@ -183,7 +339,7 @@ def _http_provenance(
     response: Any,
     *,
     endpoint: str,
-    query_parameters: dict[str, str | int],
+    query_parameters: dict[str, str | int | bool],
     subscription_key: str | None,
 ) -> dict[str, object]:
     redacted_parameters = {
@@ -204,3 +360,8 @@ def _http_provenance(
         "territorial_definition": "UN Comtrade partner trade/customs/statistical area codes",
         "units": "current_us_dollars",
     }
+
+
+def _commodity_stem(commodity_codes: tuple[str, ...]) -> str:
+    joined = "-".join(commodity_codes)
+    return joined[:80].replace(",", "-").replace("/", "_")

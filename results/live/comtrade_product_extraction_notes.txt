@@ -1,0 +1,15 @@
+Product-level UN Comtrade extraction design
+===========================================
+
+Planned requests: 6
+Execution status: blocked
+Blocking reason: COMTRADE_SUBSCRIPTION_KEY_missing;commodity_code_batches_not_registered
+Normalised product rows: 0
+Coverage diagnostic rows: 0
+World reconciliation rows: 0
+
+Research extraction uses the subscription final-data endpoint only.
+Preview responses are not accepted for product-level research data.
+Each request is count-checked before download; over-limit requests must
+be split by year, flow, partner, or commodity-code batch.
+Missing product records are not converted to zero.

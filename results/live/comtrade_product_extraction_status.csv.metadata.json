@@ -1,0 +1,34 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "status",
+    "subscription_key_present",
+    "planned_requests",
+    "raw_product_snapshots",
+    "normalised_rows",
+    "blocking_reason"
+  ],
+  "date_range": null,
+  "file": "results/live/comtrade_product_extraction_status.csv",
+  "input_artifacts": [
+    {
+      "path": "results/live/comtrade_product_extraction_plan.csv",
+      "sha256": "7865b530d162f12209d7dc02af52fe065c1462edca3f544f1712519da741f18a"
+    }
+  ],
+  "rows": 1,
+  "schema": {
+    "blocking_reason": "object",
+    "normalised_rows": "int64",
+    "planned_requests": "int64",
+    "raw_product_snapshots": "int64",
+    "status": "object",
+    "subscription_key_present": "bool"
+  },
+  "sha256": "971dd382b1e05948b2667f6fa67796e6b1d4821f138253ef44082cedd516d65b",
+  "source_files": [
+    "results/live/comtrade_product_extraction_plan.csv"
+  ],
+  "source_licence": "not_specified",
+  "validation_findings": []
+}
