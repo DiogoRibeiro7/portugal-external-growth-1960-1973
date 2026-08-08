@@ -1,0 +1,15 @@
+Descriptive industry exposure diagnostics
+=========================================
+
+Status: blocked
+Blocking reason: industry_exposure_panel_empty;industry_group_composition_empty;industry_growth_decomposition_empty;industry_trade_panel_empty;product_industry_mapping_status_blocked
+Industry panel rows: 0
+Exposure rows: 0
+Composition rows: 0
+Growth decomposition rows: 0
+Coverage rows: 4
+
+No causal claims or econometric coefficients are produced here.
+Industry exposure measures remain blocked until the industry trade panel
+contains validated product-level observations with a documented mapping.
+Missing historical observations are not converted to zero.

@@ -1,0 +1,61 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "year",
+    "source_classification",
+    "mapping_scope",
+    "mapping_version",
+    "target_industry_code",
+    "target_industry_group",
+    "target_industry_label",
+    "total_exports_usd",
+    "colonial_exports_usd",
+    "european_exports_usd",
+    "colonial_exposure",
+    "european_exposure",
+    "coverage_count",
+    "expected_count",
+    "coverage_ratio",
+    "estimate_status",
+    "source_quality"
+  ],
+  "date_range": null,
+  "file": "data/processed/live/industry_exposure_panel.csv",
+  "input_artifacts": [
+    {
+      "path": "data/processed/live/industry_trade_panel.csv",
+      "sha256": "06b249dcafcf5bdd942aa9b58e4b2c970bae62b04f1c2a8a82ea7d54d751d65a"
+    },
+    {
+      "path": "results/diagnostics/product_industry_mapping/product_mapping_status.csv",
+      "sha256": "dedcde453aed2a88425a3c38b1fda0c19dd9af5388252eb99139de23552db8d6"
+    }
+  ],
+  "rows": 0,
+  "schema": {
+    "colonial_exports_usd": "object",
+    "colonial_exposure": "object",
+    "coverage_count": "object",
+    "coverage_ratio": "object",
+    "estimate_status": "object",
+    "european_exports_usd": "object",
+    "european_exposure": "object",
+    "expected_count": "object",
+    "mapping_scope": "object",
+    "mapping_version": "object",
+    "source_classification": "object",
+    "source_quality": "object",
+    "target_industry_code": "object",
+    "target_industry_group": "object",
+    "target_industry_label": "object",
+    "total_exports_usd": "object",
+    "year": "object"
+  },
+  "sha256": "e1087fc1fe2698a763f7c68d6b51cbefd48851a06f4c7ebfce89bc7e955ba067",
+  "source_files": [
+    "data/processed/live/industry_trade_panel.csv",
+    "results/diagnostics/product_industry_mapping/product_mapping_status.csv"
+  ],
+  "source_licence": "not_specified",
+  "validation_findings": []
+}

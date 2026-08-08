@@ -1,0 +1,57 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "year",
+    "flow_code",
+    "source_classification",
+    "mapping_scope",
+    "target_industry_code",
+    "target_industry_label",
+    "partner_group",
+    "trade_value_usd",
+    "group_total_trade_value_usd",
+    "industry_share_within_group",
+    "coverage_count",
+    "expected_count",
+    "coverage_ratio",
+    "estimate_status",
+    "source_quality"
+  ],
+  "date_range": null,
+  "file": "results/live/industry_group_composition.csv",
+  "input_artifacts": [
+    {
+      "path": "data/processed/live/industry_trade_panel.csv",
+      "sha256": "06b249dcafcf5bdd942aa9b58e4b2c970bae62b04f1c2a8a82ea7d54d751d65a"
+    },
+    {
+      "path": "results/diagnostics/product_industry_mapping/product_mapping_status.csv",
+      "sha256": "dedcde453aed2a88425a3c38b1fda0c19dd9af5388252eb99139de23552db8d6"
+    }
+  ],
+  "rows": 0,
+  "schema": {
+    "coverage_count": "object",
+    "coverage_ratio": "object",
+    "estimate_status": "object",
+    "expected_count": "object",
+    "flow_code": "object",
+    "group_total_trade_value_usd": "object",
+    "industry_share_within_group": "object",
+    "mapping_scope": "object",
+    "partner_group": "object",
+    "source_classification": "object",
+    "source_quality": "object",
+    "target_industry_code": "object",
+    "target_industry_label": "object",
+    "trade_value_usd": "object",
+    "year": "object"
+  },
+  "sha256": "5696712c3e227e28bd25f0d77b2f298e11f25c765c9cfe2c64cb7ab0df0aa6a2",
+  "source_files": [
+    "data/processed/live/industry_trade_panel.csv",
+    "results/diagnostics/product_industry_mapping/product_mapping_status.csv"
+  ],
+  "source_licence": "not_specified",
+  "validation_findings": []
+}

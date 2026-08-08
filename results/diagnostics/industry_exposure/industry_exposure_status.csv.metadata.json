@@ -1,0 +1,44 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "status",
+    "industry_panel_rows",
+    "exposure_rows",
+    "composition_rows",
+    "growth_rows",
+    "blocking_reason"
+  ],
+  "date_range": null,
+  "file": "results/diagnostics/industry_exposure/industry_exposure_status.csv",
+  "input_artifacts": [
+    {
+      "path": "data/processed/live/industry_exposure_panel.csv",
+      "sha256": "e1087fc1fe2698a763f7c68d6b51cbefd48851a06f4c7ebfce89bc7e955ba067"
+    },
+    {
+      "path": "results/live/industry_group_composition.csv",
+      "sha256": "5696712c3e227e28bd25f0d77b2f298e11f25c765c9cfe2c64cb7ab0df0aa6a2"
+    },
+    {
+      "path": "results/live/industry_export_growth_decomposition.csv",
+      "sha256": "3759961b8d399ecc2620b4aba95172ea608ffcda7a2e393781d985a6ab3be1d0"
+    }
+  ],
+  "rows": 1,
+  "schema": {
+    "blocking_reason": "object",
+    "composition_rows": "int64",
+    "exposure_rows": "int64",
+    "growth_rows": "int64",
+    "industry_panel_rows": "int64",
+    "status": "object"
+  },
+  "sha256": "c66d6e6f0bebb6ff748010d3282bb1c3823618ef1e749b48f8525348a01fd5b2",
+  "source_files": [
+    "data/processed/live/industry_exposure_panel.csv",
+    "results/live/industry_group_composition.csv",
+    "results/live/industry_export_growth_decomposition.csv"
+  ],
+  "source_licence": "not_specified",
+  "validation_findings": []
+}

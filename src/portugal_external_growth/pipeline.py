@@ -28,6 +28,7 @@ from portugal_external_growth.empirical import (
     empty_diagnostics,
 )
 from portugal_external_growth.http import build_session
+from portugal_external_growth.industry_exposure import build_industry_exposure_outputs
 from portugal_external_growth.io_utils import (
     sha256_file,
     write_dataframe_with_metadata,
@@ -1224,6 +1225,49 @@ def build_product_industry_mapping(settings: Settings) -> None:
     write_text_lf(root / "results/live/product_industry_mapping_documentation.txt", notes)
 
 
+def build_descriptive_industry_exposure(settings: Settings) -> None:
+    """Build guarded descriptive industry-exposure outputs."""
+
+    root = settings.resolved_root()
+    exposures, composition, growth, coverage, status, notes = build_industry_exposure_outputs(root)
+    source_files = [
+        "data/processed/live/industry_trade_panel.csv",
+        "results/diagnostics/product_industry_mapping/product_mapping_status.csv",
+    ]
+    write_dataframe_with_metadata(
+        exposures,
+        root / "data/processed/live/industry_exposure_panel.csv",
+        metadata={"source_files": source_files},
+    )
+    write_dataframe_with_metadata(
+        composition,
+        root / "results/live/industry_group_composition.csv",
+        metadata={"source_files": source_files},
+    )
+    write_dataframe_with_metadata(
+        growth,
+        root / "results/live/industry_export_growth_decomposition.csv",
+        metadata={"source_files": source_files},
+    )
+    write_dataframe_with_metadata(
+        coverage,
+        root / "results/diagnostics/industry_exposure/industry_exposure_coverage.csv",
+        metadata={"source_files": source_files},
+    )
+    write_dataframe_with_metadata(
+        status,
+        root / "results/diagnostics/industry_exposure/industry_exposure_status.csv",
+        metadata={
+            "source_files": [
+                "data/processed/live/industry_exposure_panel.csv",
+                "results/live/industry_group_composition.csv",
+                "results/live/industry_export_growth_decomposition.csv",
+            ]
+        },
+    )
+    write_text_lf(root / "results/live/industry_exposure_diagnostics.txt", notes)
+
+
 def build_descriptive_results(settings: Settings) -> None:
     """Build stable descriptive trade-orientation tables."""
 
@@ -1350,6 +1394,7 @@ def run_diagnostics(settings: Settings) -> None:
     build_validated_aggregate_orientation(settings)
     design_product_comtrade_extraction(settings)
     build_product_industry_mapping(settings)
+    build_descriptive_industry_exposure(settings)
     build_sitc_industry_mapping(settings)
     build_descriptive_results(settings)
     prepare_empirical_extension(settings)

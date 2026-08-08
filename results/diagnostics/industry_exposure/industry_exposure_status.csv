@@ -1,0 +1,2 @@
+status,industry_panel_rows,exposure_rows,composition_rows,growth_rows,blocking_reason
+blocked,0,0,0,0,industry_exposure_panel_empty;industry_group_composition_empty;industry_growth_decomposition_empty;industry_trade_panel_empty;product_industry_mapping_status_blocked

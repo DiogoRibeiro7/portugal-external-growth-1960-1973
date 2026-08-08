@@ -71,6 +71,12 @@ def test_validate_command_exits_zero_on_integrity_pass(
         ("reconcile-trade-sources", "reconcile_trade_sources", False, []),
         ("build-sitc-industry-mapping", "build_sitc_industry_mapping", False, []),
         ("build-product-industry-mapping", "build_product_industry_mapping", False, []),
+        (
+            "build-descriptive-industry-exposure",
+            "build_descriptive_industry_exposure",
+            False,
+            [],
+        ),
         ("build-descriptive-results", "build_descriptive_results", False, []),
         ("build-bpstat-macro", "build_bpstat_macro", False, []),
         (

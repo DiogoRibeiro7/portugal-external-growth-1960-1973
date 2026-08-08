@@ -1,0 +1,5 @@
+dataset,rows,required_rows,coverage_ratio,status,blocking_reason
+industry_trade_panel,0,1,0.0,blocked,industry_trade_panel_empty
+industry_exposure_panel,0,0,0.0,blocked,industry_exposure_panel_empty
+industry_group_composition,0,0,0.0,blocked,industry_group_composition_empty
+industry_export_growth_decomposition,0,0,0.0,blocked,industry_export_growth_decomposition_empty

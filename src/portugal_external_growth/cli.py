@@ -9,6 +9,7 @@ from portugal_external_growth.pipeline import (
     bootstrap,
     build,
     build_bpstat_macro,
+    build_descriptive_industry_exposure,
     build_descriptive_results,
     build_ine_harmonised_outputs,
     build_product_industry_mapping,
@@ -165,6 +166,13 @@ def build_descriptive_results_command() -> None:
     """Build descriptive trade-orientation result tables."""
 
     build_descriptive_results(_settings())
+
+
+@app.command("build-descriptive-industry-exposure")
+def build_descriptive_industry_exposure_command() -> None:
+    """Build guarded descriptive industry-exposure outputs."""
+
+    build_descriptive_industry_exposure(_settings())
 
 
 @app.command("build-bpstat-macro")
