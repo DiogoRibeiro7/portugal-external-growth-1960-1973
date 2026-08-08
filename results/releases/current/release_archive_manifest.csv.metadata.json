@@ -7,6 +7,8 @@
     "source_commit",
     "source_commit_timestamp_utc",
     "tracked_file_count",
+    "excluded_source_file_count",
+    "archived_file_count",
     "archive_method",
     "content_scope"
   ],
@@ -18,12 +20,14 @@
     "archive_path": "object",
     "archive_sha256": "object",
     "archive_status": "object",
+    "archived_file_count": "int64",
     "content_scope": "object",
+    "excluded_source_file_count": "int64",
     "source_commit": "object",
     "source_commit_timestamp_utc": "object",
     "tracked_file_count": "int64"
   },
-  "sha256": "30281cae9a100b65732d7e43bab4896e5d37ae3290b3fbbf4713c3a18ec0fa6a",
+  "sha256": "4f528caed4596946bf03a9746663de81157038260a1900f0e2bfc6319f88af92",
   "source_licence": "not_specified",
   "stage": "tracked_file_release_archive_manifest",
   "validation_findings": []

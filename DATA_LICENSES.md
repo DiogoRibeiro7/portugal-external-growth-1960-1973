@@ -27,4 +27,10 @@ repository does not relicense third-party source data.
 
 Before any public release, decide source by source whether to publish raw
 responses, derived tables only, or retrieval metadata with checksums and source
-citations. Record the decision in the relevant sidecar metadata.
+citations. The release freeze writes
+`results/releases/current/source_release_policy.csv` with that decision.
+
+When redistribution rights are unresolved, or when a source carries a restrictive
+notice, release archives must exclude the local source document and include only
+metadata, checksums, citations, and derived tables until the source-specific
+terms are resolved.

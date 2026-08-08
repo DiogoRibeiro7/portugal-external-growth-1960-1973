@@ -6,7 +6,10 @@ from pathlib import Path
 import pandas as pd
 from pytest import MonkeyPatch
 
-from portugal_external_growth.release_freeze import build_research_data_freeze_outputs
+from portugal_external_growth.release_freeze import (
+    build_research_data_freeze_outputs,
+    build_source_release_policy,
+)
 
 
 def test_research_data_freeze_declares_not_ready_with_machine_blockers(
@@ -118,9 +121,42 @@ def test_research_data_freeze_blocks_unresolved_source_redistribution_rights(
         tmp_path,
         create_archive=False,
     )
+    policy = build_source_release_policy(tmp_path)
 
     assert "source_redistribution_rights_unresolved" in blockers["blocker_id"].tolist()
+    assert policy.loc[0, "release_distribution_decision"] == (
+        "exclude_source_document_publish_metadata_and_derived_tables"
+    )
+    assert not bool(policy.loc[0, "release_include_source_file"])
     assert checklist.loc[checklist["requirement_id"].eq("14"), "status"].iloc[0] == "blocked"
+
+
+def test_source_release_policy_excludes_unregistered_pdf_without_licence_metadata(
+    tmp_path: Path,
+) -> None:
+    source_dir = tmp_path / "data/manual/source_documents"
+    source_dir.mkdir(parents=True)
+    pdf = source_dir / "imf.pdf"
+    pdf.write_text("not for redistribution source\n", encoding="utf-8")
+    pdf.with_suffix(".pdf.metadata.json").write_text(
+        json.dumps(
+            {
+                "source_id": "imf",
+                "sha256": "abc",
+                "access_conditions": "IMF eLibrary public PDF downloaded for source verification",
+                "usage_note": "Used only for exchange-rate verification.",
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    policy = build_source_release_policy(tmp_path)
+
+    assert policy.loc[0, "source_file"] == "data/manual/source_documents/imf.pdf"
+    assert policy.loc[0, "release_distribution_decision"] == (
+        "exclude_source_document_until_redistribution_rights_resolved"
+    )
+    assert policy.loc[0, "blocking_reason"] == "redistribution_rights_unresolved"
 
 
 def _write_pyproject(root: Path) -> None:

@@ -27,7 +27,7 @@
     "severity": "object",
     "source_check": "object"
   },
-  "sha256": "e3935e76540fb97020e5a09792b845afd77d29cb0b49caec2bbc8d771f0b76a9",
+  "sha256": "6459e7d4270d1f34866b2c0e3a2566bae93f4f50da1e453678b28e580ca4420e",
   "source_files": [
     "results/validation/research_readiness_report.csv",
     "results/releases/current/verification_evidence.csv"

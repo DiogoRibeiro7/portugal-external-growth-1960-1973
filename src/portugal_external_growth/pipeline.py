@@ -73,7 +73,10 @@ from portugal_external_growth.registry import (
     build_bpstat_registry_review,
     load_bpstat_reviewed_candidates,
 )
-from portugal_external_growth.release_freeze import build_research_data_freeze_outputs
+from portugal_external_growth.release_freeze import (
+    build_research_data_freeze_outputs,
+    build_source_release_policy,
+)
 from portugal_external_growth.settings import Settings
 from portugal_external_growth.transforms import (
     compile_comtrade_coverage_audit,
@@ -1498,6 +1501,17 @@ def freeze_research_data(
         archive,
         release_dir / "release_archive_manifest.csv",
         metadata={"stage": "tracked_file_release_archive_manifest"},
+    )
+    write_dataframe_with_metadata(
+        build_source_release_policy(root),
+        release_dir / "source_release_policy.csv",
+        metadata={
+            "source_files": [
+                "data/manual/source_documents/source_document_registry.csv",
+                "data/manual/source_documents",
+            ],
+            "stage": "source_release_distribution_policy",
+        },
     )
     write_text_lf(root / "RESEARCH_DATA_READINESS.txt", notes)
     write_text_lf(release_dir / "RESEARCH_DATA_READINESS.txt", notes)

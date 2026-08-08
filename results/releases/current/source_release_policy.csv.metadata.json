@@ -1,0 +1,55 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "source_id",
+    "expected_year",
+    "source_file",
+    "source_sha256",
+    "source_file_status",
+    "licence_status",
+    "access_conditions",
+    "release_distribution_decision",
+    "release_include_source_file",
+    "release_include_metadata",
+    "release_include_derived_tables",
+    "blocking_reason"
+  ],
+  "date_range": {
+    "end_year": 1973,
+    "start_year": 1962
+  },
+  "file": "results/releases/current/source_release_policy.csv",
+  "input_artifacts": [
+    {
+      "path": "data/manual/source_documents/source_document_registry.csv",
+      "sha256": "1117eb2db582fe0cd62feeb2934c9d431c8e9a58ba8d6e940a77cb63dac92e66"
+    },
+    {
+      "path": "data/manual/source_documents",
+      "sha256": ""
+    }
+  ],
+  "rows": 9,
+  "schema": {
+    "access_conditions": "object",
+    "blocking_reason": "object",
+    "expected_year": "object",
+    "licence_status": "object",
+    "release_distribution_decision": "object",
+    "release_include_derived_tables": "bool",
+    "release_include_metadata": "bool",
+    "release_include_source_file": "bool",
+    "source_file": "object",
+    "source_file_status": "object",
+    "source_id": "object",
+    "source_sha256": "object"
+  },
+  "sha256": "d8ef3cff47799aab84babf0e6100b632fe7b116f1d9926fa3ac6eebe9cd928e4",
+  "source_files": [
+    "data/manual/source_documents/source_document_registry.csv",
+    "data/manual/source_documents"
+  ],
+  "source_licence": "not_specified",
+  "stage": "source_release_distribution_policy",
+  "validation_findings": []
+}

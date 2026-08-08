@@ -53,6 +53,20 @@ DATA_DICTIONARY_COVERAGE_COLUMNS = [
     "dictionary_status",
     "blocking_reason",
 ]
+SOURCE_RELEASE_POLICY_COLUMNS = [
+    "source_id",
+    "expected_year",
+    "source_file",
+    "source_sha256",
+    "source_file_status",
+    "licence_status",
+    "access_conditions",
+    "release_distribution_decision",
+    "release_include_source_file",
+    "release_include_metadata",
+    "release_include_derived_tables",
+    "blocking_reason",
+]
 ARCHIVE_MANIFEST_COLUMNS = [
     "archive_path",
     "archive_sha256",
@@ -60,6 +74,8 @@ ARCHIVE_MANIFEST_COLUMNS = [
     "source_commit",
     "source_commit_timestamp_utc",
     "tracked_file_count",
+    "excluded_source_file_count",
+    "archived_file_count",
     "archive_method",
     "content_scope",
 ]
@@ -202,6 +218,58 @@ def build_data_dictionary_coverage(root: Path) -> pd.DataFrame:
     return pd.DataFrame.from_records(records, columns=DATA_DICTIONARY_COVERAGE_COLUMNS)
 
 
+def build_source_release_policy(root: Path) -> pd.DataFrame:
+    """Classify local source PDFs for conservative release packaging."""
+
+    records: list[dict[str, object]] = []
+    registry = _read_csv(root / "data/manual/source_documents/source_document_registry.csv")
+    registered_files: set[str] = set()
+    if not registry.empty:
+        for row in registry.to_dict(orient="records"):
+            filenames = _split_cell(row.get("source_pdf_filename"))
+            checksums = _split_cell(row.get("source_pdf_sha256"))
+            for index, filename in enumerate(filenames):
+                relative = f"data/manual/source_documents/{filename}"
+                registered_files.add(relative)
+                checksum = checksums[index] if index < len(checksums) else ""
+                records.append(
+                    _source_release_policy_record(
+                        root,
+                        source_id=str(row.get("source_id", "")),
+                        expected_year=str(row.get("expected_year", "")),
+                        source_file=relative,
+                        source_sha256=checksum,
+                        licence_status=str(row.get("licence", "")),
+                        access_conditions=str(row.get("access_conditions", "")),
+                        notes=str(row.get("notes", "")),
+                    )
+                )
+
+    for pdf_path in sorted((root / "data/manual/source_documents").glob("*.pdf")):
+        relative = pdf_path.relative_to(root).as_posix()
+        if relative in registered_files:
+            continue
+        metadata = _read_json(pdf_path.with_suffix(pdf_path.suffix + ".metadata.json"))
+        records.append(
+            _source_release_policy_record(
+                root,
+                source_id=str(metadata.get("source_id", pdf_path.stem)),
+                expected_year=str(metadata.get("expected_year", "")),
+                source_file=relative,
+                source_sha256=str(metadata.get("sha256", "")),
+                licence_status=str(metadata.get("source_licence", "")),
+                access_conditions=str(metadata.get("access_conditions", "")),
+                notes=" ".join(
+                    str(metadata.get(key, ""))
+                    for key in ("usage_note", "source", "source_url")
+                    if metadata.get(key)
+                ),
+            )
+        )
+
+    return pd.DataFrame.from_records(records, columns=SOURCE_RELEASE_POLICY_COLUMNS)
+
+
 def build_freeze_verification_evidence(
     root: Path,
     *,
@@ -317,10 +385,19 @@ def build_release_archive_manifest(
     """Create a git-archive release file and return its manifest row."""
 
     tracked_files = _git_tracked_files(root)
+    source_policy = build_source_release_policy(root)
+    excluded_source_files = set(
+        source_policy.loc[
+            ~source_policy["release_include_source_file"].astype(bool), "source_file"
+        ].astype(str)
+    )
+    archive_files = [path for path in tracked_files if path not in excluded_source_files]
     archive_path = root / "release" / f"research-data-freeze-{release_version}.zip"
     archive_sha256 = ""
     archive_status = "not_created"
     if create_archive and source_commit:
+        if not archive_files:
+            raise ValueError("Refusing to create an empty release archive")
         archive_path.parent.mkdir(parents=True, exist_ok=True)
         if archive_path.exists():
             archive_path.unlink()
@@ -333,6 +410,8 @@ def build_release_archive_manifest(
                 "--prefix",
                 f"portugal-external-growth-{release_version}/",
                 "HEAD",
+                "--",
+                *archive_files,
             ],
             cwd=root,
             check=True,
@@ -348,8 +427,10 @@ def build_release_archive_manifest(
                 "source_commit": source_commit,
                 "source_commit_timestamp_utc": source_commit_timestamp,
                 "tracked_file_count": len(tracked_files),
-                "archive_method": "git archive HEAD",
-                "content_scope": "tracked_files_only",
+                "excluded_source_file_count": len(excluded_source_files),
+                "archived_file_count": len(archive_files),
+                "archive_method": "git archive HEAD -- selected release files",
+                "content_scope": "tracked_files_excluding_restricted_source_documents",
             }
         ],
         columns=ARCHIVE_MANIFEST_COLUMNS,
@@ -755,22 +836,14 @@ def _append_release_scope_blockers(root: Path, records: list[dict[str, object]])
 
 
 def _append_source_redistribution_blocker(root: Path, records: list[dict[str, object]]) -> None:
-    registry = _read_csv(root / "data/manual/source_documents/source_document_registry.csv")
-    if registry.empty:
+    policy = build_source_release_policy(root)
+    if policy.empty:
         return
-    local_rows = registry.loc[
-        registry.get("source_pdf_filename", pd.Series(dtype=object)).astype(str).str.strip().ne("")
-    ].copy()
-    if local_rows.empty:
-        return
-    text = local_rows.astype(str).agg(" ".join, axis=1).str.lower()
-    unresolved = local_rows.loc[
-        text.str.contains("to_be_confirmed|not for redistribution|licence review", regex=True)
-    ]
+    unresolved = policy.loc[policy["blocking_reason"].astype(str).ne("")]
     if unresolved.empty:
         return
     identifiers = [
-        f"{row.get('source_id', '')}:{row.get('expected_year', '')}"
+        f"{row.get('source_id', '')}:{row.get('expected_year', '')}:{row.get('source_file', '')}"
         for row in unresolved.to_dict(orient="records")
     ]
     records.append(
@@ -779,7 +852,7 @@ def _append_source_redistribution_blocker(root: Path, records: list[dict[str, ob
             "freeze.source_redistribution",
             "not_ready",
             ";".join(identifiers),
-            "data/manual/source_documents/source_document_registry.csv",
+            "results/releases/current/source_release_policy.csv",
         )
     )
 
@@ -789,6 +862,66 @@ def _status_count(text: str, label: str) -> int:
     if match is None:
         return 0
     return int(match.group(1))
+
+
+def _source_release_policy_record(
+    root: Path,
+    *,
+    source_id: str,
+    expected_year: str,
+    source_file: str,
+    source_sha256: str,
+    licence_status: str,
+    access_conditions: str,
+    notes: str,
+) -> dict[str, object]:
+    path = root / source_file
+    source_file_status = "available" if path.exists() else "missing"
+    actual_sha256 = sha256_file(path) if path.exists() else ""
+    checksum = source_sha256 or actual_sha256
+    text = " ".join([licence_status, access_conditions, notes]).lower()
+    normalised_licence = licence_status.strip().lower()
+    if "not for redistribution" in text:
+        decision = "exclude_source_document_publish_metadata_and_derived_tables"
+        include_source = False
+        blocking_reason = "not_for_redistribution_notice"
+    elif normalised_licence in {"", "not_specified"} or re.search(
+        r"to_be_confirmed|licen[cs]e review|terms require.*review", text
+    ):
+        decision = "exclude_source_document_until_redistribution_rights_resolved"
+        include_source = False
+        blocking_reason = "redistribution_rights_unresolved"
+    elif source_file_status == "missing":
+        decision = "metadata_only_source_file_not_available"
+        include_source = False
+        blocking_reason = ""
+    else:
+        decision = "include_source_document_if_release_scope_allows"
+        include_source = True
+        blocking_reason = ""
+    return {
+        "source_id": source_id,
+        "expected_year": expected_year,
+        "source_file": source_file,
+        "source_sha256": checksum,
+        "source_file_status": source_file_status,
+        "licence_status": licence_status or "not_specified",
+        "access_conditions": access_conditions or "not_specified",
+        "release_distribution_decision": decision,
+        "release_include_source_file": include_source,
+        "release_include_metadata": True,
+        "release_include_derived_tables": True,
+        "blocking_reason": blocking_reason,
+    }
+
+
+def _split_cell(value: object) -> list[str]:
+    if value is None:
+        return []
+    text = str(value)
+    if text.strip().lower() in {"", "nan", "<na>"}:
+        return []
+    return [part.strip() for part in text.split(";") if part.strip()]
 
 
 def _dependencies(metadata: dict[str, Any]) -> str:
