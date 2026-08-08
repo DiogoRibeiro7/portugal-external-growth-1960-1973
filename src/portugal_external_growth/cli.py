@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import typer
 
 from portugal_external_growth.pipeline import (
@@ -39,6 +41,14 @@ from portugal_external_growth.pipeline import (
 from portugal_external_growth.settings import Settings
 
 app = typer.Typer(no_args_is_help=True, pretty_exceptions_show_locals=False)
+FREEZE_VERIFICATION_EVIDENCE_OPTION = typer.Option(
+    None,
+    help="Machine-readable verification evidence CSV for the current commit.",
+)
+FREEZE_CREATE_ARCHIVE_OPTION = typer.Option(
+    False,
+    help="Create a local tracked-file zip archive while freezing.",
+)
 
 
 def _settings() -> Settings:
@@ -253,14 +263,16 @@ def run_diagnostics_command() -> None:
 
 @app.command("freeze-research-data")
 def freeze_research_data_command(
-    verification_passed: bool = typer.Option(
-        False,
-        help="Record external lint, type, test, and reproduction checks as passed.",
-    ),
+    verification_evidence: Path | None = FREEZE_VERIFICATION_EVIDENCE_OPTION,
+    create_archive: bool = FREEZE_CREATE_ARCHIVE_OPTION,
 ) -> None:
     """Create final research-data freeze readiness reports and archive metadata."""
 
-    freeze_research_data(_settings(), verification_passed=verification_passed)
+    freeze_research_data(
+        _settings(),
+        verification_evidence_path=verification_evidence,
+        create_archive=create_archive,
+    )
 
 
 @app.command("run-all-available")

@@ -25,7 +25,7 @@
     "adjudication_status"
   ],
   "created_at_utc": "2026-08-06T11:52:26.249921+00:00",
-  "file": "C:\\Users\\diogo\\work_code\\portugal-external-growth-1960-1973\\data\\manual\\templates\\aggregate_cross_check_template.csv",
+  "file": "data/manual/templates/aggregate_cross_check_template.csv",
   "purpose": "Independent aggregate cross-check transcription",
   "rows": 0,
   "sha256": "55bd206f1cc9171e5d6d1ae77fdbca6b03c47327b59071b78f54a0c48be3858d"

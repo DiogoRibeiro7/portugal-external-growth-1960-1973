@@ -25,7 +25,7 @@
     "source_rows": "int64",
     "status": "object"
   },
-  "sha256": "c4e1c81cfbe9390cab0346567e4ba87f003060959fcacbde6d694979f78a2431",
+  "sha256": "9224653c6436d8697d8bc8f2278ba4eaa5dd28608227d5f838e943e42b7604ca",
   "source_files": [
     "results/diagnostics/efta_policy/efta_policy_coverage.csv"
   ],

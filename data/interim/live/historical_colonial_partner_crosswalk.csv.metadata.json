@@ -24,10 +24,6 @@
     {
       "path": "data/raw/live/un_comtrade_metadata/partner_areas.json",
       "sha256": "89b8f9c9e734b309b95284dbf2f8ef40209d88cc01ad07fd6b2db7e600463e0a"
-    },
-    {
-      "path": "data/interim/live/comtrade_coverage_matrix.csv",
-      "sha256": "290fb75344b2196f35a7dd494b5051d2448ebd08e8e4d34f333aeb2dc467bb52"
     }
   ],
   "rows": 8,
@@ -48,8 +44,7 @@
   "sha256": "1a94373d96dd3f2a49c02608452df295df86b65ca9c116c2115ac23433d36cb9",
   "source_files": [
     "data/manual/source_documents/ine_external_trade_1962_volume_i.pdf",
-    "data/raw/live/un_comtrade_metadata/partner_areas.json",
-    "data/interim/live/comtrade_coverage_matrix.csv"
+    "data/raw/live/un_comtrade_metadata/partner_areas.json"
   ],
   "source_licence": "mixed_official_sources_terms_to_be_confirmed",
   "stage": "historical_colonial_partner_crosswalk",

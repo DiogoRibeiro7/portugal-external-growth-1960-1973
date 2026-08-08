@@ -1403,7 +1403,7 @@ def build_efta_policy_dataset(settings: Settings) -> None:
 
     root = settings.resolved_root()
     sources, policy, product_mapping, coverage, status, notes = build_efta_policy_outputs(root)
-    source_files = ["results/live/empirical_readiness_audit.csv", "config/data_sources.yml"]
+    source_files = ["config/data_sources.yml"]
     write_dataframe_with_metadata(
         sources,
         root / "data/raw/live/efta_policy/source_registry.csv",
@@ -1432,14 +1432,32 @@ def build_efta_policy_dataset(settings: Settings) -> None:
     write_text_lf(root / "results/live/efta_policy_readiness.txt", notes)
 
 
-def freeze_research_data(settings: Settings, *, verification_passed: bool = False) -> None:
+def freeze_research_data(
+    settings: Settings,
+    *,
+    verification_evidence_path: Path | None = None,
+    create_archive: bool = False,
+) -> None:
     """Create final research-data freeze reports and tracked-file archive metadata."""
 
     root = settings.resolved_root()
-    declaration, blockers, checklist, provenance, dictionaries, archive, notes = (
-        build_research_data_freeze_outputs(root, verification_passed=verification_passed)
+    declaration, blockers, checklist, provenance, dictionaries, archive, evidence, notes = (
+        build_research_data_freeze_outputs(
+            root,
+            verification_evidence_path=verification_evidence_path,
+            create_archive=create_archive,
+        )
     )
     release_dir = root / "results/releases/current"
+    evidence_path = verification_evidence_path or release_dir / "verification_evidence.csv"
+    write_dataframe_with_metadata(
+        evidence,
+        release_dir / "verification_evidence.csv",
+        metadata={
+            "source_files": [str(evidence_path)] if verification_evidence_path else [],
+            "stage": "freeze_verification_evidence",
+        },
+    )
     write_dataframe_with_metadata(
         declaration,
         release_dir / "release_readiness_declaration.csv",
@@ -1454,7 +1472,12 @@ def freeze_research_data(settings: Settings, *, verification_passed: bool = Fals
     write_dataframe_with_metadata(
         blockers,
         release_dir / "freeze_blocking_reasons.csv",
-        metadata={"source_files": ["results/validation/research_readiness_report.csv"]},
+        metadata={
+            "source_files": [
+                "results/validation/research_readiness_report.csv",
+                str(evidence_path),
+            ]
+        },
     )
     write_dataframe_with_metadata(
         checklist,
@@ -1474,7 +1497,7 @@ def freeze_research_data(settings: Settings, *, verification_passed: bool = Fals
     write_dataframe_with_metadata(
         archive,
         release_dir / "release_archive_manifest.csv",
-        metadata={"source_files": ["results/manifests/current_manifest.csv"]},
+        metadata={"stage": "tracked_file_release_archive_manifest"},
     )
     write_text_lf(root / "RESEARCH_DATA_READINESS.txt", notes)
     write_text_lf(release_dir / "RESEARCH_DATA_READINESS.txt", notes)

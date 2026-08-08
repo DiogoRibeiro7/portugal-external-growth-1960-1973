@@ -8,7 +8,7 @@
   ],
   "date_range": null,
   "file": "results/manifests/current_manifest.csv",
-  "rows": 470,
+  "rows": 472,
   "schema": {
     "artifact_role": "object",
     "relative_path": "object",
@@ -16,7 +16,7 @@
     "size_bytes": "int64"
   },
   "scope": "current",
-  "sha256": "cc35b46ef850c8195c303ba10634d16262d415091de0959fb888163034ad20aa",
+  "sha256": "62527a0131194459b866129525735e663e8faca084b41183989467a4e701a49f",
   "source_licence": "not_specified",
   "stage": "manifest",
   "validation_findings": []

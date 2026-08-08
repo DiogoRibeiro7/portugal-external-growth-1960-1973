@@ -1,0 +1,30 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "check",
+    "status",
+    "command",
+    "source_commit",
+    "tool_version",
+    "verification_timestamp_utc",
+    "notes"
+  ],
+  "date_range": null,
+  "file": "results/releases/current/verification_evidence.csv",
+  "input_artifacts": [],
+  "rows": 7,
+  "schema": {
+    "check": "object",
+    "command": "object",
+    "notes": "object",
+    "source_commit": "object",
+    "status": "object",
+    "tool_version": "float64",
+    "verification_timestamp_utc": "float64"
+  },
+  "sha256": "bd5ac0773efa972a1ad61541988a58be59e1b20de0fc83bd69d13404ea861460",
+  "source_files": [],
+  "source_licence": "not_specified",
+  "stage": "freeze_verification_evidence",
+  "validation_findings": []
+}

@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 import pandas as pd
+from pytest import MonkeyPatch
 
 from portugal_external_growth.release_freeze import build_research_data_freeze_outputs
 
@@ -18,10 +19,9 @@ def test_research_data_freeze_declares_not_ready_with_machine_blockers(
     _write_transcription_status(tmp_path)
     _write_analytical_dataset(tmp_path)
 
-    declaration, blockers, checklist, provenance, dictionaries, archive, notes = (
+    declaration, blockers, checklist, provenance, dictionaries, archive, evidence, notes = (
         build_research_data_freeze_outputs(
             tmp_path,
-            verification_passed=True,
             create_archive=False,
         )
     )
@@ -33,9 +33,94 @@ def test_research_data_freeze_declares_not_ready_with_machine_blockers(
     assert provenance.loc[0, "creation_timestamp_status"] == "missing"
     assert dictionaries["dictionary_status"].isin(["missing", "available"]).any()
     assert archive.loc[0, "archive_status"] == "not_created"
+    assert set(evidence["status"]) == {"missing"}
+    assert "verification_tests" in blockers["blocker_id"].tolist()
+    assert checklist.loc[checklist["requirement_id"].eq("1"), "status"].iloc[0] == "blocked"
     assert checklist.loc[checklist["requirement_id"].eq("10"), "status"].iloc[0] == "blocked"
     assert "Declaration: NOT_READY" in notes
     assert "freeze_blocking_reasons.csv" in notes
+
+
+def test_research_data_freeze_accepts_current_commit_verification_evidence(
+    tmp_path: Path,
+    monkeypatch: MonkeyPatch,
+) -> None:
+    _write_pyproject(tmp_path)
+    _write_research_readiness(tmp_path)
+    _write_empirical_audit(tmp_path)
+    _write_live_result_table(tmp_path)
+    _write_transcription_status(tmp_path)
+    _write_analytical_dataset(tmp_path)
+    evidence_path = tmp_path / "verification.csv"
+    source_commit = "abc123"
+    pd.DataFrame(
+        [
+            {
+                "check": check,
+                "status": "passed",
+                "command": command,
+                "source_commit": source_commit,
+                "tool_version": "test",
+                "verification_timestamp_utc": "2026-08-08T00:00:00Z",
+                "notes": "",
+            }
+            for check, command in {
+                "tests": "poetry run pytest --cov",
+                "lint": "poetry run ruff check .",
+                "format": "poetry run ruff format --check .",
+                "typecheck": "poetry run mypy src tests",
+                "reproduction": "poetry run peg reproduce-from-local",
+                "validation": "poetry run peg validate",
+                "manifest": "poetry run pytest tests/test_manifest.py",
+            }.items()
+        ]
+    ).to_csv(evidence_path, index=False)
+
+    monkeypatch.setattr(
+        "portugal_external_growth.release_freeze._git_stdout",
+        lambda _root, args: source_commit if args == ["rev-parse", "HEAD"] else "",
+    )
+
+    _declaration, blockers, checklist, *_rest = build_research_data_freeze_outputs(
+        tmp_path,
+        verification_evidence_path=evidence_path,
+        create_archive=False,
+    )
+
+    assert not any(str(value).startswith("verification_") for value in blockers["blocker_id"])
+    assert checklist.loc[checklist["requirement_id"].eq("1"), "status"].iloc[0] == "passed"
+    assert checklist.loc[checklist["requirement_id"].eq("5"), "status"].iloc[0] == "passed"
+
+
+def test_research_data_freeze_blocks_unresolved_source_redistribution_rights(
+    tmp_path: Path,
+) -> None:
+    _write_pyproject(tmp_path)
+    _write_research_readiness(tmp_path)
+    _write_empirical_audit(tmp_path)
+    _write_live_result_table(tmp_path)
+    _write_transcription_status(tmp_path)
+    registry = tmp_path / "data/manual/source_documents"
+    registry.mkdir(parents=True)
+    pd.DataFrame(
+        [
+            {
+                "source_id": "imf",
+                "expected_year": 1962,
+                "source_pdf_filename": "imf.pdf",
+                "licence": "to_be_confirmed_from_source",
+                "access_conditions": "Not for Redistribution notice requires review",
+            }
+        ]
+    ).to_csv(registry / "source_document_registry.csv", index=False)
+
+    _declaration, blockers, checklist, *_rest = build_research_data_freeze_outputs(
+        tmp_path,
+        create_archive=False,
+    )
+
+    assert "source_redistribution_rights_unresolved" in blockers["blocker_id"].tolist()
+    assert checklist.loc[checklist["requirement_id"].eq("14"), "status"].iloc[0] == "blocked"
 
 
 def _write_pyproject(root: Path) -> None:

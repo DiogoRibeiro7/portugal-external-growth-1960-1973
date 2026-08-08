@@ -96,7 +96,12 @@ def test_validate_command_exits_zero_on_integrity_pass(
         ("build", "build", False, []),
         ("refresh-sources", "refresh_sources", False, ["--overwrite"]),
         ("run-diagnostics", "run_diagnostics", False, []),
-        ("freeze-research-data", "freeze_research_data", False, ["--verification-passed"]),
+        (
+            "freeze-research-data",
+            "freeze_research_data",
+            False,
+            ["--verification-evidence", "verification.csv"],
+        ),
     ],
 )
 def test_cli_dispatches_pipeline_commands(

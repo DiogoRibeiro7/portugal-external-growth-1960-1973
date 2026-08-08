@@ -27,6 +27,15 @@ FREEZE_CHECKLIST_COLUMNS = [
     "blocking_reason",
     "evidence_path",
 ]
+VERIFICATION_EVIDENCE_COLUMNS = [
+    "check",
+    "status",
+    "command",
+    "source_commit",
+    "tool_version",
+    "verification_timestamp_utc",
+    "notes",
+]
 FINAL_TABLE_PROVENANCE_COLUMNS = [
     "result_table",
     "input_dependencies",
@@ -90,9 +99,10 @@ ANALYTICAL_DATASETS = {
 def build_research_data_freeze_outputs(
     root: Path,
     *,
-    verification_passed: bool,
-    create_archive: bool = True,
+    verification_evidence_path: Path | None = None,
+    create_archive: bool = False,
 ) -> tuple[
+    pd.DataFrame,
     pd.DataFrame,
     pd.DataFrame,
     pd.DataFrame,
@@ -111,6 +121,11 @@ def build_research_data_freeze_outputs(
 
     research_readiness = _read_csv(root / "results/validation/research_readiness_report.csv")
     empirical_audit = _read_csv(root / "results/live/empirical_readiness_audit.csv")
+    verification_evidence = build_freeze_verification_evidence(
+        root,
+        source_commit=commit,
+        evidence_path=verification_evidence_path,
+    )
     dictionary_coverage = build_data_dictionary_coverage(root)
     table_provenance = build_final_result_table_provenance(
         root,
@@ -130,12 +145,12 @@ def build_research_data_freeze_outputs(
         empirical_audit=empirical_audit,
         dictionary_coverage=dictionary_coverage,
         table_provenance=table_provenance,
-        verification_passed=verification_passed,
+        verification_evidence=verification_evidence,
         archive_manifest=archive_manifest,
     )
     checklist = build_freeze_checklist(
         blockers=blockers,
-        verification_passed=verification_passed,
+        verification_evidence=verification_evidence,
         dictionary_coverage=dictionary_coverage,
         table_provenance=table_provenance,
         archive_manifest=archive_manifest,
@@ -155,6 +170,7 @@ def build_research_data_freeze_outputs(
         table_provenance,
         dictionary_coverage,
         archive_manifest,
+        verification_evidence,
         notes,
     )
 
@@ -184,6 +200,70 @@ def build_data_dictionary_coverage(root: Path) -> pd.DataFrame:
             }
         )
     return pd.DataFrame.from_records(records, columns=DATA_DICTIONARY_COVERAGE_COLUMNS)
+
+
+def build_freeze_verification_evidence(
+    root: Path,
+    *,
+    source_commit: str,
+    evidence_path: Path | None,
+) -> pd.DataFrame:
+    """Load machine-readable verification evidence for freeze checks."""
+
+    required_checks = {
+        "tests": "poetry run pytest --cov",
+        "lint": "poetry run ruff check .",
+        "format": "poetry run ruff format --check .",
+        "typecheck": "poetry run mypy src tests",
+        "reproduction": "poetry run peg reproduce-from-local",
+        "validation": "poetry run peg validate",
+        "manifest": "poetry run pytest tests/test_manifest.py",
+    }
+    if evidence_path is None:
+        evidence_path = root / "results/releases/current/verification_evidence.csv"
+    if not evidence_path.exists():
+        return pd.DataFrame(
+            [
+                {
+                    "check": check,
+                    "status": "missing",
+                    "command": command,
+                    "source_commit": source_commit,
+                    "tool_version": "",
+                    "verification_timestamp_utc": "",
+                    "notes": f"verification evidence missing: {evidence_path.as_posix()}",
+                }
+                for check, command in required_checks.items()
+            ],
+            columns=VERIFICATION_EVIDENCE_COLUMNS,
+        )
+    evidence = pd.read_csv(evidence_path)
+    for column in VERIFICATION_EVIDENCE_COLUMNS:
+        if column not in evidence:
+            evidence[column] = ""
+    evidence = evidence[VERIFICATION_EVIDENCE_COLUMNS].copy()
+    recorded_checks = set(evidence["check"].astype(str))
+    missing_checks = required_checks.keys() - recorded_checks
+    missing_rows = [
+        {
+            "check": check,
+            "status": "missing",
+            "command": required_checks[check],
+            "source_commit": source_commit,
+            "tool_version": "",
+            "verification_timestamp_utc": "",
+            "notes": "required verification check is absent from evidence",
+        }
+        for check in sorted(missing_checks)
+    ]
+    if missing_rows:
+        evidence = pd.concat(
+            [evidence, pd.DataFrame.from_records(missing_rows)],
+            ignore_index=True,
+        )
+    stale = evidence["source_commit"].astype(str).ne(source_commit)
+    evidence.loc[stale, "status"] = "stale_commit"
+    return evidence.sort_values("check").reset_index(drop=True)
 
 
 def build_final_result_table_provenance(
@@ -283,20 +363,21 @@ def build_freeze_blockers(
     empirical_audit: pd.DataFrame,
     dictionary_coverage: pd.DataFrame,
     table_provenance: pd.DataFrame,
-    verification_passed: bool,
+    verification_evidence: pd.DataFrame,
     archive_manifest: pd.DataFrame,
 ) -> pd.DataFrame:
     """Collect machine-readable reasons preventing a paper-ready freeze."""
 
     records: list[dict[str, object]] = []
-    if not verification_passed:
+    failed_verification = verification_evidence.loc[~verification_evidence["status"].eq("passed")]
+    for row in failed_verification.to_dict(orient="records"):
         records.append(
             _blocker(
-                "verification_not_recorded",
-                "freeze.verification",
+                f"verification_{row.get('check', 'unknown')}",
+                f"freeze.verification.{row.get('check', 'unknown')}",
                 "not_ready",
-                "lint_type_test_reproduction_verification_not_recorded",
-                "RESEARCH_DATA_READINESS.txt",
+                f"{row.get('status', 'missing')}: {row.get('notes', '')}",
+                "results/releases/current/verification_evidence.csv",
             )
         )
     if not research_readiness.empty:
@@ -369,6 +450,8 @@ def build_freeze_blockers(
                 "results/releases/current/release_archive_manifest.csv",
             )
         )
+    _append_source_redistribution_blocker(root, records)
+    _append_release_scope_blockers(root, records)
     _append_transcription_blocker(root, records)
     return pd.DataFrame.from_records(records, columns=FREEZE_BLOCKER_COLUMNS)
 
@@ -376,25 +459,44 @@ def build_freeze_blockers(
 def build_freeze_checklist(
     *,
     blockers: pd.DataFrame,
-    verification_passed: bool,
+    verification_evidence: pd.DataFrame,
     dictionary_coverage: pd.DataFrame,
     table_provenance: pd.DataFrame,
     archive_manifest: pd.DataFrame,
 ) -> pd.DataFrame:
     """Build the Prompt 14 requirement checklist."""
 
+    verification = {
+        str(row["check"]): str(row["status"]) == "passed"
+        for row in verification_evidence.to_dict(orient="records")
+    }
     return pd.DataFrame.from_records(
         [
-            _check("1", "All tests pass", verification_passed, "verification_not_recorded"),
-            _check("2", "Linting passes", verification_passed, "verification_not_recorded"),
-            _check("3", "Type checking passes", verification_passed, "verification_not_recorded"),
+            _check("1", "All tests pass", verification.get("tests", False), "tests_not_verified"),
+            _check(
+                "2",
+                "Linting passes",
+                verification.get("lint", False) and verification.get("format", False),
+                "lint_not_verified",
+            ),
+            _check(
+                "3",
+                "Type checking passes",
+                verification.get("typecheck", False),
+                "typecheck_not_verified",
+            ),
             _check(
                 "4",
                 "Reproduction from local snapshots passes",
-                verification_passed,
-                "verification_not_recorded",
+                verification.get("reproduction", False) and verification.get("validation", False),
+                "reproduction_not_verified",
             ),
-            _check("5", "Manifest is deterministic", True, ""),
+            _check(
+                "5",
+                "Manifest is deterministic",
+                verification.get("manifest", False),
+                "manifest_not_verified",
+            ),
             _check(
                 "6",
                 "Source-document checksums match",
@@ -434,12 +536,25 @@ def build_freeze_checklist(
                 bool(table_provenance["provenance_status"].eq("complete").all()),
                 "final_result_table_provenance_incomplete",
             ),
-            _check("12", "No exploratory output is mixed with release results", True, ""),
-            _check("13", "No paper prose is stored in the repository", True, ""),
+            _check(
+                "12",
+                "No exploratory output is mixed with release results",
+                "exploratory_release_outputs_present"
+                not in blockers["blocker_id"].astype(str).tolist(),
+                "exploratory_release_outputs_present",
+            ),
+            _check(
+                "13",
+                "No paper prose is stored in the repository",
+                "paper_prose_present" not in blockers["blocker_id"].astype(str).tolist(),
+                "paper_prose_present",
+            ),
             _check(
                 "14",
                 "Create a release archive from tracked files only",
-                _archive_status(archive_manifest) == "created_from_git_archive_head",
+                _archive_status(archive_manifest) == "created_from_git_archive_head"
+                and "source_redistribution_rights_unresolved"
+                not in blockers["blocker_id"].astype(str).tolist(),
                 "release_archive_not_created",
             ),
             _check(
@@ -497,8 +612,8 @@ def build_research_data_readiness_notes(
         f"Release version: {row.get('release_version', '')}",
         f"Source commit: {row.get('source_commit', '')}",
         f"Source commit timestamp: {row.get('source_commit_timestamp_utc', '')}",
-        f"Release archive: {row.get('archive_path', '')}",
-        f"Release archive SHA-256: {row.get('archive_sha256', '')}",
+        f"Release archive: {_display_value(row.get('archive_path', ''))}",
+        f"Release archive SHA-256: {_display_value(row.get('archive_sha256', ''))}",
         "",
         "Machine-readable blockers: results/releases/current/freeze_blocking_reasons.csv",
         "Checklist: results/releases/current/freeze_checklist.csv",
@@ -530,6 +645,11 @@ def _blocker(
         "blocking_reason": blocking_reason,
         "evidence_path": evidence_path,
     }
+
+
+def _display_value(value: object) -> str:
+    text = str(value).strip()
+    return text if text else "not_created"
 
 
 def _check(
@@ -578,6 +698,90 @@ def _append_transcription_blocker(root: Path, records: list[dict[str, object]]) 
                 "results/live/ine_transcription_unresolved.txt",
             )
         )
+
+
+def _append_release_scope_blockers(root: Path, records: list[dict[str, object]]) -> None:
+    release_dir = root / "results/releases/current"
+    exploratory_patterns = ("exploratory", "scratch", "temporary", "tmp", "draft")
+    if release_dir.exists():
+        exploratory = [
+            path.relative_to(root).as_posix()
+            for path in release_dir.rglob("*")
+            if path.is_file()
+            and any(pattern in path.name.lower() for pattern in exploratory_patterns)
+        ]
+        if exploratory:
+            records.append(
+                _blocker(
+                    "exploratory_release_outputs_present",
+                    "freeze.release_scope",
+                    "not_ready",
+                    ";".join(exploratory),
+                    "results/releases/current",
+                )
+            )
+
+    paper_patterns = ("paper", "manuscript", "article", "draft")
+    paper_suffixes = {".md", ".tex", ".docx", ".odt", ".pdf"}
+    ignored_prefixes = (
+        ".github/",
+        "data/",
+        "results/",
+        "prompts/",
+        "release/",
+        "dist/",
+    )
+    paper_files: list[str] = []
+    for path in root.rglob("*"):
+        if not path.is_file() or path.suffix.lower() not in paper_suffixes:
+            continue
+        relative = path.relative_to(root).as_posix()
+        if relative in {"README.md", "CHANGELOG.md", "CONTRIBUTING.md", "SECURITY.md"}:
+            continue
+        if relative.startswith(ignored_prefixes):
+            continue
+        if any(pattern in relative.lower() for pattern in paper_patterns):
+            paper_files.append(relative)
+    if paper_files:
+        records.append(
+            _blocker(
+                "paper_prose_present",
+                "freeze.paper_prose",
+                "not_ready",
+                ";".join(sorted(paper_files)),
+                ".",
+            )
+        )
+
+
+def _append_source_redistribution_blocker(root: Path, records: list[dict[str, object]]) -> None:
+    registry = _read_csv(root / "data/manual/source_documents/source_document_registry.csv")
+    if registry.empty:
+        return
+    local_rows = registry.loc[
+        registry.get("source_pdf_filename", pd.Series(dtype=object)).astype(str).str.strip().ne("")
+    ].copy()
+    if local_rows.empty:
+        return
+    text = local_rows.astype(str).agg(" ".join, axis=1).str.lower()
+    unresolved = local_rows.loc[
+        text.str.contains("to_be_confirmed|not for redistribution|licence review", regex=True)
+    ]
+    if unresolved.empty:
+        return
+    identifiers = [
+        f"{row.get('source_id', '')}:{row.get('expected_year', '')}"
+        for row in unresolved.to_dict(orient="records")
+    ]
+    records.append(
+        _blocker(
+            "source_redistribution_rights_unresolved",
+            "freeze.source_redistribution",
+            "not_ready",
+            ";".join(identifiers),
+            "data/manual/source_documents/source_document_registry.csv",
+        )
+    )
 
 
 def _status_count(text: str, label: str) -> int:

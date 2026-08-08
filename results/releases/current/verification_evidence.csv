@@ -1,0 +1,8 @@
+check,status,command,source_commit,tool_version,verification_timestamp_utc,notes
+format,missing,poetry run ruff format --check .,1f1f0704289aa5e290753ba23113ad615564a214,,,verification evidence missing: C:/Users/diogo/work_code/portugal-external-growth-1960-1973/results/releases/current/verification_evidence.csv
+lint,missing,poetry run ruff check .,1f1f0704289aa5e290753ba23113ad615564a214,,,verification evidence missing: C:/Users/diogo/work_code/portugal-external-growth-1960-1973/results/releases/current/verification_evidence.csv
+manifest,missing,poetry run pytest tests/test_manifest.py,1f1f0704289aa5e290753ba23113ad615564a214,,,verification evidence missing: C:/Users/diogo/work_code/portugal-external-growth-1960-1973/results/releases/current/verification_evidence.csv
+reproduction,missing,poetry run peg reproduce-from-local,1f1f0704289aa5e290753ba23113ad615564a214,,,verification evidence missing: C:/Users/diogo/work_code/portugal-external-growth-1960-1973/results/releases/current/verification_evidence.csv
+tests,missing,poetry run pytest --cov,1f1f0704289aa5e290753ba23113ad615564a214,,,verification evidence missing: C:/Users/diogo/work_code/portugal-external-growth-1960-1973/results/releases/current/verification_evidence.csv
+typecheck,missing,poetry run mypy src tests,1f1f0704289aa5e290753ba23113ad615564a214,,,verification evidence missing: C:/Users/diogo/work_code/portugal-external-growth-1960-1973/results/releases/current/verification_evidence.csv
+validation,missing,poetry run peg validate,1f1f0704289aa5e290753ba23113ad615564a214,,,verification evidence missing: C:/Users/diogo/work_code/portugal-external-growth-1960-1973/results/releases/current/verification_evidence.csv

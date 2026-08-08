@@ -25,7 +25,7 @@
   "input_artifacts": [
     {
       "path": "data/manual/source_documents/source_document_registry.csv",
-      "sha256": "08104b3a79e2421f7b94d6aafeea7b52fa4797e58cf5be036a633cc2bb3aafff"
+      "sha256": "1117eb2db582fe0cd62feeb2934c9d431c8e9a58ba8d6e940a77cb63dac92e66"
     },
     {
       "path": "data/manual/source_documents/ine_external_trade_1970_volume_i.pdf",

@@ -26,7 +26,7 @@
   "input_artifacts": [
     {
       "path": "data/interim/live/ine_comtrade_1962_reconciliation.csv",
-      "sha256": "396abc32b484d15603abc2863f4c507af4cc63efe75405f210b2ab2cd87667dc"
+      "sha256": "fac74fdfd2c2d9d9569ea46452ce40e18fc26d46f5e9f4a532c0e0f956be0e70"
     },
     {
       "path": "data/interim/live/historical_colonial_partner_crosswalk.csv",
@@ -34,7 +34,7 @@
     },
     {
       "path": "data/interim/live/comtrade_coverage_matrix.csv",
-      "sha256": "290fb75344b2196f35a7dd494b5051d2448ebd08e8e4d34f333aeb2dc467bb52"
+      "sha256": "e6fe1bc42dd7055d27a8d156f04a8c88b142d2c7ac080dcce8df678b3c3cf62f"
     },
     {
       "path": "results/diagnostics/comtrade_coverage/requested_not_returned.csv",

@@ -13,9 +13,13 @@
     {
       "path": "results/validation/research_readiness_report.csv",
       "sha256": "d89b57246b748fe8fdb045c43fa0df8bcb19346ac0e217c6e05f8d1246836766"
+    },
+    {
+      "path": "results/releases/current/verification_evidence.csv",
+      "sha256": "bd5ac0773efa972a1ad61541988a58be59e1b20de0fc83bd69d13404ea861460"
     }
   ],
-  "rows": 25,
+  "rows": 33,
   "schema": {
     "blocker_id": "object",
     "blocking_reason": "object",
@@ -23,9 +27,10 @@
     "severity": "object",
     "source_check": "object"
   },
-  "sha256": "43e461090ca34a42350c54fa5bfdd32c7dfbafb4917374d7cf0f46fd2101df59",
+  "sha256": "dac274021432a488d9bb87638d4d673c64d53ed4f3613afc386457fe103aaa58",
   "source_files": [
-    "results/validation/research_readiness_report.csv"
+    "results/validation/research_readiness_report.csv",
+    "results/releases/current/verification_evidence.csv"
   ],
   "source_licence": "not_specified",
   "validation_findings": []

@@ -18,7 +18,7 @@
     },
     {
       "path": "results/live/empirical_readiness_audit.csv",
-      "sha256": "c54cb8d835923667143321fd036e8c4ebb9a78fb10db46ee394371380d7df061"
+      "sha256": "bb6d87f5d8f9bc4d0163b85713239e313b90f5f16bce78c28151e4207e44ab99"
     }
   ],
   "rows": 1,
@@ -31,7 +31,7 @@
     "source_commit": "object",
     "source_commit_timestamp_utc": "object"
   },
-  "sha256": "fca32b10a7cdaeb987a6088448736d6796ac77b540610e5a544b87fd3c4e5eed",
+  "sha256": "26a55bf9e7d3261d0cdef38eae88ef03b3e3d6194039030cda5b16dbd4fda648",
   "source_files": [
     "results/validation/research_readiness_report.csv",
     "results/live/empirical_readiness_audit.csv"

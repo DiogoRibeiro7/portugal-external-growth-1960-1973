@@ -246,6 +246,7 @@ def _colonial_partner_completeness(root: Path) -> dict[str, object]:
     )
     if frame.empty:
         return _record("colonial_partner_completeness", 24, 0, "colonial aggregate table missing")
+    required = _year_flow_requirement(frame)
     exports_complete = frame.get("colonial_exports_complete_pte", pd.Series(dtype=float)).notna()
     imports_complete = frame.get("colonial_imports_complete_pte", pd.Series(dtype=float)).notna()
     counts_complete = pd.to_numeric(
@@ -258,7 +259,7 @@ def _colonial_partner_completeness(root: Path) -> dict[str, object]:
     )
     return _record(
         "colonial_partner_completeness",
-        len(frame),
+        required,
         satisfied,
         "pre-1970 colonial coverage remains incomplete or lower-bound only",
     )
@@ -270,6 +271,7 @@ def _european_partner_completeness(root: Path) -> dict[str, object]:
     )
     if frame.empty:
         return _record("european_partner_completeness", 24, 0, "aggregate dataset missing")
+    required = _year_flow_requirement(frame)
     columns = [
         "efta_participation_exports_pte",
         "efta_participation_imports_pte",
@@ -282,14 +284,18 @@ def _european_partner_completeness(root: Path) -> dict[str, object]:
     if not columns:
         return _record(
             "european_partner_completeness",
-            24,
+            required,
             0,
             "European partner completeness status is not machine-readable",
         )
-    available = int(frame[columns].notna().any(axis=1).sum()) * 2
+    export_columns = [column for column in columns if "_exports_" in column]
+    import_columns = [column for column in columns if "_imports_" in column]
+    available = int(frame[export_columns].notna().any(axis=1).sum()) + int(
+        frame[import_columns].notna().any(axis=1).sum()
+    )
     return _record(
         "european_partner_completeness",
-        len(frame),
+        required,
         available,
         "European partner completeness is not fully established",
     )
@@ -452,13 +458,17 @@ def _missingness_structure(root: Path) -> dict[str, object]:
 
 
 def _classification_breaks(root: Path) -> dict[str, object]:
-    product_status = _read_csv(root / "results/live/comtrade_product_extraction_status.csv")
-    available = 0 if product_status.empty else int(str(product_status.loc[0, "status"]) == "ready")
+    evidence_paths = [
+        root / "results/diagnostics/comtrade_product/product_coverage_diagnostics.csv",
+        root / "results/live/product_industry_mapping_documentation.txt",
+        root / "config/product_industry_mapping.yml",
+    ]
+    available = int(all(path.exists() for path in evidence_paths))
     return _record(
         "classification_breaks_documented",
         1,
         available,
-        "stable historical product classification is not validated",
+        "stable historical product classification documentation is incomplete",
     )
 
 
@@ -469,13 +479,32 @@ def _identification_variables(root: Path) -> dict[str, object]:
             "identification_variables_available", 1, 0, "empirical design matrix is empty"
         )
     required_columns = {"colonial_exposure", "european_exposure", "controls_available"}
-    available = int(required_columns.issubset(design.columns) and len(design) > 0)
+    if not required_columns.issubset(design.columns):
+        available = 0
+    else:
+        colonial = pd.to_numeric(design["colonial_exposure"], errors="coerce")
+        european = pd.to_numeric(design["european_exposure"], errors="coerce")
+        controls = design["controls_available"].astype("boolean")
+        available = int(
+            colonial.notna().all()
+            and european.notna().all()
+            and controls.notna().all()
+            and bool(controls.all())
+            and colonial.nunique(dropna=True) > 1
+            and european.nunique(dropna=True) > 1
+        )
     return _record(
         "identification_variables_available",
         1,
         available,
-        "exposure and control variables are not populated",
+        "exposure and control variables are missing, incomplete, or non-varying",
     )
+
+
+def _year_flow_requirement(frame: pd.DataFrame) -> int:
+    if {"year", "flow_code"}.issubset(frame.columns):
+        return int(frame[["year", "flow_code"]].drop_duplicates().shape[0])
+    return int(len(frame) * 2)
 
 
 def _record(

@@ -16,10 +16,6 @@
   "file": "data/interim/live/efta_policy_product_mapping.csv",
   "input_artifacts": [
     {
-      "path": "results/live/empirical_readiness_audit.csv",
-      "sha256": "c54cb8d835923667143321fd036e8c4ebb9a78fb10db46ee394371380d7df061"
-    },
-    {
       "path": "config/data_sources.yml",
       "sha256": "43437288332ef5887fd8a87d4f689e9b72b02f808e8c097d34d31715fbdd59c6"
     }
@@ -39,7 +35,6 @@
   },
   "sha256": "f5d6d83ce88a9eedf3f2468b7121810bd694cc08a78edce88f69462cf0c12795",
   "source_files": [
-    "results/live/empirical_readiness_audit.csv",
     "config/data_sources.yml"
   ],
   "source_licence": "not_specified",

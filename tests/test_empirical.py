@@ -106,9 +106,29 @@ def test_empirical_readiness_audit_uses_available_artifacts(tmp_path: Path) -> N
                 "colonial_exposure": 0.2,
                 "european_exposure": 0.3,
                 "controls_available": True,
-            }
+            },
+            {
+                "year": 1963,
+                "colonial_exposure": 0.25,
+                "european_exposure": 0.35,
+                "controls_available": True,
+            },
         ]
     ).to_csv(interim / "empirical_design_matrix.csv", index=False)
+    (tmp_path / "config").mkdir()
+    (tmp_path / "config/product_industry_mapping.yml").write_text(
+        "mapping_version: test\n",
+        encoding="utf-8",
+    )
+    (diagnostics / "comtrade_product").mkdir(parents=True)
+    pd.DataFrame([{"year": 1962, "status": "documented"}]).to_csv(
+        diagnostics / "comtrade_product/product_coverage_diagnostics.csv",
+        index=False,
+    )
+    (live / "product_industry_mapping_documentation.txt").write_text(
+        "classification breaks documented\n",
+        encoding="utf-8",
+    )
 
     audit = build_empirical_readiness_audit(tmp_path)
 
@@ -118,3 +138,37 @@ def test_empirical_readiness_audit_uses_available_artifacts(tmp_path: Path) -> N
     assert "product_to_industry_mapping_coverage" in satisfied
     assert "usable_years" in satisfied
     assert "identification_variables_available" in satisfied
+
+
+def test_partner_completeness_uses_year_flow_denominators(tmp_path: Path) -> None:
+    processed = tmp_path / "data/processed/live"
+    processed.mkdir(parents=True)
+    pd.DataFrame(
+        [
+            {
+                "year": year,
+                "colonial_exports_complete_pte": float(year) if year < 1968 else None,
+                "colonial_imports_complete_pte": float(year) if year < 1968 else None,
+                "colonial_observed_partner_count": 8,
+                "colonial_expected_partner_count": 8,
+                "efta_participation_exports_pte": float(year) if year < 1968 else None,
+                "efta_participation_imports_pte": float(year) if year < 1968 else None,
+                "eec_membership_exports_pte": None,
+                "eec_membership_imports_pte": None,
+                "fixed_europe_exports_pte": None,
+                "fixed_europe_imports_pte": None,
+            }
+            for year in range(1962, 1974)
+        ]
+    ).to_csv(processed / "validated_annual_aggregate_external_orientation.csv", index=False)
+
+    audit = build_empirical_readiness_audit(tmp_path)
+
+    colonial = audit.loc[audit["requirement"].eq("colonial_partner_completeness")].iloc[0]
+    european = audit.loc[audit["requirement"].eq("european_partner_completeness")].iloc[0]
+    assert colonial["required"] == 24
+    assert colonial["available"] == 12
+    assert colonial["status"] == "blocked"
+    assert european["required"] == 24
+    assert european["available"] == 12
+    assert european["status"] == "blocked"
