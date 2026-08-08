@@ -25,9 +25,21 @@
     {
       "path": "data/manual/source_documents/ine_external_trade_1962_volume_i.pdf",
       "sha256": "4f65453197d811905bcb7fe919926ddb09fe3c850875af5ae232c2c600a948dc"
+    },
+    {
+      "path": "data/interim/live/historical_colonial_partner_crosswalk.csv",
+      "sha256": "0920abbea59294101fc0e8531dadc213f82523c7f9ddea0614ff5a9b9d2a65a7"
+    },
+    {
+      "path": "config/historical_groups.yml",
+      "sha256": "f1d7ab80828e7b2c5a86a894c022c61e5b2b2654f779c1769a1a310b013ae984"
+    },
+    {
+      "path": "config/comtrade_partner_areas.yml",
+      "sha256": "9c87944f318ed502502d41ffb5a535f40a311d791ce77d340fca6e73263a49b1"
     }
   ],
-  "rows": 3,
+  "rows": 5,
   "schema": {
     "evidence_source": "object",
     "exact_definition": "object",
@@ -39,11 +51,14 @@
     "source_key": "object",
     "status": "object"
   },
-  "sha256": "e4bab5066c6487d2f42537ec4af0ba1970113e82624764d1651fc4fb7df02d7d",
+  "sha256": "7f8dc0225e043b975a832e9ded3115a993b1192d1821ed05e94b3afe59805ee4",
   "source_files": [
     "config/territorial_definitions.yml",
     "data/raw/live/un_comtrade_metadata/reporters.json",
-    "data/manual/source_documents/ine_external_trade_1962_volume_i.pdf"
+    "data/manual/source_documents/ine_external_trade_1962_volume_i.pdf",
+    "data/interim/live/historical_colonial_partner_crosswalk.csv",
+    "config/historical_groups.yml",
+    "config/comtrade_partner_areas.yml"
   ],
   "source_licence": "mixed_official_sources_terms_to_be_confirmed",
   "stage": "territorial_definition_review",

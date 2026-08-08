@@ -12,6 +12,10 @@
     "reference_year",
     "ine_group",
     "evidence_reference",
+    "source_category_entity_count",
+    "harmonised_group_entity_count",
+    "in_harmonised_colonial_market",
+    "definition_scope",
     "reviewer_note"
   ],
   "date_range": null,
@@ -24,27 +28,41 @@
     {
       "path": "data/raw/live/un_comtrade_metadata/partner_areas.json",
       "sha256": "89b8f9c9e734b309b95284dbf2f8ef40209d88cc01ad07fd6b2db7e600463e0a"
+    },
+    {
+      "path": "config/historical_groups.yml",
+      "sha256": "f1d7ab80828e7b2c5a86a894c022c61e5b2b2654f779c1769a1a310b013ae984"
+    },
+    {
+      "path": "config/comtrade_partner_areas.yml",
+      "sha256": "9c87944f318ed502502d41ffb5a535f40a311d791ce77d340fca6e73263a49b1"
     }
   ],
   "rows": 8,
   "schema": {
     "comtrade_area_code": "object",
     "comtrade_area_label": "object",
+    "definition_scope": "object",
     "entity_id": "object",
     "entity_label": "object",
     "evidence_reference": "object",
+    "harmonised_group_entity_count": "int64",
     "ine_1962_code": "object",
     "ine_1962_label": "object",
     "ine_group": "object",
+    "in_harmonised_colonial_market": "bool",
     "mapping_status": "object",
     "reference_year": "int64",
     "reviewer_note": "object",
+    "source_category_entity_count": "int64",
     "source_id": "object"
   },
-  "sha256": "1a94373d96dd3f2a49c02608452df295df86b65ca9c116c2115ac23433d36cb9",
+  "sha256": "0920abbea59294101fc0e8531dadc213f82523c7f9ddea0614ff5a9b9d2a65a7",
   "source_files": [
     "data/manual/source_documents/ine_external_trade_1962_volume_i.pdf",
-    "data/raw/live/un_comtrade_metadata/partner_areas.json"
+    "data/raw/live/un_comtrade_metadata/partner_areas.json",
+    "config/historical_groups.yml",
+    "config/comtrade_partner_areas.yml"
   ],
   "source_licence": "mixed_official_sources_terms_to_be_confirmed",
   "stage": "historical_colonial_partner_crosswalk",

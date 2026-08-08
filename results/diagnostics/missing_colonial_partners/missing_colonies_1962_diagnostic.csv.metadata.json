@@ -31,7 +31,7 @@
     },
     {
       "path": "data/interim/live/historical_colonial_partner_crosswalk.csv",
-      "sha256": "1a94373d96dd3f2a49c02608452df295df86b65ca9c116c2115ac23433d36cb9"
+      "sha256": "0920abbea59294101fc0e8531dadc213f82523c7f9ddea0614ff5a9b9d2a65a7"
     },
     {
       "path": "data/interim/live/comtrade_coverage_matrix.csv",

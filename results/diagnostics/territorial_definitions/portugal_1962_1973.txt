@@ -15,6 +15,15 @@ countries, and pages 38-39 print Ultramar aggregates in Quadro III. Pages 5-6
 also identify special treatment for Azores and Madeira and point to tables
 XII-XVII.
 
+Colonial-definition distinction: documented. The contemporaneous INE Ultramar
+Portugues source category has eight listed 1962 entities, including Portuguese
+India. The harmonised longitudinal analytical colonial-market group used for
+Comtrade diagnostics has seven configured entities. Portuguese India is
+preserved in the INE source crosswalk but excluded from the harmonised group
+because no separate Comtrade partner area is registered in the current mapping.
+
 Research-readiness implication: keep the Comtrade reporter-territory block open
 until UN/OECD/Banco de Portugal/EFTA evidence explicitly defines reporter code
-620 for the benchmark period.
+620 for the benchmark period. Do not treat the open Comtrade reporter-territory
+block as uncertainty about the INE Ultramar source category or the documented
+seven-entity harmonised colonial-market group.
