@@ -12,7 +12,7 @@
   "input_artifacts": [
     {
       "path": "results/releases/current/freeze_blocking_reasons.csv",
-      "sha256": "efd5159b4862a67dcdaab468ea6dac34e1e31a2be9077cedc06c65319cb23085"
+      "sha256": "e339937934dbe199f76909529c12413f42b063e54e1c9ab95adee0d14c83c2e6"
     }
   ],
   "rows": 15,
@@ -23,7 +23,7 @@
     "requirement_id": "object",
     "status": "object"
   },
-  "sha256": "a20a8bfdcb60e9c714f903127753cd47b2b75d78bbf764a7937b4be5a17ea1a6",
+  "sha256": "798a124f75a62fe7a41ce0d1993e1eb01b6c315a0b91ca39231852071834f724",
   "source_files": [
     "results/releases/current/freeze_blocking_reasons.csv"
   ],

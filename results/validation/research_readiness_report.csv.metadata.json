@@ -7,13 +7,13 @@
   ],
   "date_range": null,
   "file": "results/validation/research_readiness_report.csv",
-  "rows": 7,
+  "rows": 6,
   "schema": {
     "check": "object",
     "message": "object",
     "severity": "object"
   },
-  "sha256": "2249fc4d48a01c0067ca23845d318ce620f852cfaf3354b8fe073e4d11e424b7",
+  "sha256": "380c1ef35ed1d10c0e1184e95c6f9f85d562c351f25477fa79b8607ba62a6b6a",
   "source_licence": "not_specified",
   "stage": "research_readiness",
   "validation_findings": []

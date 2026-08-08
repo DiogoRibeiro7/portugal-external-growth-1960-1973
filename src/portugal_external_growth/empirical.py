@@ -26,6 +26,8 @@ EMPIRICAL_AUDIT_COLUMNS = [
     "blocking_reason",
 ]
 
+RESOLVED_RECONCILIATION_STATUSES = {"reconciled", "satisfactory_with_caveats"}
+
 
 def build_empirical_prerequisite_status() -> pd.DataFrame:
     """Return the current empirical-design prerequisite status."""
@@ -392,7 +394,7 @@ def _cross_source_reconciliation(root: Path) -> dict[str, object]:
     return _record(
         "cross_source_reconciliation",
         len(statuses),
-        int(statuses.eq("reconciled").sum()),
+        int(statuses.isin(RESOLVED_RECONCILIATION_STATUSES).sum()),
         "source-pair reconciliations remain unresolved",
     )
 

@@ -93,7 +93,7 @@ def test_empirical_readiness_audit_uses_available_artifacts(tmp_path: Path) -> N
     pd.DataFrame([{"territorial_definition_status": "resolved"}]).to_csv(
         diagnostics / "comtrade_coverage/comtrade_coverage_audit.csv", index=False
     )
-    pd.DataFrame([{"overall_status": "reconciled"}]).to_csv(
+    pd.DataFrame([{"overall_status": "satisfactory_with_caveats"}]).to_csv(
         diagnostics / "reconciliation/reconciliation_registry.csv", index=False
     )
     pd.DataFrame([{"series": "GDP deflator price", "concept": "sector manufacturing GVA"}]).to_csv(

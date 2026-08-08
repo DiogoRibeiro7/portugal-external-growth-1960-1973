@@ -19,10 +19,10 @@
     "notes": "object",
     "source_commit": "object",
     "status": "object",
-    "tool_version": "float64",
-    "verification_timestamp_utc": "float64"
+    "tool_version": "object",
+    "verification_timestamp_utc": "object"
   },
-  "sha256": "dcb991353aa4c4f73c7c219f04a668a09e4dbea86bc11b2d8ff066d760825963",
+  "sha256": "99de62431249bd23f11854e0c33036c2f271cf777bf9c637d39dcacd64d3cd2f",
   "source_files": [],
   "source_licence": "not_specified",
   "stage": "freeze_verification_evidence",

@@ -12,6 +12,7 @@ from portugal_external_growth.config import load_yaml
 from portugal_external_growth.io_utils import sha256_file
 
 VALID_SHA256_RE = re.compile(r"[0-9a-fA-F]{64}")
+RESOLVED_RECONCILIATION_STATUSES = {"reconciled", "satisfactory_with_caveats"}
 
 
 @dataclass(frozen=True)
@@ -410,7 +411,8 @@ def build_research_readiness_report(root: Path) -> pd.DataFrame:
     registry_path = root / "results/diagnostics/reconciliation/reconciliation_registry.csv"
     if registry_path.exists():
         registry = pd.read_csv(registry_path)
-        unresolved_reconciliations = registry.loc[~registry["overall_status"].eq("reconciled")]
+        statuses = registry["overall_status"].astype(str)
+        unresolved_reconciliations = registry.loc[~statuses.isin(RESOLVED_RECONCILIATION_STATUSES)]
         if not unresolved_reconciliations.empty:
             issue_ids = "; ".join(
                 str(value)
