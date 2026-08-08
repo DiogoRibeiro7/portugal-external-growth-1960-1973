@@ -41,11 +41,11 @@
     },
     {
       "path": "data/manual/transcriptions/pass_2/ine_aggregate_transcription_pass_2.csv",
-      "sha256": "729de73a6e78fb2aa228076d726f2eeb8c12b69e598a9a07b807b2609fa87476"
+      "sha256": "ce8a238a38744960491c042d1cf4af7575c61c9014b645609b66dacedc575042"
     },
     {
       "path": "data/interim/live/ine_aggregate_transcription_discrepancies.csv",
-      "sha256": "9123a43ff27209f045637fdb52dda1b759aae5914a2fcca341199779fd92dd15"
+      "sha256": "8476af29c9d52be12beb70f05215e8c1391f636306b9e98a01c9913f8835731c"
     }
   ],
   "rows": 14,

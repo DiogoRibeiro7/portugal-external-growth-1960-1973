@@ -2,8 +2,8 @@ INE 1962 aggregate transcription status
 =======================================
 
 Pass 1 aggregate rows: 24
-Pass 2 aggregate rows: 4
-Unresolved aggregate discrepancies: 20
+Pass 2 aggregate rows: 8
+Unresolved aggregate discrepancies: 16
 
 The current aggregate rows cover World and Ultramar import/export values
 located in Volume I. EEC and EFTA aggregate rows are not yet entered because

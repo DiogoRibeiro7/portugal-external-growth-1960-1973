@@ -17,7 +17,7 @@
   ],
   "date_range": null,
   "file": "data/interim/live/ine_aggregate_transcription_discrepancies.csv",
-  "rows": 20,
+  "rows": 16,
   "schema": {
     "discrepancy_type": "object",
     "flow": "object",
@@ -33,7 +33,7 @@
     "series_name_source": "object",
     "source_id": "object"
   },
-  "sha256": "9123a43ff27209f045637fdb52dda1b759aae5914a2fcca341199779fd92dd15",
+  "sha256": "8476af29c9d52be12beb70f05215e8c1391f636306b9e98a01c9913f8835731c",
   "source_licence": "not_specified",
   "stage": "ine_aggregate_double_entry_discrepancy_check",
   "validation_findings": []

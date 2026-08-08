@@ -2,10 +2,10 @@ Research data readiness declaration
 ===================================
 
 Declaration: NOT_READY
-Release version: 0.1.3+a32d1ec
-Source commit: a32d1ec83e36733a6d1084b85a52f3f25d7433c3
-Source commit timestamp: 2026-08-08T21:26:37+01:00
-Release archive: release/research-data-freeze-0.1.3+a32d1ec.zip
+Release version: 0.1.3+718919a
+Source commit: 718919a7c82210a34bd6da7111f4ff5a2c34faeb
+Source commit timestamp: 2026-08-08T22:19:11+01:00
+Release archive: release/research-data-freeze-0.1.3+718919a.zip
 Release archive SHA-256: not_created
 
 Machine-readable blockers: results/releases/current/freeze_blocking_reasons.csv
@@ -38,7 +38,7 @@ Blocking reasons:
 - verification_validation: stale_commit: verification evidence missing: C:/Users/diogo/work_code/portugal-external-growth-1960-1973/results/releases/current/verification_evidence.csv
 - research_research.empirical_prerequisites: 0/6 empirical prerequisites are satisfied.
 - research_research.manual_source_documents: 4/43 expected manual source documents are available.
-- research_research.cross_source_comparison: 94/120 cross-source comparison rows have missing source coverage.
+- research_research.cross_source_comparison: 92/120 cross-source comparison rows have missing source coverage.
 - research_research.source_reconciliation: Unresolved source-pair reconciliation blocks remain: ine_comtrade_1962.
 - research_research.product_industry_mapping: Product-to-industry mapping coverage is zero.
 - research_research.territorial_definition: 24 Comtrade coverage rows still require territorial-definition review.

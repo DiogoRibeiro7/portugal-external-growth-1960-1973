@@ -43,7 +43,7 @@
   "input_artifacts": [
     {
       "path": "data/processed/live/ine_1962_aggregate_trade_harmonised.csv",
-      "sha256": "220e6aebb277d5846c026657277c1ea201d6c68b635bffb2956da6bdc49d3ed0"
+      "sha256": "34075041dc3cf8a91cc079ac5a4d10f5a71a7b3cb4b738a14ffa2eaf8456ebc4"
     },
     {
       "path": "data/interim/live/ine_comtrade_1962_reconciliation.csv",
@@ -59,7 +59,7 @@
     },
     {
       "path": "data/manual/transcriptions/pass_2/ine_aggregate_transcription_pass_2.csv",
-      "sha256": "729de73a6e78fb2aa228076d726f2eeb8c12b69e598a9a07b807b2609fa87476"
+      "sha256": "ce8a238a38744960491c042d1cf4af7575c61c9014b645609b66dacedc575042"
     },
     {
       "path": "data/manual/source_documents/source_document_registry.csv",
@@ -102,7 +102,7 @@
     "world_imports_pte": "object",
     "year": "int64"
   },
-  "sha256": "3e2c8bcb3819a318d7915f1380244066f7662f60f65c37ae0fd1cee9ba49bacb",
+  "sha256": "c934dad35e771747241eb1b511daa3f99dc9a1abbbd347bf9f71d184a7680794",
   "source_files": [
     "data/processed/live/ine_1962_aggregate_trade_harmonised.csv",
     "data/interim/live/ine_comtrade_1962_reconciliation.csv",

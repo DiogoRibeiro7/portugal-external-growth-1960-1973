@@ -19,7 +19,7 @@
   "input_artifacts": [
     {
       "path": "data/interim/live/trade_source_comparison.csv",
-      "sha256": "945c18fefc295f878dce33ba1cde669257ca16a239d9701ece8bfe0b5e104cb3"
+      "sha256": "3c745464772af7d45965eeb27bcb02b34ea93bd76c52f26ccda38cb62c3a3bea"
     }
   ],
   "rows": 120,
@@ -34,7 +34,7 @@
     "source_value": "float64",
     "year": "int64"
   },
-  "sha256": "5a25b334be0de609a5f48c7768ebce9957b2605195f16e2d2db3d3fac05b1ac3",
+  "sha256": "2a7678ba6cbc6615d9c075138b5576701bd6229ede8b37377e2804fdeb691ac7",
   "source_files": [
     "data/interim/live/trade_source_comparison.csv"
   ],

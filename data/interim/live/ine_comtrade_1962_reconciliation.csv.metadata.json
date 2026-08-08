@@ -38,7 +38,7 @@
   "input_artifacts": [
     {
       "path": "data/processed/live/ine_1962_aggregate_trade_harmonised.csv",
-      "sha256": "220e6aebb277d5846c026657277c1ea201d6c68b635bffb2956da6bdc49d3ed0"
+      "sha256": "34075041dc3cf8a91cc079ac5a4d10f5a71a7b3cb4b738a14ffa2eaf8456ebc4"
     },
     {
       "path": "results/diagnostics/comtrade_coverage/comtrade_coverage_audit.csv",

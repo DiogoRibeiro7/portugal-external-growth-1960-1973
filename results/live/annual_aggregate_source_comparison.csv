@@ -31,12 +31,12 @@ year,flow_code,source,source_value,source_currency,nominal_conversion_method,cov
 1964,X,UN Comtrade,515699840.0,USD,source_reported_usd,"Portugal reporter code 620, World partner total",usable_with_territorial_caveat,Benchmark row; territorial definition still under review.
 1965,M,CEPII TRADHIST,,,,,missing_source,No local structured source table is available yet.
 1965,M,EFTA,,,,,missing_source,No local structured source table is available yet.
-1965,M,INE,,,,,missing_source,No local structured source table is available yet.
+1965,M,INE,923573669.5652174,USD,source_b_original_value / 28.75; registered IMF par value effective 1962-06-01,INE special-trade World total,usable_with_conversion_and_territorial_caveat,Validated double-entry INE aggregate; converted only for diagnostic comparison pending territorial-definition evidence.
 1965,M,OECD,,,,,missing_source,No local structured source table is available yet.
 1965,M,UN Comtrade,923515840.0,USD,source_reported_usd,"Portugal reporter code 620, World partner total",usable_with_territorial_caveat,Benchmark row; territorial definition still under review.
 1965,X,CEPII TRADHIST,,,,,missing_source,No local structured source table is available yet.
 1965,X,EFTA,,,,,missing_source,No local structured source table is available yet.
-1965,X,INE,,,,,missing_source,No local structured source table is available yet.
+1965,X,INE,576439547.826087,USD,source_b_original_value / 28.75; registered IMF par value effective 1962-06-01,INE special-trade World total,usable_with_conversion_and_territorial_caveat,Validated double-entry INE aggregate; converted only for diagnostic comparison pending territorial-definition evidence.
 1965,X,OECD,,,,,missing_source,No local structured source table is available yet.
 1965,X,UN Comtrade,576399168.0,USD,source_reported_usd,"Portugal reporter code 620, World partner total",usable_with_territorial_caveat,Benchmark row; territorial definition still under review.
 1966,M,CEPII TRADHIST,,,,,missing_source,No local structured source table is available yet.

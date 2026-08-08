@@ -1,8 +1,4 @@
 source_id,reference_year,flow,partner_group_source,series_name_source,pass_1_value_source,pass_2_value_source,pass_1_table_title,pass_2_table_title,pass_1_page_number,pass_2_page_number,discrepancy_type,resolution_status
-ine_external_trade_yearbook,1965,M,Ultramar,imports_from_overseas_territories_special_trade_current_escudos,3651273,,Quadro III - Comercio especial por territorios estatisticos - Importacao,,48,,left_only,requires_adjudication
-ine_external_trade_yearbook,1965,M,World,total_imports_special_trade_current_escudos,26552743,,Quadro I - Comercio especial. Importacao,,30,,left_only,requires_adjudication
-ine_external_trade_yearbook,1965,X,Ultramar,exports_to_overseas_territories_special_trade_current_escudos,4140029,,Quadro III - Comercio especial por territorios estatisticos - Exportacao,,50,,left_only,requires_adjudication
-ine_external_trade_yearbook,1965,X,World,total_exports_special_trade_current_escudos,16572637,,Quadro II - Comercio especial. Exportacao,,38,,left_only,requires_adjudication
 ine_external_trade_yearbook,1970,M,CEE,imports_from_eec_special_trade_current_escudos,15047905,,Quadro n.o 2 - Comercio especial por paises e territorios estatisticos,,25,,left_only,requires_adjudication
 ine_external_trade_yearbook,1970,M,EFTA,imports_from_efta_special_trade_current_escudos,11023880,,Quadro n.o 2 - Comercio especial por paises e territorios estatisticos,,25,,left_only,requires_adjudication
 ine_external_trade_yearbook,1970,M,Provincias Ultramarinas,imports_from_overseas_territories_special_trade_current_escudos,6716990,,Quadro n.o 2 - Comercio especial por paises e territorios estatisticos,,25,,left_only,requires_adjudication

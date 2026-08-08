@@ -14,11 +14,11 @@
   "input_artifacts": [
     {
       "path": "results/validation/research_readiness_report.csv",
-      "sha256": "d89b57246b748fe8fdb045c43fa0df8bcb19346ac0e217c6e05f8d1246836766"
+      "sha256": "54591ced3e061d2360257fee443403c188a3ef85890197a07d5a940e476364b2"
     },
     {
       "path": "results/live/empirical_readiness_audit.csv",
-      "sha256": "bb6d87f5d8f9bc4d0163b85713239e313b90f5f16bce78c28151e4207e44ab99"
+      "sha256": "0f4368f13f369d16689fbbcc7acdfb2a50e988d684aba049f98353b1395dfb1c"
     }
   ],
   "rows": 1,
@@ -31,7 +31,7 @@
     "source_commit": "object",
     "source_commit_timestamp_utc": "object"
   },
-  "sha256": "547e1efca1b12d7ff8de297029e8a5c908477daf2a13fefbe80fec01e0ab5c41",
+  "sha256": "9027d74176081ce6c516f936e1422ac43edd21f2f00660eaed52c2fa08d2eb47",
   "source_files": [
     "results/validation/research_readiness_report.csv",
     "results/live/empirical_readiness_audit.csv"
