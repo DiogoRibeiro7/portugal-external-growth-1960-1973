@@ -1,0 +1,52 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "series_id",
+    "slug",
+    "concept",
+    "label",
+    "units",
+    "frequency",
+    "price_basis",
+    "domain_id",
+    "dataset_id",
+    "territorial_definition",
+    "methodological_breaks",
+    "source_status",
+    "review_status",
+    "extraction_status",
+    "analytical_use"
+  ],
+  "date_range": null,
+  "file": "results/live/bpstat_macro_data_dictionary.csv",
+  "input_artifacts": [
+    {
+      "path": "data/interim/live/bpstat_series_registry.csv",
+      "sha256": "1fee41fa8a6fb19057feca05b9364bb1e049d96b0b12371c002b984597e6ae4e"
+    }
+  ],
+  "rows": 22,
+  "schema": {
+    "analytical_use": "object",
+    "concept": "object",
+    "dataset_id": "object",
+    "domain_id": "int64",
+    "extraction_status": "object",
+    "frequency": "object",
+    "label": "object",
+    "methodological_breaks": "object",
+    "price_basis": "object",
+    "review_status": "object",
+    "series_id": "int64",
+    "slug": "object",
+    "source_status": "object",
+    "territorial_definition": "object",
+    "units": "object"
+  },
+  "sha256": "f4c9160c528e7bf37afb1706692608c283f4eb1b9057fcfc95e9809e5a41e2a5",
+  "source_files": [
+    "data/interim/live/bpstat_series_registry.csv"
+  ],
+  "source_licence": "not_specified",
+  "validation_findings": []
+}

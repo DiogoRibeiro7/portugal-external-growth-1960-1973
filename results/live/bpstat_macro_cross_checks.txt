@@ -1,0 +1,12 @@
+BPstat macro and broad-sector cross-checks
+==========================================
+
+Extracted BPstat series: 15
+Project-period long rows: 210
+Processed macro years: 24
+Processed broad-sector years: 21
+Validation warnings: 11
+
+Series are source-preserving BPstat context series. They are not spliced
+with INE/Comtrade merchandise-trade aggregates and retain methodological
+and territorial-definition caveats from the reviewed registry.

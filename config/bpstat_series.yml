@@ -1,5 +1,95 @@
-# Extraction series remain disabled until every mandatory review field is accepted.
-series: []
+# Extract context series as source-preserving historical controls with caveats.
+series:
+  - slug: gdp_current_prices_annual
+    series_id: 12518356
+    expected_start_year: 1953
+    expected_frequency: annual
+    territorial_definition: Portugal reference territory in BPstat metadata; historical treatment of overseas territories not yet independently reviewed
+    notes: Context series only; do not splice with merchandise-trade totals.
+  - slug: real_gdp_chain_linked_annual
+    series_id: 12518324
+    expected_start_year: 1954
+    expected_frequency: annual
+    territorial_definition: Portugal reference territory in BPstat metadata; historical treatment of overseas territories not yet independently reviewed
+    notes: Context series only; chain-linked national-account volume.
+  - slug: gdp_growth_chain_volume_yoy_annual
+    series_id: 12518303
+    expected_start_year: 1954
+    expected_frequency: annual
+    territorial_definition: Portugal reference territory in BPstat metadata; historical treatment of overseas territories not yet independently reviewed
+    notes: Context series only; year-over-year chain-volume growth.
+  - slug: gdp_deflator_annual
+    series_id: 12706851
+    expected_start_year: 1953
+    expected_frequency: annual
+    territorial_definition: Portugal reference territory in BPstat metadata; historical treatment of overseas territories not yet independently reviewed
+    notes: Context series only; GDP deflator index.
+  - slug: gdp_deflator_yoy_annual
+    series_id: 12706759
+    expected_start_year: 1954
+    expected_frequency: annual
+    territorial_definition: Portugal reference territory in BPstat metadata; historical treatment of overseas territories not yet independently reviewed
+    notes: Context series only; deflator year-over-year change.
+  - slug: exports_goods_services_current_annual
+    series_id: 12518352
+    expected_start_year: 1953
+    expected_frequency: annual
+    territorial_definition: Portugal reference territory in BPstat metadata; national-accounts goods-and-services concept, not merchandise-only trade
+    notes: Macro context only; not a replacement for INE/Comtrade merchandise-trade totals.
+  - slug: imports_goods_services_current_annual
+    series_id: 12518343
+    expected_start_year: 1953
+    expected_frequency: annual
+    territorial_definition: Portugal reference territory in BPstat metadata; national-accounts goods-and-services concept, not merchandise-only trade
+    notes: Macro context only; not a replacement for INE/Comtrade merchandise-trade totals.
+  - slug: exports_goods_services_chain_linked_annual
+    series_id: 12518320
+    expected_start_year: 1954
+    expected_frequency: annual
+    territorial_definition: Portugal reference territory in BPstat metadata; national-accounts goods-and-services concept, not merchandise-only trade
+    notes: Macro context only; chain-linked volume.
+  - slug: imports_goods_services_chain_linked_annual
+    series_id: 12518323
+    expected_start_year: 1954
+    expected_frequency: annual
+    territorial_definition: Portugal reference territory in BPstat metadata; national-accounts goods-and-services concept, not merchandise-only trade
+    notes: Macro context only; chain-linked volume.
+  - slug: gross_fixed_capital_formation_current_annual
+    series_id: 12518349
+    expected_start_year: 1953
+    expected_frequency: annual
+    territorial_definition: Portugal reference territory in BPstat metadata; historical treatment of overseas territories not yet independently reviewed
+    notes: Context series only; current-price GFCF.
+  - slug: gross_fixed_capital_formation_chain_linked_annual
+    series_id: 12518329
+    expected_start_year: 1954
+    expected_frequency: annual
+    territorial_definition: Portugal reference territory in BPstat metadata; historical treatment of overseas territories not yet independently reviewed
+    notes: Context series only; chain-linked GFCF.
+  - slug: manufacturing_gva_current_annual
+    series_id: 12706416
+    expected_start_year: 1953
+    expected_frequency: annual
+    territorial_definition: Portugal reference territory in BPstat metadata; historical industrial classification comparability not yet independently reviewed
+    notes: Broad-sector context only; classification breaks not independently reviewed.
+  - slug: manufacturing_gva_chain_linked_annual
+    series_id: 12706415
+    expected_start_year: 1954
+    expected_frequency: annual
+    territorial_definition: Portugal reference territory in BPstat metadata; historical industrial classification comparability not yet independently reviewed
+    notes: Broad-sector context only; chain-linked value added.
+  - slug: manufacturing_gva_deflator_yoy_annual
+    series_id: 12706642
+    expected_start_year: 1954
+    expected_frequency: annual
+    territorial_definition: Portugal reference territory in BPstat metadata; historical industrial classification comparability not yet independently reviewed
+    notes: Broad-sector context only; deflator growth.
+  - slug: resident_population_total
+    series_id: 12711757
+    expected_start_year: 1941
+    expected_frequency: annual
+    territorial_definition: Portugal reference territory in BPstat metadata
+    notes: Context series only; confirm historical treatment of overseas territories before analytical use.
 
 reviewed_candidates:
   - slug: gdp_current_prices_annual

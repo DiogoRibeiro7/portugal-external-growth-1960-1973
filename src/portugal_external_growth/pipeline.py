@@ -29,6 +29,7 @@ from portugal_external_growth.io_utils import (
     write_dataframe_with_metadata,
     write_text_lf,
 )
+from portugal_external_growth.macro import build_bpstat_macro_outputs
 from portugal_external_growth.manual import (
     build_ine_harmonised,
     compare_ine_transcriptions,
@@ -649,7 +650,7 @@ def extract_bpstat(settings: Settings, *, overwrite: bool) -> None:
     client = BPstatClient(build_session(), settings.http_timeout_seconds)
     ids = tuple(item.series_id for item in registry)
     metadata = client.fetch_series_metadata(ids)
-    grouped: dict[tuple[int, str], list[int]] = {}
+    grouped: dict[int, tuple[int, str]] = {}
     for item in metadata:
         domain_ids = item.get("domain_ids")
         dataset_id = item.get("dataset_id")
@@ -658,9 +659,10 @@ def extract_bpstat(settings: Settings, *, overwrite: bool) -> None:
             raise ValueError("BPstat metadata is missing domain_ids")
         if not isinstance(dataset_id, str) or not isinstance(series_id, int):
             raise ValueError("BPstat metadata is missing dataset_id or series identifier")
-        grouped.setdefault((int(domain_ids[0]), dataset_id), []).append(series_id)
-    for (domain_id, dataset_id), grouped_ids in grouped.items():
-        series_ids = tuple(grouped_ids)
+        grouped[series_id] = (int(domain_ids[0]), dataset_id)
+    for series_id in ids:
+        domain_id, dataset_id = grouped[series_id]
+        series_ids = (series_id,)
         raw, frame, url, http_metadata = client.fetch_dataset(
             domain_id=domain_id, dataset_id=dataset_id, series_ids=series_ids
         )
@@ -710,6 +712,66 @@ def build(settings: Settings) -> None:
         )
     if (root / "data/interim/live/comtrade_coverage_matrix.csv").exists():
         build_descriptive_results(settings)
+    if sorted((root / "data/raw/live/bpstat").glob("series_*.csv")):
+        build_bpstat_macro(settings)
+
+
+def build_bpstat_macro(settings: Settings) -> None:
+    """Build BPstat macro and broad-sector context outputs."""
+
+    root = settings.resolved_root()
+    normalised, macro, broad_sector, dictionary, validation, notes = build_bpstat_macro_outputs(
+        root
+    )
+    raw_files = [
+        *sorted((root / "data/raw/live/bpstat").glob("series_*.json")),
+        *sorted((root / "data/raw/live/bpstat").glob("series_*.csv")),
+    ]
+    source_files = [
+        "data/interim/live/bpstat_series_registry.csv",
+        *[path.relative_to(root).as_posix() for path in raw_files],
+    ]
+    write_dataframe_with_metadata(
+        normalised,
+        root / "data/interim/live/bpstat_macro_long.csv",
+        metadata={"source_files": source_files, "stage": "bpstat_macro_normalised_long"},
+    )
+    write_dataframe_with_metadata(
+        macro,
+        root / "data/processed/live/portugal_macro_context.csv",
+        metadata={
+            "source_files": ["data/interim/live/bpstat_macro_long.csv"],
+            "stage": "bpstat_macro_context_processed",
+        },
+    )
+    write_dataframe_with_metadata(
+        broad_sector,
+        root / "data/processed/live/portugal_broad_sector_context.csv",
+        metadata={
+            "source_files": [
+                "data/interim/live/bpstat_macro_long.csv",
+                "data/processed/live/portugal_macro_context.csv",
+            ],
+            "stage": "bpstat_broad_sector_context_processed",
+        },
+    )
+    write_dataframe_with_metadata(
+        dictionary,
+        root / "results/live/bpstat_macro_data_dictionary.csv",
+        metadata={"source_files": ["data/interim/live/bpstat_series_registry.csv"]},
+    )
+    write_dataframe_with_metadata(
+        validation,
+        root / "results/validation/bpstat_macro_validation_report.csv",
+        metadata={
+            "source_files": [
+                "data/interim/live/bpstat_macro_long.csv",
+                "data/interim/live/bpstat_series_registry.csv",
+            ],
+            "stage": "bpstat_macro_validation",
+        },
+    )
+    write_text_lf(root / "results/live/bpstat_macro_cross_checks.txt", notes)
 
 
 def validate(settings: Settings) -> bool:

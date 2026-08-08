@@ -27,7 +27,7 @@
   "input_artifacts": [
     {
       "path": "config/bpstat_series.yml",
-      "sha256": "a3ab5ffbe0d56e977e479d4d226a3a6e1f6ad1071421e4769fbcbce5a6e3e790"
+      "sha256": "805d968a2be6377348ecc57afa2b4b80d4f78c0cb1e9517b353b16a0cb34440d"
     }
   ],
   "rows": 22,

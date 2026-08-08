@@ -1,0 +1,40 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "check",
+    "severity",
+    "message",
+    "first_year",
+    "last_year",
+    "project_period_non_null_rows"
+  ],
+  "date_range": null,
+  "file": "results/validation/bpstat_macro_validation_report.csv",
+  "input_artifacts": [
+    {
+      "path": "data/interim/live/bpstat_macro_long.csv",
+      "sha256": "8d994e92c7d29687efb84b52c96dd4b696dc488c25332c0a0a7ce5189a2247f9"
+    },
+    {
+      "path": "data/interim/live/bpstat_series_registry.csv",
+      "sha256": "1fee41fa8a6fb19057feca05b9364bb1e049d96b0b12371c002b984597e6ae4e"
+    }
+  ],
+  "rows": 34,
+  "schema": {
+    "check": "object",
+    "first_year": "object",
+    "last_year": "object",
+    "message": "object",
+    "project_period_non_null_rows": "object",
+    "severity": "object"
+  },
+  "sha256": "d3532f9ecf0a78be72f669def0f50603880e1bfb231caa319dc30c59cec82523",
+  "source_files": [
+    "data/interim/live/bpstat_macro_long.csv",
+    "data/interim/live/bpstat_series_registry.csv"
+  ],
+  "source_licence": "not_specified",
+  "stage": "bpstat_macro_validation",
+  "validation_findings": []
+}

@@ -9,8 +9,9 @@ Full project-period coverage: 15
 Partial project-period coverage: 0
 No project-period overlap: 7
 
-No BPstat extraction series is enabled until territorial definitions,
-methodological breaks, and historical coverage are fully accepted.
+Configured extraction series are accepted only as source-preserving
+context data. Territorial definitions, methodological breaks, and
+historical coverage caveats remain active in downstream outputs.
 
 Candidate details:
 - current_account_balance: rejected_for_1960_1973; outside_project_period; 1996-01-31 to 2026-05-31; Coverage starts after the project period.

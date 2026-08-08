@@ -8,6 +8,7 @@ from portugal_external_growth.pipeline import (
     audit_comtrade_coverage,
     bootstrap,
     build,
+    build_bpstat_macro,
     build_descriptive_results,
     build_ine_harmonised_outputs,
     build_sitc_industry_mapping,
@@ -145,6 +146,13 @@ def build_descriptive_results_command() -> None:
     """Build descriptive trade-orientation result tables."""
 
     build_descriptive_results(_settings())
+
+
+@app.command("build-bpstat-macro")
+def build_bpstat_macro_command() -> None:
+    """Build BPstat macro and broad-sector context outputs."""
+
+    build_bpstat_macro(_settings())
 
 
 @app.command("build-validated-aggregate-orientation")

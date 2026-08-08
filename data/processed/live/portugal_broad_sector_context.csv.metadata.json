@@ -1,0 +1,53 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "year",
+    "sector",
+    "real_manufacturing_gva_million_eur",
+    "manufacturing_gva_million_eur",
+    "manufacturing_gva_deflator_yoy_percent",
+    "nominal_gdp_million_eur",
+    "real_gdp_chain_linked_million_eur",
+    "manufacturing_gva_share_of_nominal_gdp",
+    "real_manufacturing_gva_share_of_real_gdp",
+    "source_status",
+    "coverage_status"
+  ],
+  "date_range": {
+    "end_year": 1973,
+    "start_year": 1953
+  },
+  "file": "data/processed/live/portugal_broad_sector_context.csv",
+  "input_artifacts": [
+    {
+      "path": "data/interim/live/bpstat_macro_long.csv",
+      "sha256": "8d994e92c7d29687efb84b52c96dd4b696dc488c25332c0a0a7ce5189a2247f9"
+    },
+    {
+      "path": "data/processed/live/portugal_macro_context.csv",
+      "sha256": "0076767a6ffcd3711dd7885e9e6804cd428758faf5fbeff839838e14dccfa367"
+    }
+  ],
+  "rows": 21,
+  "schema": {
+    "coverage_status": "object",
+    "manufacturing_gva_deflator_yoy_percent": "float64",
+    "manufacturing_gva_million_eur": "float64",
+    "manufacturing_gva_share_of_nominal_gdp": "float64",
+    "nominal_gdp_million_eur": "float64",
+    "real_gdp_chain_linked_million_eur": "float64",
+    "real_manufacturing_gva_million_eur": "float64",
+    "real_manufacturing_gva_share_of_real_gdp": "float64",
+    "sector": "object",
+    "source_status": "object",
+    "year": "int64"
+  },
+  "sha256": "d1d240167e555cda3c18a82f7f1b639c26fcc796daa4a9ff2c03e1976c03643e",
+  "source_files": [
+    "data/interim/live/bpstat_macro_long.csv",
+    "data/processed/live/portugal_macro_context.csv"
+  ],
+  "source_licence": "not_specified",
+  "stage": "bpstat_broad_sector_context_processed",
+  "validation_findings": []
+}

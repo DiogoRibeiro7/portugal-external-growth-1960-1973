@@ -1,0 +1,291 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "source",
+    "series_id",
+    "slug",
+    "concept",
+    "label",
+    "year",
+    "reference_date",
+    "value",
+    "units",
+    "frequency",
+    "price_basis",
+    "domain_id",
+    "dataset_id",
+    "territorial_definition",
+    "reconstruction_method",
+    "methodological_breaks",
+    "source_status",
+    "review_status",
+    "use_status",
+    "raw_file"
+  ],
+  "date_range": {
+    "end_year": 2025,
+    "start_year": 1941
+  },
+  "file": "data/interim/live/bpstat_macro_long.csv",
+  "input_artifacts": [
+    {
+      "path": "data/interim/live/bpstat_series_registry.csv",
+      "sha256": "1fee41fa8a6fb19057feca05b9364bb1e049d96b0b12371c002b984597e6ae4e"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12518303.json",
+      "sha256": "b42ff013f505fdaa42f11ace33ba297a54294a0814a7479d45199bb29e6caf18"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12518303.metadata.json",
+      "sha256": "8a391ed550a0bdda962751b1177a79b5d65d6cea018916f5d6428f846ffd0fbd"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12518320.json",
+      "sha256": "cdc021577c2dadafa789733b7c982fb2286e4d0298d49421ba4c72f27b2b38e1"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12518320.metadata.json",
+      "sha256": "0fa4abb2b2bfaa5c0f6dc3a02f6c58bf18b9c3f368161093701f0b5c841708f7"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12518323.json",
+      "sha256": "dd8da7716d155cdf9b4ebf43ce604e616194d857e7fca3808ce203c70469ee6f"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12518323.metadata.json",
+      "sha256": "538671e694cf8b1734befd18cc88d0e174a45297334803091b388df9b53a3828"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12518324.json",
+      "sha256": "911213d49c77ad4c899bbf4be4267b2046df6da10cc3705eeac716c7342d87d8"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12518324.metadata.json",
+      "sha256": "b8d2eb67ea1bbc2c39a0b098c59794cd4bed2f4b9aeb1364c6c0b4f3b3baa861"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12518329.json",
+      "sha256": "8a3dc984cee9b46effa3d87a2bd94dce2fbd93050b5c61b4c5071e4e1946ce30"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12518329.metadata.json",
+      "sha256": "dc7828f7cb0a99d66f3684450b328e69c144f65c7809e7ddde722c87abf85ba2"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12518343.json",
+      "sha256": "ac0b59ac1c0a8640581529dacfaa4a0adde60bbe5b1d86c0f670d3eccc80b973"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12518343.metadata.json",
+      "sha256": "3f9784226691fe56bf12c832a11a8d99579253cb1bfa5eb963d716d66610a512"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12518349.json",
+      "sha256": "0f6a7f6675bec266565f61196252bc97b1c85f8373f7e8ec82e4f077c407ac73"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12518349.metadata.json",
+      "sha256": "35f5f9362fcae7166ffcd417e1045effa47c5d769afd1f923a76420c8f92036f"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12518352.json",
+      "sha256": "72be13d48927c2b4b9b7dd4af6602d009bb37201b3310d18f6eb65e84585b83c"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12518352.metadata.json",
+      "sha256": "6dea77d1612447ddf8f7b32ef651790694346ea79f04d9107222e68d818fb4fc"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12518356.json",
+      "sha256": "adb1a65ca0bfdcc2aa9ecf7709c80adef20505ff23b5683381a06e43e88a2d5f"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12518356.metadata.json",
+      "sha256": "85bbabc1c27d4ac171871bb291415269f9e06d6d56bd2cc8c8524eafce5f402b"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12706415.json",
+      "sha256": "044266004b7bff37ce34e8322658c49f53d60e0ab9d23afc86badf047ae1b31e"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12706415.metadata.json",
+      "sha256": "a982787ab5511c4def8ca83b33ea428d1a61b96261bf9978c4ffaaee98d1aa98"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12706416.json",
+      "sha256": "e4b8eac4edccf59ae761521f2011af134dcb32017222afbcb1eb668e37aeda83"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12706416.metadata.json",
+      "sha256": "d7d4dbb52fce6330b382a7e71bcb4f2fc191ca60a68c581d285e1c852d212fcd"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12706642.json",
+      "sha256": "e23fb251eb6403506b368f90ff410cb8348577963f4cbea0374f877287bfec87"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12706642.metadata.json",
+      "sha256": "34de164e6f24e73c2a92fe022947fc87dd96aecaaa861b7454e4895bb70ad650"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12706759.json",
+      "sha256": "92fbbd6dfd5f2ed9d215e7b5e96e30f51fbdee5ab776dd8e6c3db04ddb2709cb"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12706759.metadata.json",
+      "sha256": "b2df30b0f007e4b87baf0fda8a9c90510c9525941bf05f9e8624f234a106fc6c"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12706851.json",
+      "sha256": "29a8697ca666c4c7c4d162950429ae0de62573202fcf19aef6a0c965f4e258d6"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12706851.metadata.json",
+      "sha256": "160d3feccdec611bd2a35926fd3d69de23ef4260a397917d9c91417ea32fa4e4"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12711757.json",
+      "sha256": "c2de54ee2de7e9970342ddc93860d814e08b669206b47ca09e47019031b10da1"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12711757.metadata.json",
+      "sha256": "dcd97007aa5550175a20d1b0b9df70c104679d400616ea54a1c7f584de9fef7b"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12518303.csv",
+      "sha256": "ee3959eadcce9190db9f7eb203acbd00b06617e0a7496f0937f49503c8543302"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12518320.csv",
+      "sha256": "2a5d2291c1277e2eaadb0b8b69254ae088ce3939ad85d7e176bb6bab4761ab8b"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12518323.csv",
+      "sha256": "be60f40b4a747e7356acf1e5cda7fbebe91f890fc270d38e04bfca14821f3a3c"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12518324.csv",
+      "sha256": "40a64875f5dfa329822b9571ec185aecc0838ef87b1d3b5b62987a8e9069abc7"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12518329.csv",
+      "sha256": "228ff84273d059ae0e71adbe2b3e36087d5cca69830faae7a31ef680fed4dd12"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12518343.csv",
+      "sha256": "fd9f29a488e504504836539c66275da3b3c60a4d88869ad754e289671c4d94ee"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12518349.csv",
+      "sha256": "f75fefe787efa0a492854d177ea4d53bab42c8c9999f2feec2addcf8f154b9e2"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12518352.csv",
+      "sha256": "3ea98224a38623c88c9fac370792ffbde24bedd612f85f37b2264ce1331648a6"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12518356.csv",
+      "sha256": "67e9c1ac5a4fd6b5c86a0c1da184be506049a6eed0b057519c193958ed3f91e5"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12706415.csv",
+      "sha256": "a6f39d11a8632a0df85444c1ec2e1e8fe5c814f80a62345127697df2725bcd9f"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12706416.csv",
+      "sha256": "a6495dd9fe38228148b0d5b7a4ac81f08f63fe9b1c8e16713d34d811899a8502"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12706642.csv",
+      "sha256": "350a545c5367005111e6cf40325c17a5a30dea9151f005b04b0460a8b4ec978b"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12706759.csv",
+      "sha256": "cc4fc69ce3fda1499694b854ce56fd0b3647dde03196def0cc52906bde1661c9"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12706851.csv",
+      "sha256": "8955f0850e90b93f9e902811c2e805c727ffe22cf53a435f3e01f2293f199457"
+    },
+    {
+      "path": "data/raw/live/bpstat/series_12711757.csv",
+      "sha256": "58cb82137dd001bb087d17452ba9e2ac46413327d4ab04475a0673e31a630207"
+    }
+  ],
+  "rows": 1099,
+  "schema": {
+    "concept": "object",
+    "dataset_id": "object",
+    "domain_id": "int64",
+    "frequency": "object",
+    "label": "object",
+    "methodological_breaks": "object",
+    "price_basis": "object",
+    "raw_file": "object",
+    "reconstruction_method": "object",
+    "reference_date": "object",
+    "review_status": "object",
+    "series_id": "int64",
+    "slug": "object",
+    "source": "object",
+    "source_status": "object",
+    "territorial_definition": "object",
+    "units": "object",
+    "use_status": "object",
+    "value": "float64",
+    "year": "int64"
+  },
+  "sha256": "8d994e92c7d29687efb84b52c96dd4b696dc488c25332c0a0a7ce5189a2247f9",
+  "source_files": [
+    "data/interim/live/bpstat_series_registry.csv",
+    "data/raw/live/bpstat/series_12518303.json",
+    "data/raw/live/bpstat/series_12518303.metadata.json",
+    "data/raw/live/bpstat/series_12518320.json",
+    "data/raw/live/bpstat/series_12518320.metadata.json",
+    "data/raw/live/bpstat/series_12518323.json",
+    "data/raw/live/bpstat/series_12518323.metadata.json",
+    "data/raw/live/bpstat/series_12518324.json",
+    "data/raw/live/bpstat/series_12518324.metadata.json",
+    "data/raw/live/bpstat/series_12518329.json",
+    "data/raw/live/bpstat/series_12518329.metadata.json",
+    "data/raw/live/bpstat/series_12518343.json",
+    "data/raw/live/bpstat/series_12518343.metadata.json",
+    "data/raw/live/bpstat/series_12518349.json",
+    "data/raw/live/bpstat/series_12518349.metadata.json",
+    "data/raw/live/bpstat/series_12518352.json",
+    "data/raw/live/bpstat/series_12518352.metadata.json",
+    "data/raw/live/bpstat/series_12518356.json",
+    "data/raw/live/bpstat/series_12518356.metadata.json",
+    "data/raw/live/bpstat/series_12706415.json",
+    "data/raw/live/bpstat/series_12706415.metadata.json",
+    "data/raw/live/bpstat/series_12706416.json",
+    "data/raw/live/bpstat/series_12706416.metadata.json",
+    "data/raw/live/bpstat/series_12706642.json",
+    "data/raw/live/bpstat/series_12706642.metadata.json",
+    "data/raw/live/bpstat/series_12706759.json",
+    "data/raw/live/bpstat/series_12706759.metadata.json",
+    "data/raw/live/bpstat/series_12706851.json",
+    "data/raw/live/bpstat/series_12706851.metadata.json",
+    "data/raw/live/bpstat/series_12711757.json",
+    "data/raw/live/bpstat/series_12711757.metadata.json",
+    "data/raw/live/bpstat/series_12518303.csv",
+    "data/raw/live/bpstat/series_12518320.csv",
+    "data/raw/live/bpstat/series_12518323.csv",
+    "data/raw/live/bpstat/series_12518324.csv",
+    "data/raw/live/bpstat/series_12518329.csv",
+    "data/raw/live/bpstat/series_12518343.csv",
+    "data/raw/live/bpstat/series_12518349.csv",
+    "data/raw/live/bpstat/series_12518352.csv",
+    "data/raw/live/bpstat/series_12518356.csv",
+    "data/raw/live/bpstat/series_12706415.csv",
+    "data/raw/live/bpstat/series_12706416.csv",
+    "data/raw/live/bpstat/series_12706642.csv",
+    "data/raw/live/bpstat/series_12706759.csv",
+    "data/raw/live/bpstat/series_12706851.csv",
+    "data/raw/live/bpstat/series_12711757.csv"
+  ],
+  "source_licence": "not_specified",
+  "stage": "bpstat_macro_normalised_long",
+  "validation_findings": []
+}

@@ -1,0 +1,58 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "year",
+    "real_exports_goods_services_million_eur",
+    "exports_goods_services_million_eur",
+    "nominal_gdp_million_eur",
+    "gdp_deflator_index",
+    "gdp_deflator_yoy_percent",
+    "real_gdp_yoy_percent",
+    "real_gfcf_million_eur",
+    "gfcf_million_eur",
+    "real_imports_goods_services_million_eur",
+    "imports_goods_services_million_eur",
+    "real_gdp_chain_linked_million_eur",
+    "resident_population_thousand_people",
+    "real_gdp_per_resident_thousand_eur",
+    "source_status",
+    "coverage_status"
+  ],
+  "date_range": {
+    "end_year": 1973,
+    "start_year": 1950
+  },
+  "file": "data/processed/live/portugal_macro_context.csv",
+  "input_artifacts": [
+    {
+      "path": "data/interim/live/bpstat_macro_long.csv",
+      "sha256": "8d994e92c7d29687efb84b52c96dd4b696dc488c25332c0a0a7ce5189a2247f9"
+    }
+  ],
+  "rows": 24,
+  "schema": {
+    "coverage_status": "object",
+    "exports_goods_services_million_eur": "float64",
+    "gdp_deflator_index": "float64",
+    "gdp_deflator_yoy_percent": "float64",
+    "gfcf_million_eur": "float64",
+    "imports_goods_services_million_eur": "float64",
+    "nominal_gdp_million_eur": "float64",
+    "real_exports_goods_services_million_eur": "float64",
+    "real_gdp_chain_linked_million_eur": "float64",
+    "real_gdp_per_resident_thousand_eur": "float64",
+    "real_gdp_yoy_percent": "float64",
+    "real_gfcf_million_eur": "float64",
+    "real_imports_goods_services_million_eur": "float64",
+    "resident_population_thousand_people": "float64",
+    "source_status": "object",
+    "year": "int64"
+  },
+  "sha256": "0076767a6ffcd3711dd7885e9e6804cd428758faf5fbeff839838e14dccfa367",
+  "source_files": [
+    "data/interim/live/bpstat_macro_long.csv"
+  ],
+  "source_licence": "not_specified",
+  "stage": "bpstat_macro_context_processed",
+  "validation_findings": []
+}

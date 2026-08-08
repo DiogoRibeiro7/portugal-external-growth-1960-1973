@@ -1,0 +1,35 @@
+check,severity,message,first_year,last_year,project_period_non_null_rows
+series.current_account_balance.coverage,warning,current_account_balance: 0 non-null project-period rows; review_status=rejected_for_1960_1973; methodological_breaks=not_reviewed_in_source_notes,,,0
+series.total_employment_national_accounts_quarterly.coverage,warning,total_employment_national_accounts_quarterly: 0 non-null project-period rows; review_status=rejected_for_1960_1973; methodological_breaks=not_reviewed_in_source_notes,,,0
+series.exports_goods_services_current_annual.coverage,info,exports_goods_services_current_annual: 14 non-null project-period rows; review_status=accepted_for_context_not_enabled_for_extraction; methodological_breaks=not_reviewed_in_source_notes,1953,2025,14
+series.gdp_deflator_annual.coverage,info,gdp_deflator_annual: 14 non-null project-period rows; review_status=accepted_for_context_not_enabled_for_extraction; methodological_breaks=not_reviewed_in_source_notes,1953,2025,14
+series.tspe_gdp_deflator_quarterly.coverage,warning,tspe_gdp_deflator_quarterly: 0 non-null project-period rows; review_status=rejected_for_1960_1973; methodological_breaks=not_reviewed_in_source_notes,,,0
+series.gdp_deflator_yoy_annual.coverage,info,gdp_deflator_yoy_annual: 14 non-null project-period rows; review_status=accepted_for_context_not_enabled_for_extraction; methodological_breaks=not_reviewed_in_source_notes,1954,2025,14
+series.gdp_growth_chain_volume_yoy_annual.coverage,info,gdp_growth_chain_volume_yoy_annual: 14 non-null project-period rows; review_status=accepted_for_context_not_enabled_for_extraction; methodological_breaks=not_reviewed_in_source_notes,1954,2025,14
+series.gross_fixed_capital_formation_current_annual.coverage,info,gross_fixed_capital_formation_current_annual: 14 non-null project-period rows; review_status=accepted_for_context_not_enabled_for_extraction; methodological_breaks=not_reviewed_in_source_notes,1953,2025,14
+series.imports_goods_services_current_annual.coverage,info,imports_goods_services_current_annual: 14 non-null project-period rows; review_status=accepted_for_context_not_enabled_for_extraction; methodological_breaks=not_reviewed_in_source_notes,1953,2025,14
+series.investment_income_psac.coverage,warning,investment_income_psac: 0 non-null project-period rows; review_status=rejected_for_1960_1973; methodological_breaks=not_reviewed_in_source_notes,,,0
+series.manufacturing_employment.coverage,warning,manufacturing_employment: 0 non-null project-period rows; review_status=rejected_for_1960_1973; methodological_breaks=not_reviewed_in_source_notes,,,0
+series.manufacturing_gva_current_annual.coverage,info,manufacturing_gva_current_annual: 14 non-null project-period rows; review_status=accepted_for_context_not_enabled_for_extraction; methodological_breaks=not_reviewed_in_source_notes,1953,2025,14
+series.manufacturing_gva_deflator_yoy_annual.coverage,info,manufacturing_gva_deflator_yoy_annual: 14 non-null project-period rows; review_status=accepted_for_context_not_enabled_for_extraction; methodological_breaks=not_reviewed_in_source_notes,1954,2025,14
+series.gdp_current_prices_annual.coverage,info,gdp_current_prices_annual: 14 non-null project-period rows; review_status=accepted_for_context_not_enabled_for_extraction; methodological_breaks=not_reviewed_in_source_notes,1953,2025,14
+series.tspe_gdp_current_prices_quarterly.coverage,warning,tspe_gdp_current_prices_quarterly: 0 non-null project-period rows; review_status=rejected_for_1960_1973; methodological_breaks=not_reviewed_in_source_notes,,,0
+series.resident_population_total.coverage,info,resident_population_total: 14 non-null project-period rows; review_status=accepted_for_context_not_enabled_for_extraction; methodological_breaks=not_reviewed_in_source_notes,1941,2025,14
+series.exports_goods_services_chain_linked_annual.coverage,info,exports_goods_services_chain_linked_annual: 14 non-null project-period rows; review_status=accepted_for_context_not_enabled_for_extraction; methodological_breaks=not_reviewed_in_source_notes,1954,2025,14
+series.real_gdp_chain_linked_annual.coverage,info,real_gdp_chain_linked_annual: 14 non-null project-period rows; review_status=accepted_for_context_not_enabled_for_extraction; methodological_breaks=not_reviewed_in_source_notes,1954,2025,14
+series.gross_fixed_capital_formation_chain_linked_annual.coverage,info,gross_fixed_capital_formation_chain_linked_annual: 14 non-null project-period rows; review_status=accepted_for_context_not_enabled_for_extraction; methodological_breaks=not_reviewed_in_source_notes,1954,2025,14
+series.imports_goods_services_chain_linked_annual.coverage,info,imports_goods_services_chain_linked_annual: 14 non-null project-period rows; review_status=accepted_for_context_not_enabled_for_extraction; methodological_breaks=not_reviewed_in_source_notes,1954,2025,14
+series.manufacturing_gva_chain_linked_annual.coverage,info,manufacturing_gva_chain_linked_annual: 14 non-null project-period rows; review_status=accepted_for_context_not_enabled_for_extraction; methodological_breaks=not_reviewed_in_source_notes,1954,2025,14
+series.travel_credit.coverage,warning,travel_credit: 0 non-null project-period rows; review_status=rejected_for_1960_1973; methodological_breaks=not_reviewed_in_source_notes,,,0
+priority.real GDP,info,real GDP: available from BPstat candidate real_gdp_chain_linked_annual.,,,
+priority.nominal GDP,info,nominal GDP: available from BPstat candidate gdp_current_prices_annual.,,,
+priority.GDP deflator,info,GDP deflator: available from BPstat candidate gdp_deflator_annual.,,,
+priority.gross fixed capital formation,info,gross fixed capital formation: available from BPstat candidate gross_fixed_capital_formation_current_annual.,,,
+priority.exports and imports,info,exports and imports: available from BPstat candidate exports_goods_services_current_annual.,,,
+priority.population,info,population: available from BPstat candidate resident_population_total.,,,
+priority.gross value added by broad sector,info,gross value added by broad sector: available from BPstat candidate manufacturing_gva_current_annual.,,,
+priority.industrial/manufacturing output,info,industrial/manufacturing output: available from BPstat candidate manufacturing_gva_chain_linked_annual.,,,
+priority.employment,warning,employment: no BPstat series with 1960-1973 coverage is extracted.,,,0
+priority.balance-of-payments components,warning,balance-of-payments components: no BPstat series with 1960-1973 coverage is extracted.,,,0
+priority.remittances,warning,remittances: no BPstat series with 1960-1973 coverage is extracted.,,,0
+priority.tourism receipts,warning,tourism receipts: no BPstat series with 1960-1973 coverage is extracted.,,,0

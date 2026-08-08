@@ -1,0 +1,25 @@
+{
+  "access_conditions": "public_api_or_provider_terms",
+  "api_version": "BPstat Data API v1",
+  "content_type": "application/json",
+  "csv_sha256": "228ff84273d059ae0e71adbe2b3e36087d5cca69830faae7a31ef680fed4dd12",
+  "endpoint": "https://bpstat.bportugal.pt/data/v1/domains/54/datasets/ce3e4e50cda325537eff729ef64037cd",
+  "etag": "",
+  "extracted_at_utc": "2026-08-08T04:15:32.712343+00:00",
+  "http_status": 200,
+  "last_modified": "",
+  "query_parameters": {
+    "lang": "EN",
+    "series_ids": "12518329"
+  },
+  "raw_sha256": "8a3dc984cee9b46effa3d87a2bd94dce2fbd93050b5c61b4c5071e4e1946ce30",
+  "request_url": "https://bpstat.bportugal.pt/data/v1/domains/54/datasets/ce3e4e50cda325537eff729ef64037cd/?lang=EN&series_ids=12518329",
+  "rows": 72,
+  "series_ids": [
+    12518329
+  ],
+  "source": "BPstat Data API v1",
+  "source_licence": "subject_to_banco_de_portugal_terms",
+  "territorial_definition": "series_specific_bpstat_metadata",
+  "units": "series_specific"
+}
