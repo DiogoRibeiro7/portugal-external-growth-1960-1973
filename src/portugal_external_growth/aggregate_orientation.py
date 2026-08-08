@@ -158,6 +158,7 @@ def _populate_validated_ine_values(
             "unassigned_residual_imports_pte": 0.0,
         }
     )
+    _populate_validated_europe_values(record, year_validated, world_exports)
     first_row = year_validated.iloc[0]
     record["valuation_basis"] = first_row.get("valuation_basis", "")
     record["territorial_definition"] = first_row.get("territorial_definition", "")
@@ -178,6 +179,30 @@ def _populate_validated_ine_values(
         world_value = _optional_float(world_imports_row.get("source_a_value"))
         record["colonial_imports_observed_comtrade_usd"] = observed_value
         record["observed_colonial_import_share"] = _safe_divide(observed_value, world_value)
+
+
+def _populate_validated_europe_values(
+    record: dict[str, object], year_validated: pd.DataFrame, world_exports: float
+) -> None:
+    efta_exports = _aggregate_value(year_validated, flow="X", partner_group="EFTA")
+    efta_imports = _aggregate_value(year_validated, flow="M", partner_group="EFTA")
+    eec_exports = _aggregate_value(year_validated, flow="X", partner_group="CEE")
+    eec_imports = _aggregate_value(year_validated, flow="M", partner_group="CEE")
+    fixed_exports = efta_exports + eec_exports
+    fixed_imports = efta_imports + eec_imports
+    record.update(
+        {
+            "efta_participation_exports_pte": _optional_value(efta_exports),
+            "efta_participation_imports_pte": _optional_value(efta_imports),
+            "eec_membership_exports_pte": _optional_value(eec_exports),
+            "eec_membership_imports_pte": _optional_value(eec_imports),
+            "fixed_europe_exports_pte": _optional_value(fixed_exports),
+            "fixed_europe_imports_pte": _optional_value(fixed_imports),
+            "efta_export_share": _safe_divide(efta_exports, world_exports),
+            "eec_export_share": _safe_divide(eec_exports, world_exports),
+            "fixed_europe_export_share": _safe_divide(fixed_exports, world_exports),
+        }
+    )
 
 
 def _build_status_table(
@@ -302,7 +327,7 @@ def _build_cross_check_notes(
             f"Reconciliation matrix rows: {len(matrix)}",
             "",
             "Complete colonial shares are never filled from incomplete Comtrade colonial rows.",
-            "EFTA/EEC variables remain blank until double-entry verified group totals exist.",
+            "EFTA/EEC variables are populated only from double-entry verified group totals.",
             "",
         ]
     )
@@ -423,6 +448,10 @@ def _safe_divide(numerator: object, denominator: object) -> object:
 def _optional_float(value: object) -> float:
     numeric = pd.to_numeric(pd.Series([value]), errors="coerce").iloc[0]
     return float(numeric) if pd.notna(numeric) else float("nan")
+
+
+def _optional_value(value: float) -> object:
+    return pd.NA if pd.isna(value) else value
 
 
 def _read_csv(path: Path) -> pd.DataFrame:

@@ -26,7 +26,7 @@
     "adjudication_status"
   ],
   "date_range": {
-    "end_year": 1971,
+    "end_year": 1974,
     "start_year": 1963
   },
   "file": "data/processed/live/ine_1962_aggregate_trade_harmonised.csv",
@@ -37,14 +37,14 @@
     },
     {
       "path": "data/manual/transcriptions/pass_2/ine_aggregate_transcription_pass_2.csv",
-      "sha256": "a8a360faecd566fa72800f23476c299f6555b0dec01287ea9a2a174c6853114b"
+      "sha256": "0ccc81457758aabb5a6675ee6f8a3f854a2179f483e7f9f7fd4f12e31377ce01"
     },
     {
       "path": "data/interim/live/ine_aggregate_transcription_discrepancies.csv",
-      "sha256": "bae8b0d71157977352495b1afadf6e4b136196bdd7847a2f687b4d095724c0be"
+      "sha256": "2059d73a15145569e49593662e0f48863e77550d2c535c343440a6da6888e092"
     }
   ],
-  "rows": 16,
+  "rows": 24,
   "schema": {
     "adjudication_status": "object",
     "cell_status": "object",
@@ -70,7 +70,7 @@
     "valuation_basis": "object",
     "value_source": "int64"
   },
-  "sha256": "07da44ef7cfed6f74eacf343154ff0e4e9c9e51ca4106ddf5d046545b485c48e",
+  "sha256": "52355dbfae22d8e420b88a049cf29e28c134bd4e3d27fa8491a88bb07e9000f1",
   "source_files": [
     "data/manual/transcriptions/pass_1/ine_aggregate_transcription_pass_1.csv",
     "data/manual/transcriptions/pass_2/ine_aggregate_transcription_pass_2.csv",

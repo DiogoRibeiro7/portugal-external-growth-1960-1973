@@ -2,10 +2,10 @@ INE aggregate transcription status
 ==================================
 
 Pass 1 aggregate rows: 24
-Pass 2 aggregate rows: 16
-Unresolved aggregate discrepancies: 8
-Unresolved reference years: 1973
-Unresolved partner groups: CEE;EFTA;Provincias Ultramarinas;World
+Pass 2 aggregate rows: 24
+Unresolved aggregate discrepancies: 0
+Unresolved reference years: none
+Unresolved partner groups: none
 
 Verified aggregate rows are limited to entries independently keyed in both
 protected transcription passes. Remaining discrepancies are pass-1-only queue

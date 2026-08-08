@@ -27,7 +27,7 @@
   "input_artifacts": [
     {
       "path": "data/interim/live/trade_source_comparison.csv",
-      "sha256": "308fcf586b7767c2d652423c04c26e1c36960045dfee31b20cfc1d2587251cce"
+      "sha256": "0d4aba13e6570b3c2e33955f8ce3aa673165d358d916efcb7fccf0de5968a0a5"
     }
   ],
   "rows": 120,
@@ -50,7 +50,7 @@
     "territorial_definition": "object",
     "year": "int64"
   },
-  "sha256": "7588b091e05e35e94453de06fd71d532c91d41456f814c963b150503cb99992b",
+  "sha256": "ab2bfe127faf382112e8706e76300289165fd744fa88fad48a91b1a68cc6ee13",
   "source_files": [
     "data/interim/live/trade_source_comparison.csv"
   ],

@@ -2,10 +2,10 @@ Research data readiness declaration
 ===================================
 
 Declaration: NOT_READY
-Release version: 0.1.3+c700f4f
-Source commit: c700f4fa6846fa50fb1f34fed29ee71841edb6fb
-Source commit timestamp: 2026-08-08T23:55:08+01:00
-Release archive: release/research-data-freeze-0.1.3+c700f4f.zip
+Release version: 0.1.3+efcced6
+Source commit: efcced6feec04bbba672ca79cec39d47dc95644b
+Source commit timestamp: 2026-08-09T00:07:59+01:00
+Release archive: release/research-data-freeze-0.1.3+efcced6.zip
 Release archive SHA-256: not_created
 
 Machine-readable blockers: results/releases/current/freeze_blocking_reasons.csv
@@ -38,13 +38,13 @@ Blocking reasons:
 - verification_validation: stale_commit: verification evidence missing: results/releases/current/verification_evidence.csv
 - research_research.empirical_prerequisites: 0/6 empirical prerequisites are satisfied.
 - research_research.manual_source_documents: 4/43 expected manual source documents are available.
-- research_research.cross_source_comparison: 90/120 cross-source comparison rows have missing source coverage.
+- research_research.cross_source_comparison: 88/120 cross-source comparison rows have missing source coverage.
 - research_research.source_reconciliation: Unresolved source-pair reconciliation blocks remain: ine_comtrade_1962.
 - research_research.product_industry_mapping: Product-to-industry mapping coverage is zero.
 - research_research.territorial_definition: 24 Comtrade coverage rows still require territorial-definition review.
 - research_research.empirical_design_matrix: No empirical design matrix exists.
 - empirical_annual_trade_coverage: annual year-flow aggregate trade coverage is incomplete
-- empirical_colonial_partner_completeness: pre-1970 colonial coverage remains incomplete or lower-bound only
+- empirical_colonial_partner_completeness: complete source-backed colonial aggregate coverage remains incomplete
 - empirical_european_partner_completeness: European partner completeness is not fully established
 - empirical_product_level_coverage: COMTRADE_SUBSCRIPTION_KEY_missing;commodity_code_batches_not_registered
 - empirical_product_to_industry_mapping_coverage: product_extraction_status_blocked;product_industry_mapping_coverage_zero;product_industry_mapping_not_registered;product_level_trade_not_validated

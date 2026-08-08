@@ -175,7 +175,7 @@ def test_partner_completeness_uses_year_flow_denominators(tmp_path: Path) -> Non
                 "year": year,
                 "colonial_exports_complete_pte": float(year) if year < 1968 else None,
                 "colonial_imports_complete_pte": float(year) if year < 1968 else None,
-                "colonial_observed_partner_count": 8,
+                "colonial_observed_partner_count": 4,
                 "colonial_expected_partner_count": 8,
                 "efta_participation_exports_pte": float(year) if year < 1968 else None,
                 "efta_participation_imports_pte": float(year) if year < 1968 else None,

@@ -31,7 +31,7 @@
     },
     {
       "path": "data/processed/live/ine_1962_aggregate_trade_harmonised.csv",
-      "sha256": "07da44ef7cfed6f74eacf343154ff0e4e9c9e51ca4106ddf5d046545b485c48e"
+      "sha256": "52355dbfae22d8e420b88a049cf29e28c134bd4e3d27fa8491a88bb07e9000f1"
     },
     {
       "path": "data/interim/live/portugal_exchange_rate_evidence.csv",
@@ -58,7 +58,7 @@
     "territorial_definition": "object",
     "year": "int64"
   },
-  "sha256": "308fcf586b7767c2d652423c04c26e1c36960045dfee31b20cfc1d2587251cce",
+  "sha256": "0d4aba13e6570b3c2e33955f8ce3aa673165d358d916efcb7fccf0de5968a0a5",
   "source_files": [
     "results/diagnostics/comtrade_coverage/comtrade_coverage_audit.csv",
     "data/processed/live/ine_1962_aggregate_trade_harmonised.csv",

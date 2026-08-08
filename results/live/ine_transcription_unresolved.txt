@@ -8,10 +8,10 @@ Rows without source PDF SHA-256: 39
 Pass 1 transcribed rows: 0
 Pass 2 transcribed rows: 0
 Aggregate pass 1 transcribed rows: 24
-Aggregate pass 2 transcribed rows: 16
+Aggregate pass 2 transcribed rows: 24
 Workflow status: in_progress
 Unresolved transcription discrepancies: 0
-Unresolved aggregate transcription discrepancies: 8
+Unresolved aggregate transcription discrepancies: 0
 Adjudicated final rows: 0
 Final rows with unreadable cells: 0
 Final rows pending adjudication: 0

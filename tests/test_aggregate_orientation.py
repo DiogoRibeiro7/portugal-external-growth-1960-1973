@@ -58,6 +58,10 @@ def test_validated_aggregate_orientation_accepts_provincias_ultramarinas_label(
             _ine_row("X", "World", 27298661, year=1970),
             _ine_row("M", "Provincias Ultramarinas", 6716990, year=1970),
             _ine_row("X", "Provincias Ultramarinas", 6687814, year=1970),
+            _ine_row("M", "CEE", 15047905, year=1970),
+            _ine_row("X", "CEE", 5005444, year=1970),
+            _ine_row("M", "EFTA", 11023880, year=1970),
+            _ine_row("X", "EFTA", 9671172, year=1970),
         ],
     )
     _write_reconciliation(tmp_path)
@@ -73,7 +77,13 @@ def test_validated_aggregate_orientation_accepts_provincias_ultramarinas_label(
     status_1970 = status.loc[status["year"].eq(1970)].iloc[0]
     assert row_1970["world_exports_pte"] == 27298661000
     assert row_1970["colonial_exports_complete_pte"] == 6687814000
+    assert row_1970["eec_membership_exports_pte"] == 5005444000
+    assert row_1970["efta_participation_exports_pte"] == 9671172000
+    assert row_1970["fixed_europe_exports_pte"] == 14676616000
     assert row_1970["complete_colonial_export_share"] == 6687814000 / 27298661000
+    assert row_1970["eec_export_share"] == 5005444000 / 27298661000
+    assert row_1970["efta_export_share"] == 9671172000 / 27298661000
+    assert row_1970["fixed_europe_export_share"] == 14676616000 / 27298661000
     assert row_1970["estimate_status"] == "observed_no_estimation"
     assert status_1970["source_status"] == "validated_ine_aggregate"
     assert status_1970["blocking_reason"] == ""

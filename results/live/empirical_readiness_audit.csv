@@ -1,7 +1,7 @@
 requirement,required,available,coverage,status,blocking_reason
-annual_trade_coverage,24,6.0,0.25,blocked,annual year-flow aggregate trade coverage is incomplete
-colonial_partner_completeness,24,0.0,0.0,blocked,pre-1970 colonial coverage remains incomplete or lower-bound only
-european_partner_completeness,24,0.0,0.0,blocked,European partner completeness is not fully established
+annual_trade_coverage,24,8.0,0.3333333333333333,blocked,annual year-flow aggregate trade coverage is incomplete
+colonial_partner_completeness,24,8.0,0.3333333333333333,blocked,complete source-backed colonial aggregate coverage remains incomplete
+european_partner_completeness,24,4.0,0.16666666666666666,blocked,European partner completeness is not fully established
 product_level_coverage,1,0.0,0.0,blocked,COMTRADE_SUBSCRIPTION_KEY_missing;commodity_code_batches_not_registered
 product_to_industry_mapping_coverage,1,0.0,0.0,blocked,product_extraction_status_blocked;product_industry_mapping_coverage_zero;product_industry_mapping_not_registered;product_level_trade_not_validated
 sectoral_output_coverage,1,0.0,0.0,blocked,reviewed sectoral output panel is not enabled for empirical analysis

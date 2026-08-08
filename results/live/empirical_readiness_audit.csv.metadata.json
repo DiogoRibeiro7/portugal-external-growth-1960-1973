@@ -13,7 +13,7 @@
   "input_artifacts": [
     {
       "path": "data/processed/live/validated_annual_aggregate_external_orientation.csv",
-      "sha256": "4850590072859fb9f43d3ad3779689b82c62ccfb7c8eca36619561a21d740e3e"
+      "sha256": "8c1f79bcabf5ea834778a9f6d90a7093657f4afb9e101ea1508d7f678d9f9dad"
     },
     {
       "path": "results/live/comtrade_product_extraction_status.csv",
@@ -53,7 +53,7 @@
     "requirement": "object",
     "status": "object"
   },
-  "sha256": "3f1b5086682a9a3f1630cd0fcaa06f3a0f13e3c43309840a6a60cc7922820bd2",
+  "sha256": "d544561a7bb0212f4558c86e649e79740de88d43223ba3e08604500d5ff4cff4",
   "source_files": [
     "data/processed/live/validated_annual_aggregate_external_orientation.csv",
     "results/live/comtrade_product_extraction_status.csv",

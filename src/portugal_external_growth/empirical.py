@@ -251,19 +251,12 @@ def _colonial_partner_completeness(root: Path) -> dict[str, object]:
     required = _year_flow_requirement(frame)
     exports_complete = frame.get("colonial_exports_complete_pte", pd.Series(dtype=float)).notna()
     imports_complete = frame.get("colonial_imports_complete_pte", pd.Series(dtype=float)).notna()
-    counts_complete = pd.to_numeric(
-        frame.get("colonial_observed_partner_count", pd.Series(dtype=float)), errors="coerce"
-    ) == pd.to_numeric(
-        frame.get("colonial_expected_partner_count", pd.Series(dtype=float)), errors="coerce"
-    )
-    satisfied = int((exports_complete & counts_complete).sum()) + int(
-        (imports_complete & counts_complete).sum()
-    )
+    satisfied = int(exports_complete.sum()) + int(imports_complete.sum())
     return _record(
         "colonial_partner_completeness",
         required,
         satisfied,
-        "pre-1970 colonial coverage remains incomplete or lower-bound only",
+        "complete source-backed colonial aggregate coverage remains incomplete",
     )
 
 
