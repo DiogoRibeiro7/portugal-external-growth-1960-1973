@@ -1,0 +1,42 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "declaration",
+    "release_version",
+    "source_commit",
+    "source_commit_timestamp_utc",
+    "blocking_reason_count",
+    "archive_path",
+    "archive_sha256"
+  ],
+  "date_range": null,
+  "file": "results/releases/current/release_readiness_declaration.csv",
+  "input_artifacts": [
+    {
+      "path": "results/validation/research_readiness_report.csv",
+      "sha256": "d89b57246b748fe8fdb045c43fa0df8bcb19346ac0e217c6e05f8d1246836766"
+    },
+    {
+      "path": "results/live/empirical_readiness_audit.csv",
+      "sha256": "c54cb8d835923667143321fd036e8c4ebb9a78fb10db46ee394371380d7df061"
+    }
+  ],
+  "rows": 1,
+  "schema": {
+    "archive_path": "object",
+    "archive_sha256": "object",
+    "blocking_reason_count": "int64",
+    "declaration": "object",
+    "release_version": "object",
+    "source_commit": "object",
+    "source_commit_timestamp_utc": "object"
+  },
+  "sha256": "fca32b10a7cdaeb987a6088448736d6796ac77b540610e5a544b87fd3c4e5eed",
+  "source_files": [
+    "results/validation/research_readiness_report.csv",
+    "results/live/empirical_readiness_audit.csv"
+  ],
+  "source_licence": "not_specified",
+  "stage": "research_data_release_readiness_declaration",
+  "validation_findings": []
+}

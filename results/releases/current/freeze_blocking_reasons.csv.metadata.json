@@ -1,0 +1,32 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "blocker_id",
+    "source_check",
+    "severity",
+    "blocking_reason",
+    "evidence_path"
+  ],
+  "date_range": null,
+  "file": "results/releases/current/freeze_blocking_reasons.csv",
+  "input_artifacts": [
+    {
+      "path": "results/validation/research_readiness_report.csv",
+      "sha256": "d89b57246b748fe8fdb045c43fa0df8bcb19346ac0e217c6e05f8d1246836766"
+    }
+  ],
+  "rows": 25,
+  "schema": {
+    "blocker_id": "object",
+    "blocking_reason": "object",
+    "evidence_path": "object",
+    "severity": "object",
+    "source_check": "object"
+  },
+  "sha256": "43e461090ca34a42350c54fa5bfdd32c7dfbafb4917374d7cf0f46fd2101df59",
+  "source_files": [
+    "results/validation/research_readiness_report.csv"
+  ],
+  "source_licence": "not_specified",
+  "validation_findings": []
+}

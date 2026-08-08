@@ -278,6 +278,7 @@ def build_file_manifest(root: Path) -> pd.DataFrame:
         root / "README.md",
         root / "DATA_LICENSES.md",
         root / "Makefile",
+        root / "RESEARCH_DATA_READINESS.txt",
     ]:
         if not path.exists():
             continue

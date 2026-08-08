@@ -22,6 +22,7 @@ from portugal_external_growth.pipeline import (
     extract_comtrade,
     extract_comtrade_products,
     extract_world_bank,
+    freeze_research_data,
     init_ine_transcription_inputs,
     init_manual_templates,
     prepare_empirical_extension,
@@ -248,6 +249,18 @@ def run_diagnostics_command() -> None:
     """Regenerate local diagnostics and readiness artefacts."""
 
     run_diagnostics(_settings())
+
+
+@app.command("freeze-research-data")
+def freeze_research_data_command(
+    verification_passed: bool = typer.Option(
+        False,
+        help="Record external lint, type, test, and reproduction checks as passed.",
+    ),
+) -> None:
+    """Create final research-data freeze readiness reports and archive metadata."""
+
+    freeze_research_data(_settings(), verification_passed=verification_passed)
 
 
 @app.command("run-all-available")

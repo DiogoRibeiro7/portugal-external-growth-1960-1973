@@ -17,4 +17,5 @@ dist/
 data/work/
 data/cache/
 results/work/
+release/*.zip
 .tmp/

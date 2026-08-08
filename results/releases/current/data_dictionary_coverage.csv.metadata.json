@@ -1,0 +1,35 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "dataset_path",
+    "expected_dictionary_path",
+    "dictionary_status",
+    "blocking_reason"
+  ],
+  "date_range": null,
+  "file": "results/releases/current/data_dictionary_coverage.csv",
+  "input_artifacts": [
+    {
+      "path": "data/processed/live",
+      "sha256": ""
+    },
+    {
+      "path": "data/interim/live",
+      "sha256": ""
+    }
+  ],
+  "rows": 7,
+  "schema": {
+    "blocking_reason": "object",
+    "dataset_path": "object",
+    "dictionary_status": "object",
+    "expected_dictionary_path": "object"
+  },
+  "sha256": "8bb0d5414508243cf2b7815e9275270fd5dc5ad6da8909615899bc9755cfdcf0",
+  "source_files": [
+    "data/processed/live",
+    "data/interim/live"
+  ],
+  "source_licence": "not_specified",
+  "validation_findings": []
+}

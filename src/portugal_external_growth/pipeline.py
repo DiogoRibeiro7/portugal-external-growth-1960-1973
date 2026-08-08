@@ -73,6 +73,7 @@ from portugal_external_growth.registry import (
     build_bpstat_registry_review,
     load_bpstat_reviewed_candidates,
 )
+from portugal_external_growth.release_freeze import build_research_data_freeze_outputs
 from portugal_external_growth.settings import Settings
 from portugal_external_growth.transforms import (
     compile_comtrade_coverage_audit,
@@ -1429,6 +1430,60 @@ def build_efta_policy_dataset(settings: Settings) -> None:
         metadata={"source_files": ["results/diagnostics/efta_policy/efta_policy_coverage.csv"]},
     )
     write_text_lf(root / "results/live/efta_policy_readiness.txt", notes)
+
+
+def freeze_research_data(settings: Settings, *, verification_passed: bool = False) -> None:
+    """Create final research-data freeze reports and tracked-file archive metadata."""
+
+    root = settings.resolved_root()
+    declaration, blockers, checklist, provenance, dictionaries, archive, notes = (
+        build_research_data_freeze_outputs(root, verification_passed=verification_passed)
+    )
+    release_dir = root / "results/releases/current"
+    write_dataframe_with_metadata(
+        declaration,
+        release_dir / "release_readiness_declaration.csv",
+        metadata={
+            "source_files": [
+                "results/validation/research_readiness_report.csv",
+                "results/live/empirical_readiness_audit.csv",
+            ],
+            "stage": "research_data_release_readiness_declaration",
+        },
+    )
+    write_dataframe_with_metadata(
+        blockers,
+        release_dir / "freeze_blocking_reasons.csv",
+        metadata={"source_files": ["results/validation/research_readiness_report.csv"]},
+    )
+    write_dataframe_with_metadata(
+        checklist,
+        release_dir / "freeze_checklist.csv",
+        metadata={"source_files": ["results/releases/current/freeze_blocking_reasons.csv"]},
+    )
+    write_dataframe_with_metadata(
+        provenance,
+        release_dir / "final_result_table_provenance.csv",
+        metadata={"source_files": ["results/live"], "stage": "final_result_table_provenance"},
+    )
+    write_dataframe_with_metadata(
+        dictionaries,
+        release_dir / "data_dictionary_coverage.csv",
+        metadata={"source_files": ["data/processed/live", "data/interim/live"]},
+    )
+    write_dataframe_with_metadata(
+        archive,
+        release_dir / "release_archive_manifest.csv",
+        metadata={"source_files": ["results/manifests/current_manifest.csv"]},
+    )
+    write_text_lf(root / "RESEARCH_DATA_READINESS.txt", notes)
+    write_text_lf(release_dir / "RESEARCH_DATA_READINESS.txt", notes)
+    manifest = build_file_manifest(root)
+    write_dataframe_with_metadata(
+        manifest,
+        root / "results/manifests/current_manifest.csv",
+        metadata={"stage": "manifest", "scope": "current"},
+    )
 
 
 def refresh_sources(settings: Settings, *, overwrite: bool) -> None:

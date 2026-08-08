@@ -1,0 +1,51 @@
+Research data readiness declaration
+===================================
+
+Declaration: NOT_READY
+Release version: 0.1.2+1e4d9f1
+Source commit: 1e4d9f12cd38aee4de9a775772ffd8ab39112242
+Source commit timestamp: 2026-08-08T11:18:49+01:00
+Release archive: release/research-data-freeze-0.1.2+1e4d9f1.zip
+Release archive SHA-256: acc455596e04bcfb3ac466b5d6570d35a851f04a8d84121d881d99bf5f2f002e
+
+Machine-readable blockers: results/releases/current/freeze_blocking_reasons.csv
+Checklist: results/releases/current/freeze_checklist.csv
+
+Checklist status:
+- 1. All tests pass: passed
+- 2. Linting passes: passed
+- 3. Type checking passes: passed
+- 4. Reproduction from local snapshots passes: passed
+- 5. Manifest is deterministic: passed
+- 6. Source-document checksums match: passed
+- 7. Human transcription and adjudication are complete: blocked
+- 8. Cross-source reconciliations are resolved or documented: blocked
+- 9. Territorial definitions are resolved: blocked
+- 10. All analytical datasets have data dictionaries: blocked
+- 11. Every final result table has release provenance: blocked
+- 12. No exploratory output is mixed with release results: passed
+- 13. No paper prose is stored in the repository: passed
+- 14. Create a release archive from tracked files only: passed
+- 15. Produce final RESEARCH_DATA_READINESS.txt: passed
+
+Blocking reasons:
+- research_research.empirical_prerequisites: 0/6 empirical prerequisites are satisfied.
+- research_research.manual_source_documents: 4/43 expected manual source documents are available.
+- research_research.cross_source_comparison: 94/120 cross-source comparison rows have missing source coverage.
+- research_research.source_reconciliation: Unresolved source-pair reconciliation blocks remain: ine_comtrade_1962.
+- research_research.product_industry_mapping: Product-to-industry mapping coverage is zero.
+- research_research.territorial_definition: 24 Comtrade coverage rows still require territorial-definition review.
+- research_research.empirical_design_matrix: No empirical design matrix exists.
+- empirical_annual_trade_coverage: annual year-flow aggregate trade coverage is incomplete
+- empirical_colonial_partner_completeness: pre-1970 colonial coverage remains incomplete or lower-bound only
+- empirical_european_partner_completeness: European partner completeness is not fully established
+- empirical_product_level_coverage: COMTRADE_SUBSCRIPTION_KEY_missing;commodity_code_batches_not_registered
+- empirical_product_to_industry_mapping_coverage: product_extraction_status_blocked;product_industry_mapping_coverage_zero;product_industry_mapping_not_registered;product_level_trade_not_validated
+- empirical_sectoral_output_coverage: reviewed sectoral output panel is not enabled for empirical analysis
+- empirical_price_deflator_coverage: price/deflator series are not reviewed for sector-level empirical use
+- empirical_territorial_consistency: Comtrade reporter/partner territorial definitions remain unresolved
+- empirical_cross_source_reconciliation: source-pair reconciliations remain unresolved
+- empirical_efta_policy_tariff_data_availability: classification_breaks_documented=stable historical product classification is not validated;efta_policy_product_mapping_not_registered;efta_policy_sources_not_acquired;efta_tariff_policy_rows_not_registered;empirical_readiness_audit_blocks_efta_policy_dataset;identification_variables_available=empirical design matrix is empty;product_level_coverage=COMTRADE_SUBSCRIPTION_KEY_missing;commodity_code_batches_not_registered;product_to_industry_mapping_coverage=product_extraction_status_blocked;product_industry_mapping_coverage_zero;product_industry_mapping_not_registered;product_level_trade_not_validated;usable_industries=industry trade panel is empty;usable_years=industry trade panel is empty
+- empirical_usable_industries: industry trade panel is empty
+- empirical_usable_years: industry trade panel is empty
+- empirical_missingness_structure_documented: missingness structure remains dominated by blocked product/industry data

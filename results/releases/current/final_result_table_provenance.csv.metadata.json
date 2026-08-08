@@ -1,0 +1,41 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "result_table",
+    "input_dependencies",
+    "code_path",
+    "sha256",
+    "creation_timestamp_utc",
+    "creation_timestamp_status",
+    "release_version",
+    "metadata_path",
+    "provenance_status"
+  ],
+  "date_range": null,
+  "file": "results/releases/current/final_result_table_provenance.csv",
+  "input_artifacts": [
+    {
+      "path": "results/live",
+      "sha256": ""
+    }
+  ],
+  "rows": 20,
+  "schema": {
+    "code_path": "object",
+    "creation_timestamp_status": "object",
+    "creation_timestamp_utc": "object",
+    "input_dependencies": "object",
+    "metadata_path": "object",
+    "provenance_status": "object",
+    "release_version": "object",
+    "result_table": "object",
+    "sha256": "object"
+  },
+  "sha256": "1c0e5d1f97c537ef0a08e8ef818e66843fe454be28b6cd7e62f77cad58803ba0",
+  "source_files": [
+    "results/live"
+  ],
+  "source_licence": "not_specified",
+  "stage": "final_result_table_provenance",
+  "validation_findings": []
+}

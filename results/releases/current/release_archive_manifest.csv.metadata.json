@@ -1,0 +1,38 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "archive_path",
+    "archive_sha256",
+    "archive_status",
+    "source_commit",
+    "source_commit_timestamp_utc",
+    "tracked_file_count",
+    "archive_method",
+    "content_scope"
+  ],
+  "date_range": null,
+  "file": "results/releases/current/release_archive_manifest.csv",
+  "input_artifacts": [
+    {
+      "path": "results/manifests/current_manifest.csv",
+      "sha256": "3915152fb6802d67b18688ec0dc9bfba0ab47ef35c056e8c8e1150f8b5ba9c39"
+    }
+  ],
+  "rows": 1,
+  "schema": {
+    "archive_method": "object",
+    "archive_path": "object",
+    "archive_sha256": "object",
+    "archive_status": "object",
+    "content_scope": "object",
+    "source_commit": "object",
+    "source_commit_timestamp_utc": "object",
+    "tracked_file_count": "int64"
+  },
+  "sha256": "eaab3512d500a115f90f95c3ff5277950ec86ddefeca033b3a7e5a68efdd40ea",
+  "source_files": [
+    "results/manifests/current_manifest.csv"
+  ],
+  "source_licence": "not_specified",
+  "validation_findings": []
+}
