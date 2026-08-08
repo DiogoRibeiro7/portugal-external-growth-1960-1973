@@ -10,6 +10,7 @@
     "comparison_value_usd",
     "comparison_status",
     "coverage_ratio",
+    "value_coverage_ratio",
     "use_in_validated_dataset",
     "note"
   ],
@@ -21,7 +22,7 @@
   "input_artifacts": [
     {
       "path": "data/interim/live/ine_comtrade_1962_reconciliation.csv",
-      "sha256": "fac74fdfd2c2d9d9569ea46452ce40e18fc26d46f5e9f4a532c0e0f956be0e70"
+      "sha256": "c63a6372d7be5e34b917a7d1e3844df37e9b71ac9d4f0afd661838068ef28ef8"
     },
     {
       "path": "data/processed/live/ine_1962_aggregate_trade_harmonised.csv",
@@ -40,9 +41,10 @@
     "preferred_source": "object",
     "preferred_value_pte": "float64",
     "use_in_validated_dataset": "bool",
+    "value_coverage_ratio": "float64",
     "year": "int64"
   },
-  "sha256": "60d6966a38125d9116547e0dc0a2edf8211d0790a5b120346f011e1a4c70463f",
+  "sha256": "421c87eb3b1625c63040b7228de49aab357a7899a31b1e742251efedac60f155",
   "source_files": [
     "data/interim/live/ine_comtrade_1962_reconciliation.csv",
     "data/processed/live/ine_1962_aggregate_trade_harmonised.csv"

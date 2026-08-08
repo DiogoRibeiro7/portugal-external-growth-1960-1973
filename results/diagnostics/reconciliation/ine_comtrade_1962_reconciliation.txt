@@ -13,6 +13,8 @@ Overseas comparison
 -------------------
 Comtrade overseas partner sums remain lower-bound diagnostics; the complete colonial aggregate is taken from the verified INE Ultramar rows.
 Minimum observed overseas partner coverage ratio: 0.500000
+Minimum observed overseas value coverage ratio: 0.999258
+INE Ultramar Portugues is treated as a source-specific eight-entity 1962 category, including Portuguese India. Longitudinal Comtrade partner diagnostics use the harmonised configured colonial-market group, so partner-count coverage and value coverage are reported separately.
 
 Status
 ------

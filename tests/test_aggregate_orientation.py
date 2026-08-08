@@ -40,6 +40,11 @@ def test_validated_aggregate_orientation_uses_only_verified_ine_rows(
         "complete colonial exports",
         "complete colonial imports",
     }
+    colonial_exports = matrix.loc[
+        matrix["aggregate_component"].eq("complete colonial exports")
+    ].iloc[0]
+    assert colonial_exports["coverage_ratio"] == 0.5
+    assert abs(colonial_exports["value_coverage_ratio"] - 0.9992578581819368) < 1e-12
     assert "Complete colonial shares are never filled" in notes
 
 
@@ -98,12 +103,14 @@ def _write_reconciliation(root: Path) -> None:
                 83098353,
                 "resolved_for_dataset_ine_preferred_complete_aggregate",
                 coverage_ratio=0.5,
+                value_coverage_ratio=0.9992578581819368,
             ),
             _reconciliation_row(
                 "Overseas imports",
                 73792234,
                 "resolved_for_dataset_ine_preferred_complete_aggregate",
                 coverage_ratio=0.5,
+                value_coverage_ratio=0.9996657899969654,
             ),
         ]
     ).to_csv(output / "ine_comtrade_1962_reconciliation.csv", index=False)
@@ -115,6 +122,7 @@ def _reconciliation_row(
     status: str,
     *,
     coverage_ratio: float | None = None,
+    value_coverage_ratio: float | None = None,
 ) -> dict[str, object]:
     return {
         "concept": concept,
@@ -123,6 +131,7 @@ def _reconciliation_row(
         "observed_partner_count": 4 if coverage_ratio else pd.NA,
         "expected_partner_count": 8 if coverage_ratio else pd.NA,
         "coverage_ratio": coverage_ratio if coverage_ratio else pd.NA,
+        "value_coverage_ratio": value_coverage_ratio if value_coverage_ratio else pd.NA,
         "explanation": "fixture",
     }
 

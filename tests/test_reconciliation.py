@@ -5,6 +5,8 @@ from pathlib import Path
 import pandas as pd
 
 from portugal_external_growth.reconciliation import (
+    PTE_PER_USD_DIAGNOSTIC_1962,
+    build_ine_comtrade_1962_notes,
     build_ine_comtrade_1962_reconciliation,
     build_reconciliation_registry,
     build_trade_reconciliation_notes,
@@ -120,12 +122,29 @@ def test_ine_comtrade_1962_reconciliation_marks_overseas_lower_bound(
     assert overseas_exports["expected_partner_count"] == 8
     assert overseas_exports["observed_partner_count"] == 4
     assert overseas_exports["coverage_ratio"] == 4 / 8
+    expected_value_coverage = 83098353.0 / (2390852000.0 / PTE_PER_USD_DIAGNOSTIC_1962)
+    assert abs(float(overseas_exports["value_coverage_ratio"]) - expected_value_coverage) < 1e-12
     assert "portuguese_india" in overseas_exports["missing_partner_entities"]
     assert (
         overseas_exports["reconciliation_status"]
         == "resolved_for_dataset_ine_preferred_complete_aggregate"
     )
     assert "lower-bound diagnostic" in overseas_exports["explanation"]
+
+
+def test_ine_comtrade_1962_notes_report_partner_and_value_coverage(
+    tmp_path: Path,
+) -> None:
+    _write_ine_1962_aggregates(tmp_path)
+    _write_comtrade_1962_inputs(tmp_path)
+    _write_colonial_group_config(tmp_path)
+    _write_historical_colonial_crosswalk(tmp_path)
+
+    notes = build_ine_comtrade_1962_notes(build_ine_comtrade_1962_reconciliation(tmp_path))
+
+    assert "Minimum observed overseas partner coverage ratio: 0.500000" in notes
+    assert "Minimum observed overseas value coverage ratio: 0.999258" in notes
+    assert "source-specific eight-entity 1962 category" in notes
 
 
 def test_reconciliation_registry_reports_unresolved_blockers() -> None:

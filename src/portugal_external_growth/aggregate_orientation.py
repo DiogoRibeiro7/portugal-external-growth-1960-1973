@@ -66,6 +66,7 @@ MATRIX_COLUMNS = [
     "comparison_value_usd",
     "comparison_status",
     "coverage_ratio",
+    "value_coverage_ratio",
     "use_in_validated_dataset",
     "note",
 ]
@@ -236,6 +237,9 @@ def _build_reconciliation_matrix(
                 "comparison_value_usd": row.get("source_a_value") if row is not None else pd.NA,
                 "comparison_status": row.get("reconciliation_status") if row is not None else "",
                 "coverage_ratio": row.get("coverage_ratio") if row is not None else pd.NA,
+                "value_coverage_ratio": row.get("value_coverage_ratio")
+                if row is not None
+                else pd.NA,
                 "use_in_validated_dataset": True,
                 "note": row.get("explanation") if row is not None else "",
             }

@@ -56,6 +56,7 @@ INE_COMTRADE_1962_COLUMNS = [
     "expected_partner_count",
     "observed_partner_count",
     "coverage_ratio",
+    "value_coverage_ratio",
     "missing_partner_entities",
 ]
 
@@ -343,10 +344,10 @@ def build_ine_comtrade_1962_reconciliation(root: Path) -> pd.DataFrame:
                 status="resolved_for_dataset_ine_preferred_complete_aggregate",
                 explanation=(
                     "INE provides the complete Ultramar aggregate and is the preferred "
-                    "source for complete colonial shares. Comtrade colonial rows remain "
-                    "an observed lower-bound diagnostic because not all historical overseas "
-                    "entities returned or have a registered Comtrade area in the 1962 local "
-                    "snapshot."
+                    "source for complete colonial shares. The Comtrade colonial partner "
+                    "subset remains an observed lower-bound diagnostic: it covers only the "
+                    "returned partners, while the contemporaneous INE Ultramar Portugues "
+                    "category includes additional source-specific territories."
                 ),
                 evidence_reference=(
                     f"INE Volume I PDF page {ine_row['page_number']} "
@@ -418,6 +419,9 @@ def build_ine_comtrade_1962_notes(reconciliation: pd.DataFrame) -> str:
         )
     if not overseas.empty:
         min_coverage = float(pd.to_numeric(overseas["coverage_ratio"], errors="coerce").min())
+        min_value_coverage = float(
+            pd.to_numeric(overseas["value_coverage_ratio"], errors="coerce").min()
+        )
         lines.extend(
             [
                 "",
@@ -429,6 +433,14 @@ def build_ine_comtrade_1962_notes(reconciliation: pd.DataFrame) -> str:
                     "Ultramar rows."
                 ),
                 f"Minimum observed overseas partner coverage ratio: {min_coverage:.6f}",
+                f"Minimum observed overseas value coverage ratio: {min_value_coverage:.6f}",
+                (
+                    "INE Ultramar Portugues is treated as a source-specific eight-entity "
+                    "1962 category, including Portuguese India. Longitudinal Comtrade "
+                    "partner diagnostics use the harmonised configured colonial-market "
+                    "group, so partner-count coverage and value coverage are reported "
+                    "separately."
+                ),
             ]
         )
     lines.extend(
@@ -655,9 +667,15 @@ def _comparison_row(
         absolute_difference = pd.NA
         relative_difference = pd.NA
     coverage_ratio: object = pd.NA
+    value_coverage_ratio: object = pd.NA
     if expected_partner_count is not None and observed_partner_count is not None:
         coverage_ratio = (
             observed_partner_count / expected_partner_count if expected_partner_count else pd.NA
+        )
+        value_coverage_ratio = (
+            float(source_a_numeric) / source_b_value
+            if pd.notna(source_a_numeric) and source_b_value
+            else pd.NA
         )
     return {
         "year": year,
@@ -690,6 +708,7 @@ def _comparison_row(
         if observed_partner_count is not None
         else pd.NA,
         "coverage_ratio": coverage_ratio,
+        "value_coverage_ratio": value_coverage_ratio,
         "missing_partner_entities": missing_partner_entities,
     }
 

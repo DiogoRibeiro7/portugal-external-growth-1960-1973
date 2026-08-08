@@ -14,6 +14,7 @@
     "configured_not_returned_entities",
     "ine_ultramar_entity_not_configured",
     "coverage_ratio_against_ine_territories",
+    "value_coverage_ratio_against_ine_overseas",
     "estimate_status",
     "incompleteness_reason",
     "evidence_reference"
@@ -26,7 +27,7 @@
   "input_artifacts": [
     {
       "path": "data/interim/live/ine_comtrade_1962_reconciliation.csv",
-      "sha256": "fac74fdfd2c2d9d9569ea46452ce40e18fc26d46f5e9f4a532c0e0f956be0e70"
+      "sha256": "c63a6372d7be5e34b917a7d1e3844df37e9b71ac9d4f0afd661838068ef28ef8"
     },
     {
       "path": "data/interim/live/historical_colonial_partner_crosswalk.csv",
@@ -58,9 +59,10 @@
     "ine_ultramar_entity_not_configured": "object",
     "missing_colonies_residual_pte_diag": "float64",
     "missing_colonies_residual_usd_diag": "float64",
+    "value_coverage_ratio_against_ine_overseas": "float64",
     "year": "int64"
   },
-  "sha256": "c70584d2563460be4d2c2068d8efa4091dd99eb9b0abde6d374b9594fe35913f",
+  "sha256": "0979e2adbaf7118c6cbee58a59ed250a99ccc2b1073cc504ba2ddef3c325a628",
   "source_files": [
     "data/interim/live/ine_comtrade_1962_reconciliation.csv",
     "data/interim/live/historical_colonial_partner_crosswalk.csv",

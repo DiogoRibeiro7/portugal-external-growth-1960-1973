@@ -19,4 +19,11 @@ missing_colonies_1962_diagnostic.csv. It is not allocated among missing
 territories because the source evidence does not justify allocation and because
 partner-code comparability remains unresolved.
 
+The diagnostic reports partner-count coverage and value coverage separately.
+The INE Ultramar Portugues source category has eight 1962 entities, including
+Portuguese India, while the harmonised longitudinal Comtrade colonial-market
+configuration has seven entities. The four returned Comtrade partners therefore
+cover 4/8 INE-listed entities but approximately 99.93 percent of export value
+and 99.97 percent of import value against the converted INE Ultramar aggregate.
+
 No missing colonial observation has been converted to zero.

@@ -27,6 +27,7 @@
     "expected_partner_count",
     "observed_partner_count",
     "coverage_ratio",
+    "value_coverage_ratio",
     "missing_partner_entities"
   ],
   "date_range": {
@@ -92,9 +93,10 @@
     "territorial_definition_b": "object",
     "unit": "object",
     "valuation_basis": "object",
+    "value_coverage_ratio": "object",
     "year": "int64"
   },
-  "sha256": "fac74fdfd2c2d9d9569ea46452ce40e18fc26d46f5e9f4a532c0e0f956be0e70",
+  "sha256": "c63a6372d7be5e34b917a7d1e3844df37e9b71ac9d4f0afd661838068ef28ef8",
   "source_files": [
     "data/processed/live/ine_1962_aggregate_trade_harmonised.csv",
     "results/diagnostics/comtrade_coverage/comtrade_coverage_audit.csv",

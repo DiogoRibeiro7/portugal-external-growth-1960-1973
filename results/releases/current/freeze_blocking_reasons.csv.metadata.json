@@ -16,7 +16,7 @@
     },
     {
       "path": "results/releases/current/verification_evidence.csv",
-      "sha256": "bd5ac0773efa972a1ad61541988a58be59e1b20de0fc83bd69d13404ea861460"
+      "sha256": "01546bfc6e9691f2ce6dbfd0b85cf550e888d2595085a3e5fbe0a4f171915f9f"
     }
   ],
   "rows": 33,
@@ -27,7 +27,7 @@
     "severity": "object",
     "source_check": "object"
   },
-  "sha256": "dac274021432a488d9bb87638d4d673c64d53ed4f3613afc386457fe103aaa58",
+  "sha256": "e3935e76540fb97020e5a09792b845afd77d29cb0b49caec2bbc8d771f0b76a9",
   "source_files": [
     "results/validation/research_readiness_report.csv",
     "results/releases/current/verification_evidence.csv"

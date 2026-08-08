@@ -17,11 +17,11 @@
   "input_artifacts": [
     {
       "path": "data/interim/live/ine_comtrade_1962_reconciliation.csv",
-      "sha256": "fac74fdfd2c2d9d9569ea46452ce40e18fc26d46f5e9f4a532c0e0f956be0e70"
+      "sha256": "c63a6372d7be5e34b917a7d1e3844df37e9b71ac9d4f0afd661838068ef28ef8"
     },
     {
       "path": "results/diagnostics/reconciliation/ine_comtrade_1962_reconciliation.txt",
-      "sha256": "4cdcaf8dd44bd7f7b0d71901491897001a49e55a86ee52a845cffe852638ab54"
+      "sha256": "080c031cf0f0e630d94ae86b2a6cb16b96ba644d2da348750111736e6305ef2a"
     }
   ],
   "rows": 1,
