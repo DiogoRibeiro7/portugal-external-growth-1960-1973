@@ -11,7 +11,7 @@
     "verification_timestamp_utc",
     "notes"
   ],
-  "creation_timestamp_utc": "2026-08-09T12:28:00+01:00",
+  "creation_timestamp_utc": "2026-08-09T12:49:54+01:00",
   "date_range": null,
   "file": "results/releases/current/verification_evidence.csv",
   "input_artifacts": [],
@@ -27,7 +27,7 @@
     "verification_scope_sha256": "object",
     "verification_timestamp_utc": "object"
   },
-  "sha256": "e9aea8e9d59794eaa324375001169d4a061bbcffc2ede8672121da8cd300eebe",
+  "sha256": "a0a08b7d68bad671eeb49a53987cb0de055ab1b239ba276cdcc93cb781d998bd",
   "source_files": [],
   "source_licence": "not_specified",
   "stage": "freeze_verification_evidence",

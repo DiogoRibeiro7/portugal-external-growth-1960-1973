@@ -52,6 +52,40 @@ def test_metadata_uses_explicit_reproducible_creation_timestamp(
     assert metadata["creation_timestamp_utc"] == "2026-08-09T00:00:00Z"
 
 
+def test_metadata_preserves_creation_timestamp_when_output_is_unchanged(
+    tmp_path: Path,
+    monkeypatch: MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    path = tmp_path / "results/live/table.csv"
+    frame = pd.DataFrame({"value": [1]})
+
+    monkeypatch.setenv("PEG_METADATA_TIMESTAMP_UTC", "2026-08-09T00:00:00Z")
+    write_dataframe_with_metadata(frame, path, metadata={"stage": "test"})
+    monkeypatch.delenv("PEG_METADATA_TIMESTAMP_UTC")
+
+    write_dataframe_with_metadata(frame, path, metadata={"stage": "test"})
+
+    metadata = json.loads(path.with_suffix(path.suffix + ".metadata.json").read_text())
+    assert metadata["creation_timestamp_utc"] == "2026-08-09T00:00:00Z"
+
+
+def test_metadata_refreshes_creation_timestamp_when_output_changes(
+    tmp_path: Path,
+    monkeypatch: MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    path = tmp_path / "results/live/table.csv"
+
+    monkeypatch.setenv("PEG_METADATA_TIMESTAMP_UTC", "2026-08-09T00:00:00Z")
+    write_dataframe_with_metadata(pd.DataFrame({"value": [1]}), path, metadata={"stage": "test"})
+    monkeypatch.setenv("PEG_METADATA_TIMESTAMP_UTC", "2026-08-10T00:00:00Z")
+    write_dataframe_with_metadata(pd.DataFrame({"value": [2]}), path, metadata={"stage": "test"})
+
+    metadata = json.loads(path.with_suffix(path.suffix + ".metadata.json").read_text())
+    assert metadata["creation_timestamp_utc"] == "2026-08-10T00:00:00Z"
+
+
 def test_write_text_lf_normalises_line_endings(tmp_path: Path) -> None:
     path = tmp_path / "report.txt"
 

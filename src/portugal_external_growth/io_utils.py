@@ -78,12 +78,19 @@ def write_dataframe_with_metadata(
     atomic_write_bytes(csv_path, csv_payload, overwrite=overwrite)
 
     sidecar = csv_path.with_suffix(csv_path.suffix + ".metadata.json")
+    existing_metadata = _read_existing_metadata(sidecar)
     normalised_metadata = _normalise_metadata(metadata, root=Path.cwd())
-    creation_timestamp = _creation_timestamp(normalised_metadata, root=Path.cwd())
+    output_sha256 = sha256_file(csv_path)
+    creation_timestamp = _creation_timestamp(
+        normalised_metadata,
+        root=Path.cwd(),
+        existing_metadata=existing_metadata,
+        output_sha256=output_sha256,
+    )
     complete_metadata: dict[str, Any] = {
         **normalised_metadata,
         "file": _metadata_path(csv_path),
-        "sha256": sha256_file(csv_path),
+        "sha256": output_sha256,
         "creation_timestamp_utc": creation_timestamp,
         "rows": len(frame),
         "columns": [str(column) for column in frame.columns],
@@ -101,13 +108,33 @@ def _metadata_path(path: Path) -> str:
     return repo_relative_path(path, root=Path.cwd())
 
 
-def _creation_timestamp(metadata: Mapping[str, Any], *, root: Path) -> str:
+def _read_existing_metadata(path: Path) -> dict[str, Any]:
+    if not path.exists():
+        return {}
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {}
+    return payload if isinstance(payload, dict) else {}
+
+
+def _creation_timestamp(
+    metadata: Mapping[str, Any],
+    *,
+    root: Path,
+    existing_metadata: Mapping[str, Any],
+    output_sha256: str,
+) -> str:
     explicit = metadata.get("creation_timestamp_utc")
     if explicit:
         return str(explicit)
     environment_timestamp = os.getenv("PEG_METADATA_TIMESTAMP_UTC")
     if environment_timestamp:
         return environment_timestamp
+    if existing_metadata.get("sha256") == output_sha256 and existing_metadata.get(
+        "creation_timestamp_utc"
+    ):
+        return str(existing_metadata["creation_timestamp_utc"])
     try:
         return subprocess.run(
             ["git", "show", "-s", "--format=%cI", "HEAD"],
