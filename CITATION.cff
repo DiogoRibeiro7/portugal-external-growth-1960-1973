@@ -10,5 +10,5 @@ authors:
 repository-code: "https://github.com/DiogoRibeiro7/portugal-external-growth-1960-1973"
 abstract: "Reproducible data pipeline for Portuguese colonial and European economic linkages, 1960-1973."
 license: MIT
-version: 0.1.4
+version: 0.1.5
 date-released: "2026-08-09"

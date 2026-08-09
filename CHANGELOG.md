@@ -6,6 +6,39 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
 
 ## [Unreleased]
 
+## [0.1.5] - 2026-08-09
+
+### Added
+
+- Machine-readable identification-strategy review scaffolding for empirical readiness.
+- Regression coverage preventing 1962-only reconciliation diagnostics from populating later
+  benchmark years.
+- Regression coverage for fixed European partner sample rows, LF-normalized manifests, and
+  data-dictionary adequacy gates.
+
+### Changed
+
+- Validated aggregate orientation now reads the multi-year INE aggregate file
+  `ine_aggregate_trade_harmonised.csv`.
+- `fixed_europe_*` variables now use explicit fixed-sample aggregate rows instead of summing
+  contemporaneous EFTA and EEC group totals.
+- Empirical prerequisite status is derived from the readiness audit and identification review when
+  repository artifacts are available.
+- Existing empirical design matrices are preserved when they contain the core design schema.
+- Preliminary complete residual rows are labelled `non_colonial_world` rather than
+  `true_rest_of_world`.
+
+### Fixed
+
+- UN Comtrade diagnostic values are selected by year and concept, preventing 1962 diagnostics from
+  leaking into 1965, 1970, and 1973 rows.
+- Empirical territorial consistency, cross-source reconciliation, and usable-industry gates now use
+  non-trivial research-readiness denominators.
+- Release data-dictionary checks now reject placeholder descriptions, schema mismatches, missing
+  analytical-use/source documentation, and missing meaningful units.
+- Manifest fingerprints normalize LF text endings so Windows CRLF working trees do not invalidate
+  clean repository reproduction.
+
 ## [0.1.4] - 2026-08-09
 
 ### Added
