@@ -849,23 +849,45 @@ def _append_transcription_blocker(root: Path, records: list[dict[str, object]]) 
         )
         return
     text = status_path.read_text(encoding="utf-8")
-    incomplete = (
-        "Workflow status: in_progress" in text
-        or _status_count(text, "Missing source PDFs") > 0
-        or _status_count(text, "Rows without source PDF SHA-256") > 0
-        or _status_count(text, "Unresolved aggregate transcription discrepancies") > 0
-        or _status_count(text, "Adjudicated final rows") == 0
-    )
-    if incomplete:
+    blocking_reason = _transcription_blocking_reason(text)
+    if blocking_reason:
         records.append(
             _blocker(
                 "human_transcription_incomplete",
                 "freeze.human_transcription",
                 "not_ready",
-                "INE transcription workflow is not complete or adjudicated.",
+                blocking_reason,
                 "results/live/ine_transcription_unresolved.txt",
             )
         )
+
+
+def _transcription_blocking_reason(status_text: str) -> str:
+    reasons: list[str] = []
+    for label, reason in [
+        ("Missing source PDFs", "missing_source_pdfs"),
+        ("Rows without source PDF SHA-256", "source_pdf_sha256_missing"),
+        ("Unresolved transcription discrepancies", "transcription_discrepancies_unresolved"),
+        (
+            "Unresolved aggregate transcription discrepancies",
+            "aggregate_transcription_discrepancies_unresolved",
+        ),
+        ("Final rows pending adjudication", "final_rows_pending_adjudication"),
+        ("Final rows with unreadable cells", "final_rows_unreadable"),
+    ]:
+        count = _status_count(status_text, label)
+        if count > 0:
+            reasons.append(f"{reason}={count}")
+
+    pass_rows = _status_count(status_text, "Pass 1 transcribed rows") + _status_count(
+        status_text,
+        "Pass 2 transcribed rows",
+    )
+    if pass_rows > 0 and _status_count(status_text, "Adjudicated final rows") == 0:
+        reasons.append("detailed_trade_adjudication_missing")
+    if "Workflow status: in_progress" in status_text and not reasons:
+        reasons.append("workflow_status_in_progress")
+    return ";".join(reasons)
 
 
 def _append_release_scope_blockers(root: Path, records: list[dict[str, object]]) -> None:

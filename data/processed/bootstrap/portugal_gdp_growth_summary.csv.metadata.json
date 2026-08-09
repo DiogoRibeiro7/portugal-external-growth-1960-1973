@@ -10,7 +10,7 @@
     "maximum_growth_percent",
     "cumulative_real_gdp_index_start_100"
   ],
-  "creation_timestamp_utc": "2026-08-09T06:04:40+01:00",
+  "creation_timestamp_utc": "2026-08-09T06:17:24+01:00",
   "date_range": null,
   "file": "data/processed/bootstrap/portugal_gdp_growth_summary.csv",
   "input_artifacts": [

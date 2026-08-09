@@ -34,6 +34,13 @@ def test_research_data_freeze_declares_not_ready_with_machine_blockers(
     assert "research_research.empirical_prerequisites" in blockers["blocker_id"].tolist()
     assert "final_result_table_creation_timestamps_missing" in blockers["blocker_id"].tolist()
     assert "analytical_data_dictionaries_missing" in blockers["blocker_id"].tolist()
+    transcription_reason = blockers.loc[
+        blockers["blocker_id"].eq("human_transcription_incomplete"),
+        "blocking_reason",
+    ].iloc[0]
+    assert "missing_source_pdfs=1" in transcription_reason
+    assert "source_pdf_sha256_missing=1" in transcription_reason
+    assert "aggregate_transcription_discrepancies_unresolved=1" in transcription_reason
     assert provenance.loc[0, "creation_timestamp_status"] == "missing"
     assert dictionaries["dictionary_status"].isin(["missing", "available"]).any()
     assert archive.loc[0, "archive_status"] == "not_created"

@@ -468,6 +468,10 @@ def _build_ine_transcription_report(
         {"", "accepted", "adjudicated", "verified"},
     )
     footnoted_final_rows = _count_nonblank(adjudicated, "footnote")
+    verified_aggregate_rows = _verified_aggregate_row_count(
+        aggregate_pass_1,
+        aggregate_pass_2,
+    )
     workflow_status = _ine_workflow_status(
         discrepancies=discrepancies,
         aggregate_discrepancies=aggregate_discrepancies,
@@ -491,6 +495,7 @@ def _build_ine_transcription_report(
             f"Pass 2 transcribed rows: {len(pass_2)}",
             f"Aggregate pass 1 transcribed rows: {len(aggregate_pass_1)}",
             f"Aggregate pass 2 transcribed rows: {len(aggregate_pass_2)}",
+            f"Aggregate double-entry verified rows: {verified_aggregate_rows}",
             f"Workflow status: {workflow_status}",
             f"Unresolved transcription discrepancies: {len(discrepancies)}",
             f"Unresolved aggregate transcription discrepancies: {len(aggregate_discrepancies)}",
@@ -504,6 +509,38 @@ def _build_ine_transcription_report(
             "",
         ]
     )
+
+
+def _verified_aggregate_row_count(
+    aggregate_pass_1: pd.DataFrame,
+    aggregate_pass_2: pd.DataFrame,
+) -> int:
+    if aggregate_pass_1.empty or aggregate_pass_2.empty:
+        return 0
+    key_columns = [
+        "source_id",
+        "reference_year",
+        "flow",
+        "partner_group_source",
+        "series_name_source",
+    ]
+    required_columns = [*key_columns, "value_source"]
+    if not set(required_columns).issubset(aggregate_pass_1.columns) or not set(
+        required_columns
+    ).issubset(aggregate_pass_2.columns):
+        return 0
+    merged = aggregate_pass_1.merge(
+        aggregate_pass_2,
+        on=key_columns,
+        how="inner",
+        suffixes=("_pass_1", "_pass_2"),
+    )
+    if merged.empty:
+        return 0
+    verified = merged["value_source_pass_1"].map(_normalise_transcribed_value) == merged[
+        "value_source_pass_2"
+    ].map(_normalise_transcribed_value)
+    return int(verified.sum())
 
 
 def _build_aggregate_transcription_report(
