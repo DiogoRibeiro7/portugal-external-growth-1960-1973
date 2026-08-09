@@ -333,15 +333,17 @@ def _sectoral_output_coverage(root: Path) -> dict[str, object]:
     dictionary = _read_csv(root / "results/live/bpstat_macro_data_dictionary.csv")
     if dictionary.empty:
         return _record("sectoral_output_coverage", 1, 0, "macro data dictionary missing")
+    empirical = _empirical_use_mask(dictionary)
+    if empirical is None:
+        return _record(
+            "sectoral_output_coverage",
+            1,
+            0,
+            "macro data dictionary lacks machine-readable empirical-use review flags",
+        )
     concept_text = dictionary.astype(str).agg(" ".join, axis=1).str.lower()
     candidate = concept_text.str.contains("sector|gva|manufacturing|industry", regex=True)
-    if "analytical_use" in dictionary.columns:
-        empirical = ~dictionary["analytical_use"].astype(str).str.contains(
-            "context_only|not_usable", na=False
-        )
-        available = int((candidate & empirical).sum() > 0)
-    else:
-        available = int(candidate.sum() > 0)
+    available = int((candidate & empirical).sum() > 0)
     return _record(
         "sectoral_output_coverage",
         1,
@@ -354,21 +356,34 @@ def _deflator_coverage(root: Path) -> dict[str, object]:
     dictionary = _read_csv(root / "results/live/bpstat_macro_data_dictionary.csv")
     if dictionary.empty:
         return _record("price_deflator_coverage", 1, 0, "macro data dictionary missing")
+    empirical = _empirical_use_mask(dictionary)
+    if empirical is None:
+        return _record(
+            "price_deflator_coverage",
+            1,
+            0,
+            "macro data dictionary lacks machine-readable empirical-use review flags",
+        )
     text = dictionary.astype(str).agg(" ".join, axis=1).str.lower()
     candidate = text.str.contains("deflator|price")
-    if "analytical_use" in dictionary.columns:
-        empirical = ~dictionary["analytical_use"].astype(str).str.contains(
-            "context_only|not_usable", na=False
-        )
-        available = int((candidate & empirical).sum() > 0)
-    else:
-        available = int(candidate.sum() > 0)
+    available = int((candidate & empirical).sum() > 0)
     return _record(
         "price_deflator_coverage",
         1,
         available,
         "price/deflator series are not reviewed for sector-level empirical use",
     )
+
+
+def _empirical_use_mask(dictionary: pd.DataFrame) -> pd.Series | None:
+    if "analytical_use" not in dictionary.columns:
+        return None
+    analytical_use = dictionary["analytical_use"].astype(str).str.lower()
+    excluded = analytical_use.str.contains(
+        "context_only|not_usable|not_empirical|disabled|blocked",
+        na=False,
+    )
+    return analytical_use.str.contains("empirical", na=False) & ~excluded
 
 
 def _territorial_consistency(root: Path) -> dict[str, object]:

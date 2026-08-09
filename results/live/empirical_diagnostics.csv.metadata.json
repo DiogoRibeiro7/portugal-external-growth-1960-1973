@@ -12,7 +12,7 @@
   "input_artifacts": [
     {
       "path": "src/portugal_external_growth/empirical.py",
-      "sha256": "73761d5e3dfa6ae98726e8c59c6a78d4b83a012153d3defa233520c4bed1027b"
+      "sha256": "4f376728a68c23ef3a2072f0cf8796b32c54e6e6bdd6f652740571d4b9f6c568"
     }
   ],
   "rows": 1,

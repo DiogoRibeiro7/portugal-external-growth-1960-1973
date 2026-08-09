@@ -96,9 +96,20 @@ def test_empirical_readiness_audit_uses_available_artifacts(tmp_path: Path) -> N
     pd.DataFrame([{"overall_status": "satisfactory_with_caveats"}]).to_csv(
         diagnostics / "reconciliation/reconciliation_registry.csv", index=False
     )
-    pd.DataFrame([{"series": "GDP deflator price", "concept": "sector manufacturing GVA"}]).to_csv(
-        live / "bpstat_macro_data_dictionary.csv", index=False
-    )
+    pd.DataFrame(
+        [
+            {
+                "series": "manufacturing GVA",
+                "concept": "manufacturing_value_added",
+                "analytical_use": "empirical_identification",
+            },
+            {
+                "series": "GDP deflator price",
+                "concept": "gdp_deflator",
+                "analytical_use": "empirical_identification",
+            },
+        ]
+    ).to_csv(live / "bpstat_macro_data_dictionary.csv", index=False)
     pd.DataFrame(
         [
             {
@@ -161,9 +172,31 @@ def test_empirical_readiness_audit_uses_available_artifacts(tmp_path: Path) -> N
     assert "annual_trade_coverage" in satisfied
     assert "product_level_coverage" in satisfied
     assert "product_to_industry_mapping_coverage" in satisfied
+    assert "sectoral_output_coverage" in satisfied
+    assert "price_deflator_coverage" in satisfied
     assert "usable_years" in satisfied
     assert "classification_breaks_documented" in satisfied
     assert "identification_variables_available" in satisfied
+
+
+def test_macro_controls_require_empirical_use_review_flags(tmp_path: Path) -> None:
+    live = tmp_path / "results/live"
+    live.mkdir(parents=True)
+    pd.DataFrame(
+        [
+            {"series": "manufacturing GVA", "concept": "manufacturing_value_added"},
+            {"series": "GDP deflator price", "concept": "gdp_deflator"},
+        ]
+    ).to_csv(live / "bpstat_macro_data_dictionary.csv", index=False)
+
+    audit = build_empirical_readiness_audit(tmp_path)
+
+    sectoral = audit.loc[audit["requirement"].eq("sectoral_output_coverage")].iloc[0]
+    deflator = audit.loc[audit["requirement"].eq("price_deflator_coverage")].iloc[0]
+    assert sectoral["status"] == "blocked"
+    assert deflator["status"] == "blocked"
+    assert "empirical-use review flags" in sectoral["blocking_reason"]
+    assert "empirical-use review flags" in deflator["blocking_reason"]
 
 
 def test_partner_completeness_uses_year_flow_denominators(tmp_path: Path) -> None:
