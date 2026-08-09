@@ -6,6 +6,30 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
 
 ## [Unreleased]
 
+## [0.1.4] - 2026-08-09
+
+### Added
+
+- Verification evidence now records a tracked-content fingerprint so release checks can distinguish
+  stale validation from report-only metadata updates.
+- Final result-table provenance records hashed input artifacts for real source files only.
+- Regression coverage for fixed empirical sample denominators and release archive packaging.
+
+### Changed
+
+- Empirical readiness checks use the fixed 1962-1973 year-flow denominator for aggregate trade,
+  colonial partner, and European partner completeness.
+- Release archives exclude restricted source documents and self-referential release metadata, keeping
+  the generated package small enough for GitHub release assets.
+- Metadata sidecar timestamps are preserved when regenerated outputs are unchanged.
+
+### Fixed
+
+- Dirty-worktree release archives are now marked `post_commit_archive_required` instead of publishing
+  a stale `git archive HEAD` checksum.
+- Macro controls must be explicitly reviewed for empirical use before they can satisfy empirical
+  readiness gates.
+
 ## [0.1.3] - 2026-08-08
 
 ### Added
