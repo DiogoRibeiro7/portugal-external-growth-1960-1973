@@ -22,7 +22,7 @@
     "project_period_overlap_start_year",
     "project_period_overlap_end_year"
   ],
-  "creation_timestamp_utc": "2026-08-09T06:17:24+01:00",
+  "creation_timestamp_utc": "2026-08-09T11:48:38+01:00",
   "date_range": null,
   "file": "data/interim/live/bpstat_series_registry.csv",
   "input_artifacts": [

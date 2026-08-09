@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import math
 import re
@@ -33,6 +34,8 @@ VERIFICATION_EVIDENCE_COLUMNS = [
     "status",
     "command",
     "source_commit",
+    "verification_scope_sha256",
+    "verification_scope_path_count",
     "tool_version",
     "verification_timestamp_utc",
     "notes",
@@ -291,6 +294,7 @@ def build_freeze_verification_evidence(
     if evidence_path is None:
         evidence_path = root / "results/releases/current/verification_evidence.csv"
     evidence_reference = repo_relative_path(evidence_path, root=root)
+    scope_sha256, scope_path_count = _verification_scope_fingerprint(root)
     if not evidence_path.exists():
         return pd.DataFrame(
             [
@@ -299,6 +303,8 @@ def build_freeze_verification_evidence(
                     "status": "missing",
                     "command": command,
                     "source_commit": source_commit,
+                    "verification_scope_sha256": scope_sha256,
+                    "verification_scope_path_count": scope_path_count,
                     "tool_version": "",
                     "verification_timestamp_utc": "",
                     "notes": f"verification evidence missing: {evidence_reference}",
@@ -321,6 +327,8 @@ def build_freeze_verification_evidence(
             "status": "missing",
             "command": required_checks[check],
             "source_commit": source_commit,
+            "verification_scope_sha256": scope_sha256,
+            "verification_scope_path_count": scope_path_count,
             "tool_version": "",
             "verification_timestamp_utc": "",
             "notes": "required verification check is absent from evidence",
@@ -355,9 +363,55 @@ def build_freeze_verification_evidence(
                 row["notes"],
                 "verification timestamp is required for passed verification evidence",
             )
-    stale = evidence["source_commit"].astype(str).ne(source_commit)
-    evidence.loc[stale, "status"] = "stale_commit"
+    for index, row in evidence.iterrows():
+        recorded_scope = (
+            ""
+            if _blank_cell(row["verification_scope_sha256"])
+            else str(row["verification_scope_sha256"]).strip()
+        )
+        if recorded_scope:
+            if recorded_scope != scope_sha256 or (
+                not _blank_cell(row["verification_scope_path_count"])
+                and str(row["verification_scope_path_count"]).strip() != str(scope_path_count)
+            ):
+                evidence.at[index, "status"] = "stale_scope"
+                evidence.at[index, "notes"] = _append_note(
+                    row["notes"],
+                    "verification scope fingerprint does not match current tracked content",
+                )
+            continue
+        if str(row["source_commit"]) != source_commit:
+            evidence.at[index, "status"] = "stale_commit"
     return evidence.sort_values("check").reset_index(drop=True)
+
+
+def _verification_scope_fingerprint(root: Path) -> tuple[str, int]:
+    """Hash tracked content whose changes should invalidate verification evidence."""
+
+    hasher = hashlib.sha256()
+    path_count = 0
+    for relative_path in _verification_scope_files(root):
+        path = root / relative_path
+        hasher.update(relative_path.encode("utf-8"))
+        hasher.update(b"\0")
+        hasher.update(sha256_file(path).encode("ascii"))
+        hasher.update(b"\0")
+        path_count += 1
+    return hasher.hexdigest(), path_count
+
+
+def _verification_scope_files(root: Path) -> list[str]:
+    return [
+        relative_path
+        for relative_path in _git_tracked_files(root)
+        if not _excluded_from_verification_scope(relative_path)
+    ]
+
+
+def _excluded_from_verification_scope(relative_path: str) -> bool:
+    if relative_path == "RESEARCH_DATA_READINESS.txt":
+        return True
+    return relative_path.startswith(("release/", "results/manifests/", "results/releases/"))
 
 
 def _append_note(existing: object, addition: str) -> str:

@@ -109,6 +109,109 @@ def test_research_data_freeze_accepts_current_commit_verification_evidence(
     assert checklist.loc[checklist["requirement_id"].eq("5"), "status"].iloc[0] == "passed"
 
 
+def test_research_data_freeze_accepts_matching_verification_scope_for_prior_commit(
+    tmp_path: Path,
+    monkeypatch: MonkeyPatch,
+) -> None:
+    _write_pyproject(tmp_path)
+    _write_research_readiness(tmp_path)
+    _write_empirical_audit(tmp_path)
+    _write_live_result_table(tmp_path)
+    _write_transcription_status(tmp_path)
+    _write_analytical_dataset(tmp_path)
+    evidence_path = tmp_path / "verification.csv"
+    pd.DataFrame(
+        [
+            {
+                "check": check,
+                "status": "passed",
+                "command": command,
+                "source_commit": "previous",
+                "verification_scope_sha256": "scope123",
+                "verification_scope_path_count": 12,
+                "tool_version": "test",
+                "verification_timestamp_utc": "2026-08-08T00:00:00Z",
+                "notes": "",
+            }
+            for check, command in {
+                "tests": "poetry run pytest --cov",
+                "lint": "poetry run ruff check .",
+                "format": "poetry run ruff format --check .",
+                "typecheck": "poetry run mypy src tests",
+                "reproduction": "poetry run peg reproduce-from-local",
+                "validation": "poetry run peg validate",
+                "manifest": "poetry run pytest tests/test_manifest.py",
+            }.items()
+        ]
+    ).to_csv(evidence_path, index=False)
+    monkeypatch.setattr(
+        "portugal_external_growth.release_freeze._git_stdout",
+        lambda _root, args: "current" if args == ["rev-parse", "HEAD"] else "",
+    )
+    monkeypatch.setattr(
+        "portugal_external_growth.release_freeze._verification_scope_fingerprint",
+        lambda _root: ("scope123", 12),
+    )
+
+    _declaration, blockers, checklist, *_rest = build_research_data_freeze_outputs(
+        tmp_path,
+        verification_evidence_path=evidence_path,
+        create_archive=False,
+    )
+
+    assert not any(str(value).startswith("verification_") for value in blockers["blocker_id"])
+    assert checklist.loc[checklist["requirement_id"].eq("1"), "status"].iloc[0] == "passed"
+
+
+def test_research_data_freeze_rejects_stale_verification_scope(
+    tmp_path: Path,
+    monkeypatch: MonkeyPatch,
+) -> None:
+    _write_pyproject(tmp_path)
+    _write_research_readiness(tmp_path)
+    _write_empirical_audit(tmp_path)
+    _write_live_result_table(tmp_path)
+    _write_transcription_status(tmp_path)
+    _write_analytical_dataset(tmp_path)
+    evidence_path = tmp_path / "verification.csv"
+    pd.DataFrame(
+        [
+            {
+                "check": "tests",
+                "status": "passed",
+                "command": "poetry run pytest --cov",
+                "source_commit": "previous",
+                "verification_scope_sha256": "oldscope",
+                "verification_scope_path_count": 12,
+                "tool_version": "test",
+                "verification_timestamp_utc": "2026-08-08T00:00:00Z",
+                "notes": "",
+            }
+        ]
+    ).to_csv(evidence_path, index=False)
+    monkeypatch.setattr(
+        "portugal_external_growth.release_freeze._git_stdout",
+        lambda _root, args: "current" if args == ["rev-parse", "HEAD"] else "",
+    )
+    monkeypatch.setattr(
+        "portugal_external_growth.release_freeze._verification_scope_fingerprint",
+        lambda _root: ("newscope", 12),
+    )
+
+    _declaration, blockers, _checklist, *_rest = build_research_data_freeze_outputs(
+        tmp_path,
+        verification_evidence_path=evidence_path,
+        create_archive=False,
+    )
+
+    blocker_reasons = ";".join(blockers["blocking_reason"].astype(str))
+    assert "verification_tests" in blockers["blocker_id"].tolist()
+    assert "stale_scope" in blocker_reasons
+    assert (
+        "verification scope fingerprint does not match current tracked content" in blocker_reasons
+    )
+
+
 def test_research_data_freeze_rewrites_stale_evidence_notes_as_relative_paths(
     tmp_path: Path,
     monkeypatch: MonkeyPatch,

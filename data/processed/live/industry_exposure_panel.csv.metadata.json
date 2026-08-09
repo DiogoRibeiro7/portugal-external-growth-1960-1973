@@ -19,7 +19,7 @@
     "estimate_status",
     "source_quality"
   ],
-  "creation_timestamp_utc": "2026-08-09T06:17:24+01:00",
+  "creation_timestamp_utc": "2026-08-09T11:48:38+01:00",
   "date_range": null,
   "file": "data/processed/live/industry_exposure_panel.csv",
   "input_artifacts": [
