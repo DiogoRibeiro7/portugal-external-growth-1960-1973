@@ -11,10 +11,15 @@
     "verification_timestamp_utc",
     "notes"
   ],
-  "creation_timestamp_utc": "2026-08-09T20:12:46+01:00",
+  "creation_timestamp_utc": "2026-08-09T20:25:36+01:00",
   "date_range": null,
   "file": "results/releases/current/verification_evidence.csv",
-  "input_artifacts": [],
+  "input_artifacts": [
+    {
+      "path": "results/releases/current/verification_evidence.csv",
+      "sha256": "066bc5f23ea34bb13b872041cb115fbfab9151f7815bc797afcd45544cf554e5"
+    }
+  ],
   "rows": 7,
   "schema": {
     "check": "object",
@@ -27,8 +32,10 @@
     "verification_scope_sha256": "object",
     "verification_timestamp_utc": "object"
   },
-  "sha256": "3a1f022c93d9813bbb451b88ab47d6606bc0ee56d6c18d67cb06f35573627c6a",
-  "source_files": [],
+  "sha256": "066bc5f23ea34bb13b872041cb115fbfab9151f7815bc797afcd45544cf554e5",
+  "source_files": [
+    "results/releases/current/verification_evidence.csv"
+  ],
   "source_licence": "not_specified",
   "stage": "freeze_verification_evidence",
   "validation_findings": []

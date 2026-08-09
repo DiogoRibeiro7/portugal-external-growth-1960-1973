@@ -1,2 +1,2 @@
 declaration,release_version,source_commit,source_commit_timestamp_utc,blocking_reason_count,archive_path,archive_sha256
-NOT_READY,0.1.3+d333749,d333749585530630ff124b7dc77ed8b1bcabeb58,2026-08-09T20:12:46+01:00,23,release/research-data-freeze-0.1.3+d333749.zip,
+NOT_READY,0.1.3+a5b3f68,a5b3f68450307a1d7fb54a02c244acbaf468a9b3,2026-08-09T20:25:36+01:00,22,release/research-data-freeze-0.1.3+a5b3f68.zip,f794551c07b834462fd3bcb02f3180b3f6d7219e16c196873458efde4257c6d5
