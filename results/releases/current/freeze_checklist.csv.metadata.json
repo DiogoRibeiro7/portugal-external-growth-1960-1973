@@ -7,13 +7,13 @@
     "blocking_reason",
     "evidence_path"
   ],
-  "creation_timestamp_utc": "2026-08-09T21:55:07+01:00",
+  "creation_timestamp_utc": "2026-08-09T23:14:21+01:00",
   "date_range": null,
   "file": "results/releases/current/freeze_checklist.csv",
   "input_artifacts": [
     {
       "path": "results/releases/current/freeze_blocking_reasons.csv",
-      "sha256": "5542d5b8baa27917ea3629034f8f3e76a5d8b19dd0bb5290a268198cd3f13579"
+      "sha256": "5be2e8bf139b08e52cc544e03b3f9be27a8275230ac2e55f00556cfe8749cc3e"
     }
   ],
   "rows": 15,
@@ -24,7 +24,7 @@
     "requirement_id": "object",
     "status": "object"
   },
-  "sha256": "6c3419fbd0c7450cae2bc94d144e410a10528035abd5382f6fd6475be95fdfad",
+  "sha256": "ab333583d2791a688c2df33e856a45bd8a5ff54062e5048802d05f4487529d9f",
   "source_files": [
     "results/releases/current/freeze_blocking_reasons.csv"
   ],
