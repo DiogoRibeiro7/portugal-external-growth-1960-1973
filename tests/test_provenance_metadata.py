@@ -70,11 +70,12 @@ def test_committed_metadata_input_artifact_hashes_are_current() -> None:
         for artifact in input_artifacts:
             artifact_path = artifact.get("path")
             recorded_sha256 = artifact.get("sha256")
-            if not artifact_path or not recorded_sha256:
-                continue
+            assert artifact_path, f"{path.relative_to(root)} has input artifact without path"
+            assert recorded_sha256, f"{path.relative_to(root)} has input artifact without SHA-256"
             source_path = root / artifact_path
-            if not source_path.exists():
-                continue
+            assert source_path.is_file(), (
+                f"{path.relative_to(root)} input artifact is not a file: {artifact_path}"
+            )
             actual_sha256 = sha256_file(source_path)
             assert recorded_sha256 == actual_sha256, (
                 f"{path.relative_to(root)} has stale hash for {artifact_path}"

@@ -13,7 +13,7 @@
     "trade_value_usd",
     "coverage_status"
   ],
-  "creation_timestamp_utc": "2026-08-09T11:48:38+01:00",
+  "creation_timestamp_utc": "2026-08-09T12:28:00+01:00",
   "date_range": null,
   "file": "results/diagnostics/comtrade_product/product_coverage_diagnostics.csv",
   "input_artifacts": [

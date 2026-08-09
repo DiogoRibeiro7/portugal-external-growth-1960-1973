@@ -14,7 +14,7 @@
     "release_include_derived_tables",
     "blocking_reason"
   ],
-  "creation_timestamp_utc": "2026-08-09T11:48:38+01:00",
+  "creation_timestamp_utc": "2026-08-09T12:28:00+01:00",
   "date_range": {
     "end_year": 1973,
     "start_year": 1962
@@ -24,10 +24,6 @@
     {
       "path": "data/manual/source_documents/source_document_registry.csv",
       "sha256": "1117eb2db582fe0cd62feeb2934c9d431c8e9a58ba8d6e940a77cb63dac92e66"
-    },
-    {
-      "path": "data/manual/source_documents",
-      "sha256": ""
     }
   ],
   "rows": 9,

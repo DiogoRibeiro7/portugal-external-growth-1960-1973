@@ -8,7 +8,7 @@
     "normalised_rows",
     "blocking_reason"
   ],
-  "creation_timestamp_utc": "2026-08-09T11:48:38+01:00",
+  "creation_timestamp_utc": "2026-08-09T12:28:00+01:00",
   "date_range": null,
   "file": "results/live/comtrade_product_extraction_status.csv",
   "input_artifacts": [

@@ -147,10 +147,12 @@ def _input_artifacts(source_files: list[str], *, root: Path) -> list[dict[str, s
     artifacts: list[dict[str, str]] = []
     for source_file in source_files:
         path = root / source_file
+        if not path.is_file():
+            continue
         artifacts.append(
             {
                 "path": source_file,
-                "sha256": sha256_file(path) if path.exists() and path.is_file() else "",
+                "sha256": sha256_file(path),
             }
         )
     return artifacts

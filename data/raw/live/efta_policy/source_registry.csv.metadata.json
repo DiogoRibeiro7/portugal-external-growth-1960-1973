@@ -14,7 +14,7 @@
     "registration_status",
     "notes"
   ],
-  "creation_timestamp_utc": "2026-08-09T11:48:38+01:00",
+  "creation_timestamp_utc": "2026-08-09T12:28:00+01:00",
   "date_range": null,
   "file": "data/raw/live/efta_policy/source_registry.csv",
   "input_artifacts": [

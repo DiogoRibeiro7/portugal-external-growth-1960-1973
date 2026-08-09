@@ -7,7 +7,7 @@
     "industry_code",
     "weighted_trade_value_usd"
   ],
-  "creation_timestamp_utc": "2026-08-09T11:48:38+01:00",
+  "creation_timestamp_utc": "2026-08-09T12:28:00+01:00",
   "date_range": null,
   "file": "results/live/sitc_mapping_sensitivity_broad.csv",
   "input_artifacts": [
