@@ -508,6 +508,8 @@ def build_release_archive_manifest(
     archive_path = root / "release" / f"research-data-freeze-{release_version}.zip"
     archive_sha256 = ""
     archive_status = "not_created"
+    archive_method = "git archive HEAD -- selected release files"
+    worktree_dirty = _git_worktree_dirty(root)
     if create_archive and source_commit:
         if not archive_files:
             raise ValueError("Refusing to create an empty release archive")
@@ -529,8 +531,15 @@ def build_release_archive_manifest(
             cwd=root,
             check=True,
         )
-        archive_sha256 = sha256_file(archive_path)
-        archive_status = "created_from_git_archive_head"
+        if worktree_dirty:
+            archive_status = "post_commit_archive_required"
+            archive_method = (
+                "git archive HEAD created a local previous-commit zip; rerun after commit "
+                "for the final release archive"
+            )
+        else:
+            archive_sha256 = sha256_file(archive_path)
+            archive_status = "created_from_git_archive_head"
     return pd.DataFrame.from_records(
         [
             {
@@ -542,7 +551,7 @@ def build_release_archive_manifest(
                 "tracked_file_count": len(tracked_files),
                 "excluded_source_file_count": len(excluded_source_files),
                 "archived_file_count": len(archive_files),
-                "archive_method": "git archive HEAD -- selected release files",
+                "archive_method": archive_method,
                 "content_scope": "tracked_files_excluding_restricted_source_documents",
             }
         ],
@@ -783,8 +792,9 @@ def _release_archive_requirement_reason(
     archive_manifest: pd.DataFrame,
     blockers: pd.DataFrame,
 ) -> str:
-    if _archive_status(archive_manifest) != "created_from_git_archive_head":
-        return "release_archive_not_created"
+    archive_status = _archive_status(archive_manifest)
+    if archive_status != "created_from_git_archive_head":
+        return archive_status
     if "source_redistribution_rights_unresolved" in blockers["blocker_id"].astype(str).tolist():
         return "source_redistribution_rights_unresolved"
     return ""
@@ -1162,3 +1172,7 @@ def _git_tracked_files(root: Path) -> list[str]:
     if not output:
         return []
     return [line for line in output.splitlines() if (root / line).is_file()]
+
+
+def _git_worktree_dirty(root: Path) -> bool:
+    return bool(_git_stdout(root, ["status", "--porcelain"]))

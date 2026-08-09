@@ -233,6 +233,47 @@ def test_partner_completeness_uses_year_flow_denominators(tmp_path: Path) -> Non
     assert european["status"] == "blocked"
 
 
+def test_partner_completeness_uses_fixed_sample_denominator_for_long_partial_panel(
+    tmp_path: Path,
+) -> None:
+    processed = tmp_path / "data/processed/live"
+    processed.mkdir(parents=True)
+    pd.DataFrame(
+        [
+            {
+                "year": 1962,
+                "flow_code": "X",
+                "colonial_exports_complete_pte": 10.0,
+                "colonial_imports_complete_pte": None,
+                "efta_participation_exports_pte": 5.0,
+                "efta_participation_imports_pte": None,
+            },
+            {
+                "year": 1962,
+                "flow_code": "M",
+                "colonial_exports_complete_pte": None,
+                "colonial_imports_complete_pte": 8.0,
+                "efta_participation_exports_pte": None,
+                "efta_participation_imports_pte": 4.0,
+            },
+        ]
+    ).to_csv(processed / "validated_annual_aggregate_external_orientation.csv", index=False)
+
+    audit = build_empirical_readiness_audit(tmp_path)
+
+    annual = audit.loc[audit["requirement"].eq("annual_trade_coverage")].iloc[0]
+    colonial = audit.loc[audit["requirement"].eq("colonial_partner_completeness")].iloc[0]
+    european = audit.loc[audit["requirement"].eq("european_partner_completeness")].iloc[0]
+    assert annual["required"] == 24
+    assert annual["available"] == 2
+    assert colonial["required"] == 24
+    assert colonial["available"] == 2
+    assert colonial["status"] == "blocked"
+    assert european["required"] == 24
+    assert european["available"] == 2
+    assert european["status"] == "blocked"
+
+
 def test_classification_breaks_block_placeholder_artifacts(tmp_path: Path) -> None:
     diagnostics = tmp_path / "results/diagnostics"
     live = tmp_path / "results/live"

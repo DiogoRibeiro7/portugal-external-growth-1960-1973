@@ -8,6 +8,7 @@ from pytest import MonkeyPatch
 
 from portugal_external_growth.release_freeze import (
     build_freeze_checklist,
+    build_release_archive_manifest,
     build_research_data_freeze_outputs,
     build_source_release_policy,
 )
@@ -381,6 +382,40 @@ def test_source_release_policy_excludes_unregistered_pdf_without_licence_metadat
         "exclude_source_document_until_redistribution_rights_resolved"
     )
     assert policy.loc[0, "blocking_reason"] == "redistribution_rights_unresolved"
+
+
+def test_release_archive_manifest_marks_dirty_head_archive_as_post_commit_required(
+    tmp_path: Path,
+    monkeypatch: MonkeyPatch,
+) -> None:
+    tracked = tmp_path / "README.md"
+    tracked.write_text("project\n", encoding="utf-8")
+
+    def fake_git_stdout(_root: Path, args: list[str]) -> str:
+        if args == ["ls-files"]:
+            return "README.md"
+        if args == ["status", "--porcelain"]:
+            return " M README.md"
+        return ""
+
+    def fake_run(*_args: object, **_kwargs: object) -> object:
+        return object()
+
+    monkeypatch.setattr("portugal_external_growth.release_freeze._git_stdout", fake_git_stdout)
+    monkeypatch.setattr("portugal_external_growth.release_freeze.subprocess.run", fake_run)
+
+    manifest = build_release_archive_manifest(
+        tmp_path,
+        release_version="1.0.0+abc123",
+        source_commit="abc123",
+        source_commit_timestamp="2026-08-09T00:00:00Z",
+        create_archive=True,
+    )
+
+    row = manifest.iloc[0]
+    assert row["archive_status"] == "post_commit_archive_required"
+    assert row["archive_sha256"] == ""
+    assert "rerun after commit" in row["archive_method"]
 
 
 def test_freeze_checklist_reports_source_rights_when_archive_exists() -> None:

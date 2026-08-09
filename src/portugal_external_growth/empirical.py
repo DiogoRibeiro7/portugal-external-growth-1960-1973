@@ -27,6 +27,9 @@ EMPIRICAL_AUDIT_COLUMNS = [
 ]
 
 RESOLVED_RECONCILIATION_STATUSES = {"reconciled", "satisfactory_with_caveats"}
+TRADE_SAMPLE_YEARS = tuple(range(1962, 1974))
+TRADE_SAMPLE_FLOWS = ("X", "M")
+TRADE_YEAR_FLOW_REQUIREMENT = len(TRADE_SAMPLE_YEARS) * len(TRADE_SAMPLE_FLOWS)
 
 
 def build_empirical_prerequisite_status() -> pd.DataFrame:
@@ -227,15 +230,16 @@ def _annual_trade_coverage(root: Path) -> dict[str, object]:
     frame = _read_csv(
         root / "data/processed/live/validated_annual_aggregate_external_orientation.csv"
     )
-    required = 12 * 2
+    required = TRADE_YEAR_FLOW_REQUIREMENT
     if frame.empty:
         return _record("annual_trade_coverage", required, 0, "annual_aggregate_dataset_missing")
     if {"year", "flow_code"}.issubset(frame.columns):
-        available = int(frame[["year", "flow_code"]].drop_duplicates().shape[0])
+        available = _available_year_flow_pairs(frame)
     else:
-        available = int(frame.get("world_exports_pte", pd.Series(dtype=float)).notna().sum()) + int(
-            frame.get("world_imports_pte", pd.Series(dtype=float)).notna().sum()
-        )
+        sample = _sample_year_rows(frame)
+        available = int(
+            sample.get("world_exports_pte", pd.Series(dtype=float)).notna().sum()
+        ) + int(sample.get("world_imports_pte", pd.Series(dtype=float)).notna().sum())
     return _record(
         "annual_trade_coverage",
         required,
@@ -249,11 +253,18 @@ def _colonial_partner_completeness(root: Path) -> dict[str, object]:
         root / "data/processed/live/validated_annual_aggregate_external_orientation.csv"
     )
     if frame.empty:
-        return _record("colonial_partner_completeness", 24, 0, "colonial aggregate table missing")
-    required = _year_flow_requirement(frame)
-    exports_complete = frame.get("colonial_exports_complete_pte", pd.Series(dtype=float)).notna()
-    imports_complete = frame.get("colonial_imports_complete_pte", pd.Series(dtype=float)).notna()
-    satisfied = int(exports_complete.sum()) + int(imports_complete.sum())
+        return _record(
+            "colonial_partner_completeness",
+            TRADE_YEAR_FLOW_REQUIREMENT,
+            0,
+            "colonial aggregate table missing",
+        )
+    required = TRADE_YEAR_FLOW_REQUIREMENT
+    satisfied = _flow_specific_non_null_count(
+        frame,
+        export_columns=["colonial_exports_complete_pte"],
+        import_columns=["colonial_imports_complete_pte"],
+    )
     return _record(
         "colonial_partner_completeness",
         required,
@@ -267,8 +278,13 @@ def _european_partner_completeness(root: Path) -> dict[str, object]:
         root / "data/processed/live/validated_annual_aggregate_external_orientation.csv"
     )
     if frame.empty:
-        return _record("european_partner_completeness", 24, 0, "aggregate dataset missing")
-    required = _year_flow_requirement(frame)
+        return _record(
+            "european_partner_completeness",
+            TRADE_YEAR_FLOW_REQUIREMENT,
+            0,
+            "aggregate dataset missing",
+        )
+    required = TRADE_YEAR_FLOW_REQUIREMENT
     columns = [
         "efta_participation_exports_pte",
         "efta_participation_imports_pte",
@@ -287,8 +303,10 @@ def _european_partner_completeness(root: Path) -> dict[str, object]:
         )
     export_columns = [column for column in columns if "_exports_" in column]
     import_columns = [column for column in columns if "_imports_" in column]
-    available = int(frame[export_columns].notna().any(axis=1).sum()) + int(
-        frame[import_columns].notna().any(axis=1).sum()
+    available = _flow_specific_non_null_count(
+        frame,
+        export_columns=export_columns,
+        import_columns=import_columns,
     )
     return _record(
         "european_partner_completeness",
@@ -562,10 +580,51 @@ def _identification_variables(root: Path) -> dict[str, object]:
     )
 
 
-def _year_flow_requirement(frame: pd.DataFrame) -> int:
+def _available_year_flow_pairs(frame: pd.DataFrame) -> int:
+    pairs = frame.loc[
+        frame["year"].isin(TRADE_SAMPLE_YEARS)
+        & frame["flow_code"].astype(str).isin(TRADE_SAMPLE_FLOWS),
+        ["year", "flow_code"],
+    ]
+    return int(pairs.drop_duplicates().shape[0])
+
+
+def _sample_year_rows(frame: pd.DataFrame) -> pd.DataFrame:
+    if "year" not in frame.columns:
+        return frame
+    return frame.loc[frame["year"].isin(TRADE_SAMPLE_YEARS)]
+
+
+def _flow_specific_non_null_count(
+    frame: pd.DataFrame,
+    *,
+    export_columns: list[str],
+    import_columns: list[str],
+) -> int:
     if {"year", "flow_code"}.issubset(frame.columns):
-        return int(frame[["year", "flow_code"]].drop_duplicates().shape[0])
-    return int(len(frame) * 2)
+        sample = frame.loc[frame["year"].isin(TRADE_SAMPLE_YEARS)].copy()
+        flow_code = sample["flow_code"].astype(str)
+        export_columns = [column for column in export_columns if column in sample.columns]
+        import_columns = [column for column in import_columns if column in sample.columns]
+        exports = sample.loc[flow_code.eq("X"), ["year", *export_columns]]
+        imports = sample.loc[flow_code.eq("M"), ["year", *import_columns]]
+        export_count = _non_null_year_count(exports, export_columns)
+        import_count = _non_null_year_count(imports, import_columns)
+        return export_count + import_count
+    sample = _sample_year_rows(frame)
+    export_count = _non_null_year_count(sample, export_columns)
+    import_count = _non_null_year_count(sample, import_columns)
+    return export_count + import_count
+
+
+def _non_null_year_count(frame: pd.DataFrame, columns: list[str]) -> int:
+    available_columns = [column for column in columns if column in frame.columns]
+    if not available_columns or frame.empty:
+        return 0
+    if "year" in frame.columns:
+        present = frame.loc[frame[available_columns].notna().any(axis=1), ["year"]]
+        return int(present.drop_duplicates().shape[0])
+    return int(frame[available_columns].notna().any(axis=1).sum())
 
 
 def _record(
