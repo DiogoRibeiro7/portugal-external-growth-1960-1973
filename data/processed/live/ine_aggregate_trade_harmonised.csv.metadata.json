@@ -30,7 +30,7 @@
     "end_year": 1974,
     "start_year": 1963
   },
-  "file": "data/processed/live/ine_1962_aggregate_trade_harmonised.csv",
+  "file": "data/processed/live/ine_aggregate_trade_harmonised.csv",
   "input_artifacts": [
     {
       "path": "data/manual/transcriptions/pass_1/ine_aggregate_transcription_pass_1.csv",

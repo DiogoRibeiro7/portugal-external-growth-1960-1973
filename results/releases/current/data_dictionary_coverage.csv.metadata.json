@@ -4,20 +4,28 @@
     "dataset_path",
     "expected_dictionary_path",
     "dictionary_status",
-    "blocking_reason"
+    "blocking_reason",
+    "dataset_column_count",
+    "dictionary_column_count",
+    "placeholder_description_count",
+    "missing_unit_count"
   ],
-  "creation_timestamp_utc": "2026-08-09T12:28:00+01:00",
+  "creation_timestamp_utc": "2026-08-09T21:55:07+01:00",
   "date_range": null,
   "file": "results/releases/current/data_dictionary_coverage.csv",
   "input_artifacts": [],
   "rows": 7,
   "schema": {
     "blocking_reason": "object",
+    "dataset_column_count": "int64",
     "dataset_path": "object",
+    "dictionary_column_count": "int64",
     "dictionary_status": "object",
-    "expected_dictionary_path": "object"
+    "expected_dictionary_path": "object",
+    "missing_unit_count": "int64",
+    "placeholder_description_count": "int64"
   },
-  "sha256": "d9507d505f4bd2b444aaaa7433c60142a80ebb92f5fd8a2a1d8c204b94629230",
+  "sha256": "1c7411fb92b02e79c2fb5dfe2c9b768fc6e84f2d7ca7ccb6ddc253e97fe72dcf",
   "source_files": [
     "data/processed/live",
     "data/interim/live"

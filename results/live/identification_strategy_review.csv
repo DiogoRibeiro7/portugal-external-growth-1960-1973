@@ -1,0 +1,3 @@
+strategy_component,status,blocking_reason
+simultaneity,blocked,No source-grounded simultaneity strategy is registered.
+common_european_shocks,blocked,Common-shock controls and sensitivity checks are not specified.

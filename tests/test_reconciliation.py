@@ -70,7 +70,7 @@ def test_trade_source_comparison_adds_missing_independent_sources(tmp_path: Path
 def test_ine_comtrade_1962_reconciliation_keeps_world_unresolved(
     tmp_path: Path,
 ) -> None:
-    _write_ine_1962_aggregates(tmp_path)
+    _write_ine_aggregates(tmp_path)
     _write_comtrade_1962_inputs(tmp_path)
     _write_colonial_group_config(tmp_path)
 
@@ -87,7 +87,7 @@ def test_ine_comtrade_1962_reconciliation_keeps_world_unresolved(
 def test_ine_comtrade_1962_reconciliation_resolves_with_exchange_rate_evidence(
     tmp_path: Path,
 ) -> None:
-    _write_ine_1962_aggregates(tmp_path)
+    _write_ine_aggregates(tmp_path)
     _write_comtrade_1962_inputs(tmp_path)
     _write_colonial_group_config(tmp_path)
     _write_historical_colonial_crosswalk(tmp_path)
@@ -110,7 +110,7 @@ def test_ine_comtrade_1962_reconciliation_resolves_with_exchange_rate_evidence(
 def test_ine_comtrade_1962_reconciliation_marks_overseas_lower_bound(
     tmp_path: Path,
 ) -> None:
-    _write_ine_1962_aggregates(tmp_path)
+    _write_ine_aggregates(tmp_path)
     _write_comtrade_1962_inputs(tmp_path)
     _write_colonial_group_config(tmp_path)
     _write_historical_colonial_crosswalk(tmp_path)
@@ -135,7 +135,7 @@ def test_ine_comtrade_1962_reconciliation_marks_overseas_lower_bound(
 def test_ine_comtrade_1962_notes_report_partner_and_value_coverage(
     tmp_path: Path,
 ) -> None:
-    _write_ine_1962_aggregates(tmp_path)
+    _write_ine_aggregates(tmp_path)
     _write_comtrade_1962_inputs(tmp_path)
     _write_colonial_group_config(tmp_path)
     _write_historical_colonial_crosswalk(tmp_path)
@@ -178,7 +178,7 @@ def test_trade_reconciliation_notes_list_missing_sources() -> None:
     assert "INE" in notes
 
 
-def _write_ine_1962_aggregates(root: Path) -> None:
+def _write_ine_aggregates(root: Path) -> None:
     output_dir = root / "data/processed/live"
     output_dir.mkdir(parents=True)
     pd.DataFrame(
@@ -188,7 +188,7 @@ def _write_ine_1962_aggregates(root: Path) -> None:
             _ine_row("M", "Ultramar", 2122236, "Overseas imports", 38),
             _ine_row("X", "Ultramar", 2390852, "Overseas exports", 39),
         ]
-    ).to_csv(output_dir / "ine_1962_aggregate_trade_harmonised.csv", index=False)
+    ).to_csv(output_dir / "ine_aggregate_trade_harmonised.csv", index=False)
 
 
 def _ine_row(

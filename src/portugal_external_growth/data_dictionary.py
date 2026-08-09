@@ -104,6 +104,69 @@ COLUMN_DESCRIPTIONS = {
         "observed Comtrade colonial import subtotal divided by Comtrade world imports",
         "share",
     ),
+    "efta_participation_exports_pte": (
+        "exports to the contemporaneous EFTA aggregate printed in the INE source",
+        "PTE",
+    ),
+    "efta_participation_imports_pte": (
+        "imports from the contemporaneous EFTA aggregate printed in the INE source",
+        "PTE",
+    ),
+    "eec_membership_exports_pte": (
+        "exports to the contemporaneous EEC/CEE aggregate printed in the INE source",
+        "PTE",
+    ),
+    "eec_membership_imports_pte": (
+        "imports from the contemporaneous EEC/CEE aggregate printed in the INE source",
+        "PTE",
+    ),
+    "fixed_europe_exports_pte": (
+        "exports to the configured fixed European partner sample when explicit "
+        "source-backed rows exist",
+        "PTE",
+    ),
+    "fixed_europe_imports_pte": (
+        "imports from the configured fixed European partner sample when explicit "
+        "source-backed rows exist",
+        "PTE",
+    ),
+    "efta_export_share": (
+        "contemporaneous EFTA exports divided by total exports",
+        "share",
+    ),
+    "eec_export_share": (
+        "contemporaneous EEC/CEE exports divided by total exports",
+        "share",
+    ),
+    "fixed_europe_export_share": (
+        "fixed European partner-sample exports divided by total exports when the fixed "
+        "sample is observed",
+        "share",
+    ),
+    "non_colonial_world_exports_pte": (
+        "total exports minus complete colonial-market exports; this residual still includes Europe",
+        "PTE",
+    ),
+    "non_colonial_world_imports_pte": (
+        "total imports minus complete colonial-market imports; this residual still includes Europe",
+        "PTE",
+    ),
+    "unassigned_residual_exports_pte": (
+        "exports not assigned after the explicitly documented aggregate components are reconciled",
+        "PTE",
+    ),
+    "unassigned_residual_imports_pte": (
+        "imports not assigned after the explicitly documented aggregate components are reconciled",
+        "PTE",
+    ),
+    "colonial_observed_partner_count": (
+        "number of colonial partner areas observed in the Comtrade diagnostic subtotal",
+        "count",
+    ),
+    "colonial_expected_partner_count": (
+        "expected colonial partner-area count for the Comtrade diagnostic subtotal",
+        "count",
+    ),
     "source_status": ("machine-readable source availability and review status", "status"),
     "reconciliation_status": ("cross-source reconciliation status", "status"),
     "source_currency": ("currency of source-backed aggregate monetary values", "currency"),

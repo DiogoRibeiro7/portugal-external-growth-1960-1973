@@ -17,6 +17,34 @@ PREREQUISITES = [
     "simultaneity_and_common_shock_strategy",
 ]
 
+PREREQUISITE_AUDIT_REQUIREMENTS = {
+    "reviewed_bilateral_trade_panel": (
+        "annual_trade_coverage",
+        "colonial_partner_completeness",
+        "european_partner_completeness",
+        "territorial_consistency",
+        "cross_source_reconciliation",
+    ),
+    "stable_product_classification": (
+        "product_level_coverage",
+        "classification_breaks_documented",
+    ),
+    "portuguese_sectoral_output_data": (
+        "sectoral_output_coverage",
+        "price_deflator_coverage",
+    ),
+    "documented_product_to_industry_mapping": (
+        "product_to_industry_mapping_coverage",
+        "classification_breaks_documented",
+    ),
+    "sufficient_observations_and_variation": (
+        "usable_industries",
+        "usable_years",
+        "missingness_structure_documented",
+        "identification_variables_available",
+    ),
+}
+
 EMPIRICAL_AUDIT_COLUMNS = [
     "requirement",
     "required",
@@ -27,24 +55,44 @@ EMPIRICAL_AUDIT_COLUMNS = [
 ]
 
 RESOLVED_RECONCILIATION_STATUSES = {"reconciled", "satisfactory_with_caveats"}
+RESOLVED_IDENTIFICATION_STATUSES = {"satisfied", "approved", "resolved"}
 TRADE_SAMPLE_YEARS = tuple(range(1962, 1974))
 TRADE_SAMPLE_FLOWS = ("X", "M")
 TRADE_YEAR_FLOW_REQUIREMENT = len(TRADE_SAMPLE_YEARS) * len(TRADE_SAMPLE_FLOWS)
+REQUIRED_RECONCILIATION_SCOPE_COUNT = 4
+MIN_USABLE_INDUSTRIES = 2
 
 
-def build_empirical_prerequisite_status() -> pd.DataFrame:
+def build_empirical_prerequisite_status(root: Path | None = None) -> pd.DataFrame:
     """Return the current empirical-design prerequisite status."""
 
+    if root is None:
+        return pd.DataFrame(
+            [
+                {
+                    "prerequisite": prerequisite,
+                    "status": "not_satisfied",
+                    "blocking_reason": _blocking_reason(prerequisite),
+                }
+                for prerequisite in PREREQUISITES
+            ]
+        )
+
+    audit = build_empirical_readiness_audit(root)
     return pd.DataFrame(
-        [
-            {
-                "prerequisite": prerequisite,
-                "status": "not_satisfied",
-                "blocking_reason": _blocking_reason(prerequisite),
-            }
-            for prerequisite in PREREQUISITES
-        ]
+        [_prerequisite_record(root, audit, prerequisite) for prerequisite in PREREQUISITES]
     )
+
+
+def load_empirical_design_matrix_or_empty(root: Path) -> pd.DataFrame:
+    """Return an existing empirical design matrix instead of overwriting it with a scaffold."""
+
+    path = root / "data/interim/live/empirical_design_matrix.csv"
+    existing = _read_csv(path)
+    required_columns = set(empty_design_matrix().columns) - {"source_quality"}
+    if not existing.empty and required_columns.issubset(existing.columns):
+        return existing
+    return empty_design_matrix()
 
 
 def build_empirical_readiness_audit(root: Path) -> pd.DataFrame:
@@ -182,6 +230,27 @@ def empty_coefficients() -> pd.DataFrame:
             "confidence_interval_low",
             "confidence_interval_high",
             "status",
+        ]
+    )
+
+
+def empty_identification_strategy_review() -> pd.DataFrame:
+    """Return a machine-readable scaffold for identification-risk review."""
+
+    return pd.DataFrame(
+        [
+            {
+                "strategy_component": "simultaneity",
+                "status": "blocked",
+                "blocking_reason": "No source-grounded simultaneity strategy is registered.",
+            },
+            {
+                "strategy_component": "common_european_shocks",
+                "status": "blocked",
+                "blocking_reason": (
+                    "Common-shock controls and sensitivity checks are not specified."
+                ),
+            },
         ]
     )
 
@@ -407,10 +476,19 @@ def _empirical_use_mask(dictionary: pd.DataFrame) -> pd.Series | None:
 def _territorial_consistency(root: Path) -> dict[str, object]:
     audit = _read_csv(root / "results/diagnostics/comtrade_coverage/comtrade_coverage_audit.csv")
     if audit.empty:
-        return _record("territorial_consistency", 1, 0, "territorial audit missing")
+        return _record(
+            "territorial_consistency",
+            TRADE_YEAR_FLOW_REQUIREMENT,
+            0,
+            "territorial audit missing",
+        )
     statuses = audit.get("territorial_definition_status", pd.Series(dtype=object)).astype(str)
-    required = len(statuses)
-    available = int(statuses.eq("resolved").sum())
+    required = TRADE_YEAR_FLOW_REQUIREMENT
+    resolved = audit.loc[statuses.eq("resolved")]
+    if {"year", "flow_code"}.issubset(resolved.columns):
+        available = _available_year_flow_pairs(resolved)
+    else:
+        available = int(resolved.shape[0])
     return _record(
         "territorial_consistency",
         required,
@@ -422,13 +500,18 @@ def _territorial_consistency(root: Path) -> dict[str, object]:
 def _cross_source_reconciliation(root: Path) -> dict[str, object]:
     registry = _read_csv(root / "results/diagnostics/reconciliation/reconciliation_registry.csv")
     if registry.empty:
-        return _record("cross_source_reconciliation", 1, 0, "reconciliation registry missing")
+        return _record(
+            "cross_source_reconciliation",
+            REQUIRED_RECONCILIATION_SCOPE_COUNT,
+            0,
+            "reconciliation registry missing",
+        )
     statuses = registry.get("overall_status", pd.Series(dtype=object)).astype(str)
     return _record(
         "cross_source_reconciliation",
-        len(statuses),
+        REQUIRED_RECONCILIATION_SCOPE_COUNT,
         int(statuses.isin(RESOLVED_RECONCILIATION_STATUSES).sum()),
-        "source-pair reconciliations remain unresolved",
+        "INE-Comtrade, CEPII, EFTA, and OECD reconciliation scopes are not all resolved",
     )
 
 
@@ -454,9 +537,19 @@ def _efta_policy_availability(root: Path) -> dict[str, object]:
 def _usable_industries(root: Path) -> dict[str, object]:
     panel = _read_csv(root / "data/processed/live/industry_trade_panel.csv")
     if panel.empty:
-        return _record("usable_industries", 1, 0, "industry trade panel is empty")
+        return _record(
+            "usable_industries",
+            MIN_USABLE_INDUSTRIES,
+            0,
+            "industry trade panel is empty",
+        )
     available = int(panel.get("target_industry_code", pd.Series(dtype=object)).nunique())
-    return _record("usable_industries", 1, available, "no usable mapped industries")
+    return _record(
+        "usable_industries",
+        MIN_USABLE_INDUSTRIES,
+        available,
+        "fewer than two usable mapped industries are available",
+    )
 
 
 def _usable_years(root: Path) -> dict[str, object]:
@@ -640,6 +733,40 @@ def _record(
         "status": status,
         "blocking_reason": "" if status == "satisfied" else blocking_reason,
     }
+
+
+def _prerequisite_record(root: Path, audit: pd.DataFrame, prerequisite: str) -> dict[str, object]:
+    if prerequisite == "simultaneity_and_common_shock_strategy":
+        satisfied, reason = _identification_strategy_review_status(root)
+    else:
+        requirements = PREREQUISITE_AUDIT_REQUIREMENTS[prerequisite]
+        rows = audit.loc[audit["requirement"].isin(requirements)]
+        blocked = rows.loc[~rows["status"].eq("satisfied")]
+        satisfied = blocked.empty and set(requirements).issubset(set(rows["requirement"]))
+        reason = ";".join(
+            f"{row['requirement']}={row['blocking_reason']}"
+            for row in blocked.to_dict(orient="records")
+        )
+    return {
+        "prerequisite": prerequisite,
+        "status": "satisfied" if satisfied else "not_satisfied",
+        "blocking_reason": "" if satisfied else reason or _blocking_reason(prerequisite),
+    }
+
+
+def _identification_strategy_review_status(root: Path) -> tuple[bool, str]:
+    review = _read_csv(root / "results/live/identification_strategy_review.csv")
+    if review.empty or "status" not in review:
+        return False, "machine-readable identification strategy review is missing"
+    statuses = review["status"].astype(str)
+    unresolved = review.loc[~statuses.isin(RESOLVED_IDENTIFICATION_STATUSES)]
+    if unresolved.empty:
+        return True, ""
+    if "blocking_reason" in unresolved:
+        reason = ";".join(unresolved["blocking_reason"].dropna().astype(str).tolist())
+    else:
+        reason = "identification strategy review is not fully resolved"
+    return False, reason or "identification strategy review is not fully resolved"
 
 
 def _read_csv(path: Path) -> pd.DataFrame:

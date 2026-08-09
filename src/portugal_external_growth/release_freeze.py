@@ -13,7 +13,11 @@ from typing import Any
 
 import pandas as pd
 
-from portugal_external_growth.io_utils import repo_relative_path, sha256_file
+from portugal_external_growth.io_utils import (
+    repo_relative_path,
+    repository_file_fingerprint,
+    sha256_file,
+)
 
 FREEZE_BLOCKER_COLUMNS = [
     "blocker_id",
@@ -56,6 +60,10 @@ DATA_DICTIONARY_COVERAGE_COLUMNS = [
     "expected_dictionary_path",
     "dictionary_status",
     "blocking_reason",
+    "dataset_column_count",
+    "dictionary_column_count",
+    "placeholder_description_count",
+    "missing_unit_count",
 ]
 SOURCE_RELEASE_POLICY_COLUMNS = [
     "source_id",
@@ -212,30 +220,126 @@ def build_research_data_freeze_outputs(
 
 
 def build_data_dictionary_coverage(root: Path) -> pd.DataFrame:
-    """Report whether analytical datasets have explicit data dictionaries."""
+    """Report whether analytical datasets have adequate data dictionaries."""
 
     records: list[dict[str, object]] = []
     for dataset_path, dictionary_path in ANALYTICAL_DATASETS.items():
-        dataset_exists = (root / dataset_path).exists()
-        dictionary_exists = (root / dictionary_path).exists()
+        dataset_file = root / dataset_path
+        dictionary_file = root / dictionary_path
+        dataset_exists = dataset_file.exists()
+        dictionary_exists = dictionary_file.exists()
+        dataset_column_count = 0
+        dictionary_column_count = 0
+        placeholder_count = 0
+        missing_unit_count = 0
         if not dataset_exists:
             status = "not_applicable"
             reason = "analytical_dataset_missing"
-        elif dictionary_exists:
-            status = "available"
-            reason = ""
-        else:
+        elif not dictionary_exists:
             status = "missing"
             reason = "data_dictionary_missing"
+            dataset = _read_csv(dataset_file)
+            dataset_column_count = len(dataset.columns)
+        else:
+            dataset = _read_csv(dataset_file)
+            dictionary = _read_csv(dictionary_file)
+            (
+                status,
+                reason,
+                dataset_column_count,
+                dictionary_column_count,
+                placeholder_count,
+                missing_unit_count,
+            ) = _data_dictionary_status(dataset, dictionary, dataset_path)
         records.append(
             {
                 "dataset_path": dataset_path,
                 "expected_dictionary_path": dictionary_path,
                 "dictionary_status": status,
                 "blocking_reason": reason,
+                "dataset_column_count": dataset_column_count,
+                "dictionary_column_count": dictionary_column_count,
+                "placeholder_description_count": placeholder_count,
+                "missing_unit_count": missing_unit_count,
             }
         )
     return pd.DataFrame.from_records(records, columns=DATA_DICTIONARY_COVERAGE_COLUMNS)
+
+
+def _data_dictionary_status(
+    dataset: pd.DataFrame, dictionary: pd.DataFrame, dataset_path: str
+) -> tuple[str, str, int, int, int, int]:
+    dataset_columns = [str(column) for column in dataset.columns]
+    dataset_column_count = len(dataset_columns)
+    dictionary_columns = (
+        dictionary["column_name"].astype(str).tolist()
+        if "column_name" in dictionary.columns
+        else []
+    )
+    dictionary_column_count = len(dictionary_columns)
+    reasons: list[str] = []
+    required_columns = {
+        "dataset_path",
+        "column_name",
+        "unit",
+        "description",
+        "source_status",
+        "analytical_use",
+    }
+    if not required_columns.issubset(dictionary.columns):
+        missing = sorted(required_columns - set(dictionary.columns))
+        reasons.append(f"dictionary_required_columns_missing={','.join(missing)}")
+    if set(dictionary_columns) != set(dataset_columns):
+        missing = sorted(set(dataset_columns) - set(dictionary_columns))
+        extra = sorted(set(dictionary_columns) - set(dataset_columns))
+        parts = []
+        if missing:
+            parts.append(f"missing_columns={','.join(missing)}")
+        if extra:
+            parts.append(f"extra_columns={','.join(extra)}")
+        reasons.append("schema_mismatch:" + ";".join(parts))
+    if "dataset_path" in dictionary.columns:
+        paths = dictionary["dataset_path"].astype(str)
+        wrong_paths = int((~paths.eq(dataset_path)).sum())
+        if wrong_paths:
+            reasons.append(f"wrong_dataset_path_rows={wrong_paths}")
+    descriptions = dictionary.get("description", pd.Series(dtype=object)).astype(str)
+    placeholder_count = int(
+        descriptions.str.contains(r"\scolumn in\s", case=False, regex=True, na=False).sum()
+    )
+    if placeholder_count:
+        reasons.append(f"placeholder_descriptions={placeholder_count}")
+    for column in ("description", "source_status", "analytical_use"):
+        values = dictionary.get(column, pd.Series(dtype=object)).astype(str).str.strip()
+        missing_count = int(values.isin({"", "nan", "none", "not specified"}).sum())
+        if missing_count:
+            reasons.append(f"{column}_missing={missing_count}")
+    missing_unit_count = _missing_meaningful_unit_count(dictionary)
+    if missing_unit_count:
+        reasons.append(f"missing_units={missing_unit_count}")
+    status = "available" if not reasons else "inadequate"
+    return (
+        status,
+        ";".join(reasons),
+        dataset_column_count,
+        dictionary_column_count,
+        placeholder_count,
+        missing_unit_count,
+    )
+
+
+def _missing_meaningful_unit_count(dictionary: pd.DataFrame) -> int:
+    if not {"column_name", "unit"}.issubset(dictionary.columns):
+        return 0
+    names = dictionary["column_name"].astype(str)
+    units = dictionary["unit"].astype(str).str.strip().str.lower()
+    meaningful = names.str.contains(
+        r"(?:_pte$|_usd$|share$|count$|year$|tariff|reduction|rate)",
+        regex=True,
+        na=False,
+    )
+    missing = units.isin({"", "nan", "none", "not_applicable"})
+    return int((meaningful & missing).sum())
 
 
 def build_source_release_policy(root: Path) -> pd.DataFrame:
@@ -408,9 +512,10 @@ def _verification_scope_fingerprint(root: Path) -> tuple[str, int]:
     path_count = 0
     for relative_path in _verification_scope_files(root):
         path = root / relative_path
+        _, file_sha256 = repository_file_fingerprint(path, relative_path=relative_path)
         hasher.update(relative_path.encode("utf-8"))
         hasher.update(b"\0")
-        hasher.update(sha256_file(path).encode("ascii"))
+        hasher.update(file_sha256.encode("ascii"))
         hasher.update(b"\0")
         path_count += 1
     return hasher.hexdigest(), path_count
@@ -639,16 +744,19 @@ def build_freeze_blockers(
                     "results/live/empirical_readiness_audit.csv",
                 )
             )
-    missing_dictionaries = dictionary_coverage.loc[
-        dictionary_coverage["dictionary_status"].eq("missing")
+    inadequate_dictionaries = dictionary_coverage.loc[
+        dictionary_coverage["dictionary_status"].isin(["missing", "inadequate"])
     ]
-    if not missing_dictionaries.empty:
+    if not inadequate_dictionaries.empty:
         records.append(
             _blocker(
                 "analytical_data_dictionaries_missing",
                 "freeze.data_dictionaries",
                 "not_ready",
-                ";".join(missing_dictionaries["dataset_path"].astype(str).tolist()),
+                ";".join(
+                    f"{row['dataset_path']}:{row['dictionary_status']}:{row['blocking_reason']}"
+                    for row in inadequate_dictionaries.to_dict(orient="records")
+                ),
                 "results/releases/current/data_dictionary_coverage.csv",
             )
         )
@@ -752,7 +860,11 @@ def build_freeze_checklist(
             _check(
                 "10",
                 "All analytical datasets have data dictionaries",
-                bool(not dictionary_coverage["dictionary_status"].eq("missing").any()),
+                bool(
+                    not dictionary_coverage["dictionary_status"]
+                    .isin(["missing", "inadequate"])
+                    .any()
+                ),
                 "analytical_data_dictionaries_missing",
             ),
             _check(

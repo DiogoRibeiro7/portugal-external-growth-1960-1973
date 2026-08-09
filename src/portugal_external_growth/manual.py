@@ -226,7 +226,7 @@ def compare_ine_transcriptions(root: Path) -> list[Path]:
         ),
     )
     aggregate_report_path = (
-        root / "results/diagnostics/historical_sources/ine_1962_aggregate_transcription.txt"
+        root / "results/diagnostics/historical_sources/ine_aggregate_transcription.txt"
     )
     write_text_lf(
         aggregate_report_path,
@@ -260,7 +260,7 @@ def build_ine_harmonised(root: Path) -> list[Path]:
         },
         overwrite=True,
     )
-    aggregate_final_path = root / "data/processed/live/ine_1962_aggregate_trade_harmonised.csv"
+    aggregate_final_path = root / "data/processed/live/ine_aggregate_trade_harmonised.csv"
     aggregate_final = _build_verified_aggregate_harmonised(root)
     write_dataframe_with_metadata(
         aggregate_final,
@@ -565,6 +565,9 @@ def _build_aggregate_transcription_report(
             "Verified aggregate rows are limited to entries independently keyed in both",
             "protected transcription passes. Remaining discrepancies are pass-1-only queue",
             "rows awaiting independent visual pass-2 verification or controlled aggregation.",
+            "The double-entry status verifies numeric agreement for the same economic",
+            "series; it does not imply both passes used the same printed page or table",
+            "when the INE volume repeats an aggregate total in multiple locations.",
             "",
         ]
     )

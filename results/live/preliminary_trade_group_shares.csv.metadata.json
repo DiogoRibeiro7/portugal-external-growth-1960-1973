@@ -20,7 +20,7 @@
     "value_method",
     "source_quality"
   ],
-  "creation_timestamp_utc": "2026-08-09T12:28:00+01:00",
+  "creation_timestamp_utc": "2026-08-09T21:55:07+01:00",
   "date_range": {
     "end_year": 1973,
     "start_year": 1962
@@ -59,7 +59,7 @@
     "world_value_usd": "float64",
     "year": "int64"
   },
-  "sha256": "92dde0403a9b8302322f913683a68a8a84ffa2fb28ad29ce1eae7706b2e7e845",
+  "sha256": "50ef30820158c4c983b1b3c6dd37cefe77a0679835bfb45e36f5fd58435cbd4a",
   "source_files": [
     "data/interim/live/comtrade_coverage_matrix.csv",
     "config/historical_groups.yml",

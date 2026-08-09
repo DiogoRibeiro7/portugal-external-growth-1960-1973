@@ -376,6 +376,6 @@ def test_build_ine_harmonised_keeps_verified_aggregate_rows_with_later_gaps(
 
     build_ine_harmonised(tmp_path)
 
-    final = pd.read_csv(tmp_path / "data/processed/live/ine_1962_aggregate_trade_harmonised.csv")
+    final = pd.read_csv(tmp_path / "data/processed/live/ine_aggregate_trade_harmonised.csv")
     assert final["reference_year"].tolist() == [1962]
     assert final.loc[0, "adjudication_status"] == "double_entry_verified"

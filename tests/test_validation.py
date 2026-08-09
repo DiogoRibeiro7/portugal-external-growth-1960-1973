@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from hashlib import sha256
 from pathlib import Path
 
 import pandas as pd
@@ -52,7 +53,7 @@ def test_validate_preliminary_trade_shares_requires_world_sum() -> None:
                 "year": 1962,
                 "flow_code": "X",
                 "classification_scheme": "current",
-                "partner_group": "true_rest_of_world",
+                "partner_group": "non_colonial_world",
                 "trade_value_usd": 80.0,
                 "world_value_usd": 100.0,
                 "world_share": 0.8,
@@ -84,6 +85,18 @@ def test_manifest_excludes_manifest_outputs_and_uses_posix_paths(tmp_path: Path)
     assert "pyproject.toml" in manifest["relative_path"].tolist()
     assert not any(path.startswith("results/manifests/") for path in manifest["relative_path"])
     assert manifest["relative_path"].tolist() == sorted(manifest["relative_path"].tolist())
+
+
+def test_manifest_fingerprints_text_with_lf_normalisation(tmp_path: Path) -> None:
+    data = tmp_path / "data"
+    data.mkdir()
+    (data / "table.csv").write_bytes(b"value\r\n1\r\n")
+
+    manifest = build_file_manifest(tmp_path)
+
+    row = manifest.loc[manifest["relative_path"].eq("data/table.csv")].iloc[0]
+    assert row["size_bytes"] == len(b"value\n1\n")
+    assert row["sha256"] == sha256(b"value\n1\n").hexdigest()
 
 
 def test_scoped_manifest_only_includes_requested_existing_files(tmp_path: Path) -> None:

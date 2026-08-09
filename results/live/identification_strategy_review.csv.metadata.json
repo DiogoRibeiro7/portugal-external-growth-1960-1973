@@ -1,32 +1,30 @@
 {
   "access_conditions": "not_specified",
   "columns": [
-    "diagnostic",
+    "strategy_component",
     "status",
-    "value",
-    "note"
+    "blocking_reason"
   ],
-  "creation_timestamp_utc": "2026-08-09T12:28:00+01:00",
+  "creation_timestamp_utc": "2026-08-09T21:55:07+01:00",
   "date_range": null,
-  "file": "results/live/empirical_diagnostics.csv",
+  "file": "results/live/identification_strategy_review.csv",
   "input_artifacts": [
     {
       "path": "src/portugal_external_growth/empirical.py",
       "sha256": "8f97db3ce31550d318a9d076c2f435a533ecef93c3284c8f060406219077c6e8"
     }
   ],
-  "rows": 1,
+  "rows": 2,
   "schema": {
-    "diagnostic": "object",
-    "note": "object",
+    "blocking_reason": "object",
     "status": "object",
-    "value": "int64"
+    "strategy_component": "object"
   },
-  "sha256": "4e6ba55e6de65728657070fb48635d16769c0c29089272a8a95f7bf040e2a854",
+  "sha256": "1c16f4f662dcf06ee3e4b80200dcd825a2a02f96c3bd7d87369f2d705f3bb1fc",
   "source_files": [
     "src/portugal_external_growth/empirical.py"
   ],
   "source_licence": "not_specified",
-  "stage": "diagnostics_not_fit",
+  "stage": "identification_strategy_review",
   "validation_findings": []
 }

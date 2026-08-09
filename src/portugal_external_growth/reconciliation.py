@@ -173,7 +173,7 @@ def build_trade_source_comparison(root: Path) -> pd.DataFrame:
             )
 
     ine_keys: set[tuple[int, str]] = set()
-    ine_aggregates = _load_ine_1962_aggregates(root)
+    ine_aggregates = _load_ine_aggregates(root)
     if not ine_aggregates.empty:
         for ine_record in cast(
             list[dict[str, object]],
@@ -247,7 +247,7 @@ def build_trade_source_comparison(root: Path) -> pd.DataFrame:
 def build_ine_comtrade_1962_reconciliation(root: Path) -> pd.DataFrame:
     """Compare verified 1962 INE aggregates with the local Comtrade snapshot."""
 
-    ine = _load_ine_1962_aggregates(root)
+    ine = _load_ine_aggregates(root)
     audit = _read_optional_csv(
         root / "results/diagnostics/comtrade_coverage/comtrade_coverage_audit.csv"
     )
@@ -560,8 +560,8 @@ def _as_int(value: Any) -> int:
     return int(str(value))
 
 
-def _load_ine_1962_aggregates(root: Path) -> pd.DataFrame:
-    path = root / "data/processed/live/ine_1962_aggregate_trade_harmonised.csv"
+def _load_ine_aggregates(root: Path) -> pd.DataFrame:
+    path = root / "data/processed/live/ine_aggregate_trade_harmonised.csv"
     frame = _read_optional_csv(path)
     if frame.empty:
         return frame

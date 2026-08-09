@@ -10,3 +10,6 @@ Unresolved partner groups: none
 Verified aggregate rows are limited to entries independently keyed in both
 protected transcription passes. Remaining discrepancies are pass-1-only queue
 rows awaiting independent visual pass-2 verification or controlled aggregation.
+The double-entry status verifies numeric agreement for the same economic
+series; it does not imply both passes used the same printed page or table
+when the INE volume repeats an aggregate total in multiple locations.

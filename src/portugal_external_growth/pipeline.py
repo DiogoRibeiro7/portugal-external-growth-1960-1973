@@ -28,8 +28,9 @@ from portugal_external_growth.empirical import (
     build_empirical_risk_notes,
     build_model_specification_registry,
     empty_coefficients,
-    empty_design_matrix,
     empty_diagnostics,
+    empty_identification_strategy_review,
+    load_empirical_design_matrix_or_empty,
 )
 from portugal_external_growth.http import build_session
 from portugal_external_growth.industry_exposure import build_industry_exposure_outputs
@@ -1053,7 +1054,7 @@ def reconcile_trade_sources(settings: Settings) -> None:
         root / "data/interim/live/ine_comtrade_1962_reconciliation.csv",
         metadata={
             "source_files": [
-                "data/processed/live/ine_1962_aggregate_trade_harmonised.csv",
+                "data/processed/live/ine_aggregate_trade_harmonised.csv",
                 "results/diagnostics/comtrade_coverage/comtrade_coverage_audit.csv",
                 "data/interim/live/comtrade_coverage_matrix.csv",
                 "config/historical_groups.yml",
@@ -1085,7 +1086,7 @@ def reconcile_trade_sources(settings: Settings) -> None:
         metadata={
             "source_files": [
                 "results/diagnostics/comtrade_coverage/comtrade_coverage_audit.csv",
-                "data/processed/live/ine_1962_aggregate_trade_harmonised.csv",
+                "data/processed/live/ine_aggregate_trade_harmonised.csv",
                 "data/interim/live/portugal_exchange_rate_evidence.csv",
             ],
             "stage": "source_preserving_trade_comparison",
@@ -1110,7 +1111,7 @@ def build_validated_aggregate_orientation(settings: Settings) -> None:
         build_validated_aggregate_orientation_outputs(root)
     )
     source_files = [
-        "data/processed/live/ine_1962_aggregate_trade_harmonised.csv",
+        "data/processed/live/ine_aggregate_trade_harmonised.csv",
         "data/interim/live/ine_comtrade_1962_reconciliation.csv",
         "results/diagnostics/reconciliation/reconciliation_registry.csv",
         "data/manual/transcriptions/pass_1/ine_aggregate_transcription_pass_1.csv",
@@ -1149,7 +1150,7 @@ def build_validated_aggregate_orientation(settings: Settings) -> None:
         metadata={
             "source_files": [
                 "data/interim/live/ine_comtrade_1962_reconciliation.csv",
-                "data/processed/live/ine_1962_aggregate_trade_harmonised.csv",
+                "data/processed/live/ine_aggregate_trade_harmonised.csv",
             ],
             "stage": "annual_aggregate_reconciliation_matrix",
         },
@@ -1385,8 +1386,8 @@ def build_descriptive_results(settings: Settings) -> None:
                 "=====================================",
                 "",
                 "The live preliminary tables use UN Comtrade World totals as the denominator.",
-                "The residual row is labelled true_rest_of_world only when selected partner",
-                "coverage is complete; otherwise it is an unassigned World residual.",
+                "The residual row is labelled non_colonial_world only when colonial",
+                "partner coverage is complete; otherwise it is an unassigned World residual.",
                 "European and institutional group-share rows are withheld from live preliminary",
                 "results until the Comtrade source-area crosswalk has been reviewed against",
                 "returned partner-area metadata for every requested year and flow.",
@@ -1406,11 +1407,15 @@ def prepare_empirical_extension(settings: Settings) -> None:
 
     root = settings.resolved_root()
     empirical_code = "src/portugal_external_growth/empirical.py"
-    design = empty_design_matrix()
+    design = load_empirical_design_matrix_or_empty(root)
     write_dataframe_with_metadata(
         design,
         root / "data/interim/live/empirical_design_matrix.csv",
-        metadata={"stage": "empirical_design_pending_prerequisites"},
+        metadata={
+            "stage": "empirical_design_pending_prerequisites"
+            if design.empty
+            else "empirical_design_preserved_from_existing_matrix"
+        },
     )
     write_dataframe_with_metadata(
         build_analytical_data_dictionary(
@@ -1427,11 +1432,6 @@ def prepare_empirical_extension(settings: Settings) -> None:
         build_model_specification_registry(),
         root / "results/live/model_specification_registry.csv",
         metadata={"source_files": [empirical_code], "stage": "candidate_model_registry"},
-    )
-    write_dataframe_with_metadata(
-        build_empirical_prerequisite_status(),
-        root / "results/live/empirical_prerequisite_status.csv",
-        metadata={"source_files": [empirical_code], "stage": "empirical_readiness"},
     )
     audit = build_empirical_readiness_audit(root)
     write_dataframe_with_metadata(
@@ -1454,6 +1454,27 @@ def prepare_empirical_extension(settings: Settings) -> None:
     write_text_lf(
         root / "results/live/empirical_readiness_audit.txt",
         build_empirical_readiness_audit_notes(audit),
+    )
+    review_path = root / "results/live/identification_strategy_review.csv"
+    if review_path.exists():
+        identification_review = pd.read_csv(review_path)
+    else:
+        identification_review = empty_identification_strategy_review()
+    write_dataframe_with_metadata(
+        identification_review,
+        review_path,
+        metadata={"source_files": [empirical_code], "stage": "identification_strategy_review"},
+    )
+    write_dataframe_with_metadata(
+        build_empirical_prerequisite_status(root),
+        root / "results/live/empirical_prerequisite_status.csv",
+        metadata={
+            "source_files": [
+                "results/live/empirical_readiness_audit.csv",
+                "results/live/identification_strategy_review.csv",
+            ],
+            "stage": "empirical_readiness",
+        },
     )
     write_dataframe_with_metadata(
         empty_diagnostics(),

@@ -26,7 +26,7 @@
       "sha256": "c63a6372d7be5e34b917a7d1e3844df37e9b71ac9d4f0afd661838068ef28ef8"
     },
     {
-      "path": "data/processed/live/ine_1962_aggregate_trade_harmonised.csv",
+      "path": "data/processed/live/ine_aggregate_trade_harmonised.csv",
       "sha256": "52355dbfae22d8e420b88a049cf29e28c134bd4e3d27fa8491a88bb07e9000f1"
     }
   ],
@@ -48,7 +48,7 @@
   "sha256": "421c87eb3b1625c63040b7228de49aab357a7899a31b1e742251efedac60f155",
   "source_files": [
     "data/interim/live/ine_comtrade_1962_reconciliation.csv",
-    "data/processed/live/ine_1962_aggregate_trade_harmonised.csv"
+    "data/processed/live/ine_aggregate_trade_harmonised.csv"
   ],
   "source_licence": "not_specified",
   "stage": "annual_aggregate_reconciliation_matrix",

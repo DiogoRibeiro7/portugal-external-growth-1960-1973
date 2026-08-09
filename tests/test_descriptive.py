@@ -40,7 +40,7 @@ def test_export_growth_contribution_sums_to_one() -> None:
     assert result["contribution_to_export_growth"].sum() == 1.0
 
 
-def test_preliminary_shares_use_world_denominator_and_true_residual() -> None:
+def test_preliminary_shares_use_world_denominator_and_non_colonial_residual() -> None:
     coverage = pd.DataFrame(
         [
             {"year": 1962, "flow_code": "X", "partner_code": 0, "trade_value_usd": 100.0},
@@ -55,7 +55,7 @@ def test_preliminary_shares_use_world_denominator_and_true_residual() -> None:
     assert current["world_share"].sum() == 1.0
     assert current.loc[current["partner_group"] == "colonies", "world_share"].iloc[0] == 0.2
     assert (
-        current.loc[current["partner_group"] == "true_rest_of_world", "trade_value_usd"].iloc[0]
+        current.loc[current["partner_group"] == "non_colonial_world", "trade_value_usd"].iloc[0]
         == 80.0
     )
 
@@ -73,7 +73,7 @@ def test_preliminary_world_shares_do_not_publish_european_group_rows() -> None:
 
     result = _build_world_denominator_groups(coverage, MEMBERSHIPS)
 
-    assert set(result["partner_group"]) == {"colonies", "true_rest_of_world"}
+    assert set(result["partner_group"]) == {"colonies", "non_colonial_world"}
 
 
 def test_incomplete_colonial_coverage_is_reported_as_lower_bound() -> None:
@@ -145,7 +145,7 @@ def test_build_descriptive_trade_results_from_local_registry(tmp_path: Path) -> 
         "diagnostic_missingness",
     }
     assert current_1973["world_share"].sum() == 1.0
-    assert set(current_1973["partner_group"]) == {"colonies", "true_rest_of_world"}
+    assert set(current_1973["partner_group"]) == {"colonies", "non_colonial_world"}
     assert colonial["classification_scheme"].unique().tolist() == [
         "colonial_world_share_preliminary"
     ]

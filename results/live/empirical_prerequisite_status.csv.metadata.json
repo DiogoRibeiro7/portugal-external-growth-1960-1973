@@ -5,13 +5,17 @@
     "status",
     "blocking_reason"
   ],
-  "creation_timestamp_utc": "2026-08-09T12:28:00+01:00",
+  "creation_timestamp_utc": "2026-08-09T21:55:07+01:00",
   "date_range": null,
   "file": "results/live/empirical_prerequisite_status.csv",
   "input_artifacts": [
     {
-      "path": "src/portugal_external_growth/empirical.py",
-      "sha256": "4fd9207842b3892d3b0aef539cb35825a1d344e2aac941fff3c3d7cdc96c1361"
+      "path": "results/live/empirical_readiness_audit.csv",
+      "sha256": "f5b41976b6b4bc14d6cb4fca51417a3fbdc33afd6bfb95e2bb4a27267d0f29d2"
+    },
+    {
+      "path": "results/live/identification_strategy_review.csv",
+      "sha256": "1c16f4f662dcf06ee3e4b80200dcd825a2a02f96c3bd7d87369f2d705f3bb1fc"
     }
   ],
   "rows": 6,
@@ -20,9 +24,10 @@
     "prerequisite": "object",
     "status": "object"
   },
-  "sha256": "74548a2fe32c9667275aa757e1e6d144bcc9d65d114defc170a35a33c1f521a8",
+  "sha256": "6f3162bb6d439ef24d3ac43e2d03f8ef80735213a88229fd87e8912444102a06",
   "source_files": [
-    "src/portugal_external_growth/empirical.py"
+    "results/live/empirical_readiness_audit.csv",
+    "results/live/identification_strategy_review.csv"
   ],
   "source_licence": "not_specified",
   "stage": "empirical_readiness",

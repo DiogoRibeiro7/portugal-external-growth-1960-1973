@@ -13,6 +13,8 @@ from portugal_external_growth.empirical import (
     empty_coefficients,
     empty_design_matrix,
     empty_diagnostics,
+    empty_identification_strategy_review,
+    load_empirical_design_matrix_or_empty,
 )
 
 
@@ -64,7 +66,22 @@ def test_empirical_readiness_audit_uses_available_artifacts(tmp_path: Path) -> N
     interim.mkdir(parents=True)
 
     pd.DataFrame(
-        [{"year": year, "flow_code": flow} for year in range(1962, 1974) for flow in ["X", "M"]]
+        [
+            {
+                "year": year,
+                "flow_code": flow,
+                "colonial_exports_complete_pte": 1.0 if flow == "X" else None,
+                "colonial_imports_complete_pte": 1.0 if flow == "M" else None,
+                "efta_participation_exports_pte": 1.0 if flow == "X" else None,
+                "efta_participation_imports_pte": 1.0 if flow == "M" else None,
+                "eec_membership_exports_pte": 1.0 if flow == "X" else None,
+                "eec_membership_imports_pte": 1.0 if flow == "M" else None,
+                "fixed_europe_exports_pte": 1.0 if flow == "X" else None,
+                "fixed_europe_imports_pte": 1.0 if flow == "M" else None,
+            }
+            for year in range(1962, 1974)
+            for flow in ["X", "M"]
+        ]
     ).to_csv(processed / "validated_annual_aggregate_external_orientation.csv", index=False)
     pd.DataFrame(
         [
@@ -85,17 +102,25 @@ def test_empirical_readiness_audit_uses_available_artifacts(tmp_path: Path) -> N
         ]
     ).to_csv(diagnostics / "product_industry_mapping/product_mapping_status.csv", index=False)
     pd.DataFrame(
-        [{"target_industry_code": "agriculture", "year": year} for year in range(1962, 1974)]
+        [
+            {"target_industry_code": industry, "year": year}
+            for year in range(1962, 1974)
+            for industry in ["agriculture", "manufacturing"]
+        ]
     ).to_csv(processed / "industry_trade_panel.csv", index=False)
     pd.DataFrame([{"status": "available"}, {"status": "available"}]).to_csv(
         diagnostics / "industry_exposure/industry_exposure_coverage.csv", index=False
     )
-    pd.DataFrame([{"territorial_definition_status": "resolved"}]).to_csv(
-        diagnostics / "comtrade_coverage/comtrade_coverage_audit.csv", index=False
-    )
-    pd.DataFrame([{"overall_status": "satisfactory_with_caveats"}]).to_csv(
-        diagnostics / "reconciliation/reconciliation_registry.csv", index=False
-    )
+    pd.DataFrame(
+        [
+            {"year": year, "flow_code": flow, "territorial_definition_status": "resolved"}
+            for year in range(1962, 1974)
+            for flow in ["X", "M"]
+        ]
+    ).to_csv(diagnostics / "comtrade_coverage/comtrade_coverage_audit.csv", index=False)
+    pd.DataFrame(
+        [{"overall_status": "satisfactory_with_caveats"} for _source_scope in range(4)]
+    ).to_csv(diagnostics / "reconciliation/reconciliation_registry.csv", index=False)
     pd.DataFrame(
         [
             {
@@ -174,9 +199,57 @@ def test_empirical_readiness_audit_uses_available_artifacts(tmp_path: Path) -> N
     assert "product_to_industry_mapping_coverage" in satisfied
     assert "sectoral_output_coverage" in satisfied
     assert "price_deflator_coverage" in satisfied
+    assert "territorial_consistency" in satisfied
+    assert "cross_source_reconciliation" in satisfied
+    assert "usable_industries" in satisfied
     assert "usable_years" in satisfied
     assert "classification_breaks_documented" in satisfied
     assert "identification_variables_available" in satisfied
+
+    pd.DataFrame(
+        [
+            {"strategy_component": "simultaneity", "status": "satisfied", "blocking_reason": ""},
+            {
+                "strategy_component": "common_european_shocks",
+                "status": "satisfied",
+                "blocking_reason": "",
+            },
+        ]
+    ).to_csv(live / "identification_strategy_review.csv", index=False)
+
+    prerequisites = build_empirical_prerequisite_status(tmp_path)
+
+    assert set(prerequisites["status"]) == {"satisfied"}
+
+
+def test_empirical_design_matrix_loader_preserves_existing_matrix(tmp_path: Path) -> None:
+    path = tmp_path / "data/interim/live"
+    path.mkdir(parents=True)
+    existing = pd.DataFrame(
+        [
+            {
+                "year": 1962,
+                "sector_code": "textiles",
+                "outcome_variable": "output_growth",
+                "colonial_exposure": 0.2,
+                "european_exposure": 0.3,
+                "controls_available": True,
+                "source_quality": "reviewed",
+            }
+        ]
+    )
+    existing.to_csv(path / "empirical_design_matrix.csv", index=False)
+
+    loaded = load_empirical_design_matrix_or_empty(tmp_path)
+
+    assert loaded.equals(existing)
+
+
+def test_empty_identification_strategy_review_blocks_by_default() -> None:
+    review = empty_identification_strategy_review()
+
+    assert set(review["status"]) == {"blocked"}
+    assert set(review["strategy_component"]) == {"simultaneity", "common_european_shocks"}
 
 
 def test_macro_controls_require_empirical_use_review_flags(tmp_path: Path) -> None:
@@ -197,6 +270,44 @@ def test_macro_controls_require_empirical_use_review_flags(tmp_path: Path) -> No
     assert deflator["status"] == "blocked"
     assert "empirical-use review flags" in sectoral["blocking_reason"]
     assert "empirical-use review flags" in deflator["blocking_reason"]
+
+
+def test_empirical_audit_uses_full_territorial_and_reconciliation_denominators(
+    tmp_path: Path,
+) -> None:
+    diagnostics = tmp_path / "results/diagnostics"
+    (diagnostics / "comtrade_coverage").mkdir(parents=True)
+    (diagnostics / "reconciliation").mkdir(parents=True)
+    processed = tmp_path / "data/processed/live"
+    processed.mkdir(parents=True)
+
+    pd.DataFrame([{"territorial_definition_status": "resolved"}]).to_csv(
+        diagnostics / "comtrade_coverage/comtrade_coverage_audit.csv",
+        index=False,
+    )
+    pd.DataFrame([{"overall_status": "satisfactory_with_caveats"}]).to_csv(
+        diagnostics / "reconciliation/reconciliation_registry.csv",
+        index=False,
+    )
+    pd.DataFrame([{"target_industry_code": "agriculture", "year": 1962}]).to_csv(
+        processed / "industry_trade_panel.csv",
+        index=False,
+    )
+
+    audit = build_empirical_readiness_audit(tmp_path)
+
+    territorial = audit.loc[audit["requirement"].eq("territorial_consistency")].iloc[0]
+    reconciliation = audit.loc[audit["requirement"].eq("cross_source_reconciliation")].iloc[0]
+    industries = audit.loc[audit["requirement"].eq("usable_industries")].iloc[0]
+    assert territorial["required"] == 24
+    assert territorial["available"] == 1
+    assert territorial["status"] == "blocked"
+    assert reconciliation["required"] == 4
+    assert reconciliation["available"] == 1
+    assert reconciliation["status"] == "blocked"
+    assert industries["required"] == 2
+    assert industries["available"] == 1
+    assert industries["status"] == "blocked"
 
 
 def test_partner_completeness_uses_year_flow_denominators(tmp_path: Path) -> None:

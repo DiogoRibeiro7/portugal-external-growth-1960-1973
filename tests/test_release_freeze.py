@@ -7,6 +7,7 @@ import pandas as pd
 from pytest import MonkeyPatch
 
 from portugal_external_growth.release_freeze import (
+    build_data_dictionary_coverage,
     build_freeze_checklist,
     build_release_archive_manifest,
     build_research_data_freeze_outputs,
@@ -384,6 +385,45 @@ def test_source_release_policy_excludes_unregistered_pdf_without_licence_metadat
     assert policy.loc[0, "blocking_reason"] == "redistribution_rights_unresolved"
 
 
+def test_data_dictionary_coverage_rejects_placeholder_definitions(tmp_path: Path) -> None:
+    dataset = tmp_path / "data/processed/live/industry_trade_panel.csv"
+    dictionary = tmp_path / "results/live/industry_trade_panel_data_dictionary.csv"
+    dataset.parent.mkdir(parents=True)
+    dictionary.parent.mkdir(parents=True)
+    dataset.write_text("year,trade_value_usd\n1962,100\n", encoding="utf-8")
+    pd.DataFrame(
+        [
+            {
+                "dataset_path": "data/processed/live/industry_trade_panel.csv",
+                "column_name": "year",
+                "unit": "year",
+                "description": "calendar year",
+                "source_status": "reviewed",
+                "analytical_use": "empirical_identification",
+            },
+            {
+                "dataset_path": "data/processed/live/industry_trade_panel.csv",
+                "column_name": "trade_value_usd",
+                "unit": "not_applicable",
+                "description": (
+                    "trade_value_usd column in data/processed/live/industry_trade_panel.csv"
+                ),
+                "source_status": "reviewed",
+                "analytical_use": "empirical_identification",
+            },
+        ]
+    ).to_csv(dictionary, index=False)
+
+    coverage = build_data_dictionary_coverage(tmp_path)
+    row = coverage.loc[
+        coverage["dataset_path"].eq("data/processed/live/industry_trade_panel.csv")
+    ].iloc[0]
+
+    assert row["dictionary_status"] == "inadequate"
+    assert row["placeholder_description_count"] == 1
+    assert row["missing_unit_count"] == 1
+
+
 def test_release_archive_manifest_marks_dirty_head_archive_as_post_commit_required(
     tmp_path: Path,
     monkeypatch: MonkeyPatch,
@@ -514,6 +554,47 @@ def test_freeze_checklist_reports_source_rights_when_archive_exists() -> None:
     release_archive = checklist.loc[checklist["requirement_id"].eq("14")].iloc[0]
     assert release_archive["status"] == "blocked"
     assert release_archive["blocking_reason"] == "source_redistribution_rights_unresolved"
+
+
+def test_data_dictionary_coverage_rejects_placeholder_dictionary(tmp_path: Path) -> None:
+    dataset = tmp_path / "data/processed/live/industry_trade_panel.csv"
+    dictionary = tmp_path / "results/live/industry_trade_panel_data_dictionary.csv"
+    dataset.parent.mkdir(parents=True)
+    dictionary.parent.mkdir(parents=True)
+    pd.DataFrame([{"year": 1962, "trade_value_usd": 10.0}]).to_csv(dataset, index=False)
+    pd.DataFrame(
+        [
+            {
+                "dataset_path": "data/processed/live/industry_trade_panel.csv",
+                "column_name": "year",
+                "data_type": "int64",
+                "unit": "year",
+                "description": "year column in data/processed/live/industry_trade_panel.csv",
+                "source_status": "blocked",
+                "analytical_use": "not enabled for empirical analysis",
+            },
+            {
+                "dataset_path": "data/processed/live/industry_trade_panel.csv",
+                "column_name": "trade_value_usd",
+                "data_type": "float64",
+                "unit": "not_applicable",
+                "description": (
+                    "trade_value_usd column in data/processed/live/industry_trade_panel.csv"
+                ),
+                "source_status": "blocked",
+                "analytical_use": "not enabled for empirical analysis",
+            },
+        ]
+    ).to_csv(dictionary, index=False)
+
+    coverage = build_data_dictionary_coverage(tmp_path)
+
+    row = coverage.loc[
+        coverage["dataset_path"].eq("data/processed/live/industry_trade_panel.csv")
+    ].iloc[0]
+    assert row["dictionary_status"] == "inadequate"
+    assert row["placeholder_description_count"] == 2
+    assert row["missing_unit_count"] == 1
 
 
 def _write_pyproject(root: Path) -> None:

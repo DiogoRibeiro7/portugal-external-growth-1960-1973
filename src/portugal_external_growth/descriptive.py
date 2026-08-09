@@ -102,7 +102,7 @@ def _build_world_denominator_groups(
                 )
             residual = world_value - assigned_total
             residual_group = (
-                "true_rest_of_world" if selected_groups_complete else "unassigned_world_residual"
+                "non_colonial_world" if selected_groups_complete else "unassigned_world_residual"
             )
             records.append(
                 _world_share_record(
@@ -138,7 +138,7 @@ def _world_share_record(
         and expected_count is not None
         and observed_count == expected_count
     )
-    is_complete_residual = group_name == "true_rest_of_world"
+    is_complete_residual = group_name == "non_colonial_world"
     complete_value = value if complete or is_complete_residual else pd.NA
     observed_share = value / world_value if world_value else pd.NA
     complete_share = (
@@ -171,7 +171,7 @@ def _world_share_record(
 
 
 def _estimate_status(*, complete: bool, group_name: str) -> str:
-    if group_name == "true_rest_of_world":
+    if group_name == "non_colonial_world":
         return "complete_residual"
     if group_name == "unassigned_world_residual":
         return "residual_with_incomplete_selected_group"

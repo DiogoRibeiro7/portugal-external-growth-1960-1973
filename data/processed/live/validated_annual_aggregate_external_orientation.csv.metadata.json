@@ -21,8 +21,8 @@
     "efta_export_share",
     "eec_export_share",
     "fixed_europe_export_share",
-    "true_rest_of_world_exports_pte",
-    "true_rest_of_world_imports_pte",
+    "non_colonial_world_exports_pte",
+    "non_colonial_world_imports_pte",
     "unassigned_residual_exports_pte",
     "unassigned_residual_imports_pte",
     "colonial_observed_partner_count",
@@ -35,7 +35,7 @@
     "territorial_definition",
     "notes"
   ],
-  "creation_timestamp_utc": "2026-08-09T12:28:00+01:00",
+  "creation_timestamp_utc": "2026-08-09T21:55:07+01:00",
   "date_range": {
     "end_year": 1973,
     "start_year": 1962
@@ -43,7 +43,7 @@
   "file": "data/processed/live/validated_annual_aggregate_external_orientation.csv",
   "input_artifacts": [
     {
-      "path": "data/processed/live/ine_1962_aggregate_trade_harmonised.csv",
+      "path": "data/processed/live/ine_aggregate_trade_harmonised.csv",
       "sha256": "52355dbfae22d8e420b88a049cf29e28c134bd4e3d27fa8491a88bb07e9000f1"
     },
     {
@@ -87,6 +87,8 @@
     "fixed_europe_export_share": "object",
     "fixed_europe_exports_pte": "object",
     "fixed_europe_imports_pte": "object",
+    "non_colonial_world_exports_pte": "object",
+    "non_colonial_world_imports_pte": "object",
     "notes": "object",
     "observed_colonial_export_share": "object",
     "observed_colonial_import_share": "object",
@@ -94,8 +96,6 @@
     "source_currency": "object",
     "source_status": "object",
     "territorial_definition": "object",
-    "true_rest_of_world_exports_pte": "object",
-    "true_rest_of_world_imports_pte": "object",
     "unassigned_residual_exports_pte": "object",
     "unassigned_residual_imports_pte": "object",
     "valuation_basis": "object",
@@ -103,9 +103,9 @@
     "world_imports_pte": "object",
     "year": "int64"
   },
-  "sha256": "8c1f79bcabf5ea834778a9f6d90a7093657f4afb9e101ea1508d7f678d9f9dad",
+  "sha256": "c430d7ab187f2ecc1a4d9d4c983344709b148c5693bf6f743d5c8f824dec8b81",
   "source_files": [
-    "data/processed/live/ine_1962_aggregate_trade_harmonised.csv",
+    "data/processed/live/ine_aggregate_trade_harmonised.csv",
     "data/interim/live/ine_comtrade_1962_reconciliation.csv",
     "results/diagnostics/reconciliation/reconciliation_registry.csv",
     "data/manual/transcriptions/pass_1/ine_aggregate_transcription_pass_1.csv",

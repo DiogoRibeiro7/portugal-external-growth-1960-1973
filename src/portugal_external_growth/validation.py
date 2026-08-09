@@ -9,7 +9,7 @@ from pathlib import Path
 import pandas as pd
 
 from portugal_external_growth.config import load_yaml
-from portugal_external_growth.io_utils import sha256_file
+from portugal_external_growth.io_utils import repository_file_fingerprint, sha256_file
 
 VALID_SHA256_RE = re.compile(r"[0-9a-fA-F]{64}")
 RESOLVED_RECONCILIATION_STATUSES = {"reconciled", "satisfactory_with_caveats"}
@@ -121,7 +121,7 @@ def validate_preliminary_trade_shares(frame: pd.DataFrame) -> list[ValidationIss
                 "World-denominator shares must sum to one within each scheme/year/flow.",
             )
         )
-    residual_labels = {"true_rest_of_world", "unassigned_world_residual"}
+    residual_labels = {"non_colonial_world", "unassigned_world_residual"}
     residual = frame.loc[frame["partner_group"].isin(residual_labels)]
     residual_counts = residual.groupby(["year", "flow_code", "classification_scheme"]).size()
     expected_groups = frame.groupby(["year", "flow_code", "classification_scheme"]).size()
@@ -265,11 +265,12 @@ def build_file_manifest(root: Path) -> pd.DataFrame:
                 continue
             if _excluded_from_manifest(path, relative):
                 continue
+            size_bytes, digest = repository_file_fingerprint(path, relative_path=relative)
             records.append(
                 {
                     "relative_path": relative,
-                    "size_bytes": path.stat().st_size,
-                    "sha256": sha256_file(path),
+                    "size_bytes": size_bytes,
+                    "sha256": digest,
                     "artifact_role": _artifact_role(relative),
                 }
             )
@@ -283,11 +284,13 @@ def build_file_manifest(root: Path) -> pd.DataFrame:
     ]:
         if not path.exists():
             continue
+        relative = path.relative_to(root).as_posix()
+        size_bytes, digest = repository_file_fingerprint(path, relative_path=relative)
         records.append(
             {
-                "relative_path": path.relative_to(root).as_posix(),
-                "size_bytes": path.stat().st_size,
-                "sha256": sha256_file(path),
+                "relative_path": relative,
+                "size_bytes": size_bytes,
+                "sha256": digest,
                 "artifact_role": _artifact_role(path.name),
             }
         )
@@ -302,11 +305,12 @@ def build_scoped_file_manifest(root: Path, relative_paths: list[str]) -> pd.Data
         path = root / relative_path
         if not path.is_file() or _excluded_from_manifest(path, relative_path):
             continue
+        size_bytes, digest = repository_file_fingerprint(path, relative_path=relative_path)
         records.append(
             {
                 "relative_path": relative_path,
-                "size_bytes": path.stat().st_size,
-                "sha256": sha256_file(path),
+                "size_bytes": size_bytes,
+                "sha256": digest,
                 "artifact_role": _artifact_role(relative_path),
             }
         )

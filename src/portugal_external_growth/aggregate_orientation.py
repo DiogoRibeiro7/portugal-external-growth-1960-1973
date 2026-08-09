@@ -28,8 +28,8 @@ DATASET_COLUMNS = [
     "efta_export_share",
     "eec_export_share",
     "fixed_europe_export_share",
-    "true_rest_of_world_exports_pte",
-    "true_rest_of_world_imports_pte",
+    "non_colonial_world_exports_pte",
+    "non_colonial_world_imports_pte",
     "unassigned_residual_exports_pte",
     "unassigned_residual_imports_pte",
     "colonial_observed_partner_count",
@@ -72,6 +72,9 @@ MATRIX_COLUMNS = [
 ]
 
 COLONIAL_PARTNER_GROUPS = frozenset({"Ultramar", "Provincias Ultramarinas"})
+FIXED_EUROPE_PARTNER_GROUPS = frozenset(
+    {"efta_eec_fixed_partner_sample", "Fixed Europe", "Fixed European partner sample"}
+)
 
 
 def build_validated_aggregate_orientation_outputs(
@@ -79,7 +82,7 @@ def build_validated_aggregate_orientation_outputs(
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, str]:
     """Build Prompt 07 aggregate orientation outputs from validated inputs only."""
 
-    validated = _read_csv(root / "data/processed/live/ine_1962_aggregate_trade_harmonised.csv")
+    validated = _read_csv(root / "data/processed/live/ine_aggregate_trade_harmonised.csv")
     reconciliation = _read_csv(root / "data/interim/live/ine_comtrade_1962_reconciliation.csv")
     registry = _read_csv(root / "results/diagnostics/reconciliation/reconciliation_registry.csv")
     pass_1 = _read_csv(
@@ -116,7 +119,7 @@ def _build_dataset(
         record["reconciliation_status"] = registry_status if year == 1962 else "not_benchmark_year"
         year_validated = _validated_year_rows(validated, year)
         if _has_complete_world_colonial_flows(year_validated):
-            _populate_validated_ine_values(record, year_validated, reconciliation)
+            _populate_validated_ine_values(record, year, year_validated, reconciliation)
             record["estimate_status"] = "observed_no_estimation"
             record["source_status"] = "validated_ine_aggregate"
             record["notes"] = (
@@ -138,7 +141,10 @@ def _build_dataset(
 
 
 def _populate_validated_ine_values(
-    record: dict[str, object], year_validated: pd.DataFrame, reconciliation: pd.DataFrame
+    record: dict[str, object],
+    year: int,
+    year_validated: pd.DataFrame,
+    reconciliation: pd.DataFrame,
 ) -> None:
     world_exports = _aggregate_value(year_validated, flow="X", partner_group="World")
     world_imports = _aggregate_value(year_validated, flow="M", partner_group="World")
@@ -152,8 +158,8 @@ def _populate_validated_ine_values(
             "colonial_imports_complete_pte": colonial_imports,
             "complete_colonial_export_share": _safe_divide(colonial_exports, world_exports),
             "complete_colonial_import_share": _safe_divide(colonial_imports, world_imports),
-            "true_rest_of_world_exports_pte": world_exports - colonial_exports,
-            "true_rest_of_world_imports_pte": world_imports - colonial_imports,
+            "non_colonial_world_exports_pte": world_exports - colonial_exports,
+            "non_colonial_world_imports_pte": world_imports - colonial_imports,
             "unassigned_residual_exports_pte": 0.0,
             "unassigned_residual_imports_pte": 0.0,
         }
@@ -163,10 +169,10 @@ def _populate_validated_ine_values(
     record["valuation_basis"] = first_row.get("valuation_basis", "")
     record["territorial_definition"] = first_row.get("territorial_definition", "")
 
-    observed_exports = _reconciliation_row(reconciliation, concept="Overseas exports")
-    observed_imports = _reconciliation_row(reconciliation, concept="Overseas imports")
-    world_exports_row = _reconciliation_row(reconciliation, concept="World exports")
-    world_imports_row = _reconciliation_row(reconciliation, concept="World imports")
+    observed_exports = _reconciliation_row(reconciliation, year=year, concept="Overseas exports")
+    observed_imports = _reconciliation_row(reconciliation, year=year, concept="Overseas imports")
+    world_exports_row = _reconciliation_row(reconciliation, year=year, concept="World exports")
+    world_imports_row = _reconciliation_row(reconciliation, year=year, concept="World imports")
     if observed_exports is not None and world_exports_row is not None:
         observed_value = _optional_float(observed_exports.get("source_a_value"))
         world_value = _optional_float(world_exports_row.get("source_a_value"))
@@ -188,8 +194,8 @@ def _populate_validated_europe_values(
     efta_imports = _aggregate_value(year_validated, flow="M", partner_group="EFTA")
     eec_exports = _aggregate_value(year_validated, flow="X", partner_group="CEE")
     eec_imports = _aggregate_value(year_validated, flow="M", partner_group="CEE")
-    fixed_exports = efta_exports + eec_exports
-    fixed_imports = efta_imports + eec_imports
+    fixed_exports = _fixed_europe_value(year_validated, flow="X")
+    fixed_imports = _fixed_europe_value(year_validated, flow="M")
     record.update(
         {
             "efta_participation_exports_pte": _optional_value(efta_exports),
@@ -249,7 +255,7 @@ def _build_reconciliation_matrix(
         ("M", "Overseas imports"): ("Ultramar", "complete colonial imports"),
     }
     for (flow, concept), (partner_group, component) in component_map.items():
-        row = _reconciliation_row(reconciliation, concept=concept)
+        row = _reconciliation_row(reconciliation, year=1962, concept=concept)
         preferred_value = _aggregate_value(
             _validated_year_rows(validated, 1962), flow=flow, partner_group=partner_group
         )
@@ -373,13 +379,43 @@ def _aggregate_rows(frame: pd.DataFrame, *, flow: str, partner_group: str) -> pd
     return frame.loc[frame["flow"].eq(flow) & partner_mask]
 
 
-def _reconciliation_row(frame: pd.DataFrame, *, concept: str) -> dict[str, object] | None:
+def _fixed_europe_value(frame: pd.DataFrame, *, flow: str) -> float:
+    if frame.empty or not {"flow", "partner_group_source"}.issubset(frame.columns):
+        return float("nan")
+    rows = frame.loc[
+        frame["flow"].eq(flow)
+        & frame["partner_group_source"].astype(str).isin(FIXED_EUROPE_PARTNER_GROUPS)
+    ]
+    if rows.empty:
+        return float("nan")
+    row = rows.iloc[0]
+    return _optional_float(row["value_source"]) * _optional_float(row["unit_multiplier"])
+
+
+def _reconciliation_row(
+    frame: pd.DataFrame,
+    *,
+    concept: str,
+    year: int | None = None,
+) -> dict[str, object] | None:
     if frame.empty or "concept" not in frame:
         return None
     rows = frame.loc[frame["concept"].eq(concept)]
+    if year is not None:
+        year_column = _reconciliation_year_column(rows)
+        if year_column is None:
+            return None
+        rows = rows.loc[pd.to_numeric(rows[year_column], errors="coerce").eq(year)]
     if rows.empty:
         return None
     return cast(dict[str, object], rows.iloc[0].to_dict())
+
+
+def _reconciliation_year_column(frame: pd.DataFrame) -> str | None:
+    for column in ("benchmark_year", "year"):
+        if column in frame:
+            return column
+    return None
 
 
 def _registry_status(registry: pd.DataFrame) -> str:

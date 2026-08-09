@@ -20,7 +20,7 @@
   "file": "results/live/annual_aggregate_external_orientation_status.csv",
   "input_artifacts": [
     {
-      "path": "data/processed/live/ine_1962_aggregate_trade_harmonised.csv",
+      "path": "data/processed/live/ine_aggregate_trade_harmonised.csv",
       "sha256": "52355dbfae22d8e420b88a049cf29e28c134bd4e3d27fa8491a88bb07e9000f1"
     },
     {
@@ -59,7 +59,7 @@
   },
   "sha256": "6e81fa8755b0a7d1bc5bb4d5fa1fa4641b1bdf6a24d6b8eebf79e8f68af35e27",
   "source_files": [
-    "data/processed/live/ine_1962_aggregate_trade_harmonised.csv",
+    "data/processed/live/ine_aggregate_trade_harmonised.csv",
     "data/interim/live/ine_comtrade_1962_reconciliation.csv",
     "results/diagnostics/reconciliation/reconciliation_registry.csv",
     "data/manual/transcriptions/pass_1/ine_aggregate_transcription_pass_1.csv",

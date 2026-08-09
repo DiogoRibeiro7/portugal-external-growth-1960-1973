@@ -14,6 +14,24 @@ from typing import Any
 
 import pandas as pd
 
+LF_NORMALISED_TEXT_SUFFIXES = {
+    ".cff",
+    ".csv",
+    ".json",
+    ".lock",
+    ".md",
+    ".py",
+    ".toml",
+    ".txt",
+    ".yaml",
+    ".yml",
+}
+LF_NORMALISED_TEXT_NAMES = {
+    ".gitattributes",
+    ".gitignore",
+    "Makefile",
+}
+
 
 def utc_now_iso() -> str:
     """Return the current UTC timestamp in ISO 8601 format."""
@@ -29,6 +47,20 @@ def sha256_file(path: Path) -> str:
         for block in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(block)
     return digest.hexdigest()
+
+
+def repository_file_fingerprint(path: Path, *, relative_path: str) -> tuple[int, str]:
+    """Return size and SHA-256 after applying repository text EOL normalisation."""
+
+    payload = path.read_bytes()
+    if _lf_normalised_repository_path(relative_path):
+        payload = payload.replace(b"\r\n", b"\n")
+    return len(payload), hashlib.sha256(payload).hexdigest()
+
+
+def _lf_normalised_repository_path(relative_path: str) -> bool:
+    path = Path(relative_path)
+    return path.suffix in LF_NORMALISED_TEXT_SUFFIXES or path.name in LF_NORMALISED_TEXT_NAMES
 
 
 def atomic_write_bytes(path: Path, payload: bytes, *, overwrite: bool = False) -> None:

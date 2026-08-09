@@ -220,7 +220,7 @@ def _write_valid_preliminary_trade(root: Path) -> None:
                 "year": 1962,
                 "flow_code": "X",
                 "classification_scheme": "fixture",
-                "partner_group": "true_rest_of_world",
+                "partner_group": "non_colonial_world",
                 "trade_value_usd": 80.0,
                 "world_value_usd": 100.0,
                 "world_share": 0.8,
