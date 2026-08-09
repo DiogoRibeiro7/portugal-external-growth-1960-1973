@@ -2,21 +2,21 @@ Research data readiness declaration
 ===================================
 
 Declaration: NOT_READY
-Release version: 0.1.5+bc46ab5
-Source commit: bc46ab5f2235957d275b6b89281bd05429758758
-Source commit timestamp: 2026-08-09T23:14:21+01:00
-Release archive: release/research-data-freeze-0.1.5+bc46ab5.zip
-Release archive SHA-256: 9cfbf1e19c2b782e7d5e17c098a3e3aa22083adc64ffbc5a66a92562199d5130
+Release version: 0.1.5+166add7
+Source commit: 166add74800e409db974cbb6644074e88137758a
+Source commit timestamp: 2026-08-09T23:18:41+01:00
+Release archive: release/research-data-freeze-0.1.5+166add7.zip
+Release archive SHA-256: cda0646777dd9ffc4f60c02d3b7bb0971df9fa4178be70374a25aad722718fe2
 
 Machine-readable blockers: results/releases/current/freeze_blocking_reasons.csv
 Checklist: results/releases/current/freeze_checklist.csv
 
 Checklist status:
-- 1. All tests pass: blocked
-- 2. Linting passes: blocked
-- 3. Type checking passes: blocked
-- 4. Reproduction from local snapshots passes: blocked
-- 5. Manifest is deterministic: blocked
+- 1. All tests pass: passed
+- 2. Linting passes: passed
+- 3. Type checking passes: passed
+- 4. Reproduction from local snapshots passes: passed
+- 5. Manifest is deterministic: passed
 - 6. Source-document checksums match: passed
 - 7. Human transcription and adjudication are complete: blocked
 - 8. Cross-source reconciliations are resolved or documented: passed
@@ -29,13 +29,6 @@ Checklist status:
 - 15. Produce final RESEARCH_DATA_READINESS.txt: passed
 
 Blocking reasons:
-- verification_format: stale_scope: verification scope fingerprint does not match current tracked content; verification scope fingerprint does not match current tracked content; verification scope fingerprint does not match current tracked content; verification scope fingerprint does not match current tracked content; verification scope fingerprint does not match current tracked content; verification scope fingerprint does not match current tracked content
-- verification_lint: stale_scope: verification scope fingerprint does not match current tracked content; verification scope fingerprint does not match current tracked content; verification scope fingerprint does not match current tracked content; verification scope fingerprint does not match current tracked content; verification scope fingerprint does not match current tracked content; verification scope fingerprint does not match current tracked content
-- verification_manifest: stale_scope: verification scope fingerprint does not match current tracked content; verification scope fingerprint does not match current tracked content; verification scope fingerprint does not match current tracked content; verification scope fingerprint does not match current tracked content; verification scope fingerprint does not match current tracked content; verification scope fingerprint does not match current tracked content
-- verification_reproduction: stale_scope: verification scope fingerprint does not match current tracked content; verification scope fingerprint does not match current tracked content; verification scope fingerprint does not match current tracked content; verification scope fingerprint does not match current tracked content; verification scope fingerprint does not match current tracked content; verification scope fingerprint does not match current tracked content
-- verification_tests: stale_scope: verification scope fingerprint does not match current tracked content; verification scope fingerprint does not match current tracked content; verification scope fingerprint does not match current tracked content; verification scope fingerprint does not match current tracked content; verification scope fingerprint does not match current tracked content; verification scope fingerprint does not match current tracked content
-- verification_typecheck: stale_scope: verification scope fingerprint does not match current tracked content; verification scope fingerprint does not match current tracked content; verification scope fingerprint does not match current tracked content; verification scope fingerprint does not match current tracked content; verification scope fingerprint does not match current tracked content; verification scope fingerprint does not match current tracked content
-- verification_validation: stale_scope: verification scope fingerprint does not match current tracked content; verification scope fingerprint does not match current tracked content; verification scope fingerprint does not match current tracked content; verification scope fingerprint does not match current tracked content; verification scope fingerprint does not match current tracked content; verification scope fingerprint does not match current tracked content
 - research_research.empirical_prerequisites: 0/6 empirical prerequisites are satisfied.
 - research_research.manual_source_documents: 4/43 expected manual source documents are available.
 - research_research.cross_source_comparison: 88/120 cross-source comparison rows have missing source coverage.
@@ -49,3 +42,10 @@ Blocking reasons:
 - empirical_product_to_industry_mapping_coverage: product_extraction_status_blocked;product_industry_mapping_coverage_zero;product_industry_mapping_not_registered;product_level_trade_not_validated
 - empirical_sectoral_output_coverage: reviewed sectoral output panel is not enabled for empirical analysis
 - empirical_price_deflator_coverage: price/deflator series are not reviewed for sector-level empirical use
+- empirical_territorial_consistency: Comtrade reporter/partner territorial definitions remain unresolved
+- empirical_cross_source_reconciliation: INE-Comtrade, CEPII, EFTA, and OECD reconciliation scopes are not all resolved
+- empirical_efta_policy_tariff_data_availability: classification_breaks_documented=product classification coverage diagnostics missing or empty;product mapping status is blocked;source-grounded product classification mapping is not registered;classification documentation is missing or blocked;efta_policy_product_mapping_not_registered;efta_policy_sources_not_acquired;efta_tariff_policy_rows_not_registered;empirical_readiness_audit_blocks_efta_policy_dataset;identification_variables_available=empirical design matrix is empty;product_level_coverage=COMTRADE_SUBSCRIPTION_KEY_missing;commodity_code_batches_not_registered;product_to_industry_mapping_coverage=product_extraction_status_blocked;product_industry_mapping_coverage_zero;product_industry_mapping_not_registered;product_level_trade_not_validated;usable_industries=industry trade panel is empty;usable_years=industry trade panel is empty
+- empirical_usable_industries: industry trade panel is empty
+- empirical_usable_years: industry trade panel is empty
+- empirical_missingness_structure_documented: missingness structure remains dominated by blocked product/industry data
+- empirical_classification_breaks_documented: product classification coverage diagnostics missing or empty;product mapping status is blocked;source-grounded product classification mapping is not registered;classification documentation is missing or blocked

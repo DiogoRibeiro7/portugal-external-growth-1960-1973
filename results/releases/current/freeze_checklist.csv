@@ -1,9 +1,9 @@
 requirement_id,requirement,status,blocking_reason,evidence_path
-1,All tests pass,blocked,tests_not_verified,results/releases/current/freeze_blocking_reasons.csv
-2,Linting passes,blocked,lint_not_verified,results/releases/current/freeze_blocking_reasons.csv
-3,Type checking passes,blocked,typecheck_not_verified,results/releases/current/freeze_blocking_reasons.csv
-4,Reproduction from local snapshots passes,blocked,reproduction_not_verified,results/releases/current/freeze_blocking_reasons.csv
-5,Manifest is deterministic,blocked,manifest_not_verified,results/releases/current/freeze_blocking_reasons.csv
+1,All tests pass,passed,,results/releases/current/freeze_blocking_reasons.csv
+2,Linting passes,passed,,results/releases/current/freeze_blocking_reasons.csv
+3,Type checking passes,passed,,results/releases/current/freeze_blocking_reasons.csv
+4,Reproduction from local snapshots passes,passed,,results/releases/current/freeze_blocking_reasons.csv
+5,Manifest is deterministic,passed,,results/releases/current/freeze_blocking_reasons.csv
 6,Source-document checksums match,passed,,results/releases/current/freeze_blocking_reasons.csv
 7,Human transcription and adjudication are complete,blocked,human_transcription_incomplete,results/releases/current/freeze_blocking_reasons.csv
 8,Cross-source reconciliations are resolved or documented,passed,,results/releases/current/freeze_blocking_reasons.csv
