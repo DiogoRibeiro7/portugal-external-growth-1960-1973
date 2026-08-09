@@ -92,6 +92,22 @@ RELEASE_DECLARATION_COLUMNS = [
     "archive_path",
     "archive_sha256",
 ]
+RELEASE_PACKAGE_METADATA_EXCLUSIONS = frozenset(
+    {
+        "RESEARCH_DATA_READINESS.txt",
+        "results/manifests/current_manifest.csv",
+        "results/manifests/current_manifest.csv.metadata.json",
+        "results/releases/current/RESEARCH_DATA_READINESS.txt",
+        "results/releases/current/freeze_blocking_reasons.csv",
+        "results/releases/current/freeze_blocking_reasons.csv.metadata.json",
+        "results/releases/current/freeze_checklist.csv",
+        "results/releases/current/freeze_checklist.csv.metadata.json",
+        "results/releases/current/release_archive_manifest.csv",
+        "results/releases/current/release_archive_manifest.csv.metadata.json",
+        "results/releases/current/release_readiness_declaration.csv",
+        "results/releases/current/release_readiness_declaration.csv.metadata.json",
+    }
+)
 
 ANALYTICAL_DATASETS = {
     "data/processed/live/validated_annual_aggregate_external_orientation.csv": (
@@ -504,7 +520,11 @@ def build_release_archive_manifest(
             ~source_policy["release_include_source_file"].astype(bool), "source_file"
         ].astype(str)
     )
-    archive_files = [path for path in tracked_files if path not in excluded_source_files]
+    archive_files = [
+        path
+        for path in tracked_files
+        if path not in excluded_source_files and path not in RELEASE_PACKAGE_METADATA_EXCLUSIONS
+    ]
     archive_path = root / "release" / f"research-data-freeze-{release_version}.zip"
     archive_sha256 = ""
     archive_status = "not_created"
@@ -552,7 +572,9 @@ def build_release_archive_manifest(
                 "excluded_source_file_count": len(excluded_source_files),
                 "archived_file_count": len(archive_files),
                 "archive_method": archive_method,
-                "content_scope": "tracked_files_excluding_restricted_source_documents",
+                "content_scope": (
+                    "tracked_files_excluding_restricted_source_documents_and_release_metadata"
+                ),
             }
         ],
         columns=ARCHIVE_MANIFEST_COLUMNS,

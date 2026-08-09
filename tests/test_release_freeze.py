@@ -418,6 +418,61 @@ def test_release_archive_manifest_marks_dirty_head_archive_as_post_commit_requir
     assert "rerun after commit" in row["archive_method"]
 
 
+def test_release_archive_manifest_excludes_self_referential_release_metadata(
+    tmp_path: Path,
+    monkeypatch: MonkeyPatch,
+) -> None:
+    archived_command: list[str] = []
+    tracked_files = [
+        "README.md",
+        "results/live/model_specification_registry.csv",
+        "RESEARCH_DATA_READINESS.txt",
+        "results/manifests/current_manifest.csv",
+        "results/releases/current/freeze_blocking_reasons.csv",
+        "results/releases/current/release_archive_manifest.csv",
+        "results/releases/current/release_readiness_declaration.csv",
+    ]
+    for relative_path in tracked_files:
+        path = tmp_path / relative_path
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("tracked\n", encoding="utf-8")
+
+    def fake_git_stdout(_root: Path, args: list[str]) -> str:
+        if args == ["ls-files"]:
+            return "\n".join(tracked_files)
+        if args == ["status", "--porcelain"]:
+            return ""
+        return ""
+
+    def fake_run(args: list[str], **_kwargs: object) -> object:
+        archived_command.extend(args)
+        return object()
+
+    monkeypatch.setattr("portugal_external_growth.release_freeze._git_stdout", fake_git_stdout)
+    monkeypatch.setattr("portugal_external_growth.release_freeze.subprocess.run", fake_run)
+    monkeypatch.setattr(
+        "portugal_external_growth.release_freeze.sha256_file",
+        lambda _path: "abc123",
+    )
+
+    manifest = build_release_archive_manifest(
+        tmp_path,
+        release_version="1.0.0+abc123",
+        source_commit="abc123",
+        source_commit_timestamp="2026-08-09T00:00:00Z",
+        create_archive=True,
+    )
+
+    assert "README.md" in archived_command
+    assert "results/live/model_specification_registry.csv" in archived_command
+    assert "RESEARCH_DATA_READINESS.txt" not in archived_command
+    assert "results/manifests/current_manifest.csv" not in archived_command
+    assert "results/releases/current/freeze_blocking_reasons.csv" not in archived_command
+    assert "results/releases/current/release_archive_manifest.csv" not in archived_command
+    assert "results/releases/current/release_readiness_declaration.csv" not in archived_command
+    assert str(manifest.loc[0, "content_scope"]).endswith("_and_release_metadata")
+
+
 def test_freeze_checklist_reports_source_rights_when_archive_exists() -> None:
     blockers = pd.DataFrame(
         [

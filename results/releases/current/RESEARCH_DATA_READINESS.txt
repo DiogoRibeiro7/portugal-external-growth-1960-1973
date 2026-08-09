@@ -2,10 +2,10 @@ Research data readiness declaration
 ===================================
 
 Declaration: NOT_READY
-Release version: 0.1.3+c69b05b
-Source commit: c69b05bdca34803600bf0269e927af87eca64492
-Source commit timestamp: 2026-08-09T19:47:04+01:00
-Release archive: release/research-data-freeze-0.1.3+c69b05b.zip
+Release version: 0.1.3+d333749
+Source commit: d333749585530630ff124b7dc77ed8b1bcabeb58
+Source commit timestamp: 2026-08-09T20:12:46+01:00
+Release archive: release/research-data-freeze-0.1.3+d333749.zip
 Release archive SHA-256: not_created
 
 Machine-readable blockers: results/releases/current/freeze_blocking_reasons.csv
