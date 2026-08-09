@@ -1,6 +1,6 @@
 [project]
 name = "portugal-external-growth"
-version = "0.1.5"
+version = "0.1.6"
 description = "Reproducible data pipeline for Portuguese colonial and European economic linkages, 1960-1973."
 authors = [{ name = "Diogo Ribeiro", email = "diogo_dj@hotmail.com" }]
 license = "MIT"
