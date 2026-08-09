@@ -46,10 +46,6 @@
     {
       "path": "data/manual/source_documents/ine_external_trade_1973_volume_i.pdf",
       "sha256": "ef13f704b430a739a258e56e080d21d930b074fe49774b6726989329a339225f"
-    },
-    {
-      "path": "data/manual/templates/ine_aggregate_transcription_queue_1965_1970_1973.csv",
-      "sha256": "9218256b5bdd9f95677f0b43de386a9ac464b4d1c10e8133bddf435825eff8ec"
     }
   ],
   "purpose": "INE aggregate double-entry transcription pass 1",
@@ -63,7 +59,7 @@
     "footnote": "object",
     "page_number": "int64",
     "partner_group_source": "object",
-    "printed_total_value_source": "object",
+    "printed_total_value_source": "int64",
     "publication_year": "int64",
     "reference_year": "int64",
     "series_name_source": "object",
@@ -77,15 +73,14 @@
     "unit_multiplier": "int64",
     "unit_source": "object",
     "valuation_basis": "object",
-    "value_source": "object"
+    "value_source": "int64"
   },
   "sha256": "d3c97f5a4d9d4ce9baa3807671937a736c1c3888c37a9129d0ac779d62cb992d",
   "source_files": [
     "data/manual/source_documents/ine_external_trade_1962_volume_i.pdf",
     "data/manual/source_documents/ine_external_trade_1965_volume_i.pdf",
     "data/manual/source_documents/ine_external_trade_1970_volume_i.pdf",
-    "data/manual/source_documents/ine_external_trade_1973_volume_i.pdf",
-    "data/manual/templates/ine_aggregate_transcription_queue_1965_1970_1973.csv"
+    "data/manual/source_documents/ine_external_trade_1973_volume_i.pdf"
   ],
   "source_licence": "not_specified",
   "stage": "protected_manual_aggregate_transcription",

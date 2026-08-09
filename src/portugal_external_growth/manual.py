@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from typing import Any
@@ -9,7 +10,13 @@ from typing import Any
 import pandas as pd
 
 from portugal_external_growth.config import load_yaml
-from portugal_external_growth.io_utils import write_dataframe_with_metadata, write_text_lf
+from portugal_external_growth.io_utils import (
+    atomic_write_json,
+    repo_relative_path,
+    sha256_file,
+    write_dataframe_with_metadata,
+    write_text_lf,
+)
 
 TRADE_TEMPLATE_COLUMNS = [
     "source_id",
@@ -638,8 +645,63 @@ def _write_if_missing(
     metadata: dict[str, object],
 ) -> None:
     if path.exists():
+        if path.suffix == ".csv":
+            _refresh_existing_csv_metadata(path, metadata=metadata)
         return
     write_dataframe_with_metadata(frame, path, metadata=metadata, overwrite=False)
+
+
+def _refresh_existing_csv_metadata(path: Path, *, metadata: dict[str, object]) -> None:
+    frame = pd.read_csv(path)
+    sidecar = path.with_suffix(path.suffix + ".metadata.json")
+    existing = _read_json(sidecar)
+    source_files = _metadata_source_files(frame, metadata=metadata)
+    refreshed: dict[str, object] = {
+        **existing,
+        **metadata,
+        "file": repo_relative_path(path, root=Path.cwd()),
+        "sha256": sha256_file(path),
+        "rows": len(frame),
+        "columns": [str(column) for column in frame.columns],
+        "schema": {str(column): str(dtype) for column, dtype in frame.dtypes.items()},
+        "source_files": source_files,
+        "input_artifacts": _input_artifacts(source_files),
+        "validation_findings": existing.get("validation_findings", []),
+        "source_licence": existing.get("source_licence", "not_specified"),
+        "access_conditions": existing.get("access_conditions", "not_specified"),
+    }
+    atomic_write_json(sidecar, refreshed, overwrite=True)
+
+
+def _read_json(path: Path) -> dict[str, object]:
+    if not path.exists():
+        return {}
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {}
+    return payload if isinstance(payload, dict) else {}
+
+
+def _metadata_source_files(frame: pd.DataFrame, *, metadata: dict[str, object]) -> list[str]:
+    configured = metadata.get("source_files")
+    source_files = [str(path) for path in configured] if isinstance(configured, list) else []
+    if "source_pdf_filename" in frame:
+        filenames = frame["source_pdf_filename"].astype("string").fillna("").str.strip()
+        for filename in filenames.drop_duplicates().tolist():
+            if filename:
+                source_files.append(f"data/manual/source_documents/{filename}")
+    return list(dict.fromkeys(source_files))
+
+
+def _input_artifacts(source_files: list[str]) -> list[dict[str, str]]:
+    artifacts: list[dict[str, str]] = []
+    for source_file in source_files:
+        source_path = Path.cwd() / source_file
+        if not source_path.is_file():
+            continue
+        artifacts.append({"path": source_file, "sha256": sha256_file(source_path)})
+    return artifacts
 
 
 def _build_source_document_registry(config_path: Path) -> pd.DataFrame:

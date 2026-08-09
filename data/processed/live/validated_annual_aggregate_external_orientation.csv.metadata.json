@@ -52,7 +52,7 @@
     },
     {
       "path": "results/diagnostics/reconciliation/reconciliation_registry.csv",
-      "sha256": "3944edfe922a2e781a8195ca9ce1dcbebacb87280f260926cc619f5e02848b39"
+      "sha256": "ea0d9bd9ca87f211f06ddd4ea1a25c40072d53ad1d6e98aac9efbce89380a7b5"
     },
     {
       "path": "data/manual/transcriptions/pass_1/ine_aggregate_transcription_pass_1.csv",

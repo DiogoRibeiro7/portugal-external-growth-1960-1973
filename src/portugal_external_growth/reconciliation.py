@@ -62,6 +62,7 @@ INE_COMTRADE_1962_COLUMNS = [
 
 RECONCILIATION_REGISTRY_COLUMNS = [
     "reconciliation_id",
+    "reconciliation_scope",
     "benchmark_year",
     "source_a",
     "source_b",
@@ -491,6 +492,7 @@ def build_reconciliation_registry(ine_comtrade_1962: pd.DataFrame) -> pd.DataFra
             [
                 {
                     "reconciliation_id": "ine_comtrade_1962",
+                    "reconciliation_scope": "ine_comtrade",
                     "benchmark_year": 1962,
                     "source_a": "UN Comtrade",
                     "source_b": "INE",
@@ -537,6 +539,7 @@ def build_reconciliation_registry(ine_comtrade_1962: pd.DataFrame) -> pd.DataFra
         [
             {
                 "reconciliation_id": "ine_comtrade_1962",
+                "reconciliation_scope": "ine_comtrade",
                 "benchmark_year": 1962,
                 "source_a": "UN Comtrade",
                 "source_b": "INE",

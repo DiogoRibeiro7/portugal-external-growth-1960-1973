@@ -2,6 +2,7 @@
   "access_conditions": "not_specified",
   "columns": [
     "reconciliation_id",
+    "reconciliation_scope",
     "benchmark_year",
     "source_a",
     "source_b",
@@ -12,7 +13,7 @@
     "blocking_reasons",
     "evidence_reference"
   ],
-  "creation_timestamp_utc": "2026-08-09T12:28:00+01:00",
+  "creation_timestamp_utc": "2026-08-09T23:19:15+01:00",
   "date_range": null,
   "file": "results/diagnostics/reconciliation/reconciliation_registry.csv",
   "input_artifacts": [
@@ -33,12 +34,13 @@
     "overall_status": "object",
     "reconciled_row_count": "int64",
     "reconciliation_id": "object",
+    "reconciliation_scope": "object",
     "row_count": "int64",
     "source_a": "object",
     "source_b": "object",
     "unresolved_row_count": "int64"
   },
-  "sha256": "3944edfe922a2e781a8195ca9ce1dcbebacb87280f260926cc619f5e02848b39",
+  "sha256": "ea0d9bd9ca87f211f06ddd4ea1a25c40072d53ad1d6e98aac9efbce89380a7b5",
   "source_files": [
     "data/interim/live/ine_comtrade_1962_reconciliation.csv",
     "results/diagnostics/reconciliation/ine_comtrade_1962_reconciliation.txt"

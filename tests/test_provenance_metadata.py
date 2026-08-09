@@ -4,6 +4,7 @@ import json
 import re
 from pathlib import Path
 
+import pandas as pd
 import pytest
 
 from portugal_external_growth.io_utils import sha256_file
@@ -80,3 +81,22 @@ def test_committed_metadata_input_artifact_hashes_are_current() -> None:
             assert recorded_sha256 == actual_sha256, (
                 f"{path.relative_to(root)} has stale hash for {artifact_path}"
             )
+
+
+def test_committed_csv_metadata_describes_own_artifact() -> None:
+    root = Path(__file__).resolve().parents[1]
+
+    for path in sorted(root.rglob("*.csv.metadata.json")):
+        if any(part in {".git", ".tmp", ".venv"} for part in path.parts):
+            continue
+        csv_path = Path(str(path)[: -len(".metadata.json")])
+        assert csv_path.is_file(), f"{path.relative_to(root)} has no matching CSV"
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        frame = pd.read_csv(csv_path)
+        assert payload.get("sha256") == sha256_file(csv_path), (
+            f"{path.relative_to(root)} has stale own-artifact SHA-256"
+        )
+        assert payload.get("rows") == len(frame), f"{path.relative_to(root)} has stale row count"
+        assert payload.get("columns") == [str(column) for column in frame.columns], (
+            f"{path.relative_to(root)} has stale column list"
+        )

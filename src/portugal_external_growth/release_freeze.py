@@ -539,6 +539,9 @@ def _append_note(existing: object, addition: str) -> str:
     text = "" if existing is None or existing is pd.NA else str(existing).strip()
     if not text or text.lower() in {"nan", "<na>"}:
         return addition
+    notes = [part.strip() for part in text.split(";") if part.strip()]
+    if addition in notes:
+        return text
     return f"{text}; {addition}"
 
 
@@ -846,8 +849,15 @@ def build_freeze_checklist(
             _check(
                 "8",
                 "Cross-source reconciliations are resolved or documented",
-                "research.source_reconciliation"
-                not in blockers["source_check"].astype(str).tolist(),
+                not _has_any_blocker(
+                    blockers,
+                    source_checks={
+                        "research.source_reconciliation",
+                        "research.cross_source_comparison",
+                        "cross_source_reconciliation",
+                    },
+                    blocker_ids={"empirical_cross_source_reconciliation"},
+                ),
                 "source_reconciliation_not_ready",
             ),
             _check(
@@ -932,6 +942,21 @@ def _release_archive_requirement_reason(
     if "source_redistribution_rights_unresolved" in blockers["blocker_id"].astype(str).tolist():
         return "source_redistribution_rights_unresolved"
     return ""
+
+
+def _has_any_blocker(
+    blockers: pd.DataFrame,
+    *,
+    source_checks: set[str],
+    blocker_ids: set[str] | None = None,
+) -> bool:
+    if blockers.empty:
+        return False
+    blocker_ids = blocker_ids or set()
+    return bool(
+        blockers["source_check"].astype(str).isin(source_checks).any()
+        or blockers["blocker_id"].astype(str).isin(blocker_ids).any()
+    )
 
 
 def build_release_declaration(

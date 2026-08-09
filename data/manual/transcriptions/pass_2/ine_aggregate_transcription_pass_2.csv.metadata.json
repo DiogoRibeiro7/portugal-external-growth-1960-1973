@@ -1,4 +1,5 @@
 {
+  "access_conditions": "not_specified",
   "columns": [
     "source_id",
     "source_pdf_filename",
@@ -29,13 +30,55 @@
     {
       "path": "data/manual/source_documents/ine_external_trade_1962_volume_i.pdf",
       "sha256": "4f65453197d811905bcb7fe919926ddb09fe3c850875af5ae232c2c600a948dc"
+    },
+    {
+      "path": "data/manual/source_documents/ine_external_trade_1965_volume_i.pdf",
+      "sha256": "d6b95a6b73d54ce1935955b6be7cfed9f20e1d7a3535e1b8c2432edaaff4c6f3"
+    },
+    {
+      "path": "data/manual/source_documents/ine_external_trade_1970_volume_i.pdf",
+      "sha256": "465a1d41cc1ebff60c479337d6214100a2c2ebf3b1cad16b3e609408a890d454"
+    },
+    {
+      "path": "data/manual/source_documents/ine_external_trade_1973_volume_i.pdf",
+      "sha256": "ef13f704b430a739a258e56e080d21d930b074fe49774b6726989329a339225f"
     }
   ],
   "purpose": "INE aggregate double-entry transcription pass 2",
-  "rows": 4,
-  "sha256": "729de73a6e78fb2aa228076d726f2eeb8c12b69e598a9a07b807b2609fa87476",
+  "rows": 24,
+  "schema": {
+    "adjudication_status": "object",
+    "cell_status": "object",
+    "currency_source": "object",
+    "entry_pass": "object",
+    "flow": "object",
+    "footnote": "object",
+    "page_number": "int64",
+    "partner_group_source": "object",
+    "printed_total_value_source": "int64",
+    "publication_year": "int64",
+    "reference_year": "int64",
+    "series_name_source": "object",
+    "source_id": "object",
+    "source_pdf_filename": "object",
+    "source_pdf_sha256": "object",
+    "table_title": "object",
+    "territorial_definition": "object",
+    "transcriber": "object",
+    "transcription_date": "object",
+    "unit_multiplier": "int64",
+    "unit_source": "object",
+    "valuation_basis": "object",
+    "value_source": "int64"
+  },
+  "sha256": "0ccc81457758aabb5a6675ee6f8a3f854a2179f483e7f9f7fd4f12e31377ce01",
   "source_files": [
-    "data/manual/source_documents/ine_external_trade_1962_volume_i.pdf"
+    "data/manual/source_documents/ine_external_trade_1962_volume_i.pdf",
+    "data/manual/source_documents/ine_external_trade_1965_volume_i.pdf",
+    "data/manual/source_documents/ine_external_trade_1970_volume_i.pdf",
+    "data/manual/source_documents/ine_external_trade_1973_volume_i.pdf"
   ],
-  "stage": "protected_manual_aggregate_transcription"
+  "source_licence": "not_specified",
+  "stage": "protected_manual_aggregate_transcription",
+  "validation_findings": []
 }

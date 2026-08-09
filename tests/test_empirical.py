@@ -119,7 +119,14 @@ def test_empirical_readiness_audit_uses_available_artifacts(tmp_path: Path) -> N
         ]
     ).to_csv(diagnostics / "comtrade_coverage/comtrade_coverage_audit.csv", index=False)
     pd.DataFrame(
-        [{"overall_status": "satisfactory_with_caveats"} for _source_scope in range(4)]
+        [
+            {
+                "reconciliation_id": scope,
+                "reconciliation_scope": scope,
+                "overall_status": "satisfactory_with_caveats",
+            }
+            for scope in ["ine_comtrade", "cepii", "efta", "oecd"]
+        ]
     ).to_csv(diagnostics / "reconciliation/reconciliation_registry.csv", index=False)
     pd.DataFrame(
         [
@@ -285,7 +292,15 @@ def test_empirical_audit_uses_full_territorial_and_reconciliation_denominators(
         diagnostics / "comtrade_coverage/comtrade_coverage_audit.csv",
         index=False,
     )
-    pd.DataFrame([{"overall_status": "satisfactory_with_caveats"}]).to_csv(
+    pd.DataFrame(
+        [
+            {
+                "reconciliation_id": "ine_comtrade_1962",
+                "reconciliation_scope": "ine_comtrade",
+                "overall_status": "satisfactory_with_caveats",
+            }
+        ]
+    ).to_csv(
         diagnostics / "reconciliation/reconciliation_registry.csv",
         index=False,
     )
@@ -308,6 +323,57 @@ def test_empirical_audit_uses_full_territorial_and_reconciliation_denominators(
     assert industries["required"] == 2
     assert industries["available"] == 1
     assert industries["status"] == "blocked"
+
+
+def test_european_completeness_requires_fixed_partner_sample(tmp_path: Path) -> None:
+    processed = tmp_path / "data/processed/live"
+    processed.mkdir(parents=True)
+    pd.DataFrame(
+        [
+            {
+                "year": year,
+                "flow_code": flow,
+                "efta_participation_exports_pte": 1.0 if flow == "X" else None,
+                "efta_participation_imports_pte": 1.0 if flow == "M" else None,
+                "eec_membership_exports_pte": None,
+                "eec_membership_imports_pte": None,
+                "fixed_europe_exports_pte": None,
+                "fixed_europe_imports_pte": None,
+            }
+            for year in range(1962, 1974)
+            for flow in ["X", "M"]
+        ]
+    ).to_csv(processed / "validated_annual_aggregate_external_orientation.csv", index=False)
+
+    audit = build_empirical_readiness_audit(tmp_path)
+
+    european = audit.loc[audit["requirement"].eq("european_partner_completeness")].iloc[0]
+    assert european["required"] == 24
+    assert european["available"] == 0
+    assert european["status"] == "blocked"
+    assert "fixed European partner-sample" in european["blocking_reason"]
+
+
+def test_reconciliation_completeness_requires_unique_scopes(tmp_path: Path) -> None:
+    diagnostics = tmp_path / "results/diagnostics/reconciliation"
+    diagnostics.mkdir(parents=True)
+    pd.DataFrame(
+        [
+            {
+                "reconciliation_id": f"ine_comtrade_duplicate_{index}",
+                "reconciliation_scope": "ine_comtrade",
+                "overall_status": "satisfactory_with_caveats",
+            }
+            for index in range(4)
+        ]
+    ).to_csv(diagnostics / "reconciliation_registry.csv", index=False)
+
+    audit = build_empirical_readiness_audit(tmp_path)
+
+    reconciliation = audit.loc[audit["requirement"].eq("cross_source_reconciliation")].iloc[0]
+    assert reconciliation["required"] == 4
+    assert reconciliation["available"] == 1
+    assert reconciliation["status"] == "blocked"
 
 
 def test_partner_completeness_uses_year_flow_denominators(tmp_path: Path) -> None:
@@ -340,7 +406,7 @@ def test_partner_completeness_uses_year_flow_denominators(tmp_path: Path) -> Non
     assert colonial["available"] == 12
     assert colonial["status"] == "blocked"
     assert european["required"] == 24
-    assert european["available"] == 12
+    assert european["available"] == 0
     assert european["status"] == "blocked"
 
 
@@ -381,7 +447,7 @@ def test_partner_completeness_uses_fixed_sample_denominator_for_long_partial_pan
     assert colonial["available"] == 2
     assert colonial["status"] == "blocked"
     assert european["required"] == 24
-    assert european["available"] == 2
+    assert european["available"] == 0
     assert european["status"] == "blocked"
 
 

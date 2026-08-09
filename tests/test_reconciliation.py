@@ -104,6 +104,7 @@ def test_ine_comtrade_1962_reconciliation_resolves_with_exchange_rate_evidence(
         == "resolved_for_dataset_ine_preferred_complete_aggregate"
     )
     assert registry.loc[0, "overall_status"] == "satisfactory_with_caveats"
+    assert registry.loc[0, "reconciliation_scope"] == "ine_comtrade"
     assert registry.loc[0, "blocking_reasons"] == ""
 
 
@@ -159,6 +160,7 @@ def test_reconciliation_registry_reports_unresolved_blockers() -> None:
 
     result = build_reconciliation_registry(reconciliation)
 
+    assert result.loc[0, "reconciliation_scope"] == "ine_comtrade"
     assert result.loc[0, "overall_status"] == "unresolved"
     assert "colonial_partner_coverage_incomplete" in str(result.loc[0, "blocking_reasons"])
 

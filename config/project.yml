@@ -4,5 +4,10 @@ project:
   end_year: 1973
   reporter_code: 620
   reporter_iso3: PRT
+  historical_macro_start_year: 1960
+  historical_macro_end_year: 1973
+  bilateral_trade_panel_start_year: 1962
+  bilateral_trade_panel_end_year: 1973
+  period_scope_note: Historical and macro scope is 1960-1973; current machine-readable bilateral trade panel is 1962-1973 until validated 1960-1961 observations are acquired.
   currency_note: Preserve source currency and units. Do not merge nominal series before harmonisation.
   raw_overwrite_default: false

@@ -65,6 +65,10 @@ Official documentation:
 - World Bank API: `https://datahelpdesk.worldbank.org/knowledgebase/articles/898581-api-basic-call-structures`
 - CEPII TRADHIST: `https://www.cepii.fr/CEPII/en/bdd_modele/bdd_modele_item.asp?id=32`
 
+## Study periods and trade sample
+
+The historical and macro scope remains 1960-1973 because the research question is anchored in the full EFTA-to-regime-change period. The current machine-readable bilateral trade panel is narrower: 1962-1973. Trade-panel outputs and empirical-readiness checks must label that range until validated 1960-1961 bilateral trade observations are acquired and reconciled.
+
 ## Bootstrap snapshot
 
 The repository includes a small deterministic World Bank GDP-growth snapshot for Portugal, covering 1961–1973. Its only purpose is to make validation and build commands work without network access. Production work should refresh it from the official API and retain the old snapshot for comparison.

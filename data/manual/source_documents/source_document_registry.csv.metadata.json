@@ -17,7 +17,12 @@
     "start_year": 1960
   },
   "file": "data/manual/source_documents/source_document_registry.csv",
-  "input_artifacts": [],
+  "input_artifacts": [
+    {
+      "path": "config/manual_sources.yml",
+      "sha256": "ae07d71386c83eac2581a5b12f8baf3dc241598a7a39045fd3d3dff6bc4107ea"
+    }
+  ],
   "rows": 43,
   "schema": {
     "access_conditions": "object",
@@ -32,8 +37,14 @@
     "title_pattern": "object"
   },
   "sha256": "1117eb2db582fe0cd62feeb2934c9d431c8e9a58ba8d6e940a77cb63dac92e66",
-  "source_files": [],
+  "source_files": [
+    "config/manual_sources.yml",
+    "data/manual/source_documents/ine_external_trade_1962_volume_i.pdf;ine_external_trade_1962_volume_ii.pdf",
+    "data/manual/source_documents/ine_external_trade_1965_volume_i.pdf;ine_external_trade_1965_volume_ii.pdf",
+    "data/manual/source_documents/ine_external_trade_1970_volume_i.pdf;ine_external_trade_1970_volume_ii.pdf",
+    "data/manual/source_documents/ine_external_trade_1973_volume_i.pdf;ine_external_trade_1973_volume_ii.pdf"
+  ],
   "source_licence": "not_specified",
-  "stage": "source_registry_page_discovery_update",
+  "stage": "source_registry",
   "validation_findings": []
 }

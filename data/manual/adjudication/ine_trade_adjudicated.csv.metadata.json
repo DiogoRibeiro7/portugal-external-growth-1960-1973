@@ -26,6 +26,7 @@
   ],
   "date_range": null,
   "file": "data/manual/adjudication/ine_trade_adjudicated.csv",
+  "input_artifacts": [],
   "rows": 0,
   "schema": {
     "adjudication_status": "object",
@@ -52,6 +53,7 @@
     "value_source": "object"
   },
   "sha256": "6eb97fa20d610dd74d5a5dab133135ebe7dccd93438bd91b79b82bc0d27245ff",
+  "source_files": [],
   "source_licence": "not_specified",
   "stage": "protected_manual_adjudication_decisions",
   "validation_findings": []

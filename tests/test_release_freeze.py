@@ -257,6 +257,54 @@ def test_research_data_freeze_rewrites_stale_evidence_notes_as_relative_paths(
     assert str(tmp_path) not in notes
 
 
+def test_research_data_freeze_does_not_duplicate_stale_scope_notes(
+    tmp_path: Path,
+    monkeypatch: MonkeyPatch,
+) -> None:
+    _write_pyproject(tmp_path)
+    _write_research_readiness(tmp_path)
+    _write_empirical_audit(tmp_path)
+    _write_live_result_table(tmp_path)
+    _write_transcription_status(tmp_path)
+    _write_analytical_dataset(tmp_path)
+    stale_note = "verification scope fingerprint does not match current tracked content"
+    evidence_path = tmp_path / "verification.csv"
+    pd.DataFrame(
+        [
+            {
+                "check": "tests",
+                "status": "passed",
+                "command": "poetry run pytest --cov",
+                "source_commit": "previous",
+                "verification_scope_sha256": "oldscope",
+                "verification_scope_path_count": 12,
+                "tool_version": "pytest 8",
+                "verification_timestamp_utc": "2026-08-08T00:00:00Z",
+                "notes": stale_note,
+            }
+        ]
+    ).to_csv(evidence_path, index=False)
+    monkeypatch.setattr(
+        "portugal_external_growth.release_freeze._git_stdout",
+        lambda _root, args: "current" if args == ["rev-parse", "HEAD"] else "",
+    )
+    monkeypatch.setattr(
+        "portugal_external_growth.release_freeze._verification_scope_fingerprint",
+        lambda _root: ("newscope", 12),
+    )
+
+    _declaration, _blockers, _checklist, _provenance, _dictionaries, _archive, evidence, _notes = (
+        build_research_data_freeze_outputs(
+            tmp_path,
+            verification_evidence_path=evidence_path,
+            create_archive=False,
+        )
+    )
+
+    row_notes = evidence.loc[evidence["check"].eq("tests"), "notes"].iloc[0]
+    assert row_notes.count(stale_note) == 1
+
+
 def test_research_data_freeze_rejects_incomplete_passed_verification_evidence(
     tmp_path: Path,
     monkeypatch: MonkeyPatch,
@@ -554,6 +602,49 @@ def test_freeze_checklist_reports_source_rights_when_archive_exists() -> None:
     release_archive = checklist.loc[checklist["requirement_id"].eq("14")].iloc[0]
     assert release_archive["status"] == "blocked"
     assert release_archive["blocking_reason"] == "source_redistribution_rights_unresolved"
+
+
+def test_freeze_checklist_blocks_cross_source_comparison_failures() -> None:
+    blockers = pd.DataFrame(
+        [
+            {
+                "blocker_id": "research_research.cross_source_comparison",
+                "source_check": "research.cross_source_comparison",
+                "severity": "not_ready",
+                "blocking_reason": "source rows disagree",
+                "evidence_path": "results/validation/research_readiness_report.csv",
+            }
+        ]
+    )
+    verification = pd.DataFrame(
+        [
+            {"check": check, "status": "passed"}
+            for check in [
+                "tests",
+                "lint",
+                "format",
+                "typecheck",
+                "reproduction",
+                "validation",
+                "manifest",
+            ]
+        ]
+    )
+    dictionaries = pd.DataFrame([{"dictionary_status": "available"}])
+    provenance = pd.DataFrame([{"provenance_status": "complete"}])
+    archive = pd.DataFrame([{"archive_status": "created_from_git_archive_head"}])
+
+    checklist = build_freeze_checklist(
+        blockers=blockers,
+        verification_evidence=verification,
+        dictionary_coverage=dictionaries,
+        table_provenance=provenance,
+        archive_manifest=archive,
+    )
+
+    row = checklist.loc[checklist["requirement_id"].eq("8")].iloc[0]
+    assert row["status"] == "blocked"
+    assert row["blocking_reason"] == "source_reconciliation_not_ready"
 
 
 def test_data_dictionary_coverage_rejects_placeholder_dictionary(tmp_path: Path) -> None:

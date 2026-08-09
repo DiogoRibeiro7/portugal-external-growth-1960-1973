@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 import pandas as pd
@@ -59,7 +60,8 @@ RESOLVED_IDENTIFICATION_STATUSES = {"satisfied", "approved", "resolved"}
 TRADE_SAMPLE_YEARS = tuple(range(1962, 1974))
 TRADE_SAMPLE_FLOWS = ("X", "M")
 TRADE_YEAR_FLOW_REQUIREMENT = len(TRADE_SAMPLE_YEARS) * len(TRADE_SAMPLE_FLOWS)
-REQUIRED_RECONCILIATION_SCOPE_COUNT = 4
+REQUIRED_RECONCILIATION_SCOPES = frozenset({"ine_comtrade", "cepii", "efta", "oecd"})
+REQUIRED_RECONCILIATION_SCOPE_COUNT = len(REQUIRED_RECONCILIATION_SCOPES)
 MIN_USABLE_INDUSTRIES = 2
 
 
@@ -354,24 +356,15 @@ def _european_partner_completeness(root: Path) -> dict[str, object]:
             "aggregate dataset missing",
         )
     required = TRADE_YEAR_FLOW_REQUIREMENT
-    columns = [
-        "efta_participation_exports_pte",
-        "efta_participation_imports_pte",
-        "eec_membership_exports_pte",
-        "eec_membership_imports_pte",
-        "fixed_europe_exports_pte",
-        "fixed_europe_imports_pte",
-    ]
-    columns = [column for column in columns if column in frame.columns]
-    if not columns:
+    export_columns = ["fixed_europe_exports_pte"]
+    import_columns = ["fixed_europe_imports_pte"]
+    if not set(export_columns + import_columns).issubset(frame.columns):
         return _record(
             "european_partner_completeness",
             required,
             0,
-            "European partner completeness status is not machine-readable",
+            "fixed European partner-sample completeness status is not machine-readable",
         )
-    export_columns = [column for column in columns if "_exports_" in column]
-    import_columns = [column for column in columns if "_imports_" in column]
     available = _flow_specific_non_null_count(
         frame,
         export_columns=export_columns,
@@ -381,7 +374,7 @@ def _european_partner_completeness(root: Path) -> dict[str, object]:
         "european_partner_completeness",
         required,
         available,
-        "European partner completeness is not fully established",
+        "fixed European partner-sample coverage is incomplete",
     )
 
 
@@ -506,13 +499,40 @@ def _cross_source_reconciliation(root: Path) -> dict[str, object]:
             0,
             "reconciliation registry missing",
         )
-    statuses = registry.get("overall_status", pd.Series(dtype=object)).astype(str)
+    resolved = registry.loc[
+        registry.get("overall_status", pd.Series(dtype=object))
+        .astype(str)
+        .isin(RESOLVED_RECONCILIATION_STATUSES)
+    ]
+    available_scopes = _reconciliation_scopes(resolved)
     return _record(
         "cross_source_reconciliation",
         REQUIRED_RECONCILIATION_SCOPE_COUNT,
-        int(statuses.isin(RESOLVED_RECONCILIATION_STATUSES).sum()),
+        len(available_scopes & REQUIRED_RECONCILIATION_SCOPES),
         "INE-Comtrade, CEPII, EFTA, and OECD reconciliation scopes are not all resolved",
     )
+
+
+def _reconciliation_scopes(frame: pd.DataFrame) -> set[str]:
+    scopes: set[str] = set()
+    for row in frame.to_dict(orient="records"):
+        explicit = str(row.get("reconciliation_scope", "")).strip().lower()
+        if explicit:
+            scopes.add(_normalise_reconciliation_scope(explicit))
+            continue
+        text = " ".join(str(value) for value in row.values()).lower()
+        scopes.add(_normalise_reconciliation_scope(text))
+    return {scope for scope in scopes if scope}
+
+
+def _normalise_reconciliation_scope(text: str) -> str:
+    normalised = re.sub(r"[^a-z0-9]+", "_", text.lower()).strip("_")
+    if "ine" in normalised and "comtrade" in normalised:
+        return "ine_comtrade"
+    for scope in ("cepii", "efta", "oecd"):
+        if scope in normalised:
+            return scope
+    return normalised if normalised in REQUIRED_RECONCILIATION_SCOPES else ""
 
 
 def _efta_policy_availability(root: Path) -> dict[str, object]:
