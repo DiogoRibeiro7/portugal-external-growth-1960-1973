@@ -9,6 +9,7 @@
     "controls_available",
     "source_quality"
   ],
+  "creation_timestamp_utc": "2026-08-09T00:46:31+01:00",
   "date_range": null,
   "file": "data/interim/live/empirical_design_matrix.csv",
   "rows": 0,

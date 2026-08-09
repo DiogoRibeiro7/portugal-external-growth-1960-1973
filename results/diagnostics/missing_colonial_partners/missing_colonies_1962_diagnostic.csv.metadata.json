@@ -35,7 +35,7 @@
     },
     {
       "path": "data/interim/live/comtrade_coverage_matrix.csv",
-      "sha256": "e6fe1bc42dd7055d27a8d156f04a8c88b142d2c7ac080dcce8df678b3c3cf62f"
+      "sha256": "698ac04216d5e6d001cdd6b8b31a8272543b15a2b8b8b060ae112949d2e5d179"
     },
     {
       "path": "results/diagnostics/comtrade_coverage/requested_not_returned.csv",

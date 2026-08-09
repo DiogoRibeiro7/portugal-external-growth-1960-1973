@@ -6,6 +6,7 @@
     "dictionary_status",
     "blocking_reason"
   ],
+  "creation_timestamp_utc": "2026-08-09T00:46:31+01:00",
   "date_range": null,
   "file": "results/releases/current/data_dictionary_coverage.csv",
   "input_artifacts": [
@@ -25,7 +26,7 @@
     "dictionary_status": "object",
     "expected_dictionary_path": "object"
   },
-  "sha256": "8bb0d5414508243cf2b7815e9275270fd5dc5ad6da8909615899bc9755cfdcf0",
+  "sha256": "d9507d505f4bd2b444aaaa7433c60142a80ebb92f5fd8a2a1d8c204b94629230",
   "source_files": [
     "data/processed/live",
     "data/interim/live"

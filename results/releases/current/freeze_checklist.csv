@@ -8,8 +8,8 @@ requirement_id,requirement,status,blocking_reason,evidence_path
 7,Human transcription and adjudication are complete,blocked,human_transcription_incomplete,results/releases/current/freeze_blocking_reasons.csv
 8,Cross-source reconciliations are resolved or documented,passed,,results/releases/current/freeze_blocking_reasons.csv
 9,Territorial definitions are resolved,blocked,territorial_definition_not_ready,results/releases/current/freeze_blocking_reasons.csv
-10,All analytical datasets have data dictionaries,blocked,analytical_data_dictionaries_missing,results/releases/current/freeze_blocking_reasons.csv
-11,Every final result table has release provenance,blocked,final_result_table_provenance_incomplete,results/releases/current/freeze_blocking_reasons.csv
+10,All analytical datasets have data dictionaries,passed,,results/releases/current/freeze_blocking_reasons.csv
+11,Every final result table has release provenance,passed,,results/releases/current/freeze_blocking_reasons.csv
 12,No exploratory output is mixed with release results,passed,,results/releases/current/freeze_blocking_reasons.csv
 13,No paper prose is stored in the repository,passed,,results/releases/current/freeze_blocking_reasons.csv
 14,Create a release archive from tracked files only,blocked,release_archive_not_created,results/releases/current/freeze_blocking_reasons.csv

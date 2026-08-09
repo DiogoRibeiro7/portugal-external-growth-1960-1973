@@ -12,6 +12,7 @@
     "reconciliation_status",
     "note"
   ],
+  "creation_timestamp_utc": "2026-08-09T00:46:31+01:00",
   "date_range": null,
   "file": "results/diagnostics/product_industry_mapping/industry_trade_reconciliation.csv",
   "input_artifacts": [

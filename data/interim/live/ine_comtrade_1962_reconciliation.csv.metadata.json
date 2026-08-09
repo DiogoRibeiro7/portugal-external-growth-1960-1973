@@ -30,6 +30,7 @@
     "value_coverage_ratio",
     "missing_partner_entities"
   ],
+  "creation_timestamp_utc": "2026-08-09T00:46:31+01:00",
   "date_range": {
     "end_year": 1962,
     "start_year": 1962
@@ -42,11 +43,11 @@
     },
     {
       "path": "results/diagnostics/comtrade_coverage/comtrade_coverage_audit.csv",
-      "sha256": "c153c4bd97dff973d1315d0710e93c880ccb83d922efac96bebb6d234cbe140f"
+      "sha256": "6fa6f5975f1e389b8062cd8b2c7cb0e3ea73a7b9bbb117173f4c86ffb559173c"
     },
     {
       "path": "data/interim/live/comtrade_coverage_matrix.csv",
-      "sha256": "e6fe1bc42dd7055d27a8d156f04a8c88b142d2c7ac080dcce8df678b3c3cf62f"
+      "sha256": "698ac04216d5e6d001cdd6b8b31a8272543b15a2b8b8b060ae112949d2e5d179"
     },
     {
       "path": "config/historical_groups.yml",

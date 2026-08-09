@@ -10,6 +10,7 @@
     "decision_source",
     "decision_note"
   ],
+  "creation_timestamp_utc": "2026-08-09T00:46:31+01:00",
   "date_range": null,
   "file": "data/interim/live/sitc_industry_mapping.csv",
   "input_artifacts": [

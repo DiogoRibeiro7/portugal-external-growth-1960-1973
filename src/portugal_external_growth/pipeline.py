@@ -18,6 +18,7 @@ from portugal_external_growth.clients.comtrade import (
 )
 from portugal_external_growth.clients.world_bank import WorldBankClient, WorldBankRequest
 from portugal_external_growth.config import load_yaml
+from portugal_external_growth.data_dictionary import build_analytical_data_dictionary
 from portugal_external_growth.descriptive import build_descriptive_trade_results
 from portugal_external_growth.efta_policy import build_efta_policy_outputs
 from portugal_external_growth.empirical import (
@@ -397,6 +398,8 @@ def audit_comtrade_coverage(settings: Settings, *, overwrite: bool) -> None:
                         "partner_desc": normalised["partner_desc"],
                         "commodity_code_source": normalised["commodity_code"],
                         "trade_value_usd": normalised["trade_value_usd"],
+                        "cif_value_usd": normalised["cif_value_usd"],
+                        "fob_value_usd": normalised["fob_value_usd"],
                         "is_reported": normalised["is_reported"],
                         "is_original_classification": normalised["is_original_classification"],
                         "legacy_estimation_flag": normalised["legacy_estimation_flag"],
@@ -635,6 +638,8 @@ def _local_comtrade_coverage_matrices(
                             "partner_desc": "",
                             "commodity_code_source": commodity_code,
                             "trade_value_usd": pd.NA,
+                            "cif_value_usd": pd.NA,
+                            "fob_value_usd": pd.NA,
                             "is_reported": pd.NA,
                             "is_original_classification": pd.NA,
                             "legacy_estimation_flag": pd.NA,
@@ -657,6 +662,8 @@ def _local_comtrade_coverage_matrices(
                 "partner_desc": normalised["partner_desc"],
                 "commodity_code_source": normalised["commodity_code"],
                 "trade_value_usd": normalised["trade_value_usd"],
+                "cif_value_usd": normalised["cif_value_usd"],
+                "fob_value_usd": normalised["fob_value_usd"],
                 "is_reported": normalised["is_reported"],
                 "is_original_classification": normalised["is_original_classification"],
                 "legacy_estimation_flag": normalised["legacy_estimation_flag"],
@@ -1119,6 +1126,19 @@ def build_validated_aggregate_orientation(settings: Settings) -> None:
         },
     )
     write_dataframe_with_metadata(
+        build_analytical_data_dictionary(
+            "data/processed/live/validated_annual_aggregate_external_orientation.csv",
+            dataset,
+        ),
+        root / "results/live/validated_annual_aggregate_external_orientation_data_dictionary.csv",
+        metadata={
+            "source_files": [
+                "data/processed/live/validated_annual_aggregate_external_orientation.csv"
+            ],
+            "stage": "validated_annual_aggregate_external_orientation_data_dictionary",
+        },
+    )
+    write_dataframe_with_metadata(
         status,
         root / "results/live/annual_aggregate_external_orientation_status.csv",
         metadata={"source_files": source_files, "stage": "annual_aggregate_coverage_status"},
@@ -1230,6 +1250,17 @@ def build_product_industry_mapping(settings: Settings) -> None:
         metadata={"source_files": source_files},
     )
     write_dataframe_with_metadata(
+        build_analytical_data_dictionary(
+            "data/processed/live/industry_trade_panel.csv",
+            panel,
+        ),
+        root / "results/live/industry_trade_panel_data_dictionary.csv",
+        metadata={
+            "source_files": ["data/processed/live/industry_trade_panel.csv"],
+            "stage": "industry_trade_panel_data_dictionary",
+        },
+    )
+    write_dataframe_with_metadata(
         reconciliation,
         root / "results/diagnostics/product_industry_mapping/industry_trade_reconciliation.csv",
         metadata={"source_files": source_files},
@@ -1260,6 +1291,17 @@ def build_descriptive_industry_exposure(settings: Settings) -> None:
         exposures,
         root / "data/processed/live/industry_exposure_panel.csv",
         metadata={"source_files": source_files},
+    )
+    write_dataframe_with_metadata(
+        build_analytical_data_dictionary(
+            "data/processed/live/industry_exposure_panel.csv",
+            exposures,
+        ),
+        root / "results/live/industry_exposure_panel_data_dictionary.csv",
+        metadata={
+            "source_files": ["data/processed/live/industry_exposure_panel.csv"],
+            "stage": "industry_exposure_panel_data_dictionary",
+        },
     )
     write_dataframe_with_metadata(
         composition,
@@ -1363,20 +1405,33 @@ def prepare_empirical_extension(settings: Settings) -> None:
     """Prepare empirical-design artefacts without fitting models."""
 
     root = settings.resolved_root()
+    empirical_code = "src/portugal_external_growth/empirical.py"
+    design = empty_design_matrix()
     write_dataframe_with_metadata(
-        empty_design_matrix(),
+        design,
         root / "data/interim/live/empirical_design_matrix.csv",
         metadata={"stage": "empirical_design_pending_prerequisites"},
     )
     write_dataframe_with_metadata(
+        build_analytical_data_dictionary(
+            "data/interim/live/empirical_design_matrix.csv",
+            design,
+        ),
+        root / "results/live/empirical_design_matrix_data_dictionary.csv",
+        metadata={
+            "source_files": ["data/interim/live/empirical_design_matrix.csv"],
+            "stage": "empirical_design_matrix_data_dictionary",
+        },
+    )
+    write_dataframe_with_metadata(
         build_model_specification_registry(),
         root / "results/live/model_specification_registry.csv",
-        metadata={"stage": "candidate_model_registry"},
+        metadata={"source_files": [empirical_code], "stage": "candidate_model_registry"},
     )
     write_dataframe_with_metadata(
         build_empirical_prerequisite_status(),
         root / "results/live/empirical_prerequisite_status.csv",
-        metadata={"stage": "empirical_readiness"},
+        metadata={"source_files": [empirical_code], "stage": "empirical_readiness"},
     )
     audit = build_empirical_readiness_audit(root)
     write_dataframe_with_metadata(
@@ -1403,12 +1458,12 @@ def prepare_empirical_extension(settings: Settings) -> None:
     write_dataframe_with_metadata(
         empty_diagnostics(),
         root / "results/live/empirical_diagnostics.csv",
-        metadata={"stage": "diagnostics_not_fit"},
+        metadata={"source_files": [empirical_code], "stage": "diagnostics_not_fit"},
     )
     write_dataframe_with_metadata(
         empty_coefficients(),
         root / "results/live/empirical_coefficients.csv",
-        metadata={"stage": "coefficients_not_estimated"},
+        metadata={"source_files": [empirical_code], "stage": "coefficients_not_estimated"},
     )
     coefficient_text = root / "results/live/empirical_coefficients.txt"
     write_text_lf(
@@ -1434,6 +1489,17 @@ def build_efta_policy_dataset(settings: Settings) -> None:
         policy,
         root / "data/interim/live/efta_policy_dataset.csv",
         metadata={"source_files": source_files, "stage": "efta_policy_blocked_empty_dataset"},
+    )
+    write_dataframe_with_metadata(
+        build_analytical_data_dictionary(
+            "data/interim/live/efta_policy_dataset.csv",
+            policy,
+        ),
+        root / "results/live/efta_policy_data_dictionary.csv",
+        metadata={
+            "source_files": ["data/interim/live/efta_policy_dataset.csv"],
+            "stage": "efta_policy_data_dictionary",
+        },
     )
     write_dataframe_with_metadata(
         product_mapping,

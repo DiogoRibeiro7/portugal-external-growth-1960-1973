@@ -19,6 +19,7 @@
     "explanatory_note",
     "confidence_status"
   ],
+  "creation_timestamp_utc": "2026-08-09T00:46:31+01:00",
   "date_range": {
     "end_year": 1973,
     "start_year": 1962
@@ -27,7 +28,7 @@
   "input_artifacts": [
     {
       "path": "results/diagnostics/comtrade_coverage/comtrade_coverage_audit.csv",
-      "sha256": "c153c4bd97dff973d1315d0710e93c880ccb83d922efac96bebb6d234cbe140f"
+      "sha256": "6fa6f5975f1e389b8062cd8b2c7cb0e3ea73a7b9bbb117173f4c86ffb559173c"
     },
     {
       "path": "data/processed/live/ine_1962_aggregate_trade_harmonised.csv",

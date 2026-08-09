@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import subprocess
 import tempfile
 from collections.abc import Mapping
 from datetime import UTC, datetime
@@ -78,10 +79,12 @@ def write_dataframe_with_metadata(
 
     sidecar = csv_path.with_suffix(csv_path.suffix + ".metadata.json")
     normalised_metadata = _normalise_metadata(metadata, root=Path.cwd())
+    creation_timestamp = _creation_timestamp(normalised_metadata, root=Path.cwd())
     complete_metadata: dict[str, Any] = {
         **normalised_metadata,
         "file": _metadata_path(csv_path),
         "sha256": sha256_file(csv_path),
+        "creation_timestamp_utc": creation_timestamp,
         "rows": len(frame),
         "columns": [str(column) for column in frame.columns],
         "schema": {str(column): str(dtype) for column, dtype in frame.dtypes.items()},
@@ -96,6 +99,25 @@ def write_dataframe_with_metadata(
 
 def _metadata_path(path: Path) -> str:
     return repo_relative_path(path, root=Path.cwd())
+
+
+def _creation_timestamp(metadata: Mapping[str, Any], *, root: Path) -> str:
+    explicit = metadata.get("creation_timestamp_utc")
+    if explicit:
+        return str(explicit)
+    environment_timestamp = os.getenv("PEG_METADATA_TIMESTAMP_UTC")
+    if environment_timestamp:
+        return environment_timestamp
+    try:
+        return subprocess.run(
+            ["git", "show", "-s", "--format=%cI", "HEAD"],
+            cwd=root,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+    except (OSError, subprocess.CalledProcessError):
+        return ""
 
 
 def repo_relative_path(path: str | Path, *, root: Path) -> str:

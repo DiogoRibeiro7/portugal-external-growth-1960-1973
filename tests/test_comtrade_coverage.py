@@ -190,6 +190,68 @@ def test_comtrade_coverage_falls_back_and_calculates_selected_partner_ratio() ->
     assert audit.loc[0, "colonial_partner_codes_present"] == "24"
 
 
+def test_comtrade_coverage_verifies_import_cif_value_basis() -> None:
+    matrix = pd.DataFrame(
+        [
+            {
+                "year": 1962,
+                "flow_code": "M",
+                "classification_code": "S1",
+                "reporter_code": 620,
+                "partner_code": 0,
+                "partner_desc": "World",
+                "trade_value_usd": 100.0,
+                "cif_value_usd": 100.0,
+                "fob_value_usd": pd.NA,
+                "is_world_record": True,
+                "raw_records": 1,
+            }
+        ]
+    )
+
+    _, audit, _ = compile_comtrade_coverage_audit(
+        [matrix],
+        colonial_partner_codes=(24,),
+        expected_years=(1962,),
+        expected_flow_codes=("M",),
+    )
+
+    assert audit.loc[0, "valuation_note"] == (
+        "Verified from local Comtrade fields: imports use CIF value as primaryValue."
+    )
+
+
+def test_comtrade_coverage_verifies_export_fob_value_basis() -> None:
+    matrix = pd.DataFrame(
+        [
+            {
+                "year": 1962,
+                "flow_code": "X",
+                "classification_code": "S1",
+                "reporter_code": 620,
+                "partner_code": 0,
+                "partner_desc": "World",
+                "trade_value_usd": 100.0,
+                "cif_value_usd": pd.NA,
+                "fob_value_usd": 100.0,
+                "is_world_record": True,
+                "raw_records": 1,
+            }
+        ]
+    )
+
+    _, audit, _ = compile_comtrade_coverage_audit(
+        [matrix],
+        colonial_partner_codes=(24,),
+        expected_years=(1962,),
+        expected_flow_codes=("X",),
+    )
+
+    assert audit.loc[0, "valuation_note"] == (
+        "Verified from local Comtrade fields: exports use FOB value as primaryValue."
+    )
+
+
 def test_comtrade_coverage_uses_territorial_definition_registry(tmp_path: Path) -> None:
     registry_path = tmp_path / "territorial_definitions.yml"
     registry_path.write_text(

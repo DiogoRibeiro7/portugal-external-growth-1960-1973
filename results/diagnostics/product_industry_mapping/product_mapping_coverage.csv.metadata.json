@@ -13,6 +13,7 @@
     "coverage_status",
     "blocking_reason"
   ],
+  "creation_timestamp_utc": "2026-08-09T00:46:31+01:00",
   "date_range": null,
   "file": "results/diagnostics/product_industry_mapping/product_mapping_coverage.csv",
   "input_artifacts": [

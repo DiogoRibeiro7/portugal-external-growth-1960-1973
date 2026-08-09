@@ -11,6 +11,7 @@
     "source",
     "snapshot_role"
   ],
+  "creation_timestamp_utc": "2026-08-09T00:46:31+01:00",
   "date_range": {
     "end_year": 1973,
     "start_year": 1961

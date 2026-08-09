@@ -1,0 +1,38 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "dataset_path",
+    "column_name",
+    "data_type",
+    "unit",
+    "description",
+    "source_status",
+    "analytical_use"
+  ],
+  "creation_timestamp_utc": "2026-08-09T00:46:31+01:00",
+  "date_range": null,
+  "file": "results/live/validated_annual_aggregate_external_orientation_data_dictionary.csv",
+  "input_artifacts": [
+    {
+      "path": "data/processed/live/validated_annual_aggregate_external_orientation.csv",
+      "sha256": "8c1f79bcabf5ea834778a9f6d90a7093657f4afb9e101ea1508d7f678d9f9dad"
+    }
+  ],
+  "rows": 33,
+  "schema": {
+    "analytical_use": "object",
+    "column_name": "object",
+    "data_type": "object",
+    "dataset_path": "object",
+    "description": "object",
+    "source_status": "object",
+    "unit": "object"
+  },
+  "sha256": "59dca9d4111b8280a2d0ffb7afeec75b0a33cffc9c5ef3181531438f9f7ae61c",
+  "source_files": [
+    "data/processed/live/validated_annual_aggregate_external_orientation.csv"
+  ],
+  "source_licence": "not_specified",
+  "stage": "validated_annual_aggregate_external_orientation_data_dictionary",
+  "validation_findings": []
+}

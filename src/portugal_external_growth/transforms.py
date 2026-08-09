@@ -17,12 +17,16 @@ COMTRADE_COLUMN_CANDIDATES: dict[str, tuple[str, ...]] = {
     "flow_code": ("flowCode",),
     "commodity_code": ("cmdCode",),
     "trade_value_usd": ("primaryValue", "TradeValue", "tradeValue"),
+    "cif_value_usd": ("cifvalue", "CIFValue", "cifValue"),
+    "fob_value_usd": ("fobvalue", "FOBValue", "fobValue"),
     "is_reported": ("isReported",),
     "is_original_classification": ("isOriginalClassification",),
     "legacy_estimation_flag": ("legacyEstimationFlag",),
 }
 
 OPTIONAL_COMTRADE_COLUMNS = {
+    "cif_value_usd",
+    "fob_value_usd",
     "is_reported",
     "is_original_classification",
     "legacy_estimation_flag",
@@ -63,7 +67,8 @@ def normalise_comtrade(frame: pd.DataFrame) -> pd.DataFrame:
     )
     for column in ("year", "reporter_code", "partner_code"):
         output[column] = pd.to_numeric(output[column], errors="raise").astype("int64")
-    output["trade_value_usd"] = pd.to_numeric(output["trade_value_usd"], errors="coerce")
+    for column in ("trade_value_usd", "cif_value_usd", "fob_value_usd"):
+        output[column] = pd.to_numeric(output[column], errors="coerce")
     output["partner_desc"] = output["partner_desc"].astype("string")
     output["flow_code"] = output["flow_code"].astype("string")
     output["commodity_code"] = output["commodity_code"].astype("string")
@@ -158,6 +163,8 @@ def compile_comtrade_coverage_audit(
                 "partner_desc",
                 "commodity_code_source",
                 "trade_value_usd",
+                "cif_value_usd",
+                "fob_value_usd",
                 "is_reported",
                 "is_original_classification",
                 "legacy_estimation_flag",
@@ -238,9 +245,7 @@ def compile_comtrade_coverage_audit(
                     "selected_coverage_ratio": selected_coverage_ratio,
                     "unselected_world_value_usd": unselected_world_value,
                     "coverage_status": coverage_status,
-                    "valuation_note": (
-                        "Comtrade convention: imports CIF, exports FOB; verify in source metadata."
-                    ),
+                    "valuation_note": _valuation_note(preferred, flow_code=flow_code),
                     **_territorial_definition_fields(
                         territorial_definitions,
                         reporter_code=620,
@@ -265,7 +270,7 @@ def compile_comtrade_coverage_audit(
                 "- Confirm whether missing overseas-territory partners were included in "
                 "Portugal's statistical territory."
             ),
-            "- Confirm valuation metadata for each historical classification and flow.",
+            "- Resolve value-basis rows flagged as not testable in the audit table.",
             (
                 "- Resolve reporter/year gaps against UN Comtrade metadata rather than "
                 "inferring absence from empty data."
@@ -276,6 +281,29 @@ def compile_comtrade_coverage_audit(
         ]
     )
     return matrix, audit, notes
+
+
+def _valuation_note(frame: pd.DataFrame, *, flow_code: str) -> str:
+    if frame.empty or "trade_value_usd" not in frame:
+        return "Value basis not testable: selected classification has no returned rows."
+    trade_values = pd.to_numeric(frame["trade_value_usd"], errors="coerce")
+    if flow_code == "M":
+        if "cif_value_usd" not in frame:
+            return "Value basis not testable: CIF value field is absent from local snapshot."
+        cif_values = pd.to_numeric(frame["cif_value_usd"], errors="coerce")
+        verified = trade_values.notna() & cif_values.notna() & trade_values.eq(cif_values)
+        if bool(verified.any()):
+            return "Verified from local Comtrade fields: imports use CIF value as primaryValue."
+        return "Value basis not testable: returned import rows do not expose matching CIF values."
+    if flow_code == "X":
+        if "fob_value_usd" not in frame:
+            return "Value basis not testable: FOB value field is absent from local snapshot."
+        fob_values = pd.to_numeric(frame["fob_value_usd"], errors="coerce")
+        verified = trade_values.notna() & fob_values.notna() & trade_values.eq(fob_values)
+        if bool(verified.any()):
+            return "Verified from local Comtrade fields: exports use FOB value as primaryValue."
+        return "Value basis not testable: returned export rows do not expose matching FOB values."
+    return f"Value basis not testable for unsupported flow code {flow_code}."
 
 
 def load_territorial_definition_registry(path: Path) -> pd.DataFrame:

@@ -7,12 +7,13 @@
     "trade_value_usd",
     "unmapped_reason"
   ],
+  "creation_timestamp_utc": "2026-08-09T00:46:31+01:00",
   "date_range": null,
   "file": "results/live/sitc_unmapped_codes.csv",
   "input_artifacts": [
     {
       "path": "data/interim/live/comtrade_coverage_matrix.csv",
-      "sha256": "e6fe1bc42dd7055d27a8d156f04a8c88b142d2c7ac080dcce8df678b3c3cf62f"
+      "sha256": "698ac04216d5e6d001cdd6b8b31a8272543b15a2b8b8b060ae112949d2e5d179"
     }
   ],
   "rows": 2,

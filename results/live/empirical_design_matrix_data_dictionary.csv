@@ -1,0 +1,8 @@
+dataset_path,column_name,data_type,unit,description,source_status,analytical_use
+data/interim/live/empirical_design_matrix.csv,sector_code,object,code,sector identifier for empirical-design rows,schema placeholder pending empirical prerequisites,no model fitting; intentionally empty until readiness audit passes
+data/interim/live/empirical_design_matrix.csv,year,object,year,calendar year,schema placeholder pending empirical prerequisites,no model fitting; intentionally empty until readiness audit passes
+data/interim/live/empirical_design_matrix.csv,outcome_variable,object,variable,registered dependent variable placeholder,schema placeholder pending empirical prerequisites,no model fitting; intentionally empty until readiness audit passes
+data/interim/live/empirical_design_matrix.csv,colonial_exposure,object,share,colonial-demand exposure variable,schema placeholder pending empirical prerequisites,no model fitting; intentionally empty until readiness audit passes
+data/interim/live/empirical_design_matrix.csv,european_exposure,object,share,European-demand exposure variable,schema placeholder pending empirical prerequisites,no model fitting; intentionally empty until readiness audit passes
+data/interim/live/empirical_design_matrix.csv,controls_available,object,boolean,whether required control variables are available,schema placeholder pending empirical prerequisites,no model fitting; intentionally empty until readiness audit passes
+data/interim/live/empirical_design_matrix.csv,source_quality,object,status,machine-readable source-quality note,schema placeholder pending empirical prerequisites,no model fitting; intentionally empty until readiness audit passes

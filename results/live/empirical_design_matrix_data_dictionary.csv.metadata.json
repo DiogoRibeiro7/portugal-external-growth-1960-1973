@@ -1,0 +1,38 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "dataset_path",
+    "column_name",
+    "data_type",
+    "unit",
+    "description",
+    "source_status",
+    "analytical_use"
+  ],
+  "creation_timestamp_utc": "2026-08-09T00:46:31+01:00",
+  "date_range": null,
+  "file": "results/live/empirical_design_matrix_data_dictionary.csv",
+  "input_artifacts": [
+    {
+      "path": "data/interim/live/empirical_design_matrix.csv",
+      "sha256": "85266264b226ad6d955941adb2efc241d15839361a02923080f85bc46d15432a"
+    }
+  ],
+  "rows": 7,
+  "schema": {
+    "analytical_use": "object",
+    "column_name": "object",
+    "data_type": "object",
+    "dataset_path": "object",
+    "description": "object",
+    "source_status": "object",
+    "unit": "object"
+  },
+  "sha256": "05455c1fc07e37291d1abfac3c34a3f6f146cce50c640ee4296e1602318e9f20",
+  "source_files": [
+    "data/interim/live/empirical_design_matrix.csv"
+  ],
+  "source_licence": "not_specified",
+  "stage": "empirical_design_matrix_data_dictionary",
+  "validation_findings": []
+}

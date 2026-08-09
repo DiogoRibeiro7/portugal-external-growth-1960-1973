@@ -1,0 +1,38 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "dataset_path",
+    "column_name",
+    "data_type",
+    "unit",
+    "description",
+    "source_status",
+    "analytical_use"
+  ],
+  "creation_timestamp_utc": "2026-08-09T00:46:31+01:00",
+  "date_range": null,
+  "file": "results/live/industry_exposure_panel_data_dictionary.csv",
+  "input_artifacts": [
+    {
+      "path": "data/processed/live/industry_exposure_panel.csv",
+      "sha256": "e1087fc1fe2698a763f7c68d6b51cbefd48851a06f4c7ebfce89bc7e955ba067"
+    }
+  ],
+  "rows": 17,
+  "schema": {
+    "analytical_use": "object",
+    "column_name": "object",
+    "data_type": "object",
+    "dataset_path": "object",
+    "description": "object",
+    "source_status": "object",
+    "unit": "object"
+  },
+  "sha256": "866a0970f452866a5086aae3edf8178b9c293f855e6bb366a640713ca42b6f17",
+  "source_files": [
+    "data/processed/live/industry_exposure_panel.csv"
+  ],
+  "source_licence": "not_specified",
+  "stage": "industry_exposure_panel_data_dictionary",
+  "validation_findings": []
+}

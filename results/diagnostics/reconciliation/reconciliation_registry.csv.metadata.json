@@ -12,6 +12,7 @@
     "blocking_reasons",
     "evidence_reference"
   ],
+  "creation_timestamp_utc": "2026-08-09T00:46:31+01:00",
   "date_range": null,
   "file": "results/diagnostics/reconciliation/reconciliation_registry.csv",
   "input_artifacts": [

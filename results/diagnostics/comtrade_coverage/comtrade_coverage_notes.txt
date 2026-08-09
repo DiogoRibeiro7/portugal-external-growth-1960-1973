@@ -7,7 +7,7 @@ historical statistical-territory practices are reviewed.
 
 Open checks:
 - Confirm whether missing overseas-territory partners were included in Portugal's statistical territory.
-- Confirm valuation metadata for each historical classification and flow.
+- Resolve value-basis rows flagged as not testable in the audit table.
 - Resolve reporter/year gaps against UN Comtrade metadata rather than inferring absence from empty data.
 
 Years without any returned classification in this run: []

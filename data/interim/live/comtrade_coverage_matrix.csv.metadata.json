@@ -9,6 +9,8 @@
     "partner_desc",
     "commodity_code_source",
     "trade_value_usd",
+    "cif_value_usd",
+    "fob_value_usd",
     "is_reported",
     "is_original_classification",
     "legacy_estimation_flag",
@@ -25,6 +27,7 @@
     "mapping_source",
     "duplicate_key"
   ],
+  "creation_timestamp_utc": "2026-08-09T00:46:31+01:00",
   "date_range": {
     "end_year": 1973,
     "start_year": 1962
@@ -226,12 +229,14 @@
   ],
   "rows": 504,
   "schema": {
+    "cif_value_usd": "float64",
     "classification_code": "object",
     "commodity_code_source": "object",
     "comtrade_config_sha256": "object",
     "duplicate_key": "bool",
     "entity_id": "object",
     "flow_code": "object",
+    "fob_value_usd": "float64",
     "historical_trade_area": "object",
     "is_original_classification": "object",
     "is_reported": "object",
@@ -250,7 +255,7 @@
     "trade_value_usd": "float64",
     "year": "int64"
   },
-  "sha256": "e6fe1bc42dd7055d27a8d156f04a8c88b142d2c7ac080dcce8df678b3c3cf62f",
+  "sha256": "698ac04216d5e6d001cdd6b8b31a8272543b15a2b8b8b060ae112949d2e5d179",
   "source_files": [
     "data/raw/live/comtrade_availability/PRT_1962_X_S1_TOTAL_coverage.json",
     "data/raw/live/comtrade_availability/PRT_1962_M_S1_TOTAL_coverage.json",

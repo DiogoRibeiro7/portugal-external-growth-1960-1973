@@ -12,6 +12,7 @@
     "evidence_source",
     "notes"
   ],
+  "creation_timestamp_utc": "2026-08-09T00:46:31+01:00",
   "date_range": null,
   "file": "data/interim/live/efta_policy_product_mapping.csv",
   "input_artifacts": [

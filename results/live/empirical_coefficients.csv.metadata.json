@@ -10,8 +10,15 @@
     "confidence_interval_high",
     "status"
   ],
+  "creation_timestamp_utc": "2026-08-09T00:46:31+01:00",
   "date_range": null,
   "file": "results/live/empirical_coefficients.csv",
+  "input_artifacts": [
+    {
+      "path": "src/portugal_external_growth/empirical.py",
+      "sha256": "73761d5e3dfa6ae98726e8c59c6a78d4b83a012153d3defa233520c4bed1027b"
+    }
+  ],
   "rows": 0,
   "schema": {
     "confidence_interval_high": "object",
@@ -24,6 +31,9 @@
     "term": "object"
   },
   "sha256": "3a8bce7669d4f04cb30dabaf95afe8286856046e03ac4c04b3189a66f778a608",
+  "source_files": [
+    "src/portugal_external_growth/empirical.py"
+  ],
   "source_licence": "not_specified",
   "stage": "coefficients_not_estimated",
   "validation_findings": []
