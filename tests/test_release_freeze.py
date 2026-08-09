@@ -7,6 +7,7 @@ import pandas as pd
 from pytest import MonkeyPatch
 
 from portugal_external_growth.release_freeze import (
+    build_freeze_checklist,
     build_research_data_freeze_outputs,
     build_source_release_policy,
 )
@@ -270,6 +271,49 @@ def test_source_release_policy_excludes_unregistered_pdf_without_licence_metadat
         "exclude_source_document_until_redistribution_rights_resolved"
     )
     assert policy.loc[0, "blocking_reason"] == "redistribution_rights_unresolved"
+
+
+def test_freeze_checklist_reports_source_rights_when_archive_exists() -> None:
+    blockers = pd.DataFrame(
+        [
+            {
+                "blocker_id": "source_redistribution_rights_unresolved",
+                "source_check": "freeze.source_redistribution",
+                "severity": "not_ready",
+                "blocking_reason": "imf:1962:data/manual/source_documents/imf.pdf",
+                "evidence_path": "results/releases/current/source_release_policy.csv",
+            }
+        ]
+    )
+    verification = pd.DataFrame(
+        [
+            {"check": check, "status": "passed"}
+            for check in [
+                "tests",
+                "lint",
+                "format",
+                "typecheck",
+                "reproduction",
+                "validation",
+                "manifest",
+            ]
+        ]
+    )
+    dictionaries = pd.DataFrame([{"dictionary_status": "available"}])
+    provenance = pd.DataFrame([{"provenance_status": "complete"}])
+    archive = pd.DataFrame([{"archive_status": "created_from_git_archive_head"}])
+
+    checklist = build_freeze_checklist(
+        blockers=blockers,
+        verification_evidence=verification,
+        dictionary_coverage=dictionaries,
+        table_provenance=provenance,
+        archive_manifest=archive,
+    )
+
+    release_archive = checklist.loc[checklist["requirement_id"].eq("14")].iloc[0]
+    assert release_archive["status"] == "blocked"
+    assert release_archive["blocking_reason"] == "source_redistribution_rights_unresolved"
 
 
 def _write_pyproject(root: Path) -> None:

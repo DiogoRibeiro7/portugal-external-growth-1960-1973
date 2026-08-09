@@ -18,7 +18,7 @@
     "many_to_one",
     "notes"
   ],
-  "creation_timestamp_utc": "2026-08-09T00:46:31+01:00",
+  "creation_timestamp_utc": "2026-08-09T06:04:40+01:00",
   "date_range": null,
   "file": "data/interim/live/product_industry_mapping.csv",
   "input_artifacts": [

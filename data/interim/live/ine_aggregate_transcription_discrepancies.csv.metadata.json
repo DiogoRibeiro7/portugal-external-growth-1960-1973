@@ -15,7 +15,7 @@
     "discrepancy_type",
     "resolution_status"
   ],
-  "creation_timestamp_utc": "2026-08-09T00:46:31+01:00",
+  "creation_timestamp_utc": "2026-08-09T06:04:40+01:00",
   "date_range": null,
   "file": "data/interim/live/ine_aggregate_transcription_discrepancies.csv",
   "rows": 0,

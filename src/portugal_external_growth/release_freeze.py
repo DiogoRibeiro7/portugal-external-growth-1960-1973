@@ -692,10 +692,14 @@ def build_freeze_checklist(
             _check(
                 "14",
                 "Create a release archive from tracked files only",
-                _archive_status(archive_manifest) == "created_from_git_archive_head"
-                and "source_redistribution_rights_unresolved"
-                not in blockers["blocker_id"].astype(str).tolist(),
-                "release_archive_not_created",
+                _release_archive_requirement_passed(
+                    archive_manifest=archive_manifest,
+                    blockers=blockers,
+                ),
+                _release_archive_requirement_reason(
+                    archive_manifest=archive_manifest,
+                    blockers=blockers,
+                ),
             ),
             _check(
                 "15",
@@ -706,6 +710,30 @@ def build_freeze_checklist(
         ],
         columns=FREEZE_CHECKLIST_COLUMNS,
     )
+
+
+def _release_archive_requirement_passed(
+    *,
+    archive_manifest: pd.DataFrame,
+    blockers: pd.DataFrame,
+) -> bool:
+    return (
+        _archive_status(archive_manifest) == "created_from_git_archive_head"
+        and "source_redistribution_rights_unresolved"
+        not in blockers["blocker_id"].astype(str).tolist()
+    )
+
+
+def _release_archive_requirement_reason(
+    *,
+    archive_manifest: pd.DataFrame,
+    blockers: pd.DataFrame,
+) -> str:
+    if _archive_status(archive_manifest) != "created_from_git_archive_head":
+        return "release_archive_not_created"
+    if "source_redistribution_rights_unresolved" in blockers["blocker_id"].astype(str).tolist():
+        return "source_redistribution_rights_unresolved"
+    return ""
 
 
 def build_release_declaration(
