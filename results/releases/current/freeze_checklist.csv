@@ -12,5 +12,5 @@ requirement_id,requirement,status,blocking_reason,evidence_path
 11,Every final result table has release provenance,passed,,results/releases/current/freeze_blocking_reasons.csv
 12,No exploratory output is mixed with release results,passed,,results/releases/current/freeze_blocking_reasons.csv
 13,No paper prose is stored in the repository,passed,,results/releases/current/freeze_blocking_reasons.csv
-14,Create a release archive from tracked files only,blocked,not_created,results/releases/current/freeze_blocking_reasons.csv
+14,Create a release archive from tracked files only,blocked,post_commit_archive_required,results/releases/current/freeze_blocking_reasons.csv
 15,Produce final RESEARCH_DATA_READINESS.txt,passed,,results/releases/current/freeze_blocking_reasons.csv
