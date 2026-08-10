@@ -20,4 +20,7 @@ within_sector_exposure_variation,10,0.0,0.0,blocked,empirical design matrix is e
 within_year_cross_sectional_variation,12,0.0,0.0,blocked,empirical design matrix is empty or lacks sector/year exposure controls
 fixed_effect_residual_design_rank,2,0.0,0.0,blocked,empirical design matrix is empty or lacks sector/year exposure controls
 observation_parameter_ratio,1,0.0,0.0,blocked,empirical design matrix is empty or lacks sector/year exposure controls
+sector_year_grid_coverage,96,0.0,0.0,blocked,empirical design matrix is empty or lacks sector/year exposure controls
+minimum_sector_years_per_industry,8,0.0,0.0,blocked,empirical design matrix is empty or lacks sector/year exposure controls
+residual_degrees_of_freedom,20,0.0,0.0,blocked,empirical design matrix is empty or lacks sector/year exposure controls
 independent_cluster_count,10,0.0,0.0,blocked,empirical design matrix is empty or lacks sector/year exposure controls

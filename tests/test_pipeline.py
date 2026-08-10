@@ -6,6 +6,7 @@ from pathlib import Path
 import pandas as pd
 import pytest
 import responses
+from pytest import MonkeyPatch
 
 from portugal_external_growth.pipeline import (
     _apply_comtrade_snapshot_status,
@@ -142,6 +143,33 @@ def test_bootstrap_manifest_is_scoped_to_bootstrap_artifacts(tmp_path: Path) -> 
             )
         )
         for path in paths
+    )
+
+
+def test_bootstrap_metadata_uses_root_when_cwd_differs(
+    tmp_path: Path,
+    monkeypatch: MonkeyPatch,
+) -> None:
+    repo = tmp_path / "repo"
+    elsewhere = tmp_path / "elsewhere"
+    repo.mkdir()
+    elsewhere.mkdir()
+    _write_bootstrap_gdp(repo)
+    monkeypatch.chdir(elsewhere)
+
+    bootstrap(repo)
+
+    metadata = json.loads(
+        (repo / "data/interim/bootstrap/world_bank_macro_long.csv.metadata.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert metadata["file"] == "data/interim/bootstrap/world_bank_macro_long.csv"
+    assert metadata["source_files"] == [
+        "data/raw/bootstrap/world_bank_gdp_growth_portugal_1961_1973.csv"
+    ]
+    assert metadata["input_artifacts"][0]["path"] == (
+        "data/raw/bootstrap/world_bank_gdp_growth_portugal_1961_1973.csv"
     )
 
 

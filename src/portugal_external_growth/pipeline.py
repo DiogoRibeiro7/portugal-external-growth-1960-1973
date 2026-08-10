@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import json
+from collections.abc import Mapping
 from pathlib import Path
+from typing import Any
 
 import pandas as pd
 
@@ -36,8 +38,10 @@ from portugal_external_growth.http import build_session
 from portugal_external_growth.industry_exposure import build_industry_exposure_outputs
 from portugal_external_growth.io_utils import (
     sha256_file,
-    write_dataframe_with_metadata,
     write_text_lf,
+)
+from portugal_external_growth.io_utils import (
+    write_dataframe_with_metadata as _write_dataframe_with_metadata,
 )
 from portugal_external_growth.macro import build_bpstat_macro_outputs
 from portugal_external_growth.manual import (
@@ -99,6 +103,35 @@ from portugal_external_growth.validation import (
     validate_unique,
     validate_year_range,
 )
+
+
+def write_dataframe_with_metadata(
+    frame: pd.DataFrame,
+    csv_path: Path,
+    *,
+    metadata: Mapping[str, Any],
+    overwrite: bool = True,
+) -> Path:
+    """Write pipeline metadata relative to the repository root implied by the output path."""
+
+    return _write_dataframe_with_metadata(
+        frame,
+        csv_path,
+        metadata=metadata,
+        overwrite=overwrite,
+        root=_pipeline_metadata_root(csv_path),
+    )
+
+
+def _pipeline_metadata_root(csv_path: Path) -> Path:
+    resolved = csv_path.resolve()
+    for marker in ("data", "results", "config", "prompts", "src", "tests", ".github"):
+        if marker not in resolved.parts:
+            continue
+        index = resolved.parts.index(marker)
+        if index > 0:
+            return Path(*resolved.parts[:index])
+    return Path.cwd()
 
 
 def bootstrap(root: Path) -> None:

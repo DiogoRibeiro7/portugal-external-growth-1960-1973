@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+from math import ceil
 from pathlib import Path
 
 import numpy as np
@@ -48,75 +49,20 @@ PREREQUISITE_AUDIT_REQUIREMENTS = {
         "within_year_cross_sectional_variation",
         "fixed_effect_residual_design_rank",
         "observation_parameter_ratio",
+        "sector_year_grid_coverage",
+        "minimum_sector_years_per_industry",
+        "residual_degrees_of_freedom",
         "independent_cluster_count",
     ),
 }
 
-MODEL_AUDIT_REQUIREMENTS = {
-    "shift_share_external_demand": (
-        "annual_trade_coverage",
-        "colonial_partner_completeness",
-        "european_partner_completeness",
-        "product_level_coverage",
-        "product_to_industry_mapping_coverage",
-        "sectoral_output_coverage",
-        "price_deflator_coverage",
-        "usable_industries",
-        "usable_years",
-        "missingness_structure_documented",
-        "classification_breaks_documented",
-        "identification_variables_available",
-        "within_sector_exposure_variation",
-        "within_year_cross_sectional_variation",
-        "fixed_effect_residual_design_rank",
-        "observation_parameter_ratio",
-        "independent_cluster_count",
-    ),
-    "sector_year_fixed_effects": (
-        "annual_trade_coverage",
-        "colonial_partner_completeness",
-        "european_partner_completeness",
-        "sectoral_output_coverage",
-        "price_deflator_coverage",
-        "usable_industries",
-        "usable_years",
-        "identification_variables_available",
-        "within_year_cross_sectional_variation",
-        "fixed_effect_residual_design_rank",
-        "observation_parameter_ratio",
-        "independent_cluster_count",
-    ),
-    "efta_tariff_exposure": (
-        "annual_trade_coverage",
-        "european_partner_completeness",
-        "product_level_coverage",
-        "product_to_industry_mapping_coverage",
-        "sectoral_output_coverage",
-        "price_deflator_coverage",
-        "classification_breaks_documented",
-        "efta_policy_tariff_data_availability",
-        "identification_variables_available",
-        "within_year_cross_sectional_variation",
-        "fixed_effect_residual_design_rank",
-        "observation_parameter_ratio",
-        "independent_cluster_count",
-    ),
+MODEL_EXTRA_AUDIT_REQUIREMENTS = {
+    "shift_share_external_demand": (),
+    "sector_year_fixed_effects": (),
+    "efta_tariff_exposure": ("efta_policy_tariff_data_availability",),
     "colonial_demand_shifters": (
-        "annual_trade_coverage",
-        "colonial_partner_completeness",
-        "product_level_coverage",
-        "product_to_industry_mapping_coverage",
-        "sectoral_output_coverage",
-        "price_deflator_coverage",
-        "classification_breaks_documented",
         "external_demand_shifter_availability",
         "commodity_price_control_availability",
-        "identification_variables_available",
-        "within_sector_exposure_variation",
-        "within_year_cross_sectional_variation",
-        "fixed_effect_residual_design_rank",
-        "observation_parameter_ratio",
-        "independent_cluster_count",
     ),
 }
 
@@ -137,6 +83,9 @@ REQUIRED_RECONCILIATION_SCOPES = frozenset({"ine_comtrade", "cepii", "efta", "oe
 REQUIRED_RECONCILIATION_SCOPE_COUNT = len(REQUIRED_RECONCILIATION_SCOPES)
 MIN_USABLE_INDUSTRIES = 10
 MIN_INDEPENDENT_CLUSTERS = 10
+MIN_SECTOR_YEAR_GRID_COVERAGE = 0.8
+MIN_YEARS_PER_SECTOR = 8
+MIN_RESIDUAL_DEGREES_OF_FREEDOM = 20
 
 
 def build_empirical_prerequisite_status(root: Path | None = None) -> pd.DataFrame:
@@ -196,6 +145,9 @@ def build_empirical_readiness_audit(root: Path) -> pd.DataFrame:
         _within_year_cross_sectional_variation(root),
         _fixed_effect_residual_design_rank(root),
         _observation_parameter_ratio(root),
+        _sector_year_grid_coverage(root),
+        _minimum_sector_years_per_industry(root),
+        _residual_degrees_of_freedom(root),
         _independent_cluster_count(root),
     ]
     return pd.DataFrame.from_records(records, columns=EMPIRICAL_AUDIT_COLUMNS)
@@ -277,27 +229,39 @@ def _model_record(
     dependent_variable: str,
     identification_risk: str,
 ) -> dict[str, object]:
-    requirements = MODEL_AUDIT_REQUIREMENTS[model_slug]
+    extra_requirements = MODEL_EXTRA_AUDIT_REQUIREMENTS[model_slug]
     status = "blocked_pending_prerequisites"
     blocking_requirements = "empirical_readiness_audit_not_evaluated"
     if root is not None:
-        audit = build_empirical_readiness_audit(root)
-        rows = audit.loc[audit["requirement"].isin(requirements)]
-        blocked = rows.loc[~rows["status"].eq("satisfied")]
-        missing = sorted(set(requirements).difference(set(rows["requirement"])))
-        if blocked.empty and not missing:
+        prerequisites = build_empirical_prerequisite_status(root)
+        blocked_prerequisites = prerequisites.loc[~prerequisites["status"].eq("satisfied")]
+        if extra_requirements:
+            audit = build_empirical_readiness_audit(root)
+            extra_rows = audit.loc[audit["requirement"].isin(extra_requirements)]
+            blocked_extras = extra_rows.loc[~extra_rows["status"].eq("satisfied")]
+            missing_extras = sorted(
+                set(extra_requirements).difference(set(extra_rows["requirement"]))
+            )
+        else:
+            blocked_extras = pd.DataFrame()
+            missing_extras = []
+        if blocked_prerequisites.empty and blocked_extras.empty and not missing_extras:
             status = "ready"
             blocking_requirements = ""
         else:
             blocking_requirements = ";".join(
                 [
                     *[
+                        f"{row['prerequisite']}={row['blocking_reason']}"
+                        for row in blocked_prerequisites.to_dict(orient="records")
+                    ],
+                    *[
                         f"{row['requirement']}={row['blocking_reason']}"
-                        for row in blocked.to_dict(orient="records")
+                        for row in blocked_extras.to_dict(orient="records")
                     ],
                     *[
                         f"{requirement}=missing_from_empirical_readiness_audit"
-                        for requirement in missing
+                        for requirement in missing_extras
                     ],
                 ]
             )
@@ -307,7 +271,8 @@ def _model_record(
         "unit_of_observation": unit_of_observation,
         "dependent_variable": dependent_variable,
         "status": status,
-        "required_audit_requirements": ";".join(requirements),
+        "required_prerequisites": ";".join(PREREQUISITES),
+        "model_specific_audit_requirements": ";".join(extra_requirements),
         "blocking_requirements": blocking_requirements,
         "identification_risk": identification_risk,
     }
@@ -926,15 +891,71 @@ def _observation_parameter_ratio(root: Path) -> dict[str, object]:
             "empirical design matrix is empty or lacks sector/year exposure controls",
         )
     observations = len(design)
-    sector_count = int(design["sector_code"].nunique())
-    year_count = int(design["year"].nunique())
-    estimated_parameters = 2 + max(sector_count - 1, 0) + max(year_count - 1, 0)
+    estimated_parameters = _fixed_effect_parameter_count(design)
     required = estimated_parameters + 1
     return _record(
         "observation_parameter_ratio",
         required,
         observations,
         "observations do not exceed exposure and fixed-effect parameter count",
+    )
+
+
+def _sector_year_grid_coverage(root: Path) -> dict[str, object]:
+    design = _complete_design_matrix(root)
+    sample_years = _trade_sample_years(root)
+    expected = len(sample_years) * max(MIN_USABLE_INDUSTRIES, _design_sector_count(design))
+    required = ceil(expected * MIN_SECTOR_YEAR_GRID_COVERAGE)
+    if design.empty:
+        return _record(
+            "sector_year_grid_coverage",
+            required,
+            0,
+            "empirical design matrix is empty or lacks sector/year exposure controls",
+        )
+    observed = int(design[["sector_code", "year"]].drop_duplicates().shape[0])
+    return _record(
+        "sector_year_grid_coverage",
+        required,
+        observed,
+        f"sector-year grid coverage is below {MIN_SECTOR_YEAR_GRID_COVERAGE:.0%}",
+    )
+
+
+def _minimum_sector_years_per_industry(root: Path) -> dict[str, object]:
+    design = _complete_design_matrix(root)
+    if design.empty:
+        return _record(
+            "minimum_sector_years_per_industry",
+            MIN_YEARS_PER_SECTOR,
+            0,
+            "empirical design matrix is empty or lacks sector/year exposure controls",
+        )
+    years_per_sector = design.groupby("sector_code")["year"].nunique()
+    available = int(years_per_sector.min()) if not years_per_sector.empty else 0
+    return _record(
+        "minimum_sector_years_per_industry",
+        MIN_YEARS_PER_SECTOR,
+        available,
+        f"at least one retained sector has fewer than {MIN_YEARS_PER_SECTOR} sample years",
+    )
+
+
+def _residual_degrees_of_freedom(root: Path) -> dict[str, object]:
+    design = _complete_design_matrix(root)
+    if design.empty:
+        return _record(
+            "residual_degrees_of_freedom",
+            MIN_RESIDUAL_DEGREES_OF_FREEDOM,
+            0,
+            "empirical design matrix is empty or lacks sector/year exposure controls",
+        )
+    residual_df = max(len(design) - _fixed_effect_parameter_count(design), 0)
+    return _record(
+        "residual_degrees_of_freedom",
+        MIN_RESIDUAL_DEGREES_OF_FREEDOM,
+        residual_df,
+        f"fewer than {MIN_RESIDUAL_DEGREES_OF_FREEDOM} residual degrees of freedom are available",
     )
 
 
@@ -991,6 +1012,18 @@ def _residual_exposure_rank(design: pd.DataFrame) -> int:
     combined_rank = int(np.linalg.matrix_rank(np.column_stack([fixed_effects, exposure])))
     fixed_effect_rank = int(np.linalg.matrix_rank(fixed_effects))
     return combined_rank - fixed_effect_rank
+
+
+def _fixed_effect_parameter_count(design: pd.DataFrame) -> int:
+    sector_count = int(design["sector_code"].nunique())
+    year_count = int(design["year"].nunique())
+    return 2 + max(sector_count - 1, 0) + max(year_count - 1, 0)
+
+
+def _design_sector_count(design: pd.DataFrame) -> int:
+    if design.empty or "sector_code" not in design:
+        return 0
+    return int(design["sector_code"].nunique())
 
 
 def _available_year_flow_pairs(frame: pd.DataFrame, *, root: Path) -> int:

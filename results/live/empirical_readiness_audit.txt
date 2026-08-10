@@ -1,9 +1,9 @@
 Empirical-design readiness audit
 ================================
 
-Requirements checked: 22
+Requirements checked: 25
 Satisfied requirements: 0
-Blocked requirements: 22
+Blocked requirements: 25
 
 No causal regressions, tariff effects, or fitted model coefficients are produced.
 The repository remains blocked for empirical estimation until every required
@@ -31,4 +31,7 @@ Blocking reasons:
 - within_year_cross_sectional_variation: empirical design matrix is empty or lacks sector/year exposure controls
 - fixed_effect_residual_design_rank: empirical design matrix is empty or lacks sector/year exposure controls
 - observation_parameter_ratio: empirical design matrix is empty or lacks sector/year exposure controls
+- sector_year_grid_coverage: empirical design matrix is empty or lacks sector/year exposure controls
+- minimum_sector_years_per_industry: empirical design matrix is empty or lacks sector/year exposure controls
+- residual_degrees_of_freedom: empirical design matrix is empty or lacks sector/year exposure controls
 - independent_cluster_count: empirical design matrix is empty or lacks sector/year exposure controls

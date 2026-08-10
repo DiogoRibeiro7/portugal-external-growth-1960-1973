@@ -1,2 +1,2 @@
 archive_path,archive_sha256,archive_status,source_commit,source_commit_timestamp_utc,tracked_file_count,excluded_source_file_count,archived_file_count,archive_method,content_scope
-release/research-data-freeze-0.1.6+da94b1b.zip,,not_created,da94b1b03825abd7865f40e748351fde7baf4fae,2026-08-10T09:22:39+01:00,505,9,484,git archive HEAD -- selected release files,tracked_files_excluding_restricted_source_documents_and_release_metadata
+release/research-data-freeze-0.1.6+4a0b964.zip,,not_created,4a0b964bf85977d510cf8991e739a04dc0606981,2026-08-10T09:33:15+01:00,505,9,484,git archive HEAD -- selected release files,tracked_files_excluding_restricted_source_documents_and_release_metadata

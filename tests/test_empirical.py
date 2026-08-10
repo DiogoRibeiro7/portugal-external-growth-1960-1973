@@ -46,7 +46,7 @@ def test_empirical_readiness_audit_blocks_empty_repository(tmp_path: Path) -> No
     audit = build_empirical_readiness_audit(tmp_path)
     notes = build_empirical_readiness_audit_notes(audit)
 
-    assert len(audit) == 22
+    assert len(audit) == 25
     assert set(audit["status"]) == {"blocked"}
     assert audit.loc[audit["requirement"].eq("product_level_coverage"), "coverage"].iloc[0] == 0
     assert "No causal regressions" in notes
@@ -217,7 +217,19 @@ def test_empirical_readiness_audit_uses_available_artifacts(tmp_path: Path) -> N
     assert "within_year_cross_sectional_variation" in satisfied
     assert "fixed_effect_residual_design_rank" in satisfied
     assert "observation_parameter_ratio" in satisfied
+    assert "sector_year_grid_coverage" in satisfied
+    assert "minimum_sector_years_per_industry" in satisfied
+    assert "residual_degrees_of_freedom" in satisfied
     assert "independent_cluster_count" in satisfied
+
+    blocked_model_registry = build_model_specification_registry(tmp_path)
+    fixed_effects_blocked = blocked_model_registry.loc[
+        blocked_model_registry["model_slug"].eq("sector_year_fixed_effects")
+    ].iloc[0]
+    assert fixed_effects_blocked["status"] == "blocked_pending_prerequisites"
+    assert (
+        "simultaneity_and_common_shock_strategy" in fixed_effects_blocked["blocking_requirements"]
+    )
 
     pd.DataFrame(
         [
@@ -235,10 +247,14 @@ def test_empirical_readiness_audit_uses_available_artifacts(tmp_path: Path) -> N
     assert set(prerequisites["status"]) == {"satisfied"}
 
     model_registry = build_model_specification_registry(tmp_path)
+    fixed_effects = model_registry.loc[
+        model_registry["model_slug"].eq("sector_year_fixed_effects")
+    ].iloc[0]
     efta = model_registry.loc[model_registry["model_slug"].eq("efta_tariff_exposure")].iloc[0]
     colonial = model_registry.loc[model_registry["model_slug"].eq("colonial_demand_shifters")].iloc[
         0
     ]
+    assert fixed_effects["status"] == "ready"
     assert efta["status"] == "blocked_pending_prerequisites"
     assert "efta_policy_tariff_data_availability" in efta["blocking_requirements"]
     assert colonial["status"] == "blocked_pending_prerequisites"
@@ -402,6 +418,53 @@ def test_identification_checks_reject_year_effect_absorbed_exposures(tmp_path: P
     assert within_year["status"] == "blocked"
     assert residual_rank["available"] == 0
     assert residual_rank["status"] == "blocked"
+
+
+def test_panel_sufficiency_rejects_sparse_sector_year_grid(tmp_path: Path) -> None:
+    interim = tmp_path / "data/interim/live"
+    interim.mkdir(parents=True)
+    rows = []
+    for year_index, year in enumerate(range(1962, 1974)):
+        for offset in (0, 5):
+            sector = (year_index + offset) % 10
+            rows.append(
+                {
+                    "sector_code": f"sector_{sector:02d}",
+                    "year": year,
+                    "colonial_exposure": (
+                        sector * 0.2 + year_index * 0.03 + sector * year_index * 0.01
+                    ),
+                    "european_exposure": (
+                        sector * 0.1
+                        + year_index * 0.07
+                        + sector * year_index * 0.004
+                        + (sector**2) * year_index * 0.005
+                    ),
+                    "controls_available": True,
+                }
+            )
+    pd.DataFrame(rows).to_csv(interim / "empirical_design_matrix.csv", index=False)
+
+    audit = build_empirical_readiness_audit(tmp_path)
+
+    satisfied = set(audit.loc[audit["status"].eq("satisfied"), "requirement"])
+    assert "identification_variables_available" in satisfied
+    assert "within_sector_exposure_variation" in satisfied
+    assert "within_year_cross_sectional_variation" in satisfied
+    assert "fixed_effect_residual_design_rank" in satisfied
+    assert "observation_parameter_ratio" in satisfied
+    assert "independent_cluster_count" in satisfied
+
+    grid = audit.loc[audit["requirement"].eq("sector_year_grid_coverage")].iloc[0]
+    min_years = audit.loc[audit["requirement"].eq("minimum_sector_years_per_industry")].iloc[0]
+    residual_df = audit.loc[audit["requirement"].eq("residual_degrees_of_freedom")].iloc[0]
+    assert grid["required"] == 96
+    assert grid["available"] == 24
+    assert grid["status"] == "blocked"
+    assert min_years["available"] < min_years["required"]
+    assert min_years["status"] == "blocked"
+    assert residual_df["available"] < residual_df["required"]
+    assert residual_df["status"] == "blocked"
 
 
 def test_european_completeness_requires_fixed_partner_sample(tmp_path: Path) -> None:
