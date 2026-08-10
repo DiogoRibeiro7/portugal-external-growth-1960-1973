@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 import subprocess
 import tempfile
 from collections.abc import Mapping
@@ -102,26 +103,28 @@ def write_dataframe_with_metadata(
     *,
     metadata: Mapping[str, Any],
     overwrite: bool = True,
+    root: Path | None = None,
 ) -> Path:
     """Write a deterministic CSV and a sidecar metadata record."""
 
+    metadata_root = _metadata_root(root)
     csv_path.parent.mkdir(parents=True, exist_ok=True)
     csv_payload = frame.to_csv(index=False, lineterminator="\n").encode("utf-8")
     atomic_write_bytes(csv_path, csv_payload, overwrite=overwrite)
 
     sidecar = csv_path.with_suffix(csv_path.suffix + ".metadata.json")
     existing_metadata = _read_existing_metadata(sidecar)
-    normalised_metadata = _normalise_metadata(metadata, root=Path.cwd())
+    normalised_metadata = _normalise_metadata(metadata, root=metadata_root)
     output_sha256 = sha256_file(csv_path)
     creation_timestamp = _creation_timestamp(
         normalised_metadata,
-        root=Path.cwd(),
+        root=metadata_root,
         existing_metadata=existing_metadata,
         output_sha256=output_sha256,
     )
     complete_metadata: dict[str, Any] = {
         **normalised_metadata,
-        "file": _metadata_path(csv_path),
+        "file": _metadata_path(csv_path, root=metadata_root),
         "sha256": output_sha256,
         "creation_timestamp_utc": creation_timestamp,
         "rows": len(frame),
@@ -136,8 +139,17 @@ def write_dataframe_with_metadata(
     return sidecar
 
 
-def _metadata_path(path: Path) -> str:
-    return repo_relative_path(path, root=Path.cwd())
+def _metadata_root(root: Path | None) -> Path:
+    if root is not None:
+        return root
+    configured_root = os.getenv("PEG_ROOT")
+    if configured_root:
+        return Path(configured_root)
+    return Path.cwd()
+
+
+def _metadata_path(path: Path, *, root: Path) -> str:
+    return repo_relative_path(path, root=root)
 
 
 def _read_existing_metadata(path: Path) -> dict[str, Any]:
@@ -182,6 +194,8 @@ def _creation_timestamp(
 def repo_relative_path(path: str | Path, *, root: Path) -> str:
     """Return a stable POSIX path relative to the repository when possible."""
 
+    if isinstance(path, str) and _is_external_uri(path):
+        return path
     candidate = Path(path)
     resolved = candidate.resolve() if candidate.is_absolute() else (root / candidate).resolve()
     try:
@@ -205,6 +219,8 @@ def _normalise_metadata(metadata: Mapping[str, Any], *, root: Path) -> dict[str,
 def _input_artifacts(source_files: list[str], *, root: Path) -> list[dict[str, str]]:
     artifacts: list[dict[str, str]] = []
     for source_file in source_files:
+        if _is_external_uri(source_file):
+            continue
         path = root / source_file
         if not path.is_file():
             continue
@@ -215,6 +231,10 @@ def _input_artifacts(source_files: list[str], *, root: Path) -> list[dict[str, s
             }
         )
     return artifacts
+
+
+def _is_external_uri(value: str) -> bool:
+    return re.match(r"^[a-z][a-z0-9+.-]*://", value) is not None
 
 
 def _date_range(frame: pd.DataFrame) -> dict[str, int] | None:

@@ -46,7 +46,7 @@ def test_empirical_readiness_audit_blocks_empty_repository(tmp_path: Path) -> No
     audit = build_empirical_readiness_audit(tmp_path)
     notes = build_empirical_readiness_audit_notes(audit)
 
-    assert len(audit) == 15
+    assert len(audit) == 22
     assert set(audit["status"]) == {"blocked"}
     assert audit.loc[audit["requirement"].eq("product_level_coverage"), "coverage"].iloc[0] == 0
     assert "No causal regressions" in notes
@@ -105,7 +105,7 @@ def test_empirical_readiness_audit_uses_available_artifacts(tmp_path: Path) -> N
         [
             {"target_industry_code": industry, "year": year}
             for year in range(1962, 1974)
-            for industry in ["agriculture", "manufacturing"]
+            for industry in [f"sector_{index:02d}" for index in range(10)]
         ]
     ).to_csv(processed / "industry_trade_panel.csv", index=False)
     pd.DataFrame([{"status": "available"}, {"status": "available"}]).to_csv(
@@ -145,17 +145,18 @@ def test_empirical_readiness_audit_uses_available_artifacts(tmp_path: Path) -> N
     pd.DataFrame(
         [
             {
-                "year": 1962,
-                "colonial_exposure": 0.2,
-                "european_exposure": 0.3,
+                "sector_code": f"sector_{sector:02d}",
+                "year": year,
+                "colonial_exposure": (
+                    sector * 0.02 + (year - 1962) * 0.01 + sector * (year - 1962) * 0.001
+                ),
+                "european_exposure": (
+                    sector * 0.03 - (year - 1962) * 0.005 + (sector**2) * (year - 1962) * 0.0001
+                ),
                 "controls_available": True,
-            },
-            {
-                "year": 1963,
-                "colonial_exposure": 0.25,
-                "european_exposure": 0.35,
-                "controls_available": True,
-            },
+            }
+            for sector in range(10)
+            for year in range(1962, 1974)
         ]
     ).to_csv(interim / "empirical_design_matrix.csv", index=False)
     (tmp_path / "config").mkdir()
@@ -212,6 +213,11 @@ def test_empirical_readiness_audit_uses_available_artifacts(tmp_path: Path) -> N
     assert "usable_years" in satisfied
     assert "classification_breaks_documented" in satisfied
     assert "identification_variables_available" in satisfied
+    assert "within_sector_exposure_variation" in satisfied
+    assert "within_year_cross_sectional_variation" in satisfied
+    assert "fixed_effect_residual_design_rank" in satisfied
+    assert "observation_parameter_ratio" in satisfied
+    assert "independent_cluster_count" in satisfied
 
     pd.DataFrame(
         [
@@ -227,6 +233,16 @@ def test_empirical_readiness_audit_uses_available_artifacts(tmp_path: Path) -> N
     prerequisites = build_empirical_prerequisite_status(tmp_path)
 
     assert set(prerequisites["status"]) == {"satisfied"}
+
+    model_registry = build_model_specification_registry(tmp_path)
+    efta = model_registry.loc[model_registry["model_slug"].eq("efta_tariff_exposure")].iloc[0]
+    colonial = model_registry.loc[model_registry["model_slug"].eq("colonial_demand_shifters")].iloc[
+        0
+    ]
+    assert efta["status"] == "blocked_pending_prerequisites"
+    assert "efta_policy_tariff_data_availability" in efta["blocking_requirements"]
+    assert colonial["status"] == "blocked_pending_prerequisites"
+    assert "external_demand_shifter_availability" in colonial["blocking_requirements"]
 
 
 def test_empirical_design_matrix_loader_preserves_existing_matrix(tmp_path: Path) -> None:
@@ -320,9 +336,72 @@ def test_empirical_audit_uses_full_territorial_and_reconciliation_denominators(
     assert reconciliation["required"] == 4
     assert reconciliation["available"] == 1
     assert reconciliation["status"] == "blocked"
-    assert industries["required"] == 2
+    assert industries["required"] == 10
     assert industries["available"] == 1
     assert industries["status"] == "blocked"
+
+
+def test_trade_sample_years_are_loaded_from_project_config(tmp_path: Path) -> None:
+    config = tmp_path / "config"
+    processed = tmp_path / "data/processed/live"
+    config.mkdir(parents=True)
+    processed.mkdir(parents=True)
+    (config / "project.yml").write_text(
+        "\n".join(
+            [
+                "project:",
+                "  bilateral_trade_panel_start_year: 1962",
+                "  bilateral_trade_panel_end_year: 1963",
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    pd.DataFrame(
+        [{"year": year, "flow_code": flow} for year in [1962, 1963, 1964] for flow in ["X", "M"]]
+    ).to_csv(processed / "validated_annual_aggregate_external_orientation.csv", index=False)
+
+    audit = build_empirical_readiness_audit(tmp_path)
+
+    annual = audit.loc[audit["requirement"].eq("annual_trade_coverage")].iloc[0]
+    assert annual["required"] == 4
+    assert annual["available"] == 4
+    assert annual["status"] == "satisfied"
+
+
+def test_identification_checks_reject_year_effect_absorbed_exposures(tmp_path: Path) -> None:
+    interim = tmp_path / "data/interim/live"
+    interim.mkdir(parents=True)
+    pd.DataFrame(
+        [
+            {
+                "sector_code": f"sector_{sector:02d}",
+                "year": year,
+                "colonial_exposure": 0.2 + (year - 1962) * 0.01,
+                "european_exposure": 0.4 - (year - 1962) * 0.01,
+                "controls_available": True,
+            }
+            for sector in range(10)
+            for year in range(1962, 1974)
+        ]
+    ).to_csv(interim / "empirical_design_matrix.csv", index=False)
+
+    audit = build_empirical_readiness_audit(tmp_path)
+
+    identification = audit.loc[audit["requirement"].eq("identification_variables_available")].iloc[
+        0
+    ]
+    within_sector = audit.loc[audit["requirement"].eq("within_sector_exposure_variation")].iloc[0]
+    within_year = audit.loc[audit["requirement"].eq("within_year_cross_sectional_variation")].iloc[
+        0
+    ]
+    residual_rank = audit.loc[audit["requirement"].eq("fixed_effect_residual_design_rank")].iloc[0]
+    assert identification["status"] == "satisfied"
+    assert within_sector["status"] == "satisfied"
+    assert within_year["available"] == 0
+    assert within_year["status"] == "blocked"
+    assert residual_rank["available"] == 0
+    assert residual_rank["status"] == "blocked"
 
 
 def test_european_completeness_requires_fixed_partner_sample(tmp_path: Path) -> None:

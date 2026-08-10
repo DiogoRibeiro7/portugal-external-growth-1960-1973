@@ -2,10 +2,10 @@ Research data readiness declaration
 ===================================
 
 Declaration: NOT_READY
-Release version: 0.1.6+dba1bc3
-Source commit: dba1bc3738ce4506da71f3b2a1e1e22c8bf93112
-Source commit timestamp: 2026-08-09T23:32:36+01:00
-Release archive: release/research-data-freeze-0.1.6+dba1bc3.zip
+Release version: 0.1.6+5fa013d
+Source commit: 5fa013d951ab8e4448a9e5331856210144101494
+Source commit timestamp: 2026-08-09T23:34:07+01:00
+Release archive: release/research-data-freeze-0.1.6+5fa013d.zip
 Release archive SHA-256: not_created
 
 Machine-readable blockers: results/releases/current/freeze_blocking_reasons.csv
@@ -37,7 +37,7 @@ Blocking reasons:
 - verification_typecheck: stale_scope: verification scope fingerprint does not match current tracked content
 - verification_validation: stale_scope: verification scope fingerprint does not match current tracked content
 - research_research.empirical_prerequisites: 0/6 empirical prerequisites are satisfied.
-- research_research.manual_source_documents: 4/43 expected manual source documents are available.
+- research_research.manual_source_documents: 4/43 expected manual source-year records are complete.
 - research_research.cross_source_comparison: 88/120 cross-source comparison rows have missing source coverage.
 - research_research.product_industry_mapping: Product-to-industry mapping coverage is zero.
 - research_research.territorial_definition: 24 Comtrade coverage rows still require territorial-definition review.

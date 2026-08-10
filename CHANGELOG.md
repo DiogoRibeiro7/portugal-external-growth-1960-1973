@@ -6,6 +6,30 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
 
 ## [Unreleased]
 
+## [0.1.6] - 2026-08-09
+
+### Added
+
+- Release-readiness checks now include fixed European partner-sample and reconciliation-scope
+  regressions.
+- CSV sidecar self-consistency tests verify committed artifact hashes, row counts, and columns.
+
+### Changed
+
+- Empirical readiness distinguishes the 1960-1973 historical/macro scope from the current
+  1962-1973 bilateral trade panel.
+- Freeze reports and empirical readiness artifacts were regenerated for the stricter provenance and
+  reconciliation gates.
+
+### Fixed
+
+- Fixed European completeness no longer accepts EFTA-only observations.
+- Cross-source reconciliation readiness requires distinct INE-Comtrade, CEPII, EFTA, and OECD
+  scopes instead of four resolved rows.
+- Verification evidence notes are idempotent, preventing repeated stale-scope messages.
+- The pass-2 INE aggregate transcription metadata now describes its own CSV and all four source
+  years.
+
 ## [0.1.5] - 2026-08-09
 
 ### Added

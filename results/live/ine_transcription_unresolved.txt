@@ -1,7 +1,9 @@
 INE historical trade transcription status
 ========================================
 
-Registered source-year documents: 43
+Registered source-year requirements: 43
+Registered local source PDFs: 8
+INE benchmark years with both volumes: 4
 Missing source PDFs: 39
 Catalogue records identified: 1
 Rows without source PDF SHA-256: 39

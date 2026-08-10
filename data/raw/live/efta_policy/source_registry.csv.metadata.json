@@ -14,7 +14,7 @@
     "registration_status",
     "notes"
   ],
-  "creation_timestamp_utc": "2026-08-09T12:28:00+01:00",
+  "creation_timestamp_utc": "2026-08-09T23:34:07+01:00",
   "date_range": null,
   "file": "data/raw/live/efta_policy/source_registry.csv",
   "input_artifacts": [
@@ -38,7 +38,7 @@
     "source_type": "object",
     "url_or_catalogue_reference": "object"
   },
-  "sha256": "59bf0e9cfa421170a9ad6eeb3d38167e00057de4ccf54cff359ea8da61094beb",
+  "sha256": "3a163d252a1d15939b492563fab9d1748ac429a13b7e3390246b3387e882cca4",
   "source_files": [
     "config/data_sources.yml"
   ],

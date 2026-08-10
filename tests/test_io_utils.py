@@ -52,6 +52,32 @@ def test_metadata_uses_explicit_reproducible_creation_timestamp(
     assert metadata["creation_timestamp_utc"] == "2026-08-09T00:00:00Z"
 
 
+def test_metadata_uses_explicit_root_when_cwd_differs(
+    tmp_path: Path,
+    monkeypatch: MonkeyPatch,
+) -> None:
+    repo = tmp_path / "repo"
+    elsewhere = tmp_path / "elsewhere"
+    source = repo / "data/raw/source.csv"
+    output = repo / "results/live/table.csv"
+    source.parent.mkdir(parents=True)
+    elsewhere.mkdir()
+    source.write_text("year,value\n1962,1\n", encoding="utf-8")
+    monkeypatch.chdir(elsewhere)
+
+    write_dataframe_with_metadata(
+        pd.DataFrame({"year": [1962], "value": [1.0]}),
+        output,
+        metadata={"source_files": [str(source)]},
+        root=repo,
+    )
+
+    metadata = json.loads(output.with_suffix(output.suffix + ".metadata.json").read_text())
+    assert metadata["file"] == "results/live/table.csv"
+    assert metadata["source_files"] == ["data/raw/source.csv"]
+    assert metadata["input_artifacts"][0]["path"] == "data/raw/source.csv"
+
+
 def test_metadata_preserves_creation_timestamp_when_output_is_unchanged(
     tmp_path: Path,
     monkeypatch: MonkeyPatch,

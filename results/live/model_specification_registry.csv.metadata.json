@@ -6,27 +6,31 @@
     "unit_of_observation",
     "dependent_variable",
     "status",
+    "required_audit_requirements",
+    "blocking_requirements",
     "identification_risk"
   ],
-  "creation_timestamp_utc": "2026-08-09T12:28:00+01:00",
+  "creation_timestamp_utc": "2026-08-09T23:34:07+01:00",
   "date_range": null,
   "file": "results/live/model_specification_registry.csv",
   "input_artifacts": [
     {
       "path": "src/portugal_external_growth/empirical.py",
-      "sha256": "1ebf5ae94f9316addb6214ac94ca773ebb177625430b58312b1a287247d94d6e"
+      "sha256": "8cdfabdd5fc3e8e96601613f553776b8a784b561984bd871abcc82c9c6af004d"
     }
   ],
   "rows": 4,
   "schema": {
+    "blocking_requirements": "object",
     "dependent_variable": "object",
     "identification_risk": "object",
     "model_family": "object",
     "model_slug": "object",
+    "required_audit_requirements": "object",
     "status": "object",
     "unit_of_observation": "object"
   },
-  "sha256": "b57db788672f9a269847d87fe5333b1c4f5108ca66414a682a8bb014112919aa",
+  "sha256": "de3ae3e38a025c2aa57aa4ae1f36c92a8000b91a6ce49eadc53d39d9e21683f0",
   "source_files": [
     "src/portugal_external_growth/empirical.py"
   ],

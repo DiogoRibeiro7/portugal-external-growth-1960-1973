@@ -125,11 +125,13 @@ def initialise_templates(root: Path) -> list[Path]:
         pd.DataFrame(columns=TRADE_TEMPLATE_COLUMNS),
         trade_path,
         metadata={"purpose": "Double-entry transcription of historical trade tables"},
+        root=root,
     )
     write_dataframe_with_metadata(
         pd.DataFrame(columns=AGGREGATE_TEMPLATE_COLUMNS),
         aggregate_path,
         metadata={"purpose": "Independent aggregate cross-check transcription"},
+        root=root,
     )
     return [trade_path, aggregate_path]
 
@@ -152,6 +154,7 @@ def init_ine_transcription(root: Path) -> list[Path]:
         source_registry,
         source_registry_path,
         metadata={"source_files": ["config/manual_sources.yml"], "stage": "source_registry"},
+        root=root,
     )
 
     created = [source_registry_path]
@@ -164,6 +167,7 @@ def init_ine_transcription(root: Path) -> list[Path]:
             frame,
             pass_path,
             metadata={"purpose": f"INE trade double-entry transcription pass {pass_number}"},
+            root=root,
         )
         created.append(pass_path)
         aggregate_path = pass_dir / f"ine_aggregate_transcription_pass_{pass_number}.csv"
@@ -173,6 +177,7 @@ def init_ine_transcription(root: Path) -> list[Path]:
             aggregate,
             aggregate_path,
             metadata={"purpose": f"INE aggregate double-entry transcription pass {pass_number}"},
+            root=root,
         )
         created.append(aggregate_path)
     return created
@@ -206,12 +211,14 @@ def compare_ine_transcriptions(root: Path) -> list[Path]:
         discrepancy_path,
         metadata={"stage": "ine_double_entry_discrepancy_check"},
         overwrite=True,
+        root=root,
     )
     write_dataframe_with_metadata(
         aggregate_discrepancies,
         aggregate_discrepancy_path,
         metadata={"stage": "ine_aggregate_double_entry_discrepancy_check"},
         overwrite=True,
+        root=root,
     )
     report_path = root / "results/live/ine_transcription_unresolved.txt"
     write_text_lf(
@@ -256,6 +263,7 @@ def build_ine_harmonised(root: Path) -> list[Path]:
         empty_adjudication,
         adjudicated_path,
         metadata={"stage": "protected_manual_adjudication_decisions"},
+        root=root,
     )
     adjudicated = _read_transcription(adjudicated_path)
     write_dataframe_with_metadata(
@@ -266,6 +274,7 @@ def build_ine_harmonised(root: Path) -> list[Path]:
             "stage": "harmonised_from_protected_manual_adjudication",
         },
         overwrite=True,
+        root=root,
     )
     aggregate_final_path = root / "data/processed/live/ine_aggregate_trade_harmonised.csv"
     aggregate_final = _build_verified_aggregate_harmonised(root)
@@ -281,6 +290,7 @@ def build_ine_harmonised(root: Path) -> list[Path]:
             "stage": "harmonised_aggregate_from_matching_double_entry",
         },
         overwrite=True,
+        root=root,
     )
     return [adjudicated_path, final_path, aggregate_final_path]
 
@@ -494,7 +504,12 @@ def _build_ine_transcription_report(
             "INE historical trade transcription status",
             "========================================",
             "",
-            f"Registered source-year documents: {len(source_registry)}",
+            f"Registered source-year requirements: {len(source_registry)}",
+            f"Registered local source PDFs: {_registered_local_source_pdf_count(source_registry)}",
+            (
+                "INE benchmark years with both volumes: "
+                f"{_ine_benchmark_years_with_both_volumes(source_registry)}"
+            ),
             f"Missing source PDFs: {missing_source_pdfs}",
             f"Catalogue records identified: {identified_catalogue_records}",
             f"Rows without source PDF SHA-256: {missing_pdf_hashes}",
@@ -638,20 +653,44 @@ def _count_nonblank(frame: pd.DataFrame, column: str) -> int:
     return int(frame[column].astype("string").fillna("").str.strip().ne("").sum())
 
 
+def _registered_local_source_pdf_count(source_registry: pd.DataFrame) -> int:
+    if source_registry.empty or "source_pdf_filename" not in source_registry:
+        return 0
+    filenames: set[str] = set()
+    for value in source_registry["source_pdf_filename"].astype("string").fillna("").tolist():
+        filenames.update(_split_metadata_cell(value))
+    return len(filenames)
+
+
+def _ine_benchmark_years_with_both_volumes(source_registry: pd.DataFrame) -> int:
+    if source_registry.empty or not {"source_pdf_filename", "expected_year"}.issubset(
+        source_registry.columns
+    ):
+        return 0
+    years = set()
+    for row in source_registry.to_dict(orient="records"):
+        filenames = _split_metadata_cell(row.get("source_pdf_filename"))
+        volume_count = sum(1 for filename in filenames if "volume_" in filename.lower())
+        if volume_count >= 2:
+            years.add(str(row.get("expected_year")))
+    return len(years)
+
+
 def _write_if_missing(
     frame: pd.DataFrame,
     path: Path,
     *,
     metadata: dict[str, object],
+    root: Path,
 ) -> None:
     if path.exists():
         if path.suffix == ".csv":
-            _refresh_existing_csv_metadata(path, metadata=metadata)
+            _refresh_existing_csv_metadata(path, metadata=metadata, root=root)
         return
-    write_dataframe_with_metadata(frame, path, metadata=metadata, overwrite=False)
+    write_dataframe_with_metadata(frame, path, metadata=metadata, overwrite=False, root=root)
 
 
-def _refresh_existing_csv_metadata(path: Path, *, metadata: dict[str, object]) -> None:
+def _refresh_existing_csv_metadata(path: Path, *, metadata: dict[str, object], root: Path) -> None:
     frame = pd.read_csv(path)
     sidecar = path.with_suffix(path.suffix + ".metadata.json")
     existing = _read_json(sidecar)
@@ -659,13 +698,13 @@ def _refresh_existing_csv_metadata(path: Path, *, metadata: dict[str, object]) -
     refreshed: dict[str, object] = {
         **existing,
         **metadata,
-        "file": repo_relative_path(path, root=Path.cwd()),
+        "file": repo_relative_path(path, root=root),
         "sha256": sha256_file(path),
         "rows": len(frame),
         "columns": [str(column) for column in frame.columns],
         "schema": {str(column): str(dtype) for column, dtype in frame.dtypes.items()},
         "source_files": source_files,
-        "input_artifacts": _input_artifacts(source_files),
+        "input_artifacts": _input_artifacts(source_files, root=root),
         "validation_findings": existing.get("validation_findings", []),
         "source_licence": existing.get("source_licence", "not_specified"),
         "access_conditions": existing.get("access_conditions", "not_specified"),
@@ -688,16 +727,20 @@ def _metadata_source_files(frame: pd.DataFrame, *, metadata: dict[str, object]) 
     source_files = [str(path) for path in configured] if isinstance(configured, list) else []
     if "source_pdf_filename" in frame:
         filenames = frame["source_pdf_filename"].astype("string").fillna("").str.strip()
-        for filename in filenames.drop_duplicates().tolist():
-            if filename:
+        for filename_group in filenames.drop_duplicates().tolist():
+            for filename in _split_metadata_cell(filename_group):
                 source_files.append(f"data/manual/source_documents/{filename}")
     return list(dict.fromkeys(source_files))
 
 
-def _input_artifacts(source_files: list[str]) -> list[dict[str, str]]:
+def _split_metadata_cell(value: object) -> list[str]:
+    return [part.strip() for part in str(value).split(";") if part.strip()]
+
+
+def _input_artifacts(source_files: list[str], *, root: Path) -> list[dict[str, str]]:
     artifacts: list[dict[str, str]] = []
     for source_file in source_files:
-        source_path = Path.cwd() / source_file
+        source_path = root / source_file
         if not source_path.is_file():
             continue
         artifacts.append({"path": source_file, "sha256": sha256_file(source_path)})

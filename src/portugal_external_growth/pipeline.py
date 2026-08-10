@@ -1429,7 +1429,7 @@ def prepare_empirical_extension(settings: Settings) -> None:
         },
     )
     write_dataframe_with_metadata(
-        build_model_specification_registry(),
+        build_model_specification_registry(root),
         root / "results/live/model_specification_registry.csv",
         metadata={"source_files": [empirical_code], "stage": "candidate_model_registry"},
     )

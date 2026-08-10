@@ -5,6 +5,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 from portugal_external_growth.config import load_yaml
@@ -43,6 +44,79 @@ PREREQUISITE_AUDIT_REQUIREMENTS = {
         "usable_years",
         "missingness_structure_documented",
         "identification_variables_available",
+        "within_sector_exposure_variation",
+        "within_year_cross_sectional_variation",
+        "fixed_effect_residual_design_rank",
+        "observation_parameter_ratio",
+        "independent_cluster_count",
+    ),
+}
+
+MODEL_AUDIT_REQUIREMENTS = {
+    "shift_share_external_demand": (
+        "annual_trade_coverage",
+        "colonial_partner_completeness",
+        "european_partner_completeness",
+        "product_level_coverage",
+        "product_to_industry_mapping_coverage",
+        "sectoral_output_coverage",
+        "price_deflator_coverage",
+        "usable_industries",
+        "usable_years",
+        "missingness_structure_documented",
+        "classification_breaks_documented",
+        "identification_variables_available",
+        "within_sector_exposure_variation",
+        "within_year_cross_sectional_variation",
+        "fixed_effect_residual_design_rank",
+        "observation_parameter_ratio",
+        "independent_cluster_count",
+    ),
+    "sector_year_fixed_effects": (
+        "annual_trade_coverage",
+        "colonial_partner_completeness",
+        "european_partner_completeness",
+        "sectoral_output_coverage",
+        "price_deflator_coverage",
+        "usable_industries",
+        "usable_years",
+        "identification_variables_available",
+        "within_year_cross_sectional_variation",
+        "fixed_effect_residual_design_rank",
+        "observation_parameter_ratio",
+        "independent_cluster_count",
+    ),
+    "efta_tariff_exposure": (
+        "annual_trade_coverage",
+        "european_partner_completeness",
+        "product_level_coverage",
+        "product_to_industry_mapping_coverage",
+        "sectoral_output_coverage",
+        "price_deflator_coverage",
+        "classification_breaks_documented",
+        "efta_policy_tariff_data_availability",
+        "identification_variables_available",
+        "within_year_cross_sectional_variation",
+        "fixed_effect_residual_design_rank",
+        "observation_parameter_ratio",
+        "independent_cluster_count",
+    ),
+    "colonial_demand_shifters": (
+        "annual_trade_coverage",
+        "colonial_partner_completeness",
+        "product_level_coverage",
+        "product_to_industry_mapping_coverage",
+        "sectoral_output_coverage",
+        "price_deflator_coverage",
+        "classification_breaks_documented",
+        "external_demand_shifter_availability",
+        "commodity_price_control_availability",
+        "identification_variables_available",
+        "within_sector_exposure_variation",
+        "within_year_cross_sectional_variation",
+        "fixed_effect_residual_design_rank",
+        "observation_parameter_ratio",
+        "independent_cluster_count",
     ),
 }
 
@@ -57,12 +131,12 @@ EMPIRICAL_AUDIT_COLUMNS = [
 
 RESOLVED_RECONCILIATION_STATUSES = {"reconciled", "satisfactory_with_caveats"}
 RESOLVED_IDENTIFICATION_STATUSES = {"satisfied", "approved", "resolved"}
-TRADE_SAMPLE_YEARS = tuple(range(1962, 1974))
+DEFAULT_TRADE_SAMPLE_YEARS = tuple(range(1962, 1974))
 TRADE_SAMPLE_FLOWS = ("X", "M")
-TRADE_YEAR_FLOW_REQUIREMENT = len(TRADE_SAMPLE_YEARS) * len(TRADE_SAMPLE_FLOWS)
 REQUIRED_RECONCILIATION_SCOPES = frozenset({"ine_comtrade", "cepii", "efta", "oecd"})
 REQUIRED_RECONCILIATION_SCOPE_COUNT = len(REQUIRED_RECONCILIATION_SCOPES)
-MIN_USABLE_INDUSTRIES = 2
+MIN_USABLE_INDUSTRIES = 10
+MIN_INDEPENDENT_CLUSTERS = 10
 
 
 def build_empirical_prerequisite_status(root: Path | None = None) -> pd.DataFrame:
@@ -111,11 +185,18 @@ def build_empirical_readiness_audit(root: Path) -> pd.DataFrame:
         _territorial_consistency(root),
         _cross_source_reconciliation(root),
         _efta_policy_availability(root),
+        _external_demand_shifter_availability(root),
+        _commodity_price_control_availability(root),
         _usable_industries(root),
         _usable_years(root),
         _missingness_structure(root),
         _classification_breaks(root),
         _identification_variables(root),
+        _within_sector_exposure_variation(root),
+        _within_year_cross_sectional_variation(root),
+        _fixed_effect_residual_design_rank(root),
+        _observation_parameter_ratio(root),
+        _independent_cluster_count(root),
     ]
     return pd.DataFrame.from_records(records, columns=EMPIRICAL_AUDIT_COLUMNS)
 
@@ -147,45 +228,89 @@ def build_empirical_readiness_audit_notes(audit: pd.DataFrame) -> str:
     )
 
 
-def build_model_specification_registry() -> pd.DataFrame:
+def build_model_specification_registry(root: Path | None = None) -> pd.DataFrame:
     """Create a registry of candidate model families without fitting them."""
 
-    return pd.DataFrame(
-        [
-            {
-                "model_slug": "shift_share_external_demand",
-                "model_family": "shift_share_exposure",
-                "unit_of_observation": "sector_year",
-                "dependent_variable": "sectoral_output_growth",
-                "status": "blocked_pending_prerequisites",
-                "identification_risk": "Requires stable sector-output panel and exposure shares.",
-            },
-            {
-                "model_slug": "sector_year_fixed_effects",
-                "model_family": "fixed_effects_panel",
-                "unit_of_observation": "sector_year",
-                "dependent_variable": "sectoral_output_growth",
-                "status": "blocked_pending_prerequisites",
-                "identification_risk": "Common European growth shocks require explicit controls.",
-            },
-            {
-                "model_slug": "efta_tariff_exposure",
-                "model_family": "tariff_exposure_design",
-                "unit_of_observation": "sector_year",
-                "dependent_variable": "sectoral_export_or_output_growth",
-                "status": "blocked_pending_prerequisites",
-                "identification_risk": "Requires documented EFTA tariff schedules.",
-            },
-            {
-                "model_slug": "colonial_demand_shifters",
-                "model_family": "external_demand_shift_design",
-                "unit_of_observation": "sector_year",
-                "dependent_variable": "sectoral_export_or_output_growth",
-                "status": "blocked_pending_prerequisites",
-                "identification_risk": "Commodity price channels must be controlled directly.",
-            },
-        ]
-    )
+    records = [
+        _model_record(
+            root=root,
+            model_slug="shift_share_external_demand",
+            model_family="shift_share_exposure",
+            unit_of_observation="sector_year",
+            dependent_variable="sectoral_output_growth",
+            identification_risk="Requires stable sector-output panel and exposure shares.",
+        ),
+        _model_record(
+            root=root,
+            model_slug="sector_year_fixed_effects",
+            model_family="fixed_effects_panel",
+            unit_of_observation="sector_year",
+            dependent_variable="sectoral_output_growth",
+            identification_risk="Common European growth shocks require explicit controls.",
+        ),
+        _model_record(
+            root=root,
+            model_slug="efta_tariff_exposure",
+            model_family="tariff_exposure_design",
+            unit_of_observation="sector_year",
+            dependent_variable="sectoral_export_or_output_growth",
+            identification_risk="Requires documented EFTA tariff schedules.",
+        ),
+        _model_record(
+            root=root,
+            model_slug="colonial_demand_shifters",
+            model_family="external_demand_shift_design",
+            unit_of_observation="sector_year",
+            dependent_variable="sectoral_export_or_output_growth",
+            identification_risk="Commodity price channels must be controlled directly.",
+        ),
+    ]
+    return pd.DataFrame.from_records(records)
+
+
+def _model_record(
+    *,
+    root: Path | None,
+    model_slug: str,
+    model_family: str,
+    unit_of_observation: str,
+    dependent_variable: str,
+    identification_risk: str,
+) -> dict[str, object]:
+    requirements = MODEL_AUDIT_REQUIREMENTS[model_slug]
+    status = "blocked_pending_prerequisites"
+    blocking_requirements = "empirical_readiness_audit_not_evaluated"
+    if root is not None:
+        audit = build_empirical_readiness_audit(root)
+        rows = audit.loc[audit["requirement"].isin(requirements)]
+        blocked = rows.loc[~rows["status"].eq("satisfied")]
+        missing = sorted(set(requirements).difference(set(rows["requirement"])))
+        if blocked.empty and not missing:
+            status = "ready"
+            blocking_requirements = ""
+        else:
+            blocking_requirements = ";".join(
+                [
+                    *[
+                        f"{row['requirement']}={row['blocking_reason']}"
+                        for row in blocked.to_dict(orient="records")
+                    ],
+                    *[
+                        f"{requirement}=missing_from_empirical_readiness_audit"
+                        for requirement in missing
+                    ],
+                ]
+            )
+    return {
+        "model_slug": model_slug,
+        "model_family": model_family,
+        "unit_of_observation": unit_of_observation,
+        "dependent_variable": dependent_variable,
+        "status": status,
+        "required_audit_requirements": ";".join(requirements),
+        "blocking_requirements": blocking_requirements,
+        "identification_risk": identification_risk,
+    }
 
 
 def empty_design_matrix() -> pd.DataFrame:
@@ -301,13 +426,13 @@ def _annual_trade_coverage(root: Path) -> dict[str, object]:
     frame = _read_csv(
         root / "data/processed/live/validated_annual_aggregate_external_orientation.csv"
     )
-    required = TRADE_YEAR_FLOW_REQUIREMENT
+    required = _trade_year_flow_requirement(root)
     if frame.empty:
         return _record("annual_trade_coverage", required, 0, "annual_aggregate_dataset_missing")
     if {"year", "flow_code"}.issubset(frame.columns):
-        available = _available_year_flow_pairs(frame)
+        available = _available_year_flow_pairs(frame, root=root)
     else:
-        sample = _sample_year_rows(frame)
+        sample = _sample_year_rows(frame, root=root)
         available = int(
             sample.get("world_exports_pte", pd.Series(dtype=float)).notna().sum()
         ) + int(sample.get("world_imports_pte", pd.Series(dtype=float)).notna().sum())
@@ -326,15 +451,16 @@ def _colonial_partner_completeness(root: Path) -> dict[str, object]:
     if frame.empty:
         return _record(
             "colonial_partner_completeness",
-            TRADE_YEAR_FLOW_REQUIREMENT,
+            _trade_year_flow_requirement(root),
             0,
             "colonial aggregate table missing",
         )
-    required = TRADE_YEAR_FLOW_REQUIREMENT
+    required = _trade_year_flow_requirement(root)
     satisfied = _flow_specific_non_null_count(
         frame,
         export_columns=["colonial_exports_complete_pte"],
         import_columns=["colonial_imports_complete_pte"],
+        root=root,
     )
     return _record(
         "colonial_partner_completeness",
@@ -351,11 +477,11 @@ def _european_partner_completeness(root: Path) -> dict[str, object]:
     if frame.empty:
         return _record(
             "european_partner_completeness",
-            TRADE_YEAR_FLOW_REQUIREMENT,
+            _trade_year_flow_requirement(root),
             0,
             "aggregate dataset missing",
         )
-    required = TRADE_YEAR_FLOW_REQUIREMENT
+    required = _trade_year_flow_requirement(root)
     export_columns = ["fixed_europe_exports_pte"]
     import_columns = ["fixed_europe_imports_pte"]
     if not set(export_columns + import_columns).issubset(frame.columns):
@@ -369,6 +495,7 @@ def _european_partner_completeness(root: Path) -> dict[str, object]:
         frame,
         export_columns=export_columns,
         import_columns=import_columns,
+        root=root,
     )
     return _record(
         "european_partner_completeness",
@@ -471,15 +598,15 @@ def _territorial_consistency(root: Path) -> dict[str, object]:
     if audit.empty:
         return _record(
             "territorial_consistency",
-            TRADE_YEAR_FLOW_REQUIREMENT,
+            _trade_year_flow_requirement(root),
             0,
             "territorial audit missing",
         )
     statuses = audit.get("territorial_definition_status", pd.Series(dtype=object)).astype(str)
-    required = TRADE_YEAR_FLOW_REQUIREMENT
+    required = _trade_year_flow_requirement(root)
     resolved = audit.loc[statuses.eq("resolved")]
     if {"year", "flow_code"}.issubset(resolved.columns):
-        available = _available_year_flow_pairs(resolved)
+        available = _available_year_flow_pairs(resolved, root=root)
     else:
         available = int(resolved.shape[0])
     return _record(
@@ -554,6 +681,32 @@ def _efta_policy_availability(root: Path) -> dict[str, object]:
     )
 
 
+def _external_demand_shifter_availability(root: Path) -> dict[str, object]:
+    status = _read_csv(root / "results/diagnostics/external_demand_shifters/shifter_status.csv")
+    if not status.empty and "status" in status.columns:
+        available = int(status["status"].astype(str).eq("ready").any())
+        reason = str(
+            status.get("blocking_reason", pd.Series(["external demand shifters blocked"])).iloc[0]
+        )
+    else:
+        available = 0
+        reason = "external demand shifters are not registered"
+    return _record("external_demand_shifter_availability", 1, available, reason)
+
+
+def _commodity_price_control_availability(root: Path) -> dict[str, object]:
+    status = _read_csv(root / "results/diagnostics/commodity_prices/control_status.csv")
+    if not status.empty and "status" in status.columns:
+        available = int(status["status"].astype(str).eq("ready").any())
+        reason = str(
+            status.get("blocking_reason", pd.Series(["commodity price controls blocked"])).iloc[0]
+        )
+    else:
+        available = 0
+        reason = "commodity price controls are not registered"
+    return _record("commodity_price_control_availability", 1, available, reason)
+
+
 def _usable_industries(root: Path) -> dict[str, object]:
     panel = _read_csv(root / "data/processed/live/industry_trade_panel.csv")
     if panel.empty:
@@ -568,7 +721,7 @@ def _usable_industries(root: Path) -> dict[str, object]:
         "usable_industries",
         MIN_USABLE_INDUSTRIES,
         available,
-        "fewer than two usable mapped industries are available",
+        f"fewer than {MIN_USABLE_INDUSTRIES} usable mapped industries are available",
     )
 
 
@@ -577,7 +730,13 @@ def _usable_years(root: Path) -> dict[str, object]:
     if panel.empty:
         return _record("usable_years", 12, 0, "industry trade panel is empty")
     available = int(panel.get("year", pd.Series(dtype=object)).nunique())
-    return _record("usable_years", 12, available, "insufficient usable industry-panel years")
+    required = len(_trade_sample_years(root))
+    return _record(
+        "usable_years",
+        required,
+        available,
+        "insufficient usable industry-panel years",
+    )
 
 
 def _missingness_structure(root: Path) -> dict[str, object]:
@@ -665,26 +824,25 @@ def _classification_breaks(root: Path) -> dict[str, object]:
 
 
 def _identification_variables(root: Path) -> dict[str, object]:
-    design = _read_csv(root / "data/interim/live/empirical_design_matrix.csv")
+    design = _complete_design_matrix(root)
     if design.empty:
         return _record(
-            "identification_variables_available", 1, 0, "empirical design matrix is empty"
+            "identification_variables_available",
+            1,
+            0,
+            "empirical design matrix is empty or lacks sector/year exposure controls",
         )
-    required_columns = {"colonial_exposure", "european_exposure", "controls_available"}
-    if not required_columns.issubset(design.columns):
-        available = 0
-    else:
-        colonial = pd.to_numeric(design["colonial_exposure"], errors="coerce")
-        european = pd.to_numeric(design["european_exposure"], errors="coerce")
-        controls = design["controls_available"].astype("boolean")
-        available = int(
-            colonial.notna().all()
-            and european.notna().all()
-            and controls.notna().all()
-            and bool(controls.all())
-            and colonial.nunique(dropna=True) > 1
-            and european.nunique(dropna=True) > 1
-        )
+    colonial = pd.to_numeric(design["colonial_exposure"], errors="coerce")
+    european = pd.to_numeric(design["european_exposure"], errors="coerce")
+    controls = design["controls_available"].astype("boolean")
+    available = int(
+        colonial.notna().all()
+        and european.notna().all()
+        and controls.notna().all()
+        and bool(controls.all())
+        and colonial.nunique(dropna=True) > 1
+        and european.nunique(dropna=True) > 1
+    )
     return _record(
         "identification_variables_available",
         1,
@@ -693,19 +851,181 @@ def _identification_variables(root: Path) -> dict[str, object]:
     )
 
 
-def _available_year_flow_pairs(frame: pd.DataFrame) -> int:
+def _within_sector_exposure_variation(root: Path) -> dict[str, object]:
+    design = _complete_design_matrix(root)
+    if design.empty:
+        return _record(
+            "within_sector_exposure_variation",
+            MIN_USABLE_INDUSTRIES,
+            0,
+            "empirical design matrix is empty or lacks sector/year exposure controls",
+        )
+    varying = 0
+    for _sector, sector_rows in design.groupby("sector_code"):
+        colonial_values = pd.to_numeric(sector_rows["colonial_exposure"], errors="coerce")
+        european_values = pd.to_numeric(sector_rows["european_exposure"], errors="coerce")
+        if colonial_values.nunique(dropna=True) > 1 and european_values.nunique(dropna=True) > 1:
+            varying += 1
+    return _record(
+        "within_sector_exposure_variation",
+        MIN_USABLE_INDUSTRIES,
+        varying,
+        "too few sectors have within-sector exposure variation over time",
+    )
+
+
+def _within_year_cross_sectional_variation(root: Path) -> dict[str, object]:
+    design = _complete_design_matrix(root)
+    required = len(_trade_sample_years(root))
+    if design.empty:
+        return _record(
+            "within_year_cross_sectional_variation",
+            required,
+            0,
+            "empirical design matrix is empty or lacks sector/year exposure controls",
+        )
+    varying_years = 0
+    for _year, year_rows in design.groupby("year"):
+        colonial_values = pd.to_numeric(year_rows["colonial_exposure"], errors="coerce")
+        european_values = pd.to_numeric(year_rows["european_exposure"], errors="coerce")
+        if colonial_values.nunique(dropna=True) > 1 and european_values.nunique(dropna=True) > 1:
+            varying_years += 1
+    return _record(
+        "within_year_cross_sectional_variation",
+        required,
+        varying_years,
+        "exposures lack cross-sectional variation within every sample year",
+    )
+
+
+def _fixed_effect_residual_design_rank(root: Path) -> dict[str, object]:
+    design = _complete_design_matrix(root)
+    if design.empty:
+        return _record(
+            "fixed_effect_residual_design_rank",
+            2,
+            0,
+            "empirical design matrix is empty or lacks sector/year exposure controls",
+        )
+    rank = _residual_exposure_rank(design)
+    return _record(
+        "fixed_effect_residual_design_rank",
+        2,
+        rank,
+        "colonial and European exposures are collinear after sector and year effects",
+    )
+
+
+def _observation_parameter_ratio(root: Path) -> dict[str, object]:
+    design = _complete_design_matrix(root)
+    if design.empty:
+        return _record(
+            "observation_parameter_ratio",
+            1,
+            0,
+            "empirical design matrix is empty or lacks sector/year exposure controls",
+        )
+    observations = len(design)
+    sector_count = int(design["sector_code"].nunique())
+    year_count = int(design["year"].nunique())
+    estimated_parameters = 2 + max(sector_count - 1, 0) + max(year_count - 1, 0)
+    required = estimated_parameters + 1
+    return _record(
+        "observation_parameter_ratio",
+        required,
+        observations,
+        "observations do not exceed exposure and fixed-effect parameter count",
+    )
+
+
+def _independent_cluster_count(root: Path) -> dict[str, object]:
+    design = _complete_design_matrix(root)
+    if design.empty:
+        return _record(
+            "independent_cluster_count",
+            MIN_INDEPENDENT_CLUSTERS,
+            0,
+            "empirical design matrix is empty or lacks sector/year exposure controls",
+        )
+    clusters = int(design["sector_code"].nunique())
+    return _record(
+        "independent_cluster_count",
+        MIN_INDEPENDENT_CLUSTERS,
+        clusters,
+        f"fewer than {MIN_INDEPENDENT_CLUSTERS} independent sector clusters are available",
+    )
+
+
+def _complete_design_matrix(root: Path) -> pd.DataFrame:
+    design = _read_csv(root / "data/interim/live/empirical_design_matrix.csv")
+    required_columns = {
+        "sector_code",
+        "year",
+        "colonial_exposure",
+        "european_exposure",
+        "controls_available",
+    }
+    if design.empty or not required_columns.issubset(design.columns):
+        return pd.DataFrame()
+    complete = design.copy()
+    complete["year"] = pd.to_numeric(complete["year"], errors="coerce")
+    complete["colonial_exposure"] = pd.to_numeric(complete["colonial_exposure"], errors="coerce")
+    complete["european_exposure"] = pd.to_numeric(complete["european_exposure"], errors="coerce")
+    complete["sector_code"] = complete["sector_code"].astype("string").fillna("").str.strip()
+    complete = complete.loc[
+        complete["sector_code"].ne("")
+        & complete["year"].notna()
+        & complete["colonial_exposure"].notna()
+        & complete["european_exposure"].notna()
+    ].copy()
+    return complete
+
+
+def _residual_exposure_rank(design: pd.DataFrame) -> int:
+    exposure = design[["colonial_exposure", "european_exposure"]].astype(float).to_numpy()
+    sectors = pd.get_dummies(design["sector_code"].astype(str), drop_first=False, dtype=float)
+    years = pd.get_dummies(design["year"].astype(int).astype(str), drop_first=False, dtype=float)
+    fixed_effects = pd.concat([sectors, years], axis=1).to_numpy(dtype=float)
+    if fixed_effects.size == 0:
+        return int(np.linalg.matrix_rank(exposure))
+    combined_rank = int(np.linalg.matrix_rank(np.column_stack([fixed_effects, exposure])))
+    fixed_effect_rank = int(np.linalg.matrix_rank(fixed_effects))
+    return combined_rank - fixed_effect_rank
+
+
+def _available_year_flow_pairs(frame: pd.DataFrame, *, root: Path) -> int:
     pairs = frame.loc[
-        frame["year"].isin(TRADE_SAMPLE_YEARS)
+        frame["year"].isin(_trade_sample_years(root))
         & frame["flow_code"].astype(str).isin(TRADE_SAMPLE_FLOWS),
         ["year", "flow_code"],
     ]
     return int(pairs.drop_duplicates().shape[0])
 
 
-def _sample_year_rows(frame: pd.DataFrame) -> pd.DataFrame:
+def _trade_sample_years(root: Path) -> tuple[int, ...]:
+    config_path = root / "config/project.yml"
+    if config_path.exists():
+        try:
+            payload = load_yaml(config_path)
+        except (OSError, TypeError, ValueError):
+            payload = {}
+        project = payload.get("project") if isinstance(payload, dict) else {}
+        if isinstance(project, dict):
+            start = _as_optional_int(project.get("bilateral_trade_panel_start_year"))
+            end = _as_optional_int(project.get("bilateral_trade_panel_end_year"))
+            if start is not None and end is not None and start <= end:
+                return tuple(range(start, end + 1))
+    return DEFAULT_TRADE_SAMPLE_YEARS
+
+
+def _trade_year_flow_requirement(root: Path) -> int:
+    return len(_trade_sample_years(root)) * len(TRADE_SAMPLE_FLOWS)
+
+
+def _sample_year_rows(frame: pd.DataFrame, *, root: Path) -> pd.DataFrame:
     if "year" not in frame.columns:
         return frame
-    return frame.loc[frame["year"].isin(TRADE_SAMPLE_YEARS)]
+    return frame.loc[frame["year"].isin(_trade_sample_years(root))]
 
 
 def _flow_specific_non_null_count(
@@ -713,9 +1033,10 @@ def _flow_specific_non_null_count(
     *,
     export_columns: list[str],
     import_columns: list[str],
+    root: Path,
 ) -> int:
     if {"year", "flow_code"}.issubset(frame.columns):
-        sample = frame.loc[frame["year"].isin(TRADE_SAMPLE_YEARS)].copy()
+        sample = frame.loc[frame["year"].isin(_trade_sample_years(root))].copy()
         flow_code = sample["flow_code"].astype(str)
         export_columns = [column for column in export_columns if column in sample.columns]
         import_columns = [column for column in import_columns if column in sample.columns]
@@ -724,7 +1045,7 @@ def _flow_specific_non_null_count(
         export_count = _non_null_year_count(exports, export_columns)
         import_count = _non_null_year_count(imports, import_columns)
         return export_count + import_count
-    sample = _sample_year_rows(frame)
+    sample = _sample_year_rows(frame, root=root)
     export_count = _non_null_year_count(sample, export_columns)
     import_count = _non_null_year_count(sample, import_columns)
     return export_count + import_count
@@ -738,6 +1059,18 @@ def _non_null_year_count(frame: pd.DataFrame, columns: list[str]) -> int:
         present = frame.loc[frame[available_columns].notna().any(axis=1), ["year"]]
         return int(present.drop_duplicates().shape[0])
     return int(frame[available_columns].notna().any(axis=1).sum())
+
+
+def _as_optional_int(value: object) -> int | None:
+    if value is None:
+        return None
+    text = str(value).strip()
+    if not text or text.lower() in {"nan", "<na>", "none"}:
+        return None
+    try:
+        return int(text)
+    except ValueError:
+        return None
 
 
 def _record(

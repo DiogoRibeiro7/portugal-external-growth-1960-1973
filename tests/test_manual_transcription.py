@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import pandas as pd
 
+from portugal_external_growth.io_utils import sha256_file
 from portugal_external_growth.manual import (
     AGGREGATE_TEMPLATE_COLUMNS,
     TRADE_TEMPLATE_COLUMNS,
@@ -11,6 +13,7 @@ from portugal_external_growth.manual import (
     compare_aggregate_transcription_passes,
     compare_ine_transcriptions,
     compare_transcription_passes,
+    init_ine_transcription,
     initialise_templates,
     prepare_ine_transcription_workflow,
 )
@@ -42,6 +45,60 @@ def test_transcription_pass_comparison_flags_value_disagreement(tmp_path: Path) 
 
     assert len(result) == 1
     assert result.loc[0, "resolution_status"] == "requires_adjudication"
+
+
+def test_source_registry_metadata_splits_multi_volume_source_files(tmp_path: Path) -> None:
+    config_dir = tmp_path / "config"
+    source_dir = tmp_path / "data/manual/source_documents"
+    config_dir.mkdir(parents=True)
+    source_dir.mkdir(parents=True)
+    (config_dir / "manual_sources.yml").write_text(
+        "\n".join(
+            [
+                "manual_sources:",
+                "  - source_id: ine_external_trade",
+                "    title_pattern: INE external trade",
+                "    expected_years: [1962]",
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    volume_i = source_dir / "volume_i.pdf"
+    volume_ii = source_dir / "volume_ii.pdf"
+    volume_i.write_text("volume i", encoding="utf-8")
+    volume_ii.write_text("volume ii", encoding="utf-8")
+    registry = source_dir / "source_document_registry.csv"
+    pd.DataFrame(
+        [
+            {
+                "source_id": "ine_external_trade",
+                "title_pattern": "INE external trade",
+                "expected_year": 1962,
+                "source_pdf_filename": "volume_i.pdf;volume_ii.pdf",
+                "source_pdf_sha256": f"{sha256_file(volume_i)};{sha256_file(volume_ii)}",
+                "source_document_status": "available",
+                "access_conditions": "open_document",
+                "licence": "to_be_confirmed_from_source",
+                "territorial_definition": "source_defined",
+                "notes": "",
+            }
+        ]
+    ).to_csv(registry, index=False)
+
+    init_ine_transcription(tmp_path)
+
+    metadata = json.loads(
+        registry.with_suffix(registry.suffix + ".metadata.json").read_text(encoding="utf-8")
+    )
+    assert metadata["source_files"] == [
+        "config/manual_sources.yml",
+        "data/manual/source_documents/volume_i.pdf",
+        "data/manual/source_documents/volume_ii.pdf",
+    ]
+    assert [artifact["path"] for artifact in metadata["input_artifacts"]] == metadata[
+        "source_files"
+    ]
 
 
 def test_transcription_pass_comparison_accepts_integer_float_formatting(
@@ -312,7 +369,9 @@ def test_compare_ine_transcriptions_reports_source_and_adjudication_gaps(
     report = (tmp_path / "results/live/ine_transcription_unresolved.txt").read_text(
         encoding="utf-8"
     )
-    assert "Registered source-year documents: 1" in report
+    assert "Registered source-year requirements: 1" in report
+    assert "Registered local source PDFs: 0" in report
+    assert "INE benchmark years with both volumes: 0" in report
     assert "Missing source PDFs: 1" in report
     assert "Catalogue records identified: 0" in report
     assert "Rows without source PDF SHA-256: 1" in report

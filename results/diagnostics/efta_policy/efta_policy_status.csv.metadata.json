@@ -8,7 +8,7 @@
     "product_mapping_rows",
     "blocking_reason"
   ],
-  "creation_timestamp_utc": "2026-08-09T12:28:00+01:00",
+  "creation_timestamp_utc": "2026-08-09T23:34:07+01:00",
   "date_range": null,
   "file": "results/diagnostics/efta_policy/efta_policy_status.csv",
   "input_artifacts": [
@@ -26,7 +26,7 @@
     "source_rows": "int64",
     "status": "object"
   },
-  "sha256": "5fbe8fcdd3467055f415f830bf47686bd07a2ccecb58c772e6dc4434c96d8b86",
+  "sha256": "77bbda420408f3fdc7a202658e50b87fbb4e47aa93cce130e54bc63efe3b120f",
   "source_files": [
     "results/diagnostics/efta_policy/efta_policy_coverage.csv"
   ],

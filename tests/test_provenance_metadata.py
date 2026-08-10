@@ -2,11 +2,13 @@ from __future__ import annotations
 
 import json
 import re
+import tomllib
 from pathlib import Path
 
 import pandas as pd
 import pytest
 
+from portugal_external_growth.config import load_yaml
 from portugal_external_growth.io_utils import sha256_file
 
 REQUIRED_HTTP_FIELDS = {
@@ -100,3 +102,36 @@ def test_committed_csv_metadata_describes_own_artifact() -> None:
         assert payload.get("columns") == [str(column) for column in frame.columns], (
             f"{path.relative_to(root)} has stale column list"
         )
+
+
+def test_release_version_metadata_is_synchronised() -> None:
+    root = Path(__file__).resolve().parents[1]
+    project = tomllib.loads((root / "pyproject.toml").read_text(encoding="utf-8"))["project"]
+    citation = load_yaml(root / "CITATION.cff")
+    zenodo = json.loads((root / ".zenodo.json").read_text(encoding="utf-8"))
+    package_init = (root / "src/portugal_external_growth/__init__.py").read_text(encoding="utf-8")
+    changelog = (root / "CHANGELOG.md").read_text(encoding="utf-8")
+    version = project["version"]
+
+    assert f'__version__ = "{version}"' in package_init
+    assert str(citation["version"]) == version
+    assert zenodo["version"] == version
+    assert f"## [{version}]" in changelog
+
+
+def test_committed_metadata_source_files_are_resolvable_paths_or_uris() -> None:
+    root = Path(__file__).resolve().parents[1]
+
+    for path in sorted(root.rglob("*.metadata.json")):
+        if any(part in {".git", ".tmp", ".venv"} for part in path.parts):
+            continue
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        source_files = payload.get("source_files", [])
+        assert isinstance(source_files, list)
+        for source_file in source_files:
+            assert isinstance(source_file, str)
+            if re.match(r"^[a-z][a-z0-9+.-]*://", source_file):
+                continue
+            assert (root / source_file).exists(), (
+                f"{path.relative_to(root)} source file does not resolve: {source_file}"
+            )

@@ -377,8 +377,8 @@ def build_research_readiness_report(root: Path) -> pd.DataFrame:
                 "not_ready",
                 "research.manual_source_documents",
                 (
-                    f"{available_documents}/{expected_documents} expected manual source "
-                    "documents are available."
+                    f"{available_documents}/{expected_documents} expected manual source-year "
+                    "records are complete."
                 ),
             )
         )

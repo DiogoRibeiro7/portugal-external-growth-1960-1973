@@ -9,17 +9,17 @@
     "archive_path",
     "archive_sha256"
   ],
-  "creation_timestamp_utc": "2026-08-09T23:32:36+01:00",
+  "creation_timestamp_utc": "2026-08-09T23:34:07+01:00",
   "date_range": null,
   "file": "results/releases/current/release_readiness_declaration.csv",
   "input_artifacts": [
     {
       "path": "results/validation/research_readiness_report.csv",
-      "sha256": "380c1ef35ed1d10c0e1184e95c6f9f85d562c351f25477fa79b8607ba62a6b6a"
+      "sha256": "aaeebbaf03aa7995aa4438afa6abbcb4f11f4a7e5e8f4b7f4bfa854a3680c3b8"
     },
     {
       "path": "results/live/empirical_readiness_audit.csv",
-      "sha256": "1057f52992208e209895d54d3574c8f4381fd1e585759823b63a076cd2bd69b6"
+      "sha256": "6a75b2424748833aaabc43ffb76b15290b0972a2335c9c06b219b17717712cd0"
     }
   ],
   "rows": 1,
@@ -32,7 +32,7 @@
     "source_commit": "object",
     "source_commit_timestamp_utc": "object"
   },
-  "sha256": "0f2b69ab11df3d2b542dce000c3f636263120b0a75e9d11c42cda18bd4a5bb69",
+  "sha256": "62b4090a2e69417bdf2c7906a5feef55257b0753c461ad1e5e5b46bc00495b5d",
   "source_files": [
     "results/validation/research_readiness_report.csv",
     "results/live/empirical_readiness_audit.csv"
