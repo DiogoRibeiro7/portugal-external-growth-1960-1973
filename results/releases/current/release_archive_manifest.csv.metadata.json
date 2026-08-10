@@ -12,7 +12,7 @@
     "archive_method",
     "content_scope"
   ],
-  "creation_timestamp_utc": "2026-08-10T10:36:41+01:00",
+  "creation_timestamp_utc": "2026-08-10T11:42:33+01:00",
   "date_range": null,
   "file": "results/releases/current/release_archive_manifest.csv",
   "rows": 1,
@@ -28,7 +28,7 @@
     "source_commit_timestamp_utc": "object",
     "tracked_file_count": "int64"
   },
-  "sha256": "b7bd980c23b1ac41e5c77b6164531a21a8bf39b15d52d8849fb5a4106c061746",
+  "sha256": "c70221c964c0d3a9372d0e77d3f0ee0f2c57edaba67753891da3e1f21462b992",
   "source_licence": "not_specified",
   "stage": "tracked_file_release_archive_manifest",
   "validation_findings": []
