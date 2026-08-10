@@ -5,5 +5,6 @@ data/processed/live/portugal_broad_sector_context.csv,results/live/portugal_broa
 data/processed/live/industry_trade_panel.csv,results/live/industry_trade_panel_data_dictionary.csv,available,,17,17,0,0
 data/processed/live/industry_exposure_panel.csv,results/live/industry_exposure_panel_data_dictionary.csv,available,,17,17,0,0
 data/processed/live/sectoral_output_panel.csv,results/live/sectoral_output_panel_data_dictionary.csv,available,,25,25,0,0
+data/processed/live/sectoral_output_growth_panel.csv,results/live/sectoral_output_growth_panel_data_dictionary.csv,inadequate,source_status_missing=9;analytical_use_missing=9,9,9,0,0
 data/interim/live/empirical_design_matrix.csv,results/live/empirical_design_matrix_data_dictionary.csv,available,,11,11,0,0
 data/interim/live/efta_policy_dataset.csv,results/live/efta_policy_data_dictionary.csv,available,,17,17,0,0

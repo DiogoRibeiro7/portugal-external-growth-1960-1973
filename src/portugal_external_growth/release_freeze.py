@@ -136,6 +136,9 @@ ANALYTICAL_DATASETS = {
     "data/processed/live/sectoral_output_panel.csv": (
         "results/live/sectoral_output_panel_data_dictionary.csv"
     ),
+    "data/processed/live/sectoral_output_growth_panel.csv": (
+        "results/live/sectoral_output_growth_panel_data_dictionary.csv"
+    ),
     "data/interim/live/empirical_design_matrix.csv": (
         "results/live/empirical_design_matrix_data_dictionary.csv"
     ),

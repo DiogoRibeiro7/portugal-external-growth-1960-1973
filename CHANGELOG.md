@@ -20,6 +20,8 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
   growth-sample coverage for log-change outcomes.
 - Sectoral-output diagnostics now include a source-transition registry scaffold for reviewed
   cross-source level bridges.
+- Reviewed sectoral output growth is now materialised as
+  `data/processed/live/sectoral_output_growth_panel.csv` with current/lag source lineage.
 - Pipeline metadata writes now preserve repository-relative provenance when run from a different
   current working directory.
 
@@ -51,6 +53,13 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
 - `real_output_method` now uses a controlled vocabulary.
 - Candidate model readiness now checks outcome-specific joined designs, so export-growth models
   require export-growth sector-years to overlap the exposure panel.
+- Sectoral export-growth readiness now uses only validated `world_total` industry-trade rows from
+  one explicit mapping regime and rejects blocked or partial mapped trade rows.
+- Source-transition readiness now permits only `no_adjustment_required` links until non-trivial
+  level-link transformations are implemented.
+- Local sectoral-output registry sources now require existing files with matching SHA-256 hashes.
+- `deflated_nominal` real-output rows now validate `real_output` against nominal output and the
+  documented deflator convention.
 - Model readiness now declares model-specific high-level prerequisites and required outcomes, so
   export-growth candidate models no longer inherit the sectoral-output prerequisite by default.
 - Release blocker IDs no longer duplicate the `research_` prefix.

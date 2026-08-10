@@ -1,0 +1,52 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "sector_code",
+    "year",
+    "source_id",
+    "output_growth",
+    "current_source_id",
+    "lag_source_id",
+    "source_transition_status",
+    "source_transition_id",
+    "growth_method"
+  ],
+  "creation_timestamp_utc": "2026-08-10T22:36:12+01:00",
+  "date_range": null,
+  "file": "data/processed/live/sectoral_output_growth_panel.csv",
+  "input_artifacts": [
+    {
+      "path": "data/raw/live/sectoral_output/source_registry.csv",
+      "sha256": "1cd758b9bb44f19d57881ce89f7d1757da09f0cf08feacadb2be006d5ec23dc7"
+    },
+    {
+      "path": "results/diagnostics/sectoral_output/source_transition_registry.csv",
+      "sha256": "3245d7ee0156b304c320334ac5b26b84dabce64bb738058bce576eec52ce0e80"
+    },
+    {
+      "path": "data/processed/live/sectoral_output_panel.csv",
+      "sha256": "a7b0d3ac2fbe977d8563b065208e298c59f96b9b211c97005c8dc6dbc7d48bd2"
+    }
+  ],
+  "rows": 0,
+  "schema": {
+    "current_source_id": "object",
+    "growth_method": "object",
+    "lag_source_id": "object",
+    "output_growth": "object",
+    "sector_code": "object",
+    "source_id": "object",
+    "source_transition_id": "object",
+    "source_transition_status": "object",
+    "year": "object"
+  },
+  "sha256": "7ff6d35a014754bc53bb0934d8b90b9398cee2e1363d46cde5b4ade3ef7010f0",
+  "source_files": [
+    "data/raw/live/sectoral_output/source_registry.csv",
+    "results/diagnostics/sectoral_output/source_transition_registry.csv",
+    "data/processed/live/sectoral_output_panel.csv"
+  ],
+  "source_licence": "not_specified",
+  "stage": "sectoral_output_growth_panel_pending_reviewed_lineage",
+  "validation_findings": []
+}

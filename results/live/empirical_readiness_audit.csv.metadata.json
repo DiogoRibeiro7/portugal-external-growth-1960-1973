@@ -49,6 +49,10 @@
       "sha256": "a7b0d3ac2fbe977d8563b065208e298c59f96b9b211c97005c8dc6dbc7d48bd2"
     },
     {
+      "path": "data/processed/live/sectoral_output_growth_panel.csv",
+      "sha256": "7ff6d35a014754bc53bb0934d8b90b9398cee2e1363d46cde5b4ade3ef7010f0"
+    },
+    {
       "path": "data/processed/live/industry_trade_panel.csv",
       "sha256": "06b249dcafcf5bdd942aa9b58e4b2c970bae62b04f1c2a8a82ea7d54d751d65a"
     },
@@ -77,6 +81,7 @@
     "data/raw/live/sectoral_output/source_registry.csv",
     "results/diagnostics/sectoral_output/source_transition_registry.csv",
     "data/processed/live/sectoral_output_panel.csv",
+    "data/processed/live/sectoral_output_growth_panel.csv",
     "data/processed/live/industry_trade_panel.csv",
     "results/diagnostics/industry_exposure/industry_exposure_coverage.csv"
   ],

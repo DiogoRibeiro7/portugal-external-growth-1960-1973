@@ -10,6 +10,7 @@ import numpy as np
 import pandas as pd
 
 from portugal_external_growth.config import load_yaml
+from portugal_external_growth.io_utils import sha256_file
 
 PREREQUISITES = [
     "reviewed_bilateral_trade_panel",
@@ -209,6 +210,21 @@ SECTORAL_OUTPUT_SOURCE_TRANSITION_REGISTRY_COLUMNS = [
 REVIEWED_SOURCE_TRANSITION_STATUSES = frozenset(
     {"reconciled", "reviewed_compatible", "resolved_with_caveat"}
 )
+SOURCE_TRANSITION_NO_ADJUSTMENT_METHOD = "no_adjustment_required"
+VALIDATED_EXPORT_PARTNER_GROUP = "world_total"
+VALIDATED_EXPORT_ESTIMATE_STATUS = "mapped_observed_product_rows"
+VALIDATED_EXPORT_SOURCE_QUALITY = "product_level_trade_with_registered_industry_mapping"
+SECTORAL_OUTPUT_GROWTH_PANEL_COLUMNS = [
+    "sector_code",
+    "year",
+    "source_id",
+    "output_growth",
+    "current_source_id",
+    "lag_source_id",
+    "source_transition_status",
+    "source_transition_id",
+    "growth_method",
+]
 
 
 def build_empirical_prerequisite_status(root: Path | None = None) -> pd.DataFrame:
@@ -274,6 +290,12 @@ def load_sectoral_output_source_transition_registry_or_empty(root: Path) -> pd.D
     if not existing.empty and required_columns.issubset(existing.columns):
         return existing
     return empty_sectoral_output_source_transition_registry()
+
+
+def build_sectoral_output_growth_panel(root: Path) -> pd.DataFrame:
+    """Return materialised reviewed sectoral output-growth observations with lineage."""
+
+    return _reviewed_output_growth_panel(root)
 
 
 def build_empirical_readiness_audit(root: Path) -> pd.DataFrame:
@@ -623,6 +645,12 @@ def empty_sectoral_output_source_transition_registry() -> pd.DataFrame:
     return pd.DataFrame(columns=SECTORAL_OUTPUT_SOURCE_TRANSITION_REGISTRY_COLUMNS)
 
 
+def empty_sectoral_output_growth_panel() -> pd.DataFrame:
+    """Return a schema-stable reviewed sectoral-output-growth scaffold."""
+
+    return pd.DataFrame(columns=SECTORAL_OUTPUT_GROWTH_PANEL_COLUMNS)
+
+
 def empty_diagnostics() -> pd.DataFrame:
     """Return schema-stable diagnostics showing models are not fit yet."""
 
@@ -859,7 +887,7 @@ def _sectoral_output_source_registry(root: Path) -> dict[str, object]:
             0,
             "sectoral output source registry is missing or empty",
         )
-    reviewed = _reviewed_source_registry(registry)
+    reviewed = _reviewed_source_registry(root, registry)
     return _record(
         "sectoral_output_source_registry",
         1,
@@ -926,7 +954,7 @@ def _output_growth_coverage(root: Path) -> dict[str, object]:
             0,
             "sectoral output panel is missing or empty",
         )
-    reviewed_growth = _reviewed_output_growth_panel(root)
+    reviewed_growth = _sectoral_output_growth_panel(root)
     available = _non_null_sector_year_observations(reviewed_growth, ["output_growth"])
     return _record(
         "output_growth_coverage",
@@ -969,7 +997,7 @@ def _outcome_source_provenance(root: Path) -> dict[str, object]:
             0,
             "sectoral output panel is missing or empty",
         )
-    reviewed = _reviewed_output_growth_panel(root)
+    reviewed = _sectoral_output_growth_panel(root)
     values = pd.to_numeric(reviewed.get("output_growth", pd.Series(dtype=object)), errors="coerce")
     observed = reviewed.loc[values.notna()].copy()
     if observed.empty:
@@ -1733,7 +1761,7 @@ def _complete_design_matrix(root: Path) -> pd.DataFrame:
     ].copy()
     complete = complete.loc[complete["year"].isin(set(_growth_sample_years(root)))].copy()
     complete["year"] = complete["year"].astype(int)
-    outcome = _reviewed_output_growth_panel(root)
+    outcome = _sectoral_output_growth_panel(root)
     if outcome.empty:
         return pd.DataFrame()
     merged = complete.merge(
@@ -1774,6 +1802,21 @@ def _complete_model_design_matrix(root: Path, *, required_outcome: str) -> pd.Da
     joined["outcome_variable"] = "sectoral_export_growth"
     joined["dependent_variable_value"] = joined["sectoral_export_growth"]
     return joined
+
+
+def _sectoral_output_growth_panel(root: Path) -> pd.DataFrame:
+    path = root / "data/processed/live/sectoral_output_growth_panel.csv"
+    existing = _read_csv(path)
+    if not existing.empty and set(SECTORAL_OUTPUT_GROWTH_PANEL_COLUMNS).issubset(existing.columns):
+        output = existing[SECTORAL_OUTPUT_GROWTH_PANEL_COLUMNS].copy()
+        output["year"] = pd.to_numeric(output["year"], errors="coerce")
+        output["output_growth"] = pd.to_numeric(output["output_growth"], errors="coerce")
+        output = output.loc[output["year"].notna() & output["output_growth"].notna()].copy()
+        if output.empty:
+            return empty_sectoral_output_growth_panel()
+        output["year"] = output["year"].astype(int)
+        return output
+    return _reviewed_output_growth_panel(root)
 
 
 def _residual_exposure_rank(design: pd.DataFrame) -> int:
@@ -1879,7 +1922,7 @@ def _sectoral_output_source_transition_registry_frame(root: Path) -> pd.DataFram
     ].copy()
 
 
-def _reviewed_source_registry(registry: pd.DataFrame) -> pd.DataFrame:
+def _reviewed_source_registry(root: Path, registry: pd.DataFrame) -> pd.DataFrame:
     if registry.empty:
         return pd.DataFrame(columns=SECTORAL_OUTPUT_SOURCE_REGISTRY_COLUMNS)
     reviewed = registry.copy()
@@ -1903,6 +1946,7 @@ def _reviewed_source_registry(registry: pd.DataFrame) -> pd.DataFrame:
     valid &= reviewed["licence_status"].str.lower().isin(RESOLVED_LICENCE_STATUSES)
     valid &= pd.to_datetime(reviewed["retrieval_date"], errors="coerce").notna()
     valid &= reviewed["years"].map(lambda value: bool(_parse_year_scope(str(value))))
+    valid &= reviewed.apply(lambda row: _source_location_checksum_valid(root, row), axis=1)
     return reviewed.loc[valid].copy()
 
 
@@ -1911,7 +1955,7 @@ def _reviewed_output_panel(root: Path, panel: pd.DataFrame) -> pd.DataFrame:
         panel.columns
     ):
         return pd.DataFrame(columns=panel.columns)
-    registry = _reviewed_source_registry(_sectoral_output_source_registry_frame(root))
+    registry = _reviewed_source_registry(root, _sectoral_output_source_registry_frame(root))
     if registry.empty:
         return pd.DataFrame(columns=panel.columns)
     reviewed = panel.copy()
@@ -1949,7 +1993,7 @@ def _reviewed_output_growth_panel(root: Path) -> pd.DataFrame:
     panel = _reviewed_output_panel(root, _sectoral_output_panel(root))
     required_columns = {"sector_code", "year", "source_id", DEPENDENT_VARIABLE_SOURCE_COLUMN}
     if panel.empty or not required_columns.issubset(panel.columns):
-        return pd.DataFrame()
+        return empty_sectoral_output_growth_panel()
     values = pd.to_numeric(panel[DEPENDENT_VARIABLE_SOURCE_COLUMN], errors="coerce")
     derived = _derived_output_growth_frame(root, panel)
     metadata_mask = _complete_output_metadata_mask(panel)
@@ -1959,6 +2003,8 @@ def _reviewed_output_growth_panel(root: Path) -> pd.DataFrame:
         "source_id",
         "current_source_id",
         "lag_source_id",
+        "source_transition_status",
+        "source_transition_id",
         DEPENDENT_VARIABLE_SOURCE_COLUMN,
     ]
     growth_consistent = (
@@ -1976,6 +2022,8 @@ def _reviewed_output_growth_panel(root: Path) -> pd.DataFrame:
     panel = panel.copy()
     panel["current_source_id"] = derived["current_source_id"]
     panel["lag_source_id"] = derived["lag_source_id"]
+    panel["source_transition_status"] = derived["source_transition_status"]
+    panel["source_transition_id"] = derived["source_transition_id"]
     output = panel.loc[
         growth_consistent & metadata_mask & panel["year"].isin(_growth_sample_years(root)),
         output_columns,
@@ -1983,7 +2031,12 @@ def _reviewed_output_growth_panel(root: Path) -> pd.DataFrame:
     output[DEPENDENT_VARIABLE_SOURCE_COLUMN] = pd.to_numeric(
         output[DEPENDENT_VARIABLE_SOURCE_COLUMN], errors="coerce"
     )
-    return output.drop_duplicates(subset=["sector_code", "year", "source_id"])
+    if output.empty:
+        return empty_sectoral_output_growth_panel()
+    output["growth_method"] = OUTPUT_GROWTH_METHOD
+    return output[SECTORAL_OUTPUT_GROWTH_PANEL_COLUMNS].drop_duplicates(
+        subset=["sector_code", "year", "source_id"]
+    )
 
 
 def _complete_output_metadata_mask(panel: pd.DataFrame) -> pd.Series:
@@ -2033,7 +2086,49 @@ def _complete_output_metadata_mask(panel: pd.DataFrame) -> pd.Series:
         .str.strip()
         .eq(panel["sector_code"].astype("string").fillna("").str.strip())
     )
+    mask &= _real_output_method_consistency_mask(panel)
     return mask
+
+
+def _real_output_method_consistency_mask(panel: pd.DataFrame) -> pd.Series:
+    real_output = pd.to_numeric(panel.get("real_output", pd.Series(dtype=object)), errors="coerce")
+    nominal_output = pd.to_numeric(
+        panel.get("nominal_output", pd.Series(dtype=object)),
+        errors="coerce",
+    )
+    deflator = pd.to_numeric(panel.get("deflator", pd.Series(dtype=object)), errors="coerce")
+    method = panel["real_output_method"].astype("string").fillna("").str.strip()
+    unit = panel["unit"].astype("string").fillna("").str.strip().str.lower()
+    price_basis = panel["price_basis"].astype("string").fillna("").str.strip().str.lower()
+    deflator_base = panel["deflator_base"].astype("string").fillna("").str.strip().str.lower()
+    valid = pd.Series(False, index=panel.index)
+    positive_real = real_output.gt(0)
+    source_reported = method.eq("source_reported_real")
+    valid |= source_reported & positive_real & price_basis.str.contains("real", regex=False)
+    deflated = method.eq("deflated_nominal")
+    normalised_deflator = deflator.copy()
+    base_100 = deflator_base.str.contains("=100", regex=False)
+    normalised_deflator.loc[base_100] = normalised_deflator.loc[base_100] / 100.0
+    expected_real = nominal_output / normalised_deflator
+    valid |= (
+        deflated
+        & nominal_output.gt(0)
+        & normalised_deflator.gt(0)
+        & positive_real
+        & np.isclose(real_output, expected_real, rtol=1e-9, atol=1e-9, equal_nan=False)
+    )
+    linked_index = method.eq("linked_volume_index")
+    valid |= linked_index & positive_real & unit.str.contains("index", regex=False)
+    chain_linked = method.eq("chain_linked")
+    valid |= (
+        chain_linked
+        & positive_real
+        & price_basis.str.contains("real", regex=False)
+        & (unit.str.contains("index", regex=False) | unit.str.contains("volume", regex=False))
+    )
+    external = method.eq("harmonised_external_series")
+    valid |= external & positive_real & price_basis.str.contains("real", regex=False)
+    return valid
 
 
 def _parse_year_scope(value: str) -> set[int]:
@@ -2061,15 +2156,49 @@ def _year_in_scope(year: object, scope: str) -> bool:
     return int(numeric_year) in _parse_year_scope(scope)
 
 
+def _source_location_checksum_valid(root: Path, row: pd.Series) -> bool:
+    location = str(row.get("source_file_or_url", "")).strip()
+    checksum = str(row.get("checksum_if_local", "")).strip().lower()
+    if not location:
+        return False
+    if _external_source_location(location):
+        return checksum == "not_applicable" or bool(re.fullmatch(r"[a-f0-9]{64}", checksum))
+    if not re.fullmatch(r"[a-f0-9]{64}", checksum):
+        return False
+    source_path = root / location
+    if not source_path.is_file():
+        return False
+    return sha256_file(source_path).lower() == checksum
+
+
+def _external_source_location(location: str) -> bool:
+    lowered = location.lower()
+    return bool(re.match(r"^[a-z][a-z0-9+.-]*://", lowered)) or lowered.startswith(("doi:", "urn:"))
+
+
 def _reviewed_source_transition_mask(
     root: Path,
     working: pd.DataFrame,
     previous_source: pd.Series,
 ) -> pd.Series:
-    mask = pd.Series(False, index=working.index)
+    return _reviewed_source_transition_details(root, working, previous_source)["transition_ok"]
+
+
+def _reviewed_source_transition_details(
+    root: Path,
+    working: pd.DataFrame,
+    previous_source: pd.Series,
+) -> pd.DataFrame:
+    details = pd.DataFrame(
+        {
+            "transition_ok": pd.Series(False, index=working.index, dtype="boolean"),
+            "source_transition_status": pd.Series("", index=working.index, dtype="string"),
+            "source_transition_id": pd.Series("", index=working.index, dtype="string"),
+        }
+    )
     registry = _reviewed_source_transition_registry(root)
     if registry.empty:
-        return mask
+        return details
     current = pd.DataFrame(
         {
             "index": working.index,
@@ -2085,7 +2214,7 @@ def _reviewed_source_transition_mask(
         & current["transition_year"].notna()
     ].copy()
     if current.empty:
-        return mask
+        return details
     current["transition_year"] = current["transition_year"].astype(int)
     matched = current.merge(
         registry,
@@ -2094,8 +2223,20 @@ def _reviewed_source_transition_mask(
         validate="many_to_many",
     )
     if not matched.empty:
-        mask.loc[matched["index"]] = True
-    return mask
+        details.loc[matched["index"], "transition_ok"] = True
+        details.loc[matched["index"], "source_transition_status"] = (
+            matched["status"].astype("string").fillna("").str.strip().to_numpy()
+        )
+        details.loc[matched["index"], "source_transition_id"] = (
+            matched["from_source_id"].astype(str)
+            + "->"
+            + matched["to_source_id"].astype(str)
+            + ":"
+            + matched["sector_code"].astype(str)
+            + ":"
+            + matched["transition_year"].astype(str)
+        ).to_numpy()
+    return details
 
 
 def _reviewed_source_transition_registry(root: Path) -> pd.DataFrame:
@@ -2109,6 +2250,7 @@ def _reviewed_source_transition_registry(root: Path) -> pd.DataFrame:
         values = reviewed[column].astype("string").fillna("").str.strip()
         valid &= values.ne("") & ~values.str.lower().isin(PLACEHOLDER_METADATA_VALUES)
         reviewed[column] = values
+    valid &= reviewed["level_link_method"].str.lower().eq(SOURCE_TRANSITION_NO_ADJUSTMENT_METHOD)
     for column in [
         "unit_consistent",
         "classification_consistent",
@@ -2144,6 +2286,8 @@ def _derived_output_growth_frame(root: Path, panel: pd.DataFrame) -> pd.DataFram
             "current_source_id": pd.Series("", index=panel.index, dtype="string"),
             "lag_source_id": pd.Series("", index=panel.index, dtype="string"),
             "source_transition_comparable": pd.Series(False, index=panel.index, dtype="boolean"),
+            "source_transition_status": pd.Series("", index=panel.index, dtype="string"),
+            "source_transition_id": pd.Series("", index=panel.index, dtype="string"),
         }
     )
     required_columns = {
@@ -2179,7 +2323,8 @@ def _derived_output_growth_frame(root: Path, panel: pd.DataFrame) -> pd.DataFram
             previous_text = previous_values.astype("string").fillna("").str.strip()
             continuity &= current_text.ne("") & current_text.eq(previous_text)
     same_source = working["source_id"].eq(previous_source.astype("string").fillna("").str.strip())
-    transition_ok = _reviewed_source_transition_mask(root, working, previous_source)
+    transition_details = _reviewed_source_transition_details(root, working, previous_source)
+    transition_ok = transition_details["transition_ok"]
     comparable = continuity & (same_source | transition_ok)
     valid = (
         working["real_output"].gt(0)
@@ -2191,6 +2336,14 @@ def _derived_output_growth_frame(root: Path, panel: pd.DataFrame) -> pd.DataFram
     output.loc[working.index, "current_source_id"] = working["source_id"]
     output.loc[working.index, "lag_source_id"] = previous_source.astype("string").fillna("")
     output.loc[working.index, "source_transition_comparable"] = comparable.astype(bool)
+    output.loc[working.index[same_source.fillna(False)], "source_transition_status"] = "same_source"
+    output.loc[working.index, "source_transition_status"] = output.loc[
+        working.index, "source_transition_status"
+    ].mask(
+        transition_ok.astype(bool),
+        transition_details["source_transition_status"],
+    )
+    output.loc[working.index, "source_transition_id"] = transition_details["source_transition_id"]
     output.loc[working.index[valid], "derived_output_growth"] = np.log(
         working.loc[valid, "real_output"]
     ) - np.log(previous.loc[valid])
@@ -2198,17 +2351,36 @@ def _derived_output_growth_frame(root: Path, panel: pd.DataFrame) -> pd.DataFram
 
 
 def _derived_export_growth_panel(exports: pd.DataFrame) -> pd.DataFrame:
-    if exports.empty or not {"sector_code", "year", "trade_value_usd"}.issubset(exports.columns):
+    required_columns = {
+        "sector_code",
+        "year",
+        "trade_value_usd",
+        "source_classification",
+        "mapping_scope",
+        "mapping_version",
+    }
+    if exports.empty or not required_columns.issubset(exports.columns):
         return pd.DataFrame(columns=["sector_code", "year", "sectoral_export_growth"])
     grouped = exports.copy()
     grouped["trade_value_usd"] = pd.to_numeric(grouped["trade_value_usd"], errors="coerce")
     grouped = (
-        grouped.groupby(["sector_code", "year"], as_index=False, dropna=False).agg(
-            trade_value_usd=("trade_value_usd", "sum")
-        )
-    ).sort_values(["sector_code", "year"])
-    previous = grouped.groupby("sector_code", dropna=False)["trade_value_usd"].shift(1)
-    previous_year = grouped.groupby("sector_code", dropna=False)["year"].shift(1)
+        grouped.groupby(
+            [
+                "sector_code",
+                "year",
+                "source_classification",
+                "mapping_scope",
+                "mapping_version",
+            ],
+            as_index=False,
+            dropna=False,
+        ).agg(trade_value_usd=("trade_value_usd", "sum"))
+    ).sort_values(
+        ["sector_code", "source_classification", "mapping_scope", "mapping_version", "year"]
+    )
+    group_columns = ["sector_code", "source_classification", "mapping_scope", "mapping_version"]
+    previous = grouped.groupby(group_columns, dropna=False)["trade_value_usd"].shift(1)
+    previous_year = grouped.groupby(group_columns, dropna=False)["year"].shift(1)
     valid = (
         grouped["trade_value_usd"].gt(0)
         & previous.gt(0)
@@ -2224,11 +2396,35 @@ def _derived_export_growth_panel(exports: pd.DataFrame) -> pd.DataFrame:
 
 def _reviewed_export_growth_panel(root: Path) -> pd.DataFrame:
     panel = _industry_trade_panel(root)
-    if panel.empty or not {"flow_code", "target_industry_code", "trade_value_usd"}.issubset(
-        panel.columns
-    ):
+    required_columns = {
+        "flow_code",
+        "target_industry_code",
+        "trade_value_usd",
+        "partner_group",
+        "source_classification",
+        "mapping_scope",
+        "mapping_version",
+        "coverage_ratio",
+        "estimate_status",
+        "source_quality",
+    }
+    if panel.empty or not required_columns.issubset(panel.columns):
         return pd.DataFrame(columns=["sector_code", "year", "sectoral_export_growth"])
-    exports = panel.loc[panel["flow_code"].astype(str).eq("X")].copy()
+    coverage = pd.to_numeric(panel["coverage_ratio"], errors="coerce")
+    exports = panel.loc[
+        panel["flow_code"].astype(str).eq("X")
+        & panel["partner_group"].astype(str).eq(VALIDATED_EXPORT_PARTNER_GROUP)
+        & panel["estimate_status"].astype(str).eq(VALIDATED_EXPORT_ESTIMATE_STATUS)
+        & panel["source_quality"].astype(str).eq(VALIDATED_EXPORT_SOURCE_QUALITY)
+        & coverage.eq(1.0)
+    ].copy()
+    if exports.empty:
+        return pd.DataFrame(columns=["sector_code", "year", "sectoral_export_growth"])
+    mapping_regimes = exports[
+        ["source_classification", "mapping_scope", "mapping_version"]
+    ].drop_duplicates()
+    if len(mapping_regimes) != 1:
+        return pd.DataFrame(columns=["sector_code", "year", "sectoral_export_growth"])
     exports["sector_code"] = exports["target_industry_code"].astype("string").fillna("").str.strip()
     export_growth = _derived_export_growth_panel(exports)
     return export_growth.loc[export_growth["year"].isin(_growth_sample_years(root))].copy()

@@ -6,11 +6,13 @@ import numpy as np
 import pandas as pd
 
 from portugal_external_growth.empirical import (
+    _reviewed_export_growth_panel,
     build_empirical_prerequisite_status,
     build_empirical_readiness_audit,
     build_empirical_readiness_audit_notes,
     build_empirical_risk_notes,
     build_model_specification_registry,
+    build_sectoral_output_growth_panel,
     empty_coefficients,
     empty_design_matrix,
     empty_diagnostics,
@@ -18,6 +20,7 @@ from portugal_external_growth.empirical import (
     empty_sectoral_output_panel,
     load_empirical_design_matrix_or_empty,
 )
+from portugal_external_growth.io_utils import sha256_file
 
 
 def test_empirical_prerequisites_are_blocked_by_default() -> None:
@@ -732,7 +735,7 @@ def test_outcome_growth_blocks_unbridged_source_transitions(tmp_path: Path) -> N
                 "provider": "test_provider",
                 "dataset_table": "test_table",
                 "source_reference": f"test reference {source_id}",
-                "source_file_or_url": f"data/raw/live/sectoral_output/{source_id}.csv",
+                "source_file_or_url": f"https://example.test/{source_id}.csv",
                 "retrieval_date": "2026-08-10",
                 "checksum_if_local": "not_applicable",
                 "years": "1962-1973",
@@ -811,6 +814,79 @@ def test_outcome_growth_blocks_unbridged_source_transitions(tmp_path: Path) -> N
     assert dependent["status"] == "blocked"
 
 
+def test_outcome_growth_blocks_non_trivial_source_link_methods(tmp_path: Path) -> None:
+    processed = tmp_path / "data/processed/live"
+    interim = tmp_path / "data/interim/live"
+    registry = tmp_path / "data/raw/live/sectoral_output"
+    transitions = tmp_path / "results/diagnostics/sectoral_output"
+    processed.mkdir(parents=True)
+    interim.mkdir(parents=True)
+    registry.mkdir(parents=True)
+    transitions.mkdir(parents=True)
+    pd.DataFrame(
+        [
+            {
+                "source_id": source_id,
+                "provider": "test_provider",
+                "dataset_table": "test_table",
+                "source_reference": f"test reference {source_id}",
+                "source_file_or_url": f"https://example.test/{source_id}.csv",
+                "retrieval_date": "2026-08-10",
+                "checksum_if_local": "not_applicable",
+                "years": "1962-1973",
+                "classification": "source_sector_test",
+                "licence_status": "test_fixture",
+                "review_status": "reviewed",
+            }
+            for source_id in ["source_a", "source_b"]
+        ]
+    ).to_csv(registry / "source_registry.csv", index=False)
+    pd.DataFrame(
+        [
+            {
+                "from_source_id": "source_a",
+                "to_source_id": "source_b",
+                "sector_code": "sector_00",
+                "transition_year": 1963,
+                "unit_consistent": True,
+                "classification_consistent": True,
+                "price_basis_consistent": True,
+                "level_link_method": "ratio_linked",
+                "status": "reconciled",
+                "notes": "non-trivial link method is not implemented",
+            }
+        ]
+    ).to_csv(transitions / "source_transition_registry.csv", index=False)
+    growth = float(np.log(2.0))
+    pd.DataFrame(
+        [
+            {
+                "sector_code": "sector_00",
+                "year": 1963,
+                "outcome_variable": "sectoral_output_growth",
+                "dependent_variable_value": growth,
+                "dependent_variable_source_file": "data/processed/live/sectoral_output_panel.csv",
+                "dependent_variable_source_column": "output_growth",
+                "colonial_exposure": 0.2,
+                "european_exposure": 0.3,
+                "controls_available": True,
+                "source_id": "source_b",
+                "source_quality": "reviewed",
+            }
+        ]
+    ).to_csv(interim / "empirical_design_matrix.csv", index=False)
+    pd.DataFrame(
+        [
+            _sectoral_output_row("sector_00", 1962, 100.0, 0.0, source_id="source_a"),
+            _sectoral_output_row("sector_00", 1963, 200.0, growth, source_id="source_b"),
+        ]
+    ).to_csv(processed / "sectoral_output_panel.csv", index=False)
+
+    growth_panel = build_sectoral_output_growth_panel(tmp_path)
+
+    assert growth_panel.empty
+
+
 def test_outcome_readiness_controls_real_output_method(tmp_path: Path) -> None:
     interim = tmp_path / "data/interim/live"
     interim.mkdir(parents=True)
@@ -844,6 +920,42 @@ def test_outcome_readiness_controls_real_output_method(tmp_path: Path) -> None:
     dependent = audit.loc[audit["requirement"].eq("dependent_variable_coverage")].iloc[0]
     assert provenance["available"] == 0
     assert dependent["available"] == 0
+
+
+def test_outcome_readiness_checks_deflated_nominal_arithmetic(tmp_path: Path) -> None:
+    interim = tmp_path / "data/interim/live"
+    interim.mkdir(parents=True)
+    rows = [
+        {
+            "sector_code": f"sector_{sector:02d}",
+            "year": year,
+            "outcome_variable": "sectoral_output_growth",
+            "dependent_variable_value": sector * 0.01 + (year - 1962) * 0.02,
+            "dependent_variable_source_file": "data/processed/live/sectoral_output_panel.csv",
+            "dependent_variable_source_column": "output_growth",
+            "colonial_exposure": sector * 0.02 + (year - 1962) * 0.01,
+            "european_exposure": sector * 0.03 + (year - 1962) * 0.02,
+            "controls_available": True,
+            "source_id": "test_source",
+            "source_quality": "reviewed",
+        }
+        for sector in range(10)
+        for year in range(1962, 1974)
+    ]
+    pd.DataFrame(rows).to_csv(interim / "empirical_design_matrix.csv", index=False)
+    _write_reviewed_output_panel(tmp_path, rows)
+    output_path = tmp_path / "data/processed/live/sectoral_output_panel.csv"
+    output = pd.read_csv(output_path)
+    output["real_output_method"] = "deflated_nominal"
+    output["nominal_output"] = 1000.0
+    output["deflator"] = 999.0
+    output.to_csv(output_path, index=False)
+
+    audit = build_empirical_readiness_audit(tmp_path)
+
+    output_growth = audit.loc[audit["requirement"].eq("output_growth_coverage")].iloc[0]
+    assert output_growth["available"] == 0
+    assert output_growth["status"] == "blocked"
 
 
 def test_export_growth_models_require_joined_outcome_exposure_design(tmp_path: Path) -> None:
@@ -890,6 +1002,81 @@ def test_export_growth_models_require_joined_outcome_exposure_design(tmp_path: P
     assert "sectoral_export_growth model design has no joined outcome/exposure sector-years" in str(
         efta["blocking_requirements"]
     )
+
+
+def test_export_growth_uses_validated_world_total_rows_only(tmp_path: Path) -> None:
+    processed = tmp_path / "data/processed/live"
+    processed.mkdir(parents=True)
+    pd.DataFrame(
+        [
+            _industry_trade_row("sector_00", 1962, "world_total", 100.0),
+            _industry_trade_row("sector_00", 1962, "colonies", 50.0),
+            _industry_trade_row("sector_00", 1963, "world_total", 110.0),
+            _industry_trade_row("sector_00", 1963, "colonies", 100.0),
+        ]
+    ).to_csv(processed / "industry_trade_panel.csv", index=False)
+
+    export_growth = _reviewed_export_growth_panel(tmp_path)
+
+    observed = export_growth.loc[export_growth["year"].eq(1963), "sectoral_export_growth"].iloc[0]
+    assert np.isclose(observed, np.log(110.0) - np.log(100.0))
+
+
+def test_export_growth_rejects_unvalidated_industry_trade_rows(tmp_path: Path) -> None:
+    processed = tmp_path / "data/processed/live"
+    processed.mkdir(parents=True)
+    pd.DataFrame(
+        [
+            _industry_trade_row(
+                "sector_00",
+                1962,
+                "world_total",
+                100.0,
+                estimate_status="blocked",
+                source_quality="blocked",
+            ),
+            _industry_trade_row(
+                "sector_00",
+                1963,
+                "world_total",
+                110.0,
+                estimate_status="blocked",
+                source_quality="blocked",
+            ),
+        ]
+    ).to_csv(processed / "industry_trade_panel.csv", index=False)
+
+    export_growth = _reviewed_export_growth_panel(tmp_path)
+
+    assert export_growth.empty
+
+
+def test_source_registry_requires_matching_local_checksum(tmp_path: Path) -> None:
+    registry = tmp_path / "data/raw/live/sectoral_output"
+    registry.mkdir(parents=True)
+    pd.DataFrame(
+        [
+            {
+                "source_id": "test_source",
+                "provider": "test_provider",
+                "dataset_table": "test_table",
+                "source_reference": "test reference",
+                "source_file_or_url": "data/raw/live/sectoral_output/does-not-exist.csv",
+                "retrieval_date": "2026-08-10",
+                "checksum_if_local": "deadbeef",
+                "years": "1962-1973",
+                "classification": "source_sector_test",
+                "licence_status": "test_fixture",
+                "review_status": "reviewed",
+            }
+        ]
+    ).to_csv(registry / "source_registry.csv", index=False)
+
+    audit = build_empirical_readiness_audit(tmp_path)
+
+    registry_row = audit.loc[audit["requirement"].eq("sectoral_output_source_registry")].iloc[0]
+    assert registry_row["status"] == "blocked"
+    assert registry_row["available"] == 0
 
 
 def test_panel_sufficiency_rejects_sparse_sector_year_grid(tmp_path: Path) -> None:
@@ -1087,11 +1274,78 @@ def test_reconciliation_completeness_requires_unique_scopes(tmp_path: Path) -> N
     assert reconciliation["status"] == "blocked"
 
 
+def _sectoral_output_row(
+    sector_code: str,
+    year: int,
+    real_output: float,
+    output_growth: float,
+    *,
+    source_id: str = "test_source",
+) -> dict[str, object]:
+    return {
+        "sector_code": sector_code,
+        "year": year,
+        "source_classification": "source_sector_test",
+        "source_sector_code": sector_code.replace("sector_", "S"),
+        "harmonised_sector_code": sector_code,
+        "classification_version": "test_v1",
+        "mapping_version": "test_mapping_v1",
+        "nominal_output": real_output * 1.1,
+        "real_output": real_output,
+        "output_growth": output_growth,
+        "deflator": 1.0,
+        "unit": "index",
+        "currency": "PTE",
+        "price_basis": "real",
+        "deflator_base": "1962=1",
+        "classification_break_status": "harmonised",
+        "real_output_method": "source_reported_real",
+        "growth_method": "log_change",
+        "lag_definition": "previous_year",
+        "log_or_percent_change": "log_change",
+        "base_year": "1962",
+        "source_id": source_id,
+        "source_quality": "reviewed",
+    }
+
+
+def _industry_trade_row(
+    sector_code: str,
+    year: int,
+    partner_group: str,
+    trade_value_usd: float,
+    *,
+    estimate_status: str = "mapped_observed_product_rows",
+    source_quality: str = "product_level_trade_with_registered_industry_mapping",
+) -> dict[str, object]:
+    return {
+        "year": year,
+        "flow_code": "X",
+        "source_classification": "S1",
+        "mapping_scope": "broad",
+        "mapping_version": "test_v1",
+        "target_industry_code": sector_code,
+        "target_industry_group": "test_group",
+        "target_industry_label": sector_code,
+        "partner_group": partner_group,
+        "trade_value_usd": trade_value_usd,
+        "product_count": 1,
+        "mapping_weight": 1.0,
+        "coverage_count": 1,
+        "expected_count": 1,
+        "coverage_ratio": 1.0,
+        "estimate_status": estimate_status,
+        "source_quality": source_quality,
+    }
+
+
 def _write_reviewed_output_panel(tmp_path: Path, rows: list[dict[str, object]]) -> None:
     output = tmp_path / "data/processed/live"
     registry = tmp_path / "data/raw/live/sectoral_output"
     output.mkdir(parents=True, exist_ok=True)
     registry.mkdir(parents=True, exist_ok=True)
+    source_snapshot = registry / "test.csv"
+    source_snapshot.write_text("sectoral output fixture\n", encoding="utf-8")
     pd.DataFrame(
         [
             {
@@ -1101,7 +1355,7 @@ def _write_reviewed_output_panel(tmp_path: Path, rows: list[dict[str, object]]) 
                 "source_reference": "test reference",
                 "source_file_or_url": "data/raw/live/sectoral_output/test.csv",
                 "retrieval_date": "2026-08-10",
-                "checksum_if_local": "not_applicable",
+                "checksum_if_local": sha256_file(source_snapshot),
                 "years": "1962-1973",
                 "classification": "source_sector_test",
                 "licence_status": "test_fixture",

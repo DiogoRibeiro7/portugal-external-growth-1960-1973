@@ -30,6 +30,7 @@ from portugal_external_growth.empirical import (
     build_empirical_readiness_audit_notes,
     build_empirical_risk_notes,
     build_model_specification_registry,
+    build_sectoral_output_growth_panel,
     empty_coefficients,
     empty_diagnostics,
     empty_identification_strategy_review,
@@ -1524,6 +1525,32 @@ def prepare_empirical_extension(settings: Settings) -> None:
             "stage": "sectoral_output_panel_data_dictionary",
         },
     )
+    sectoral_output_growth = build_sectoral_output_growth_panel(root)
+    write_dataframe_with_metadata(
+        sectoral_output_growth,
+        root / "data/processed/live/sectoral_output_growth_panel.csv",
+        metadata={
+            "source_files": [
+                "data/raw/live/sectoral_output/source_registry.csv",
+                "results/diagnostics/sectoral_output/source_transition_registry.csv",
+                "data/processed/live/sectoral_output_panel.csv",
+            ],
+            "stage": "sectoral_output_growth_panel_reviewed_lineage"
+            if not sectoral_output_growth.empty
+            else "sectoral_output_growth_panel_pending_reviewed_lineage",
+        },
+    )
+    write_dataframe_with_metadata(
+        build_analytical_data_dictionary(
+            "data/processed/live/sectoral_output_growth_panel.csv",
+            sectoral_output_growth,
+        ),
+        root / "results/live/sectoral_output_growth_panel_data_dictionary.csv",
+        metadata={
+            "source_files": ["data/processed/live/sectoral_output_growth_panel.csv"],
+            "stage": "sectoral_output_growth_panel_data_dictionary",
+        },
+    )
     design = load_empirical_design_matrix_or_empty(root)
     write_dataframe_with_metadata(
         design,
@@ -1565,6 +1592,7 @@ def prepare_empirical_extension(settings: Settings) -> None:
                 "data/raw/live/sectoral_output/source_registry.csv",
                 "results/diagnostics/sectoral_output/source_transition_registry.csv",
                 "data/processed/live/sectoral_output_panel.csv",
+                "data/processed/live/sectoral_output_growth_panel.csv",
                 "data/processed/live/industry_trade_panel.csv",
                 "results/diagnostics/industry_exposure/industry_exposure_coverage.csv",
             ],
