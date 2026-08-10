@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
@@ -125,10 +126,22 @@ def write_dataframe_with_metadata(
 
 def _pipeline_metadata_root(csv_path: Path) -> Path:
     resolved = csv_path.resolve()
+    configured_root = os.getenv("PEG_ROOT")
+    if configured_root:
+        candidate = Path(configured_root).expanduser().resolve()
+        try:
+            resolved.relative_to(candidate)
+        except ValueError:
+            pass
+        else:
+            return candidate
+    for candidate in [resolved.parent, *resolved.parents]:
+        if (candidate / "pyproject.toml").exists() or (candidate / "config/project.yml").exists():
+            return candidate
     for marker in ("data", "results", "config", "prompts", "src", "tests", ".github"):
         if marker not in resolved.parts:
             continue
-        index = resolved.parts.index(marker)
+        index = len(resolved.parts) - 1 - list(reversed(resolved.parts)).index(marker)
         if index > 0:
             return Path(*resolved.parts[:index])
     return Path.cwd()

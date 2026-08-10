@@ -46,7 +46,7 @@ def test_empirical_readiness_audit_blocks_empty_repository(tmp_path: Path) -> No
     audit = build_empirical_readiness_audit(tmp_path)
     notes = build_empirical_readiness_audit_notes(audit)
 
-    assert len(audit) == 25
+    assert len(audit) == 26
     assert set(audit["status"]) == {"blocked"}
     assert audit.loc[audit["requirement"].eq("product_level_coverage"), "coverage"].iloc[0] == 0
     assert "No causal regressions" in notes
@@ -217,10 +217,13 @@ def test_empirical_readiness_audit_uses_available_artifacts(tmp_path: Path) -> N
     assert "within_year_cross_sectional_variation" in satisfied
     assert "fixed_effect_residual_design_rank" in satisfied
     assert "observation_parameter_ratio" in satisfied
+    assert "sector_year_uniqueness" in satisfied
     assert "sector_year_grid_coverage" in satisfied
     assert "minimum_sector_years_per_industry" in satisfied
     assert "residual_degrees_of_freedom" in satisfied
     assert "independent_cluster_count" in satisfied
+    residual_df = audit.loc[audit["requirement"].eq("residual_degrees_of_freedom")].iloc[0]
+    assert residual_df["available"] == 97
 
     blocked_model_registry = build_model_specification_registry(tmp_path)
     fixed_effects_blocked = blocked_model_registry.loc[
@@ -465,6 +468,86 @@ def test_panel_sufficiency_rejects_sparse_sector_year_grid(tmp_path: Path) -> No
     assert min_years["status"] == "blocked"
     assert residual_df["available"] < residual_df["required"]
     assert residual_df["status"] == "blocked"
+
+
+def test_empirical_readiness_rejects_complete_panel_outside_configured_years(
+    tmp_path: Path,
+) -> None:
+    processed = tmp_path / "data/processed/live"
+    interim = tmp_path / "data/interim/live"
+    processed.mkdir(parents=True)
+    interim.mkdir(parents=True)
+    wrong_years = range(1950, 1962)
+    sectors = [f"sector_{sector:02d}" for sector in range(10)]
+    pd.DataFrame(
+        [
+            {"target_industry_code": sector, "year": year}
+            for sector in sectors
+            for year in wrong_years
+        ]
+    ).to_csv(processed / "industry_trade_panel.csv", index=False)
+    pd.DataFrame(
+        [
+            {
+                "sector_code": sector,
+                "year": year,
+                "colonial_exposure": (
+                    sector_index * 0.02 + year_index * 0.01 + sector_index * year_index * 0.001
+                ),
+                "european_exposure": (
+                    sector_index * 0.03
+                    - year_index * 0.005
+                    + (sector_index**2) * year_index * 0.0001
+                ),
+                "controls_available": True,
+            }
+            for sector_index, sector in enumerate(sectors)
+            for year_index, year in enumerate(wrong_years)
+        ]
+    ).to_csv(interim / "empirical_design_matrix.csv", index=False)
+
+    audit = build_empirical_readiness_audit(tmp_path)
+
+    blocked = {
+        row["requirement"]: row
+        for row in audit.loc[audit["status"].eq("blocked")].to_dict(orient="records")
+    }
+    assert blocked["usable_years"]["available"] == 0
+    assert blocked["usable_industries"]["available"] == 0
+    assert blocked["identification_variables_available"]["available"] == 0
+    assert blocked["sector_year_grid_coverage"]["available"] == 0
+    assert blocked["residual_degrees_of_freedom"]["available"] == 0
+
+
+def test_empirical_readiness_rejects_duplicate_sector_year_observations(
+    tmp_path: Path,
+) -> None:
+    interim = tmp_path / "data/interim/live"
+    interim.mkdir(parents=True)
+    rows = [
+        {
+            "sector_code": f"sector_{sector:02d}",
+            "year": year,
+            "colonial_exposure": (
+                sector * 0.02 + (year - 1962) * 0.01 + sector * (year - 1962) * 0.001
+            ),
+            "european_exposure": (
+                sector * 0.03 - (year - 1962) * 0.005 + (sector**2) * (year - 1962) * 0.0001
+            ),
+            "controls_available": True,
+        }
+        for sector in range(10)
+        for year in range(1962, 1974)
+    ]
+    rows.append({**rows[0], "colonial_exposure": 0.99})
+    pd.DataFrame(rows).to_csv(interim / "empirical_design_matrix.csv", index=False)
+
+    audit = build_empirical_readiness_audit(tmp_path)
+
+    uniqueness = audit.loc[audit["requirement"].eq("sector_year_uniqueness")].iloc[0]
+    assert uniqueness["required"] == 1
+    assert uniqueness["available"] == 0
+    assert uniqueness["status"] == "blocked"
 
 
 def test_european_completeness_requires_fixed_partner_sample(tmp_path: Path) -> None:

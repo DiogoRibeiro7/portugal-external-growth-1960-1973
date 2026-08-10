@@ -11,6 +11,7 @@ from pytest import MonkeyPatch
 from portugal_external_growth.pipeline import (
     _apply_comtrade_snapshot_status,
     _local_comtrade_coverage_matrices,
+    _pipeline_metadata_root,
     _snapshot_partner_codes_by_coverage_request,
     bootstrap,
     build,
@@ -171,6 +172,18 @@ def test_bootstrap_metadata_uses_root_when_cwd_differs(
     assert metadata["input_artifacts"][0]["path"] == (
         "data/raw/bootstrap/world_bank_gdp_growth_portugal_1961_1973.csv"
     )
+
+
+def test_pipeline_metadata_root_uses_project_sentinel_before_path_markers(
+    tmp_path: Path,
+) -> None:
+    repo = tmp_path / "data/repo"
+    target = repo / "data/interim/a.csv"
+    target.parent.mkdir(parents=True)
+    (repo / "pyproject.toml").write_text("[project]\nname = 'test'\n", encoding="utf-8")
+    target.write_text("value\n1\n", encoding="utf-8")
+
+    assert _pipeline_metadata_root(target) == repo.resolve()
 
 
 def test_extract_comtrade_products_requires_subscription_key(tmp_path: Path) -> None:

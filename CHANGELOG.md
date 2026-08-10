@@ -11,6 +11,7 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
 - Model readiness now depends on high-level empirical prerequisites before model-specific extras.
 - Empirical panel sufficiency now checks sector-year grid coverage, minimum years per sector, and
   residual degrees of freedom.
+- Empirical readiness now checks that sector-year observations are unique.
 - Pipeline metadata writes now preserve repository-relative provenance when run from a different
   current working directory.
 
@@ -18,6 +19,12 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
 
 - Candidate model readiness can no longer bypass the identification-strategy review, territorial
   consistency, or cross-source reconciliation gates.
+- Empirical readiness now enforces the exact configured sample-year set for design matrices and
+  industry panels.
+- Fixed-effect observation and residual-degree gates now use the actual sector-year model-matrix
+  rank instead of an approximate parameter-count formula.
+- Pipeline metadata root detection now prefers project sentinels before generic path markers such
+  as `data` or `results`.
 
 ## [0.1.6] - 2026-08-09
 

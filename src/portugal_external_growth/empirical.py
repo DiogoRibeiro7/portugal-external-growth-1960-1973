@@ -49,6 +49,7 @@ PREREQUISITE_AUDIT_REQUIREMENTS = {
         "within_year_cross_sectional_variation",
         "fixed_effect_residual_design_rank",
         "observation_parameter_ratio",
+        "sector_year_uniqueness",
         "sector_year_grid_coverage",
         "minimum_sector_years_per_industry",
         "residual_degrees_of_freedom",
@@ -145,6 +146,7 @@ def build_empirical_readiness_audit(root: Path) -> pd.DataFrame:
         _within_year_cross_sectional_variation(root),
         _fixed_effect_residual_design_rank(root),
         _observation_parameter_ratio(root),
+        _sector_year_uniqueness(root),
         _sector_year_grid_coverage(root),
         _minimum_sector_years_per_industry(root),
         _residual_degrees_of_freedom(root),
@@ -673,7 +675,7 @@ def _commodity_price_control_availability(root: Path) -> dict[str, object]:
 
 
 def _usable_industries(root: Path) -> dict[str, object]:
-    panel = _read_csv(root / "data/processed/live/industry_trade_panel.csv")
+    panel = _industry_trade_panel(root)
     if panel.empty:
         return _record(
             "usable_industries",
@@ -691,16 +693,17 @@ def _usable_industries(root: Path) -> dict[str, object]:
 
 
 def _usable_years(root: Path) -> dict[str, object]:
-    panel = _read_csv(root / "data/processed/live/industry_trade_panel.csv")
+    panel = _industry_trade_panel(root)
+    required_years = set(_trade_sample_years(root))
     if panel.empty:
-        return _record("usable_years", 12, 0, "industry trade panel is empty")
-    available = int(panel.get("year", pd.Series(dtype=object)).nunique())
-    required = len(_trade_sample_years(root))
+        return _record("usable_years", len(required_years), 0, "industry trade panel is empty")
+    available_years = set(pd.to_numeric(panel["year"], errors="coerce").dropna().astype(int))
+    available = len(required_years & available_years)
     return _record(
         "usable_years",
-        required,
+        len(required_years),
         available,
-        "insufficient usable industry-panel years",
+        "industry trade panel does not cover every configured sample year",
     )
 
 
@@ -901,6 +904,24 @@ def _observation_parameter_ratio(root: Path) -> dict[str, object]:
     )
 
 
+def _sector_year_uniqueness(root: Path) -> dict[str, object]:
+    design = _complete_design_matrix(root)
+    if design.empty:
+        return _record(
+            "sector_year_uniqueness",
+            1,
+            0,
+            "empirical design matrix is empty or lacks sector/year exposure controls",
+        )
+    duplicate_count = int(design.duplicated(subset=["sector_code", "year"], keep=False).sum())
+    return _record(
+        "sector_year_uniqueness",
+        1,
+        int(duplicate_count == 0),
+        "empirical design matrix contains duplicate sector-year observations",
+    )
+
+
 def _sector_year_grid_coverage(root: Path) -> dict[str, object]:
     design = _complete_design_matrix(root)
     sample_years = _trade_sample_years(root)
@@ -999,6 +1020,8 @@ def _complete_design_matrix(root: Path) -> pd.DataFrame:
         & complete["colonial_exposure"].notna()
         & complete["european_exposure"].notna()
     ].copy()
+    complete = complete.loc[complete["year"].isin(set(_trade_sample_years(root)))].copy()
+    complete["year"] = complete["year"].astype(int)
     return complete
 
 
@@ -1015,9 +1038,13 @@ def _residual_exposure_rank(design: pd.DataFrame) -> int:
 
 
 def _fixed_effect_parameter_count(design: pd.DataFrame) -> int:
-    sector_count = int(design["sector_code"].nunique())
-    year_count = int(design["year"].nunique())
-    return 2 + max(sector_count - 1, 0) + max(year_count - 1, 0)
+    if design.empty:
+        return 0
+    exposure = design[["colonial_exposure", "european_exposure"]].astype(float).to_numpy()
+    sectors = pd.get_dummies(design["sector_code"].astype(str), drop_first=False, dtype=float)
+    years = pd.get_dummies(design["year"].astype(int).astype(str), drop_first=False, dtype=float)
+    model = np.column_stack([sectors.to_numpy(dtype=float), years.to_numpy(dtype=float), exposure])
+    return int(np.linalg.matrix_rank(model))
 
 
 def _design_sector_count(design: pd.DataFrame) -> int:
@@ -1033,6 +1060,17 @@ def _available_year_flow_pairs(frame: pd.DataFrame, *, root: Path) -> int:
         ["year", "flow_code"],
     ]
     return int(pairs.drop_duplicates().shape[0])
+
+
+def _industry_trade_panel(root: Path) -> pd.DataFrame:
+    panel = _read_csv(root / "data/processed/live/industry_trade_panel.csv")
+    if panel.empty or "year" not in panel.columns:
+        return pd.DataFrame()
+    sample = panel.copy()
+    sample["year"] = pd.to_numeric(sample["year"], errors="coerce")
+    sample = sample.loc[sample["year"].isin(set(_trade_sample_years(root)))].copy()
+    sample["year"] = sample["year"].astype(int)
+    return sample
 
 
 def _trade_sample_years(root: Path) -> tuple[int, ...]:

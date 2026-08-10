@@ -9,7 +9,7 @@
     "archive_path",
     "archive_sha256"
   ],
-  "creation_timestamp_utc": "2026-08-10T10:32:55+01:00",
+  "creation_timestamp_utc": "2026-08-10T10:36:41+01:00",
   "date_range": null,
   "file": "results/releases/current/release_readiness_declaration.csv",
   "input_artifacts": [
@@ -19,7 +19,7 @@
     },
     {
       "path": "results/live/empirical_readiness_audit.csv",
-      "sha256": "49b4c49fe7ad8d4e2ee4719e5758770febc5cb26f751220a370785bba03ae061"
+      "sha256": "7af368f40a1f4d6298be6c6bcc1923da19bce4c98b07e6900b57b353be407202"
     }
   ],
   "rows": 1,
@@ -32,7 +32,7 @@
     "source_commit": "object",
     "source_commit_timestamp_utc": "object"
   },
-  "sha256": "7fd159749ec8c2f43ad26e071332322879a86493f73eb14cc5e57c73b8938bc2",
+  "sha256": "4fc3fe8b4e3b74da158b81a494a8fb1c768c26cd78afd2fc30e0a0fceabe15a4",
   "source_files": [
     "results/validation/research_readiness_report.csv",
     "results/live/empirical_readiness_audit.csv"
