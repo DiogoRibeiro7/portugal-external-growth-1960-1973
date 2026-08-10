@@ -4,13 +4,14 @@ colonial_partner_completeness,24,8.0,0.3333333333333333,blocked,complete source-
 european_partner_completeness,24,0.0,0.0,blocked,fixed European partner-sample coverage is incomplete
 product_level_coverage,1,0.0,0.0,blocked,COMTRADE_SUBSCRIPTION_KEY_missing;commodity_code_batches_not_registered
 product_to_industry_mapping_coverage,1,0.0,0.0,blocked,product_extraction_status_blocked;product_industry_mapping_coverage_zero;product_industry_mapping_not_registered;product_level_trade_not_validated
+sectoral_output_source_registry,1,0.0,0.0,blocked,sectoral output source registry is missing or empty
 sectoral_output_source_coverage,96,0.0,0.0,blocked,sectoral output panel is missing or empty
 real_output_coverage,96,0.0,0.0,blocked,sectoral output panel is missing or empty
-output_growth_coverage,96,0.0,0.0,blocked,sectoral output panel is missing or empty
+output_growth_coverage,88,0.0,0.0,blocked,sectoral output panel is missing or empty
 price_deflator_coverage,96,0.0,0.0,blocked,sectoral output panel is missing or empty
-outcome_source_provenance,96,0.0,0.0,blocked,sectoral output panel is missing or empty
-outcome_definition_consistency,96,0.0,0.0,blocked,empirical design matrix is not linked to reviewed sectoral output growth
-sectoral_export_growth_coverage,96,0.0,0.0,blocked,industry trade panel is empty
+outcome_source_provenance,88,0.0,0.0,blocked,sectoral output panel is missing or empty
+outcome_definition_consistency,88,0.0,0.0,blocked,empirical design matrix is not linked to reviewed sectoral output growth
+sectoral_export_growth_coverage,88,0.0,0.0,blocked,industry trade panel is empty
 territorial_consistency,24,0.0,0.0,blocked,Comtrade reporter/partner territorial definitions remain unresolved
 cross_source_reconciliation,4,1.0,0.25,blocked,"INE-Comtrade, CEPII, EFTA, and OECD reconciliation scopes are not all resolved"
 efta_policy_tariff_data_availability,1,0.0,0.0,blocked,classification_breaks_documented=product classification coverage diagnostics missing or empty;product mapping status is blocked;source-grounded product classification mapping is not registered;classification documentation is missing or blocked;efta_policy_product_mapping_not_registered;efta_policy_sources_not_acquired;efta_tariff_policy_rows_not_registered;empirical_readiness_audit_blocks_efta_policy_dataset;identification_variables_available=empirical design matrix is empty or lacks sector/year exposure controls;product_level_coverage=COMTRADE_SUBSCRIPTION_KEY_missing;commodity_code_batches_not_registered;product_to_industry_mapping_coverage=product_extraction_status_blocked;product_industry_mapping_coverage_zero;product_industry_mapping_not_registered;product_level_trade_not_validated;usable_industries=industry trade panel is empty;usable_years=industry trade panel is empty
@@ -18,16 +19,17 @@ external_demand_shifter_availability,1,0.0,0.0,blocked,external demand shifters 
 commodity_price_control_availability,1,0.0,0.0,blocked,commodity price controls are not registered
 usable_industries,10,0.0,0.0,blocked,industry trade panel is empty
 usable_years,12,0.0,0.0,blocked,industry trade panel is empty
+usable_growth_years,11,0.0,0.0,blocked,industry trade panel is empty
 missingness_structure_documented,1,0.0,0.0,blocked,missingness structure remains dominated by blocked product/industry data
 classification_breaks_documented,1,0.0,0.0,blocked,product classification coverage diagnostics missing or empty;product mapping status is blocked;source-grounded product classification mapping is not registered;classification documentation is missing or blocked
-dependent_variable_coverage,96,0.0,0.0,blocked,empirical design matrix is empty or lacks numeric dependent-variable values
+dependent_variable_coverage,88,0.0,0.0,blocked,empirical design matrix is empty or lacks numeric dependent-variable values
 identification_variables_available,1,0.0,0.0,blocked,empirical design matrix is empty or lacks sector/year exposure controls
 within_sector_exposure_variation,10,0.0,0.0,blocked,empirical design matrix is empty or lacks sector/year exposure controls
-within_year_cross_sectional_variation,12,0.0,0.0,blocked,empirical design matrix is empty or lacks sector/year exposure controls
+within_year_cross_sectional_variation,11,0.0,0.0,blocked,empirical design matrix is empty or lacks sector/year exposure controls
 fixed_effect_residual_design_rank,2,0.0,0.0,blocked,empirical design matrix is empty or lacks sector/year exposure controls
 observation_parameter_ratio,1,0.0,0.0,blocked,empirical design matrix is empty or lacks sector/year exposure controls
 sector_year_uniqueness,1,0.0,0.0,blocked,empirical design matrix is empty or lacks sector/year exposure controls
-sector_year_grid_coverage,96,0.0,0.0,blocked,empirical design matrix is empty or lacks sector/year exposure controls
+sector_year_grid_coverage,88,0.0,0.0,blocked,empirical design matrix is empty or lacks sector/year exposure controls
 minimum_sector_years_per_industry,8,0.0,0.0,blocked,empirical design matrix is empty or lacks sector/year exposure controls
 residual_degrees_of_freedom,20,0.0,0.0,blocked,empirical design matrix is empty or lacks sector/year exposure controls
 independent_cluster_count,10,0.0,0.0,blocked,empirical design matrix is empty or lacks sector/year exposure controls

@@ -16,6 +16,8 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
   `sectoral_output_panel.csv` outcome panel.
 - Sectoral-output readiness now separately audits nominal-source, real-output, output-growth,
   deflator, source-provenance, and outcome-definition consistency coverage.
+- Sectoral-output readiness now includes a source registry scaffold and explicit 1963-1973
+  growth-sample coverage for log-change outcomes.
 - Pipeline metadata writes now preserve repository-relative provenance when run from a different
   current working directory.
 
@@ -34,6 +36,10 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
 - Annual trade coverage now requires non-null world trade values for each sample year-flow row.
 - Dependent-variable readiness now requires reviewed `sectoral_output_growth` values linked back to
   `sectoral_output_panel.csv::output_growth`.
+- Outcome provenance now requires `source_id` values to resolve against the sectoral-output source
+  registry and classification-break statuses to use an empirically usable controlled vocabulary.
+- Output-growth readiness now validates `output_growth` as a deterministic prior-year log change
+  of reviewed real output, and export-growth coverage is derived from sectoral export levels.
 - Model readiness now declares model-specific high-level prerequisites and required outcomes, so
   export-growth candidate models no longer inherit the sectoral-output prerequisite by default.
 - Release blocker IDs no longer duplicate the `research_` prefix.

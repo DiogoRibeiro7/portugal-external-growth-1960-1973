@@ -33,6 +33,7 @@ PREREQUISITE_AUDIT_REQUIREMENTS = {
         "classification_breaks_documented",
     ),
     "portuguese_sectoral_output_data": (
+        "sectoral_output_source_registry",
         "sectoral_output_source_coverage",
         "real_output_coverage",
         "output_growth_coverage",
@@ -47,7 +48,7 @@ PREREQUISITE_AUDIT_REQUIREMENTS = {
     ),
     "sufficient_observations_and_variation": (
         "usable_industries",
-        "usable_years",
+        "usable_growth_years",
         "missingness_structure_documented",
         "dependent_variable_coverage",
         "identification_variables_available",
@@ -122,7 +123,14 @@ MIN_RESIDUAL_DEGREES_OF_FREEDOM = 20
 DEPENDENT_VARIABLE_NAME = "sectoral_output_growth"
 DEPENDENT_VARIABLE_SOURCE_FILE = "data/processed/live/sectoral_output_panel.csv"
 DEPENDENT_VARIABLE_SOURCE_COLUMN = "output_growth"
+OUTPUT_GROWTH_METHOD = "log_change"
+OUTPUT_GROWTH_LAG_DEFINITION = "previous_year"
+OUTPUT_GROWTH_SAMPLE_RULE = "growth_sample_excludes_first_trade_year_without_prior_level"
 REVIEWED_SOURCE_QUALITIES = frozenset({"reviewed", "source_reviewed", "validated"})
+RESOLVED_CLASSIFICATION_BREAK_STATUSES = frozenset(
+    {"no_break", "reviewed_compatible", "harmonised", "resolved_with_caveat"}
+)
+PLACEHOLDER_METADATA_VALUES = frozenset({"unknown", "unreviewed", "blocked", "missing"})
 REQUIRED_OUTPUT_METADATA_COLUMNS = (
     "source_classification",
     "source_sector_code",
@@ -134,7 +142,26 @@ REQUIRED_OUTPUT_METADATA_COLUMNS = (
     "price_basis",
     "deflator_base",
     "classification_break_status",
+    "real_output_method",
+    "growth_method",
+    "lag_definition",
+    "log_or_percent_change",
+    "base_year",
 )
+
+SECTORAL_OUTPUT_SOURCE_REGISTRY_COLUMNS = [
+    "source_id",
+    "provider",
+    "dataset_table",
+    "source_reference",
+    "source_file_or_url",
+    "retrieval_date",
+    "checksum_if_local",
+    "years",
+    "classification",
+    "licence_status",
+    "review_status",
+]
 
 
 def build_empirical_prerequisite_status(root: Path | None = None) -> pd.DataFrame:
@@ -180,6 +207,17 @@ def load_sectoral_output_panel_or_empty(root: Path) -> pd.DataFrame:
     return empty_sectoral_output_panel()
 
 
+def load_sectoral_output_source_registry_or_empty(root: Path) -> pd.DataFrame:
+    """Return an existing sectoral-output source registry or a schema-stable scaffold."""
+
+    path = root / "data/raw/live/sectoral_output/source_registry.csv"
+    existing = _read_csv(path)
+    required_columns = set(empty_sectoral_output_source_registry().columns)
+    if not existing.empty and required_columns.issubset(existing.columns):
+        return existing
+    return empty_sectoral_output_source_registry()
+
+
 def build_empirical_readiness_audit(root: Path) -> pd.DataFrame:
     """Build a requirement-level empirical-readiness audit matrix."""
 
@@ -189,6 +227,7 @@ def build_empirical_readiness_audit(root: Path) -> pd.DataFrame:
         _european_partner_completeness(root),
         _product_level_coverage(root),
         _product_industry_mapping_coverage(root),
+        _sectoral_output_source_registry(root),
         _sectoral_output_source_coverage(root),
         _real_output_coverage(root),
         _output_growth_coverage(root),
@@ -203,6 +242,7 @@ def build_empirical_readiness_audit(root: Path) -> pd.DataFrame:
         _commodity_price_control_availability(root),
         _usable_industries(root),
         _usable_years(root),
+        _usable_growth_years(root),
         _missingness_structure(root),
         _classification_breaks(root),
         _dependent_variable_coverage(root),
@@ -464,10 +504,21 @@ def empty_sectoral_output_panel() -> pd.DataFrame:
             "price_basis",
             "deflator_base",
             "classification_break_status",
+            "real_output_method",
+            "growth_method",
+            "lag_definition",
+            "log_or_percent_change",
+            "base_year",
             "source_id",
             "source_quality",
         ]
     )
+
+
+def empty_sectoral_output_source_registry() -> pd.DataFrame:
+    """Return a schema-stable sectoral-output source registry placeholder."""
+
+    return pd.DataFrame(columns=SECTORAL_OUTPUT_SOURCE_REGISTRY_COLUMNS)
 
 
 def empty_diagnostics() -> pd.DataFrame:
@@ -697,6 +748,24 @@ def _product_industry_mapping_coverage(root: Path) -> dict[str, object]:
     )
 
 
+def _sectoral_output_source_registry(root: Path) -> dict[str, object]:
+    registry = _sectoral_output_source_registry_frame(root)
+    if registry.empty:
+        return _record(
+            "sectoral_output_source_registry",
+            1,
+            0,
+            "sectoral output source registry is missing or empty",
+        )
+    reviewed = _reviewed_source_registry(registry)
+    return _record(
+        "sectoral_output_source_registry",
+        1,
+        int(not reviewed.empty),
+        "no reviewed sectoral-output source is registered",
+    )
+
+
 def _sectoral_output_source_coverage(root: Path) -> dict[str, object]:
     panel = _sectoral_output_panel(root)
     required = _sectoral_output_grid_requirement(panel, root=root)
@@ -708,7 +777,7 @@ def _sectoral_output_source_coverage(root: Path) -> dict[str, object]:
             "sectoral output panel is missing or empty",
         )
     available = _non_null_sector_year_observations(
-        _reviewed_output_panel(panel),
+        _reviewed_output_panel(root, panel),
         ["nominal_output"],
     )
     return _record(
@@ -729,7 +798,10 @@ def _real_output_coverage(root: Path) -> dict[str, object]:
             0,
             "sectoral output panel is missing or empty",
         )
-    available = _non_null_sector_year_observations(_reviewed_output_panel(panel), ["real_output"])
+    available = _non_null_sector_year_observations(
+        _reviewed_output_panel(root, panel),
+        ["real_output"],
+    )
     return _record(
         "real_output_coverage",
         required,
@@ -740,7 +812,11 @@ def _real_output_coverage(root: Path) -> dict[str, object]:
 
 def _output_growth_coverage(root: Path) -> dict[str, object]:
     panel = _sectoral_output_panel(root)
-    required = _sectoral_output_grid_requirement(panel, root=root)
+    required = _sectoral_output_grid_requirement(
+        panel,
+        root=root,
+        sample_years=_growth_sample_years(root),
+    )
     if panel.empty:
         return _record(
             "output_growth_coverage",
@@ -748,7 +824,9 @@ def _output_growth_coverage(root: Path) -> dict[str, object]:
             0,
             "sectoral output panel is missing or empty",
         )
-    available = _non_null_sector_year_observations(_reviewed_output_panel(panel), ["output_growth"])
+    reviewed = _reviewed_output_panel(root, panel)
+    reviewed = reviewed.loc[reviewed["year"].isin(_growth_sample_years(root))]
+    available = _non_null_sector_year_observations(reviewed, ["output_growth"])
     return _record(
         "output_growth_coverage",
         required,
@@ -767,7 +845,10 @@ def _deflator_coverage(root: Path) -> dict[str, object]:
             0,
             "sectoral output panel is missing or empty",
         )
-    available = _non_null_sector_year_observations(_reviewed_output_panel(panel), ["deflator"])
+    available = _non_null_sector_year_observations(
+        _reviewed_output_panel(root, panel),
+        ["deflator"],
+    )
     return _record(
         "price_deflator_coverage",
         required,
@@ -778,7 +859,8 @@ def _deflator_coverage(root: Path) -> dict[str, object]:
 
 def _outcome_source_provenance(root: Path) -> dict[str, object]:
     panel = _sectoral_output_panel(root)
-    required = _sectoral_output_grid_requirement(panel, root=root)
+    growth_years = _growth_sample_years(root)
+    required = _sectoral_output_grid_requirement(panel, root=root, sample_years=growth_years)
     if panel.empty:
         return _record(
             "outcome_source_provenance",
@@ -786,16 +868,15 @@ def _outcome_source_provenance(root: Path) -> dict[str, object]:
             0,
             "sectoral output panel is missing or empty",
         )
-    reviewed = _reviewed_output_panel(panel)
+    reviewed = _reviewed_output_panel(root, panel)
     values = pd.to_numeric(reviewed.get("output_growth", pd.Series(dtype=object)), errors="coerce")
     observed = reviewed.loc[values.notna()].copy()
     if observed.empty:
         available = 0
     else:
         complete_metadata = _complete_output_metadata_mask(observed)
-        available = int(
-            observed.loc[complete_metadata, ["sector_code", "year"]].drop_duplicates().shape[0]
-        )
+        retained = observed.loc[complete_metadata & observed["year"].isin(growth_years)]
+        available = int(retained[["sector_code", "year"]].drop_duplicates().shape[0])
     return _record(
         "outcome_source_provenance",
         required,
@@ -806,7 +887,7 @@ def _outcome_source_provenance(root: Path) -> dict[str, object]:
 
 def _outcome_definition_consistency(root: Path) -> dict[str, object]:
     design = _complete_design_matrix(root)
-    sample_years = _trade_sample_years(root)
+    sample_years = _growth_sample_years(root)
     expected = len(sample_years) * max(MIN_USABLE_INDUSTRIES, _design_sector_count(design))
     required = ceil(expected * MIN_SECTOR_YEAR_GRID_COVERAGE)
     if design.empty:
@@ -828,7 +909,11 @@ def _outcome_definition_consistency(root: Path) -> dict[str, object]:
 def _sectoral_export_growth_coverage(root: Path) -> dict[str, object]:
     panel = _industry_trade_panel(root)
     required_panel = panel.rename(columns={"target_industry_code": "sector_code"})
-    required = _sectoral_output_grid_requirement(required_panel, root=root)
+    required = _sectoral_output_grid_requirement(
+        required_panel,
+        root=root,
+        sample_years=_growth_sample_years(root),
+    )
     if panel.empty:
         return _record(
             "sectoral_export_growth_coverage",
@@ -845,7 +930,9 @@ def _sectoral_export_growth_coverage(root: Path) -> dict[str, object]:
         )
     exports = panel.loc[panel["flow_code"].astype(str).eq("X")].copy()
     exports["sector_code"] = exports["target_industry_code"].astype("string").fillna("").str.strip()
-    available = _non_null_sector_year_observations(exports, ["trade_value_usd"])
+    export_growth = _derived_export_growth_panel(exports)
+    export_growth = export_growth.loc[export_growth["year"].isin(_growth_sample_years(root))]
+    available = _non_null_sector_year_observations(export_growth, ["sectoral_export_growth"])
     return _record(
         "sectoral_export_growth_coverage",
         required,
@@ -1001,6 +1088,26 @@ def _usable_years(root: Path) -> dict[str, object]:
     )
 
 
+def _usable_growth_years(root: Path) -> dict[str, object]:
+    panel = _industry_trade_panel(root)
+    required_years = set(_growth_sample_years(root))
+    if panel.empty:
+        return _record(
+            "usable_growth_years",
+            len(required_years),
+            0,
+            "industry trade panel is empty",
+        )
+    available_years = set(pd.to_numeric(panel["year"], errors="coerce").dropna().astype(int))
+    available = len(required_years & available_years)
+    return _record(
+        "usable_growth_years",
+        len(required_years),
+        available,
+        "industry trade panel does not cover every configured growth-sample year",
+    )
+
+
 def _missingness_structure(root: Path) -> dict[str, object]:
     diagnostics = _read_csv(
         root / "results/diagnostics/industry_exposure/industry_exposure_coverage.csv"
@@ -1087,7 +1194,7 @@ def _classification_breaks(root: Path) -> dict[str, object]:
 
 def _dependent_variable_coverage(root: Path) -> dict[str, object]:
     design = _complete_design_matrix(root)
-    sample_years = _trade_sample_years(root)
+    sample_years = _growth_sample_years(root)
     expected = len(sample_years) * max(MIN_USABLE_INDUSTRIES, _design_sector_count(design))
     required = ceil(expected * MIN_SECTOR_YEAR_GRID_COVERAGE)
     if design.empty:
@@ -1107,7 +1214,7 @@ def _dependent_variable_coverage(root: Path) -> dict[str, object]:
 
 
 def _identification_variables(root: Path) -> dict[str, object]:
-    design = _complete_design_matrix(root)
+    design = _complete_base_design_matrix(root)
     if design.empty:
         return _record(
             "identification_variables_available",
@@ -1135,7 +1242,7 @@ def _identification_variables(root: Path) -> dict[str, object]:
 
 
 def _within_sector_exposure_variation(root: Path) -> dict[str, object]:
-    design = _complete_design_matrix(root)
+    design = _complete_base_design_matrix(root)
     if design.empty:
         return _record(
             "within_sector_exposure_variation",
@@ -1158,8 +1265,8 @@ def _within_sector_exposure_variation(root: Path) -> dict[str, object]:
 
 
 def _within_year_cross_sectional_variation(root: Path) -> dict[str, object]:
-    design = _complete_design_matrix(root)
-    required = len(_trade_sample_years(root))
+    design = _complete_base_design_matrix(root)
+    required = len(_growth_sample_years(root))
     if design.empty:
         return _record(
             "within_year_cross_sectional_variation",
@@ -1182,7 +1289,7 @@ def _within_year_cross_sectional_variation(root: Path) -> dict[str, object]:
 
 
 def _fixed_effect_residual_design_rank(root: Path) -> dict[str, object]:
-    design = _complete_design_matrix(root)
+    design = _complete_base_design_matrix(root)
     if design.empty:
         return _record(
             "fixed_effect_residual_design_rank",
@@ -1200,7 +1307,7 @@ def _fixed_effect_residual_design_rank(root: Path) -> dict[str, object]:
 
 
 def _observation_parameter_ratio(root: Path) -> dict[str, object]:
-    design = _complete_design_matrix(root)
+    design = _complete_base_design_matrix(root)
     if design.empty:
         return _record(
             "observation_parameter_ratio",
@@ -1220,7 +1327,7 @@ def _observation_parameter_ratio(root: Path) -> dict[str, object]:
 
 
 def _sector_year_uniqueness(root: Path) -> dict[str, object]:
-    design = _complete_design_matrix(root)
+    design = _complete_base_design_matrix(root)
     if design.empty:
         return _record(
             "sector_year_uniqueness",
@@ -1238,8 +1345,8 @@ def _sector_year_uniqueness(root: Path) -> dict[str, object]:
 
 
 def _sector_year_grid_coverage(root: Path) -> dict[str, object]:
-    design = _complete_design_matrix(root)
-    sample_years = _trade_sample_years(root)
+    design = _complete_base_design_matrix(root)
+    sample_years = _growth_sample_years(root)
     expected = len(sample_years) * max(MIN_USABLE_INDUSTRIES, _design_sector_count(design))
     required = ceil(expected * MIN_SECTOR_YEAR_GRID_COVERAGE)
     if design.empty:
@@ -1259,7 +1366,7 @@ def _sector_year_grid_coverage(root: Path) -> dict[str, object]:
 
 
 def _minimum_sector_years_per_industry(root: Path) -> dict[str, object]:
-    design = _complete_design_matrix(root)
+    design = _complete_base_design_matrix(root)
     if design.empty:
         return _record(
             "minimum_sector_years_per_industry",
@@ -1278,7 +1385,7 @@ def _minimum_sector_years_per_industry(root: Path) -> dict[str, object]:
 
 
 def _residual_degrees_of_freedom(root: Path) -> dict[str, object]:
-    design = _complete_design_matrix(root)
+    design = _complete_base_design_matrix(root)
     if design.empty:
         return _record(
             "residual_degrees_of_freedom",
@@ -1296,7 +1403,7 @@ def _residual_degrees_of_freedom(root: Path) -> dict[str, object]:
 
 
 def _independent_cluster_count(root: Path) -> dict[str, object]:
-    design = _complete_design_matrix(root)
+    design = _complete_base_design_matrix(root)
     if design.empty:
         return _record(
             "independent_cluster_count",
@@ -1311,6 +1418,33 @@ def _independent_cluster_count(root: Path) -> dict[str, object]:
         clusters,
         f"fewer than {MIN_INDEPENDENT_CLUSTERS} independent sector clusters are available",
     )
+
+
+def _complete_base_design_matrix(root: Path) -> pd.DataFrame:
+    design = _read_csv(root / "data/interim/live/empirical_design_matrix.csv")
+    required_columns = {
+        "sector_code",
+        "year",
+        "colonial_exposure",
+        "european_exposure",
+        "controls_available",
+    }
+    if design.empty or not required_columns.issubset(design.columns):
+        return pd.DataFrame()
+    complete = design.copy()
+    complete["year"] = pd.to_numeric(complete["year"], errors="coerce")
+    complete["colonial_exposure"] = pd.to_numeric(complete["colonial_exposure"], errors="coerce")
+    complete["european_exposure"] = pd.to_numeric(complete["european_exposure"], errors="coerce")
+    complete["sector_code"] = complete["sector_code"].astype("string").fillna("").str.strip()
+    complete = complete.loc[
+        complete["sector_code"].ne("")
+        & complete["year"].notna()
+        & complete["colonial_exposure"].notna()
+        & complete["european_exposure"].notna()
+    ].copy()
+    complete = complete.loc[complete["year"].isin(set(_growth_sample_years(root)))].copy()
+    complete["year"] = complete["year"].astype(int)
+    return complete
 
 
 def _complete_design_matrix(root: Path) -> pd.DataFrame:
@@ -1358,7 +1492,7 @@ def _complete_design_matrix(root: Path) -> pd.DataFrame:
         & complete["source_id"].ne("")
         & complete["source_quality"].str.lower().isin(REVIEWED_SOURCE_QUALITIES)
     ].copy()
-    complete = complete.loc[complete["year"].isin(set(_trade_sample_years(root)))].copy()
+    complete = complete.loc[complete["year"].isin(set(_growth_sample_years(root)))].copy()
     complete["year"] = complete["year"].astype(int)
     outcome = _reviewed_output_growth_panel(root)
     if outcome.empty:
@@ -1454,28 +1588,69 @@ def _sectoral_output_panel(root: Path) -> pd.DataFrame:
     return sample
 
 
-def _reviewed_output_panel(panel: pd.DataFrame) -> pd.DataFrame:
+def _sectoral_output_source_registry_frame(root: Path) -> pd.DataFrame:
+    registry = _read_csv(root / "data/raw/live/sectoral_output/source_registry.csv")
+    if registry.empty or not set(SECTORAL_OUTPUT_SOURCE_REGISTRY_COLUMNS).issubset(
+        registry.columns
+    ):
+        return pd.DataFrame(columns=SECTORAL_OUTPUT_SOURCE_REGISTRY_COLUMNS)
+    output = registry.copy()
+    output["source_id"] = output["source_id"].astype("string").fillna("").str.strip()
+    output["review_status"] = output["review_status"].astype("string").fillna("").str.strip()
+    return output.loc[output["source_id"].ne("")].copy()
+
+
+def _reviewed_source_registry(registry: pd.DataFrame) -> pd.DataFrame:
+    if registry.empty:
+        return pd.DataFrame(columns=SECTORAL_OUTPUT_SOURCE_REGISTRY_COLUMNS)
+    reviewed = registry.copy()
+    reviewed["review_status"] = reviewed["review_status"].astype(str).str.strip().str.lower()
+    return reviewed.loc[reviewed["review_status"].isin(REVIEWED_SOURCE_QUALITIES)].copy()
+
+
+def _reviewed_output_panel(root: Path, panel: pd.DataFrame) -> pd.DataFrame:
     if panel.empty or not {"source_id", "source_quality"}.issubset(panel.columns):
         return pd.DataFrame(columns=panel.columns)
+    registry = _reviewed_source_registry(_sectoral_output_source_registry_frame(root))
+    if registry.empty:
+        return pd.DataFrame(columns=panel.columns)
+    reviewed_sources = set(registry["source_id"].astype("string").fillna("").str.strip())
     reviewed = panel.copy()
     reviewed["source_id"] = reviewed["source_id"].astype("string").fillna("").str.strip()
     reviewed["source_quality"] = (
         reviewed["source_quality"].astype("string").fillna("").str.strip().str.lower()
     )
     return reviewed.loc[
-        reviewed["source_id"].ne("") & reviewed["source_quality"].isin(REVIEWED_SOURCE_QUALITIES)
+        reviewed["source_id"].ne("")
+        & reviewed["source_id"].isin(reviewed_sources)
+        & reviewed["source_quality"].isin(REVIEWED_SOURCE_QUALITIES)
     ].copy()
 
 
 def _reviewed_output_growth_panel(root: Path) -> pd.DataFrame:
-    panel = _reviewed_output_panel(_sectoral_output_panel(root))
+    panel = _reviewed_output_panel(root, _sectoral_output_panel(root))
     required_columns = {"sector_code", "year", "source_id", DEPENDENT_VARIABLE_SOURCE_COLUMN}
     if panel.empty or not required_columns.issubset(panel.columns):
         return pd.DataFrame()
     values = pd.to_numeric(panel[DEPENDENT_VARIABLE_SOURCE_COLUMN], errors="coerce")
+    derived = _derived_output_growth(panel)
     metadata_mask = _complete_output_metadata_mask(panel)
     output_columns = ["sector_code", "year", "source_id", DEPENDENT_VARIABLE_SOURCE_COLUMN]
-    output = panel.loc[values.notna() & metadata_mask, output_columns].copy()
+    growth_consistent = (
+        values.notna()
+        & derived.notna()
+        & np.isclose(
+            values.astype(float),
+            derived.astype(float),
+            rtol=1e-9,
+            atol=1e-12,
+            equal_nan=False,
+        )
+    )
+    output = panel.loc[
+        growth_consistent & metadata_mask & panel["year"].isin(_growth_sample_years(root)),
+        output_columns,
+    ].copy()
     output[DEPENDENT_VARIABLE_SOURCE_COLUMN] = pd.to_numeric(
         output[DEPENDENT_VARIABLE_SOURCE_COLUMN], errors="coerce"
     )
@@ -1490,17 +1665,98 @@ def _complete_output_metadata_mask(panel: pd.DataFrame) -> pd.Series:
         return pd.Series(False, index=panel.index)
     mask = pd.Series(True, index=panel.index)
     for column in REQUIRED_OUTPUT_METADATA_COLUMNS:
-        mask &= panel[column].astype("string").fillna("").str.strip().ne("")
+        values = panel[column].astype("string").fillna("").str.strip()
+        mask &= values.ne("") & ~values.str.lower().isin(PLACEHOLDER_METADATA_VALUES)
+    mask &= (
+        panel["classification_break_status"]
+        .astype("string")
+        .fillna("")
+        .str.strip()
+        .str.lower()
+        .isin(RESOLVED_CLASSIFICATION_BREAK_STATUSES)
+    )
+    mask &= panel["growth_method"].astype("string").fillna("").str.strip().eq(OUTPUT_GROWTH_METHOD)
+    mask &= (
+        panel["lag_definition"]
+        .astype("string")
+        .fillna("")
+        .str.strip()
+        .eq(OUTPUT_GROWTH_LAG_DEFINITION)
+    )
+    mask &= (
+        panel["log_or_percent_change"]
+        .astype("string")
+        .fillna("")
+        .str.strip()
+        .eq(OUTPUT_GROWTH_METHOD)
+    )
+    mask &= (
+        panel["harmonised_sector_code"]
+        .astype("string")
+        .fillna("")
+        .str.strip()
+        .eq(panel["sector_code"].astype("string").fillna("").str.strip())
+    )
     return mask
 
 
-def _sectoral_output_grid_requirement(panel: pd.DataFrame, *, root: Path) -> int:
+def _derived_output_growth(panel: pd.DataFrame) -> pd.Series:
+    if panel.empty or not {"sector_code", "year", "real_output"}.issubset(panel.columns):
+        return pd.Series(np.nan, index=panel.index, dtype="float64")
+    working = panel[["sector_code", "year", "real_output"]].copy()
+    working["real_output"] = pd.to_numeric(working["real_output"], errors="coerce")
+    working = working.sort_values(["sector_code", "year"])
+    previous = working.groupby("sector_code", dropna=False)["real_output"].shift(1)
+    previous_year = working.groupby("sector_code", dropna=False)["year"].shift(1)
+    valid = (
+        working["real_output"].gt(0)
+        & previous.gt(0)
+        & previous_year.notna()
+        & working["year"].sub(previous_year).eq(1)
+    )
+    derived = pd.Series(np.nan, index=working.index, dtype="float64")
+    derived.loc[valid] = np.log(working.loc[valid, "real_output"]) - np.log(previous.loc[valid])
+    return derived.reindex(panel.index)
+
+
+def _derived_export_growth_panel(exports: pd.DataFrame) -> pd.DataFrame:
+    if exports.empty or not {"sector_code", "year", "trade_value_usd"}.issubset(exports.columns):
+        return pd.DataFrame(columns=["sector_code", "year", "sectoral_export_growth"])
+    grouped = exports.copy()
+    grouped["trade_value_usd"] = pd.to_numeric(grouped["trade_value_usd"], errors="coerce")
+    grouped = (
+        grouped.groupby(["sector_code", "year"], as_index=False, dropna=False).agg(
+            trade_value_usd=("trade_value_usd", "sum")
+        )
+    ).sort_values(["sector_code", "year"])
+    previous = grouped.groupby("sector_code", dropna=False)["trade_value_usd"].shift(1)
+    previous_year = grouped.groupby("sector_code", dropna=False)["year"].shift(1)
+    valid = (
+        grouped["trade_value_usd"].gt(0)
+        & previous.gt(0)
+        & previous_year.notna()
+        & grouped["year"].sub(previous_year).eq(1)
+    )
+    grouped["sectoral_export_growth"] = np.nan
+    grouped.loc[valid, "sectoral_export_growth"] = np.log(
+        grouped.loc[valid, "trade_value_usd"]
+    ) - np.log(previous.loc[valid])
+    return grouped[["sector_code", "year", "sectoral_export_growth"]]
+
+
+def _sectoral_output_grid_requirement(
+    panel: pd.DataFrame,
+    *,
+    root: Path,
+    sample_years: tuple[int, ...] | None = None,
+) -> int:
+    years = sample_years or _trade_sample_years(root)
     sector_count = (
         int(panel["sector_code"].nunique())
         if not panel.empty and "sector_code" in panel.columns
         else 0
     )
-    expected = len(_trade_sample_years(root)) * max(MIN_USABLE_INDUSTRIES, sector_count)
+    expected = len(years) * max(MIN_USABLE_INDUSTRIES, sector_count)
     return ceil(expected * MIN_SECTOR_YEAR_GRID_COVERAGE)
 
 
@@ -1538,6 +1794,11 @@ def _trade_sample_years(root: Path) -> tuple[int, ...]:
             if start is not None and end is not None and start <= end:
                 return tuple(range(start, end + 1))
     return DEFAULT_TRADE_SAMPLE_YEARS
+
+
+def _growth_sample_years(root: Path) -> tuple[int, ...]:
+    sample_years = _trade_sample_years(root)
+    return sample_years[1:] if len(sample_years) > 1 else ()
 
 
 def _trade_year_flow_requirement(root: Path) -> int:

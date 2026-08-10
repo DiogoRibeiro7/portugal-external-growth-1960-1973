@@ -17,25 +17,41 @@
     "price_basis",
     "deflator_base",
     "classification_break_status",
+    "real_output_method",
+    "growth_method",
+    "lag_definition",
+    "log_or_percent_change",
+    "base_year",
     "source_id",
     "source_quality"
   ],
-  "creation_timestamp_utc": "2026-08-10T12:40:59+01:00",
+  "creation_timestamp_utc": "2026-08-10T16:23:04+01:00",
   "date_range": null,
   "file": "data/processed/live/sectoral_output_panel.csv",
+  "input_artifacts": [
+    {
+      "path": "data/raw/live/sectoral_output/source_registry.csv",
+      "sha256": "1cd758b9bb44f19d57881ce89f7d1757da09f0cf08feacadb2be006d5ec23dc7"
+    }
+  ],
   "rows": 0,
   "schema": {
+    "base_year": "object",
     "classification_break_status": "object",
     "classification_version": "object",
     "currency": "object",
     "deflator": "object",
     "deflator_base": "object",
+    "growth_method": "object",
     "harmonised_sector_code": "object",
+    "lag_definition": "object",
+    "log_or_percent_change": "object",
     "mapping_version": "object",
     "nominal_output": "object",
     "output_growth": "object",
     "price_basis": "object",
     "real_output": "object",
+    "real_output_method": "object",
     "sector_code": "object",
     "source_classification": "object",
     "source_id": "object",
@@ -44,7 +60,10 @@
     "unit": "object",
     "year": "object"
   },
-  "sha256": "f96568b384113da4acf072e985ae74f2392f49779c156eb40880cf8342af0783",
+  "sha256": "4d0cf97a0901a6cd1699e07e9d7679170a983ff5bdd400f2669f4bd628d2fa6b",
+  "source_files": [
+    "data/raw/live/sectoral_output/source_registry.csv"
+  ],
   "source_licence": "not_specified",
   "stage": "sectoral_output_panel_pending_source_grounded_empirical_data",
   "validation_findings": []

@@ -265,6 +265,23 @@ COLUMN_DESCRIPTIONS = {
         "machine-readable review status for classification breaks",
         "status",
     ),
+    "real_output_method": (
+        "method used to report or derive real sectoral output",
+        "method",
+    ),
+    "growth_method": (
+        "method used to derive sectoral output growth",
+        "method",
+    ),
+    "lag_definition": (
+        "lag convention used when deriving growth rates",
+        "definition",
+    ),
+    "log_or_percent_change": (
+        "whether growth is encoded as log change or percent change",
+        "method",
+    ),
+    "base_year": ("base year for indexed or deflated output measures", "year"),
     "colonial_exposure": ("colonial-demand exposure variable", "share"),
     "european_exposure": ("European-demand exposure variable", "share"),
     "controls_available": ("whether required control variables are available", "boolean"),

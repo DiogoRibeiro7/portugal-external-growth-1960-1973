@@ -8,7 +8,7 @@
     "status",
     "blocking_reason"
   ],
-  "creation_timestamp_utc": "2026-08-10T12:40:59+01:00",
+  "creation_timestamp_utc": "2026-08-10T16:23:04+01:00",
   "date_range": null,
   "file": "results/live/empirical_readiness_audit.csv",
   "input_artifacts": [
@@ -37,8 +37,12 @@
       "sha256": "6f41bb44fc93fb75a5be9a9eee1527239a6fde9c10f2c2348ea27c8ae0e4b281"
     },
     {
+      "path": "data/raw/live/sectoral_output/source_registry.csv",
+      "sha256": "1cd758b9bb44f19d57881ce89f7d1757da09f0cf08feacadb2be006d5ec23dc7"
+    },
+    {
       "path": "data/processed/live/sectoral_output_panel.csv",
-      "sha256": "f96568b384113da4acf072e985ae74f2392f49779c156eb40880cf8342af0783"
+      "sha256": "4d0cf97a0901a6cd1699e07e9d7679170a983ff5bdd400f2669f4bd628d2fa6b"
     },
     {
       "path": "data/processed/live/industry_trade_panel.csv",
@@ -49,7 +53,7 @@
       "sha256": "00ffc33b09c076612363745e4ce728d877ec979be5ec1778c130d3b05eac557a"
     }
   ],
-  "rows": 32,
+  "rows": 34,
   "schema": {
     "available": "float64",
     "blocking_reason": "object",
@@ -58,7 +62,7 @@
     "requirement": "object",
     "status": "object"
   },
-  "sha256": "e36f7ce0a00602cba63c2e061f9eab1c1431e34880869d9534bb11930f8459bb",
+  "sha256": "cfc8332dd0a0156abceaf4a4c08d8c1d05986c9733b1fba8449b794a81e94e6e",
   "source_files": [
     "data/processed/live/validated_annual_aggregate_external_orientation.csv",
     "results/live/comtrade_product_extraction_status.csv",
@@ -66,6 +70,7 @@
     "results/diagnostics/product_industry_mapping/product_mapping_status.csv",
     "results/live/product_industry_mapping_documentation.txt",
     "config/product_industry_mapping.yml",
+    "data/raw/live/sectoral_output/source_registry.csv",
     "data/processed/live/sectoral_output_panel.csv",
     "data/processed/live/industry_trade_panel.csv",
     "results/diagnostics/industry_exposure/industry_exposure_coverage.csv"

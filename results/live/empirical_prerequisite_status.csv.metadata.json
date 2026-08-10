@@ -5,13 +5,13 @@
     "status",
     "blocking_reason"
   ],
-  "creation_timestamp_utc": "2026-08-10T12:40:59+01:00",
+  "creation_timestamp_utc": "2026-08-10T16:23:04+01:00",
   "date_range": null,
   "file": "results/live/empirical_prerequisite_status.csv",
   "input_artifacts": [
     {
       "path": "results/live/empirical_readiness_audit.csv",
-      "sha256": "e36f7ce0a00602cba63c2e061f9eab1c1431e34880869d9534bb11930f8459bb"
+      "sha256": "cfc8332dd0a0156abceaf4a4c08d8c1d05986c9733b1fba8449b794a81e94e6e"
     },
     {
       "path": "results/live/identification_strategy_review.csv",
@@ -24,7 +24,7 @@
     "prerequisite": "object",
     "status": "object"
   },
-  "sha256": "5f554bac08211689ab43b20e47c3fe22cc0e14d068f54bb3b400677efa40ece4",
+  "sha256": "bd5491368c32f0c4608181e4c11977ec81a48994ad73e068a5d63ad06356c186",
   "source_files": [
     "results/live/empirical_readiness_audit.csv",
     "results/live/identification_strategy_review.csv"

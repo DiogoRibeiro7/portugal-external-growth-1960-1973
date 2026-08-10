@@ -1,0 +1,37 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "source_id",
+    "provider",
+    "dataset_table",
+    "source_reference",
+    "source_file_or_url",
+    "retrieval_date",
+    "checksum_if_local",
+    "years",
+    "classification",
+    "licence_status",
+    "review_status"
+  ],
+  "creation_timestamp_utc": "2026-08-10T16:23:04+01:00",
+  "date_range": null,
+  "file": "data/raw/live/sectoral_output/source_registry.csv",
+  "rows": 0,
+  "schema": {
+    "checksum_if_local": "object",
+    "classification": "object",
+    "dataset_table": "object",
+    "licence_status": "object",
+    "provider": "object",
+    "retrieval_date": "object",
+    "review_status": "object",
+    "source_file_or_url": "object",
+    "source_id": "object",
+    "source_reference": "object",
+    "years": "object"
+  },
+  "sha256": "1cd758b9bb44f19d57881ce89f7d1757da09f0cf08feacadb2be006d5ec23dc7",
+  "source_licence": "not_specified",
+  "stage": "sectoral_output_source_registry_pending_historical_sources",
+  "validation_findings": []
+}

@@ -35,6 +35,7 @@ from portugal_external_growth.empirical import (
     empty_identification_strategy_review,
     load_empirical_design_matrix_or_empty,
     load_sectoral_output_panel_or_empty,
+    load_sectoral_output_source_registry_or_empty,
 )
 from portugal_external_growth.http import build_session
 from portugal_external_growth.industry_exposure import build_industry_exposure_outputs
@@ -1476,14 +1477,25 @@ def prepare_empirical_extension(settings: Settings) -> None:
 
     root = settings.resolved_root()
     empirical_code = "src/portugal_external_growth/empirical.py"
+    output_source_registry = load_sectoral_output_source_registry_or_empty(root)
+    write_dataframe_with_metadata(
+        output_source_registry,
+        root / "data/raw/live/sectoral_output/source_registry.csv",
+        metadata={
+            "stage": "sectoral_output_source_registry_pending_historical_sources"
+            if output_source_registry.empty
+            else "sectoral_output_source_registry_preserved"
+        },
+    )
     sectoral_output = load_sectoral_output_panel_or_empty(root)
     write_dataframe_with_metadata(
         sectoral_output,
         root / "data/processed/live/sectoral_output_panel.csv",
         metadata={
+            "source_files": ["data/raw/live/sectoral_output/source_registry.csv"],
             "stage": "sectoral_output_panel_pending_source_grounded_empirical_data"
             if sectoral_output.empty
-            else "sectoral_output_panel_preserved_from_existing_data"
+            else "sectoral_output_panel_preserved_from_existing_data",
         },
     )
     write_dataframe_with_metadata(
@@ -1535,6 +1547,7 @@ def prepare_empirical_extension(settings: Settings) -> None:
                 "results/diagnostics/product_industry_mapping/product_mapping_status.csv",
                 "results/live/product_industry_mapping_documentation.txt",
                 "config/product_industry_mapping.yml",
+                "data/raw/live/sectoral_output/source_registry.csv",
                 "data/processed/live/sectoral_output_panel.csv",
                 "data/processed/live/industry_trade_panel.csv",
                 "results/diagnostics/industry_exposure/industry_exposure_coverage.csv",

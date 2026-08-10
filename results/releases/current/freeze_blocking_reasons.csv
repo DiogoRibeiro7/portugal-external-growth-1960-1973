@@ -1,4 +1,11 @@
 blocker_id,source_check,severity,blocking_reason,evidence_path
+verification_format,freeze.verification.format,not_ready,stale_scope: verification scope fingerprint does not match current tracked content,results/releases/current/verification_evidence.csv
+verification_lint,freeze.verification.lint,not_ready,stale_scope: verification scope fingerprint does not match current tracked content,results/releases/current/verification_evidence.csv
+verification_manifest,freeze.verification.manifest,not_ready,stale_scope: verification scope fingerprint does not match current tracked content,results/releases/current/verification_evidence.csv
+verification_reproduction,freeze.verification.reproduction,not_ready,stale_scope: verification scope fingerprint does not match current tracked content,results/releases/current/verification_evidence.csv
+verification_tests,freeze.verification.tests,not_ready,stale_scope: verification scope fingerprint does not match current tracked content,results/releases/current/verification_evidence.csv
+verification_typecheck,freeze.verification.typecheck,not_ready,stale_scope: verification scope fingerprint does not match current tracked content,results/releases/current/verification_evidence.csv
+verification_validation,freeze.verification.validation,not_ready,stale_scope: verification scope fingerprint does not match current tracked content,results/releases/current/verification_evidence.csv
 research_empirical_prerequisites,research.empirical_prerequisites,not_ready,0/6 empirical prerequisites are satisfied.,results/validation/research_readiness_report.csv
 research_manual_source_documents,research.manual_source_documents,not_ready,4/43 expected manual source-year records are complete.,results/validation/research_readiness_report.csv
 research_cross_source_comparison,research.cross_source_comparison,not_ready,88/120 cross-source comparison rows have missing source coverage.,results/validation/research_readiness_report.csv
@@ -10,6 +17,7 @@ empirical_colonial_partner_completeness,colonial_partner_completeness,blocked,co
 empirical_european_partner_completeness,european_partner_completeness,blocked,fixed European partner-sample coverage is incomplete,results/live/empirical_readiness_audit.csv
 empirical_product_level_coverage,product_level_coverage,blocked,COMTRADE_SUBSCRIPTION_KEY_missing;commodity_code_batches_not_registered,results/live/empirical_readiness_audit.csv
 empirical_product_to_industry_mapping_coverage,product_to_industry_mapping_coverage,blocked,product_extraction_status_blocked;product_industry_mapping_coverage_zero;product_industry_mapping_not_registered;product_level_trade_not_validated,results/live/empirical_readiness_audit.csv
+empirical_sectoral_output_source_registry,sectoral_output_source_registry,blocked,sectoral output source registry is missing or empty,results/live/empirical_readiness_audit.csv
 empirical_sectoral_output_source_coverage,sectoral_output_source_coverage,blocked,sectoral output panel is missing or empty,results/live/empirical_readiness_audit.csv
 empirical_real_output_coverage,real_output_coverage,blocked,sectoral output panel is missing or empty,results/live/empirical_readiness_audit.csv
 empirical_output_growth_coverage,output_growth_coverage,blocked,sectoral output panel is missing or empty,results/live/empirical_readiness_audit.csv
@@ -24,6 +32,7 @@ empirical_external_demand_shifter_availability,external_demand_shifter_availabil
 empirical_commodity_price_control_availability,commodity_price_control_availability,blocked,commodity price controls are not registered,results/live/empirical_readiness_audit.csv
 empirical_usable_industries,usable_industries,blocked,industry trade panel is empty,results/live/empirical_readiness_audit.csv
 empirical_usable_years,usable_years,blocked,industry trade panel is empty,results/live/empirical_readiness_audit.csv
+empirical_usable_growth_years,usable_growth_years,blocked,industry trade panel is empty,results/live/empirical_readiness_audit.csv
 empirical_missingness_structure_documented,missingness_structure_documented,blocked,missingness structure remains dominated by blocked product/industry data,results/live/empirical_readiness_audit.csv
 empirical_classification_breaks_documented,classification_breaks_documented,blocked,product classification coverage diagnostics missing or empty;product mapping status is blocked;source-grounded product classification mapping is not registered;classification documentation is missing or blocked,results/live/empirical_readiness_audit.csv
 empirical_dependent_variable_coverage,dependent_variable_coverage,blocked,empirical design matrix is empty or lacks numeric dependent-variable values,results/live/empirical_readiness_audit.csv
