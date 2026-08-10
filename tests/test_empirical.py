@@ -958,6 +958,41 @@ def test_outcome_readiness_checks_deflated_nominal_arithmetic(tmp_path: Path) ->
     assert output_growth["status"] == "blocked"
 
 
+def test_materialised_output_growth_must_match_recomputed_lineage(tmp_path: Path) -> None:
+    interim = tmp_path / "data/interim/live"
+    processed = tmp_path / "data/processed/live"
+    interim.mkdir(parents=True)
+    rows = [
+        {
+            "sector_code": f"sector_{sector:02d}",
+            "year": year,
+            "outcome_variable": "sectoral_output_growth",
+            "dependent_variable_value": sector * 0.01 + (year - 1962) * 0.02,
+            "dependent_variable_source_file": "data/processed/live/sectoral_output_panel.csv",
+            "dependent_variable_source_column": "output_growth",
+            "colonial_exposure": sector * 0.02 + (year - 1962) * 0.01,
+            "european_exposure": sector * 0.03 + (year - 1962) * 0.02,
+            "controls_available": True,
+            "source_id": "test_source",
+            "source_quality": "reviewed",
+        }
+        for sector in range(10)
+        for year in range(1962, 1974)
+    ]
+    pd.DataFrame(rows).to_csv(interim / "empirical_design_matrix.csv", index=False)
+    _write_reviewed_output_panel(tmp_path, rows)
+    growth = build_sectoral_output_growth_panel(tmp_path)
+    growth.loc[growth["year"].eq(1963), "output_growth"] = 999.0
+    growth.to_csv(processed / "sectoral_output_growth_panel.csv", index=False)
+
+    audit = build_empirical_readiness_audit(tmp_path)
+
+    output_growth = audit.loc[audit["requirement"].eq("output_growth_coverage")].iloc[0]
+    dependent = audit.loc[audit["requirement"].eq("dependent_variable_coverage")].iloc[0]
+    assert output_growth["available"] == 0
+    assert dependent["available"] == 0
+
+
 def test_export_growth_models_require_joined_outcome_exposure_design(tmp_path: Path) -> None:
     processed = tmp_path / "data/processed/live"
     interim = tmp_path / "data/interim/live"
@@ -1064,6 +1099,34 @@ def test_source_registry_requires_matching_local_checksum(tmp_path: Path) -> Non
                 "source_file_or_url": "data/raw/live/sectoral_output/does-not-exist.csv",
                 "retrieval_date": "2026-08-10",
                 "checksum_if_local": "deadbeef",
+                "years": "1962-1973",
+                "classification": "source_sector_test",
+                "licence_status": "test_fixture",
+                "review_status": "reviewed",
+            }
+        ]
+    ).to_csv(registry / "source_registry.csv", index=False)
+
+    audit = build_empirical_readiness_audit(tmp_path)
+
+    registry_row = audit.loc[audit["requirement"].eq("sectoral_output_source_registry")].iloc[0]
+    assert registry_row["status"] == "blocked"
+    assert registry_row["available"] == 0
+
+
+def test_source_registry_rejects_file_uri_without_checksum_verification(tmp_path: Path) -> None:
+    registry = tmp_path / "data/raw/live/sectoral_output"
+    registry.mkdir(parents=True)
+    pd.DataFrame(
+        [
+            {
+                "source_id": "test_source",
+                "provider": "test_provider",
+                "dataset_table": "test_table",
+                "source_reference": "test reference",
+                "source_file_or_url": "file:///tmp/sectoral-output.csv",
+                "retrieval_date": "2026-08-10",
+                "checksum_if_local": "not_applicable",
                 "years": "1962-1973",
                 "classification": "source_sector_test",
                 "licence_status": "test_fixture",

@@ -60,6 +60,10 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
 - Local sectoral-output registry sources now require existing files with matching SHA-256 hashes.
 - `deflated_nominal` real-output rows now validate `real_output` against nominal output and the
   documented deflator convention.
+- Materialised sectoral output-growth lineage is now checked against recomputed source-panel
+  lineage before it can satisfy empirical readiness.
+- `file://` sectoral-output registry locations are treated as local paths and cannot bypass
+  checksum verification.
 - Model readiness now declares model-specific high-level prerequisites and required outcomes, so
   export-growth candidate models no longer inherit the sectoral-output prerequisite by default.
 - Release blocker IDs no longer duplicate the `research_` prefix.

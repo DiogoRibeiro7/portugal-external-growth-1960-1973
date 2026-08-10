@@ -1806,17 +1806,74 @@ def _complete_model_design_matrix(root: Path, *, required_outcome: str) -> pd.Da
 
 def _sectoral_output_growth_panel(root: Path) -> pd.DataFrame:
     path = root / "data/processed/live/sectoral_output_growth_panel.csv"
+    computed = _normalise_sectoral_output_growth_panel(_reviewed_output_growth_panel(root))
     existing = _read_csv(path)
-    if not existing.empty and set(SECTORAL_OUTPUT_GROWTH_PANEL_COLUMNS).issubset(existing.columns):
-        output = existing[SECTORAL_OUTPUT_GROWTH_PANEL_COLUMNS].copy()
-        output["year"] = pd.to_numeric(output["year"], errors="coerce")
-        output["output_growth"] = pd.to_numeric(output["output_growth"], errors="coerce")
-        output = output.loc[output["year"].notna() & output["output_growth"].notna()].copy()
-        if output.empty:
-            return empty_sectoral_output_growth_panel()
-        output["year"] = output["year"].astype(int)
-        return output
-    return _reviewed_output_growth_panel(root)
+    if not set(SECTORAL_OUTPUT_GROWTH_PANEL_COLUMNS).issubset(existing.columns):
+        return computed
+    materialised = _normalise_sectoral_output_growth_panel(existing)
+    if _sectoral_output_growth_panels_match(materialised, computed):
+        return materialised
+    return empty_sectoral_output_growth_panel()
+
+
+def _normalise_sectoral_output_growth_panel(frame: pd.DataFrame) -> pd.DataFrame:
+    if not set(SECTORAL_OUTPUT_GROWTH_PANEL_COLUMNS).issubset(frame.columns):
+        return empty_sectoral_output_growth_panel()
+    output = frame[SECTORAL_OUTPUT_GROWTH_PANEL_COLUMNS].copy()
+    output["year"] = pd.to_numeric(output["year"], errors="coerce")
+    output["output_growth"] = pd.to_numeric(output["output_growth"], errors="coerce")
+    for column in [
+        "sector_code",
+        "source_id",
+        "current_source_id",
+        "lag_source_id",
+        "source_transition_status",
+        "source_transition_id",
+        "growth_method",
+    ]:
+        output[column] = output[column].astype("string").fillna("").str.strip()
+    output = output.loc[
+        output["year"].notna()
+        & output["output_growth"].notna()
+        & output["sector_code"].ne("")
+        & output["source_id"].ne("")
+        & output["current_source_id"].ne("")
+        & output["lag_source_id"].ne("")
+        & output["growth_method"].eq(OUTPUT_GROWTH_METHOD)
+    ].copy()
+    if output.empty:
+        return empty_sectoral_output_growth_panel()
+    output["year"] = output["year"].astype(int)
+    return output.sort_values(["sector_code", "year", "source_id"]).reset_index(drop=True)
+
+
+def _sectoral_output_growth_panels_match(left: pd.DataFrame, right: pd.DataFrame) -> bool:
+    if left.empty and right.empty:
+        return True
+    if len(left) != len(right):
+        return False
+    if set(left.columns) != set(SECTORAL_OUTPUT_GROWTH_PANEL_COLUMNS) or set(right.columns) != set(
+        SECTORAL_OUTPUT_GROWTH_PANEL_COLUMNS
+    ):
+        return False
+    left = left[SECTORAL_OUTPUT_GROWTH_PANEL_COLUMNS].reset_index(drop=True)
+    right = right[SECTORAL_OUTPUT_GROWTH_PANEL_COLUMNS].reset_index(drop=True)
+    text_columns = [
+        column
+        for column in SECTORAL_OUTPUT_GROWTH_PANEL_COLUMNS
+        if column not in {"year", "output_growth"}
+    ]
+    text_equal = left[text_columns].astype(str).equals(right[text_columns].astype(str))
+    numeric_equal = left["year"].equals(right["year"]) and bool(
+        np.allclose(
+            left["output_growth"].astype(float),
+            right["output_growth"].astype(float),
+            rtol=1e-9,
+            atol=1e-12,
+            equal_nan=False,
+        )
+    )
+    return text_equal and numeric_equal
 
 
 def _residual_exposure_rank(design: pd.DataFrame) -> int:
@@ -2173,6 +2230,8 @@ def _source_location_checksum_valid(root: Path, row: pd.Series) -> bool:
 
 def _external_source_location(location: str) -> bool:
     lowered = location.lower()
+    if lowered.startswith("file:"):
+        return False
     return bool(re.match(r"^[a-z][a-z0-9+.-]*://", lowered)) or lowered.startswith(("doi:", "urn:"))
 
 
@@ -2251,6 +2310,8 @@ def _reviewed_source_transition_registry(root: Path) -> pd.DataFrame:
         valid &= values.ne("") & ~values.str.lower().isin(PLACEHOLDER_METADATA_VALUES)
         reviewed[column] = values
     valid &= reviewed["level_link_method"].str.lower().eq(SOURCE_TRANSITION_NO_ADJUSTMENT_METHOD)
+    transition_key = ["from_source_id", "to_source_id", "sector_code", "transition_year"]
+    valid &= ~reviewed.duplicated(subset=transition_key, keep=False)
     for column in [
         "unit_consistent",
         "classification_consistent",
