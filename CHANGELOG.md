@@ -14,6 +14,8 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
 - Empirical readiness now checks that sector-year observations are unique.
 - Empirical readiness now includes a `dependent_variable_coverage` gate and a scaffolded
   `sectoral_output_panel.csv` outcome panel.
+- Sectoral-output readiness now separately audits nominal-source, real-output, output-growth,
+  deflator, source-provenance, and outcome-definition consistency coverage.
 - Pipeline metadata writes now preserve repository-relative provenance when run from a different
   current working directory.
 
@@ -30,6 +32,10 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
 - Sectoral-output and deflator readiness now require actual sector-year observations instead of
   BPstat dictionary flags.
 - Annual trade coverage now requires non-null world trade values for each sample year-flow row.
+- Dependent-variable readiness now requires reviewed `sectoral_output_growth` values linked back to
+  `sectoral_output_panel.csv::output_growth`.
+- Model readiness now declares model-specific high-level prerequisites and required outcomes, so
+  export-growth candidate models no longer inherit the sectoral-output prerequisite by default.
 - Release blocker IDs no longer duplicate the `research_` prefix.
 - Analytical dictionary coverage now uses dataset-column dictionaries for the BPstat-derived context
   tables and complete exposure-value units.

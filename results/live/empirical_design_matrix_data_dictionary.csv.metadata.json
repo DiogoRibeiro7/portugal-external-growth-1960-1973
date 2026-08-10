@@ -9,16 +9,16 @@
     "source_status",
     "analytical_use"
   ],
-  "creation_timestamp_utc": "2026-08-10T11:45:13+01:00",
+  "creation_timestamp_utc": "2026-08-10T12:40:59+01:00",
   "date_range": null,
   "file": "results/live/empirical_design_matrix_data_dictionary.csv",
   "input_artifacts": [
     {
       "path": "data/interim/live/empirical_design_matrix.csv",
-      "sha256": "6fb4d66d8558724ea0507938b85f81f3c661558ea4640fe1887e310c7bd715f6"
+      "sha256": "1d36adeb0072087e7c7dac4b43cc83933fdf4f5aaf21916b0fbfbb371a106f64"
     }
   ],
-  "rows": 8,
+  "rows": 11,
   "schema": {
     "analytical_use": "object",
     "column_name": "object",
@@ -28,7 +28,7 @@
     "source_status": "object",
     "unit": "object"
   },
-  "sha256": "b76a4a4eb08dd421c2f3d28da577b7ec4f360e3f5b600e17a88ef1756f2df602",
+  "sha256": "92d41ae8920d0552021f157addde6be580b494ca91c1e486e1dfe379cdd7691e",
   "source_files": [
     "data/interim/live/empirical_design_matrix.csv"
   ],

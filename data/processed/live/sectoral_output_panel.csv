@@ -1,1 +1,1 @@
-sector_code,year,nominal_output,real_output,output_growth,deflator,source_id,source_quality
+sector_code,year,source_classification,source_sector_code,harmonised_sector_code,classification_version,mapping_version,nominal_output,real_output,output_growth,deflator,unit,currency,price_basis,deflator_base,classification_break_status,source_id,source_quality
