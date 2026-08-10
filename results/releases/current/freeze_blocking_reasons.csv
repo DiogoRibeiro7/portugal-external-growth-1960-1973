@@ -1,11 +1,4 @@
 blocker_id,source_check,severity,blocking_reason,evidence_path
-verification_format,freeze.verification.format,not_ready,stale_scope: verification scope fingerprint does not match current tracked content,results/releases/current/verification_evidence.csv
-verification_lint,freeze.verification.lint,not_ready,stale_scope: verification scope fingerprint does not match current tracked content,results/releases/current/verification_evidence.csv
-verification_manifest,freeze.verification.manifest,not_ready,stale_scope: verification scope fingerprint does not match current tracked content,results/releases/current/verification_evidence.csv
-verification_reproduction,freeze.verification.reproduction,not_ready,stale_scope: verification scope fingerprint does not match current tracked content,results/releases/current/verification_evidence.csv
-verification_tests,freeze.verification.tests,not_ready,stale_scope: verification scope fingerprint does not match current tracked content,results/releases/current/verification_evidence.csv
-verification_typecheck,freeze.verification.typecheck,not_ready,stale_scope: verification scope fingerprint does not match current tracked content,results/releases/current/verification_evidence.csv
-verification_validation,freeze.verification.validation,not_ready,stale_scope: verification scope fingerprint does not match current tracked content,results/releases/current/verification_evidence.csv
 research_empirical_prerequisites,research.empirical_prerequisites,not_ready,0/6 empirical prerequisites are satisfied.,results/validation/research_readiness_report.csv
 research_manual_source_documents,research.manual_source_documents,not_ready,4/43 expected manual source-year records are complete.,results/validation/research_readiness_report.csv
 research_cross_source_comparison,research.cross_source_comparison,not_ready,88/120 cross-source comparison rows have missing source coverage.,results/validation/research_readiness_report.csv
