@@ -35,6 +35,7 @@ PREREQUISITE_AUDIT_REQUIREMENTS = {
     "portuguese_sectoral_output_data": (
         "sectoral_output_coverage",
         "price_deflator_coverage",
+        "dependent_variable_coverage",
     ),
     "documented_product_to_industry_mapping": (
         "product_to_industry_mapping_coverage",
@@ -44,6 +45,7 @@ PREREQUISITE_AUDIT_REQUIREMENTS = {
         "usable_industries",
         "usable_years",
         "missingness_structure_documented",
+        "dependent_variable_coverage",
         "identification_variables_available",
         "within_sector_exposure_variation",
         "within_year_cross_sectional_variation",
@@ -121,6 +123,17 @@ def load_empirical_design_matrix_or_empty(root: Path) -> pd.DataFrame:
     return empty_design_matrix()
 
 
+def load_sectoral_output_panel_or_empty(root: Path) -> pd.DataFrame:
+    """Return an existing sectoral-output panel instead of overwriting it with a scaffold."""
+
+    path = root / "data/processed/live/sectoral_output_panel.csv"
+    existing = _read_csv(path)
+    required_columns = set(empty_sectoral_output_panel().columns)
+    if not existing.empty and required_columns.issubset(existing.columns):
+        return existing
+    return empty_sectoral_output_panel()
+
+
 def build_empirical_readiness_audit(root: Path) -> pd.DataFrame:
     """Build a requirement-level empirical-readiness audit matrix."""
 
@@ -141,6 +154,7 @@ def build_empirical_readiness_audit(root: Path) -> pd.DataFrame:
         _usable_years(root),
         _missingness_structure(root),
         _classification_breaks(root),
+        _dependent_variable_coverage(root),
         _identification_variables(root),
         _within_sector_exposure_variation(root),
         _within_year_cross_sectional_variation(root),
@@ -288,9 +302,27 @@ def empty_design_matrix() -> pd.DataFrame:
             "sector_code",
             "year",
             "outcome_variable",
+            "dependent_variable_value",
             "colonial_exposure",
             "european_exposure",
             "controls_available",
+            "source_quality",
+        ]
+    )
+
+
+def empty_sectoral_output_panel() -> pd.DataFrame:
+    """Return a schema-stable sectoral output panel placeholder."""
+
+    return pd.DataFrame(
+        columns=[
+            "sector_code",
+            "year",
+            "nominal_output",
+            "real_output",
+            "output_growth",
+            "deflator",
+            "source_id",
             "source_quality",
         ]
     )
@@ -397,7 +429,27 @@ def _annual_trade_coverage(root: Path) -> dict[str, object]:
     if frame.empty:
         return _record("annual_trade_coverage", required, 0, "annual_aggregate_dataset_missing")
     if {"year", "flow_code"}.issubset(frame.columns):
-        available = _available_year_flow_pairs(frame, root=root)
+        available = _available_non_null_year_flow_pairs(
+            frame,
+            flow_code="X",
+            value_columns=[
+                "world_exports_pte",
+                "exports_pte",
+                "trade_value_pte",
+                "trade_value",
+            ],
+            root=root,
+        ) + _available_non_null_year_flow_pairs(
+            frame,
+            flow_code="M",
+            value_columns=[
+                "world_imports_pte",
+                "imports_pte",
+                "trade_value_pte",
+                "trade_value",
+            ],
+            root=root,
+        )
     else:
         sample = _sample_year_rows(frame, root=root)
         available = int(
@@ -504,48 +556,43 @@ def _product_industry_mapping_coverage(root: Path) -> dict[str, object]:
 
 
 def _sectoral_output_coverage(root: Path) -> dict[str, object]:
-    dictionary = _read_csv(root / "results/live/bpstat_macro_data_dictionary.csv")
-    if dictionary.empty:
-        return _record("sectoral_output_coverage", 1, 0, "macro data dictionary missing")
-    empirical = _empirical_use_mask(dictionary)
-    if empirical is None:
+    panel = _sectoral_output_panel(root)
+    required = _sectoral_output_grid_requirement(panel, root=root)
+    if panel.empty:
         return _record(
             "sectoral_output_coverage",
-            1,
+            required,
             0,
-            "macro data dictionary lacks machine-readable empirical-use review flags",
+            "sectoral output panel is missing or empty",
         )
-    concept_text = dictionary.astype(str).agg(" ".join, axis=1).str.lower()
-    candidate = concept_text.str.contains("sector|gva|manufacturing|industry", regex=True)
-    available = int((candidate & empirical).sum() > 0)
+    available = _non_null_sector_year_observations(
+        panel,
+        ["nominal_output", "real_output", "output_growth"],
+    )
     return _record(
         "sectoral_output_coverage",
-        1,
-        int(available > 0),
-        "reviewed sectoral output panel is not enabled for empirical analysis",
+        required,
+        available,
+        "reviewed sector-year output observations do not cover the configured sample",
     )
 
 
 def _deflator_coverage(root: Path) -> dict[str, object]:
-    dictionary = _read_csv(root / "results/live/bpstat_macro_data_dictionary.csv")
-    if dictionary.empty:
-        return _record("price_deflator_coverage", 1, 0, "macro data dictionary missing")
-    empirical = _empirical_use_mask(dictionary)
-    if empirical is None:
+    panel = _sectoral_output_panel(root)
+    required = _sectoral_output_grid_requirement(panel, root=root)
+    if panel.empty:
         return _record(
             "price_deflator_coverage",
-            1,
+            required,
             0,
-            "macro data dictionary lacks machine-readable empirical-use review flags",
+            "sectoral output panel is missing or empty",
         )
-    text = dictionary.astype(str).agg(" ".join, axis=1).str.lower()
-    candidate = text.str.contains("deflator|price")
-    available = int((candidate & empirical).sum() > 0)
+    available = _non_null_sector_year_observations(panel, ["deflator"])
     return _record(
         "price_deflator_coverage",
-        1,
+        required,
         available,
-        "price/deflator series are not reviewed for sector-level empirical use",
+        "sector-year price deflator observations do not cover the configured sample",
     )
 
 
@@ -791,6 +838,27 @@ def _classification_breaks(root: Path) -> dict[str, object]:
     )
 
 
+def _dependent_variable_coverage(root: Path) -> dict[str, object]:
+    design = _complete_design_matrix(root)
+    sample_years = _trade_sample_years(root)
+    expected = len(sample_years) * max(MIN_USABLE_INDUSTRIES, _design_sector_count(design))
+    required = ceil(expected * MIN_SECTOR_YEAR_GRID_COVERAGE)
+    if design.empty:
+        return _record(
+            "dependent_variable_coverage",
+            required,
+            0,
+            "empirical design matrix is empty or lacks numeric dependent-variable values",
+        )
+    available = _non_null_sector_year_observations(design, ["dependent_variable_value"])
+    return _record(
+        "dependent_variable_coverage",
+        required,
+        available,
+        "numeric dependent-variable values do not cover the configured sector-year sample",
+    )
+
+
 def _identification_variables(root: Path) -> dict[str, object]:
     design = _complete_design_matrix(root)
     if design.empty:
@@ -1003,6 +1071,7 @@ def _complete_design_matrix(root: Path) -> pd.DataFrame:
     required_columns = {
         "sector_code",
         "year",
+        "dependent_variable_value",
         "colonial_exposure",
         "european_exposure",
         "controls_available",
@@ -1011,12 +1080,16 @@ def _complete_design_matrix(root: Path) -> pd.DataFrame:
         return pd.DataFrame()
     complete = design.copy()
     complete["year"] = pd.to_numeric(complete["year"], errors="coerce")
+    complete["dependent_variable_value"] = pd.to_numeric(
+        complete["dependent_variable_value"], errors="coerce"
+    )
     complete["colonial_exposure"] = pd.to_numeric(complete["colonial_exposure"], errors="coerce")
     complete["european_exposure"] = pd.to_numeric(complete["european_exposure"], errors="coerce")
     complete["sector_code"] = complete["sector_code"].astype("string").fillna("").str.strip()
     complete = complete.loc[
         complete["sector_code"].ne("")
         & complete["year"].notna()
+        & complete["dependent_variable_value"].notna()
         & complete["colonial_exposure"].notna()
         & complete["european_exposure"].notna()
     ].copy()
@@ -1060,6 +1133,61 @@ def _available_year_flow_pairs(frame: pd.DataFrame, *, root: Path) -> int:
         ["year", "flow_code"],
     ]
     return int(pairs.drop_duplicates().shape[0])
+
+
+def _available_non_null_year_flow_pairs(
+    frame: pd.DataFrame,
+    *,
+    flow_code: str,
+    value_columns: list[str],
+    root: Path,
+) -> int:
+    available_columns = [column for column in value_columns if column in frame.columns]
+    if not available_columns:
+        return 0
+    sample = frame.loc[
+        frame["year"].isin(_trade_sample_years(root))
+        & frame["flow_code"].astype(str).eq(flow_code),
+        ["year", "flow_code", *available_columns],
+    ].copy()
+    if sample.empty:
+        return 0
+    values = sample[available_columns].apply(pd.to_numeric, errors="coerce")
+    observed = sample.loc[values.notna().any(axis=1), ["year", "flow_code"]]
+    return int(observed.drop_duplicates().shape[0])
+
+
+def _sectoral_output_panel(root: Path) -> pd.DataFrame:
+    panel = _read_csv(root / "data/processed/live/sectoral_output_panel.csv")
+    if panel.empty or not {"sector_code", "year"}.issubset(panel.columns):
+        return pd.DataFrame()
+    sample = panel.copy()
+    sample["year"] = pd.to_numeric(sample["year"], errors="coerce")
+    sample["sector_code"] = sample["sector_code"].astype("string").fillna("").str.strip()
+    sample = sample.loc[
+        sample["sector_code"].ne("") & sample["year"].isin(set(_trade_sample_years(root)))
+    ].copy()
+    sample["year"] = sample["year"].astype(int)
+    return sample
+
+
+def _sectoral_output_grid_requirement(panel: pd.DataFrame, *, root: Path) -> int:
+    sector_count = (
+        int(panel["sector_code"].nunique())
+        if not panel.empty and "sector_code" in panel.columns
+        else 0
+    )
+    expected = len(_trade_sample_years(root)) * max(MIN_USABLE_INDUSTRIES, sector_count)
+    return ceil(expected * MIN_SECTOR_YEAR_GRID_COVERAGE)
+
+
+def _non_null_sector_year_observations(frame: pd.DataFrame, value_columns: list[str]) -> int:
+    available_columns = [column for column in value_columns if column in frame.columns]
+    if frame.empty or not available_columns:
+        return 0
+    values = frame[available_columns].apply(pd.to_numeric, errors="coerce")
+    observed = frame.loc[values.notna().any(axis=1), ["sector_code", "year"]]
+    return int(observed.drop_duplicates().shape[0])
 
 
 def _industry_trade_panel(root: Path) -> pd.DataFrame:

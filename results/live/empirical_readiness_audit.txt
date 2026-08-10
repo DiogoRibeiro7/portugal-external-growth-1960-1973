@@ -1,9 +1,9 @@
 Empirical-design readiness audit
 ================================
 
-Requirements checked: 26
+Requirements checked: 27
 Satisfied requirements: 0
-Blocked requirements: 26
+Blocked requirements: 27
 
 No causal regressions, tariff effects, or fitted model coefficients are produced.
 The repository remains blocked for empirical estimation until every required
@@ -15,8 +15,8 @@ Blocking reasons:
 - european_partner_completeness: fixed European partner-sample coverage is incomplete
 - product_level_coverage: COMTRADE_SUBSCRIPTION_KEY_missing;commodity_code_batches_not_registered
 - product_to_industry_mapping_coverage: product_extraction_status_blocked;product_industry_mapping_coverage_zero;product_industry_mapping_not_registered;product_level_trade_not_validated
-- sectoral_output_coverage: reviewed sectoral output panel is not enabled for empirical analysis
-- price_deflator_coverage: price/deflator series are not reviewed for sector-level empirical use
+- sectoral_output_coverage: sectoral output panel is missing or empty
+- price_deflator_coverage: sectoral output panel is missing or empty
 - territorial_consistency: Comtrade reporter/partner territorial definitions remain unresolved
 - cross_source_reconciliation: INE-Comtrade, CEPII, EFTA, and OECD reconciliation scopes are not all resolved
 - efta_policy_tariff_data_availability: classification_breaks_documented=product classification coverage diagnostics missing or empty;product mapping status is blocked;source-grounded product classification mapping is not registered;classification documentation is missing or blocked;efta_policy_product_mapping_not_registered;efta_policy_sources_not_acquired;efta_tariff_policy_rows_not_registered;empirical_readiness_audit_blocks_efta_policy_dataset;identification_variables_available=empirical design matrix is empty or lacks sector/year exposure controls;product_level_coverage=COMTRADE_SUBSCRIPTION_KEY_missing;commodity_code_batches_not_registered;product_to_industry_mapping_coverage=product_extraction_status_blocked;product_industry_mapping_coverage_zero;product_industry_mapping_not_registered;product_level_trade_not_validated;usable_industries=industry trade panel is empty;usable_years=industry trade panel is empty
@@ -26,6 +26,7 @@ Blocking reasons:
 - usable_years: industry trade panel is empty
 - missingness_structure_documented: missingness structure remains dominated by blocked product/industry data
 - classification_breaks_documented: product classification coverage diagnostics missing or empty;product mapping status is blocked;source-grounded product classification mapping is not registered;classification documentation is missing or blocked
+- dependent_variable_coverage: empirical design matrix is empty or lacks numeric dependent-variable values
 - identification_variables_available: empirical design matrix is empty or lacks sector/year exposure controls
 - within_sector_exposure_variation: empirical design matrix is empty or lacks sector/year exposure controls
 - within_year_cross_sectional_variation: empirical design matrix is empty or lacks sector/year exposure controls

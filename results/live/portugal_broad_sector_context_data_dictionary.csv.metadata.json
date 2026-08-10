@@ -11,14 +11,14 @@
   ],
   "creation_timestamp_utc": "2026-08-10T11:45:13+01:00",
   "date_range": null,
-  "file": "results/live/industry_exposure_panel_data_dictionary.csv",
+  "file": "results/live/portugal_broad_sector_context_data_dictionary.csv",
   "input_artifacts": [
     {
-      "path": "data/processed/live/industry_exposure_panel.csv",
-      "sha256": "e1087fc1fe2698a763f7c68d6b51cbefd48851a06f4c7ebfce89bc7e955ba067"
+      "path": "data/processed/live/portugal_broad_sector_context.csv",
+      "sha256": "d1d240167e555cda3c18a82f7f1b639c26fcc796daa4a9ff2c03e1976c03643e"
     }
   ],
-  "rows": 17,
+  "rows": 11,
   "schema": {
     "analytical_use": "object",
     "column_name": "object",
@@ -28,11 +28,11 @@
     "source_status": "object",
     "unit": "object"
   },
-  "sha256": "1180341c726a1b465a29424643968e0259981d19e82c2f36b16d9f2b293d5816",
+  "sha256": "15599a908e8336e01a1273bbb74da89bdee21a3c6c173eab2d0fd2c79125238a",
   "source_files": [
-    "data/processed/live/industry_exposure_panel.csv"
+    "data/processed/live/portugal_broad_sector_context.csv"
   ],
   "source_licence": "not_specified",
-  "stage": "industry_exposure_panel_data_dictionary",
+  "stage": "portugal_broad_sector_context_data_dictionary",
   "validation_findings": []
 }

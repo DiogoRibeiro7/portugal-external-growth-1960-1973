@@ -34,6 +34,7 @@ from portugal_external_growth.empirical import (
     empty_diagnostics,
     empty_identification_strategy_review,
     load_empirical_design_matrix_or_empty,
+    load_sectoral_output_panel_or_empty,
 )
 from portugal_external_growth.http import build_session
 from portugal_external_growth.industry_exposure import build_industry_exposure_outputs
@@ -900,6 +901,17 @@ def build_bpstat_macro(settings: Settings) -> None:
         },
     )
     write_dataframe_with_metadata(
+        build_analytical_data_dictionary(
+            "data/processed/live/portugal_macro_context.csv",
+            macro,
+        ),
+        root / "results/live/portugal_macro_context_data_dictionary.csv",
+        metadata={
+            "source_files": ["data/processed/live/portugal_macro_context.csv"],
+            "stage": "portugal_macro_context_data_dictionary",
+        },
+    )
+    write_dataframe_with_metadata(
         broad_sector,
         root / "data/processed/live/portugal_broad_sector_context.csv",
         metadata={
@@ -908,6 +920,17 @@ def build_bpstat_macro(settings: Settings) -> None:
                 "data/processed/live/portugal_macro_context.csv",
             ],
             "stage": "bpstat_broad_sector_context_processed",
+        },
+    )
+    write_dataframe_with_metadata(
+        build_analytical_data_dictionary(
+            "data/processed/live/portugal_broad_sector_context.csv",
+            broad_sector,
+        ),
+        root / "results/live/portugal_broad_sector_context_data_dictionary.csv",
+        metadata={
+            "source_files": ["data/processed/live/portugal_broad_sector_context.csv"],
+            "stage": "portugal_broad_sector_context_data_dictionary",
         },
     )
     write_dataframe_with_metadata(
@@ -1453,6 +1476,27 @@ def prepare_empirical_extension(settings: Settings) -> None:
 
     root = settings.resolved_root()
     empirical_code = "src/portugal_external_growth/empirical.py"
+    sectoral_output = load_sectoral_output_panel_or_empty(root)
+    write_dataframe_with_metadata(
+        sectoral_output,
+        root / "data/processed/live/sectoral_output_panel.csv",
+        metadata={
+            "stage": "sectoral_output_panel_pending_source_grounded_empirical_data"
+            if sectoral_output.empty
+            else "sectoral_output_panel_preserved_from_existing_data"
+        },
+    )
+    write_dataframe_with_metadata(
+        build_analytical_data_dictionary(
+            "data/processed/live/sectoral_output_panel.csv",
+            sectoral_output,
+        ),
+        root / "results/live/sectoral_output_panel_data_dictionary.csv",
+        metadata={
+            "source_files": ["data/processed/live/sectoral_output_panel.csv"],
+            "stage": "sectoral_output_panel_data_dictionary",
+        },
+    )
     design = load_empirical_design_matrix_or_empty(root)
     write_dataframe_with_metadata(
         design,
@@ -1491,6 +1535,7 @@ def prepare_empirical_extension(settings: Settings) -> None:
                 "results/diagnostics/product_industry_mapping/product_mapping_status.csv",
                 "results/live/product_industry_mapping_documentation.txt",
                 "config/product_industry_mapping.yml",
+                "data/processed/live/sectoral_output_panel.csv",
                 "data/processed/live/industry_trade_panel.csv",
                 "results/diagnostics/industry_exposure/industry_exposure_coverage.csv",
             ],

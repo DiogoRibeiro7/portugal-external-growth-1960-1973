@@ -122,16 +122,19 @@ ANALYTICAL_DATASETS = {
         "results/live/validated_annual_aggregate_external_orientation_data_dictionary.csv"
     ),
     "data/processed/live/portugal_macro_context.csv": (
-        "results/live/bpstat_macro_data_dictionary.csv"
+        "results/live/portugal_macro_context_data_dictionary.csv"
     ),
     "data/processed/live/portugal_broad_sector_context.csv": (
-        "results/live/bpstat_macro_data_dictionary.csv"
+        "results/live/portugal_broad_sector_context_data_dictionary.csv"
     ),
     "data/processed/live/industry_trade_panel.csv": (
         "results/live/industry_trade_panel_data_dictionary.csv"
     ),
     "data/processed/live/industry_exposure_panel.csv": (
         "results/live/industry_exposure_panel_data_dictionary.csv"
+    ),
+    "data/processed/live/sectoral_output_panel.csv": (
+        "results/live/sectoral_output_panel_data_dictionary.csv"
     ),
     "data/interim/live/empirical_design_matrix.csv": (
         "results/live/empirical_design_matrix_data_dictionary.csv"
@@ -716,10 +719,11 @@ def build_freeze_blockers(
     if not research_readiness.empty:
         blocked = research_readiness.loc[~research_readiness["severity"].eq("ready")]
         for row in blocked.to_dict(orient="records"):
+            source_check = str(row.get("check", "research.unknown"))
             records.append(
                 _blocker(
-                    f"research_{row.get('check', 'unknown')}",
-                    str(row.get("check", "research.unknown")),
+                    _blocker_id_from_source_check(source_check),
+                    source_check,
                     str(row.get("severity", "not_ready")),
                     str(row.get("message", "")),
                     "results/validation/research_readiness_report.csv",
@@ -1036,6 +1040,10 @@ def _blocker(
         "blocking_reason": blocking_reason,
         "evidence_path": evidence_path,
     }
+
+
+def _blocker_id_from_source_check(source_check: str) -> str:
+    return re.sub(r"[^A-Za-z0-9]+", "_", source_check).strip("_") or "unknown"
 
 
 def _display_value(value: object) -> str:

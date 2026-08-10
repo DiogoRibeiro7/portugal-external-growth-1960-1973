@@ -42,6 +42,20 @@ DATASET_SPECS = {
         source_status="blocked until industry trade panel is populated from validated mappings",
         analytical_use="descriptive exposure panel only after mapping prerequisites are satisfied",
     ),
+    "data/processed/live/portugal_macro_context.csv": DatasetDictionarySpec(
+        source_status="BPstat-derived context table with historical-methodology caveats",
+        analytical_use="macro context only; not an empirical identification dataset",
+    ),
+    "data/processed/live/portugal_broad_sector_context.csv": DatasetDictionarySpec(
+        source_status="BPstat-derived broad-sector context table with classification caveats",
+        analytical_use="broad-sector context only; not a sector-year empirical outcome panel",
+    ),
+    "data/processed/live/sectoral_output_panel.csv": DatasetDictionarySpec(
+        source_status="blocked until source-grounded sectoral output observations are acquired",
+        analytical_use=(
+            "candidate empirical outcome panel; unavailable until populated and reviewed"
+        ),
+    ),
     "data/interim/live/empirical_design_matrix.csv": DatasetDictionarySpec(
         source_status="schema placeholder pending empirical prerequisites",
         analytical_use="no model fitting; intentionally empty until readiness audit passes",
@@ -143,6 +157,59 @@ COLUMN_DESCRIPTIONS = {
         "sample is observed",
         "share",
     ),
+    "nominal_gdp_million_eur": ("gross domestic product at current prices", "million EUR"),
+    "real_gdp_chain_linked_million_eur": (
+        "chain-linked real gross domestic product",
+        "million EUR",
+    ),
+    "real_gdp_yoy_percent": ("year-over-year real GDP growth", "percent"),
+    "gdp_deflator_index": ("gross domestic product deflator index", "index"),
+    "gdp_deflator_yoy_percent": ("year-over-year GDP deflator growth", "percent"),
+    "exports_goods_services_million_eur": (
+        "exports of goods and services at current prices",
+        "million EUR",
+    ),
+    "imports_goods_services_million_eur": (
+        "imports of goods and services at current prices",
+        "million EUR",
+    ),
+    "real_exports_goods_services_million_eur": (
+        "chain-linked real exports of goods and services",
+        "million EUR",
+    ),
+    "real_imports_goods_services_million_eur": (
+        "chain-linked real imports of goods and services",
+        "million EUR",
+    ),
+    "gfcf_million_eur": ("gross fixed capital formation at current prices", "million EUR"),
+    "real_gfcf_million_eur": ("chain-linked real gross fixed capital formation", "million EUR"),
+    "resident_population_thousand_people": ("resident population", "thousand people"),
+    "real_gdp_per_resident_thousand_eur": (
+        "chain-linked real GDP divided by resident population",
+        "thousand EUR per person",
+    ),
+    "sector": ("broad-sector label for context tables", "label"),
+    "manufacturing_gva_million_eur": (
+        "manufacturing gross value added at current prices",
+        "million EUR",
+    ),
+    "real_manufacturing_gva_million_eur": (
+        "chain-linked real manufacturing gross value added",
+        "million EUR",
+    ),
+    "manufacturing_gva_deflator_yoy_percent": (
+        "year-over-year manufacturing GVA deflator growth",
+        "percent",
+    ),
+    "manufacturing_gva_share_of_nominal_gdp": (
+        "manufacturing GVA divided by nominal GDP",
+        "share",
+    ),
+    "real_manufacturing_gva_share_of_real_gdp": (
+        "real manufacturing GVA divided by real GDP",
+        "share",
+    ),
+    "coverage_status": ("machine-readable coverage status for the project period", "status"),
     "non_colonial_world_exports_pte": (
         "total exports minus complete colonial-market exports; this residual still includes Europe",
         "PTE",
@@ -175,9 +242,23 @@ COLUMN_DESCRIPTIONS = {
     "notes": ("free-text caveat or source note", "text"),
     "sector_code": ("sector identifier for empirical-design rows", "code"),
     "outcome_variable": ("registered dependent variable placeholder", "variable"),
+    "dependent_variable_value": (
+        "numeric dependent-variable value used by candidate models",
+        "source unit",
+    ),
     "colonial_exposure": ("colonial-demand exposure variable", "share"),
     "european_exposure": ("European-demand exposure variable", "share"),
     "controls_available": ("whether required control variables are available", "boolean"),
+    "nominal_output": (
+        "sectoral nominal output value from reviewed source rows",
+        "source currency",
+    ),
+    "real_output": ("sectoral real output value from reviewed source rows", "source currency"),
+    "output_growth": ("sectoral output growth rate used as a candidate dependent variable", "rate"),
+    "deflator": ("sector-level price deflator used to construct real output measures", "index"),
+    "total_exports_usd": ("total industry exports to all mapped partner groups", "USD"),
+    "colonial_exports_usd": ("industry exports to mapped colonial partner groups", "USD"),
+    "european_exports_usd": ("industry exports to mapped European partner groups", "USD"),
     "commodity_code": ("source commodity or product code", "code"),
     "commodity_description": ("source commodity or product description", "label"),
     "product_group": ("policy product group", "category"),

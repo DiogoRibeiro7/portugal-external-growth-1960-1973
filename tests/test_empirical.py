@@ -14,6 +14,7 @@ from portugal_external_growth.empirical import (
     empty_design_matrix,
     empty_diagnostics,
     empty_identification_strategy_review,
+    empty_sectoral_output_panel,
     load_empirical_design_matrix_or_empty,
 )
 
@@ -31,12 +32,14 @@ def test_empirical_coefficients_are_empty() -> None:
 
 def test_empirical_placeholder_outputs_are_schema_stable() -> None:
     design = empty_design_matrix()
+    output_panel = empty_sectoral_output_panel()
     diagnostics = empty_diagnostics()
     specs = build_model_specification_registry()
     notes = build_empirical_risk_notes()
 
     assert design.empty
     assert "colonial_exposure" in design.columns
+    assert "output_growth" in output_panel.columns
     assert diagnostics.loc[0, "status"] == "failed"
     assert set(specs["status"]) == {"blocked_pending_prerequisites"}
     assert "No model has been fit" in notes
@@ -46,7 +49,7 @@ def test_empirical_readiness_audit_blocks_empty_repository(tmp_path: Path) -> No
     audit = build_empirical_readiness_audit(tmp_path)
     notes = build_empirical_readiness_audit_notes(audit)
 
-    assert len(audit) == 26
+    assert len(audit) == 27
     assert set(audit["status"]) == {"blocked"}
     assert audit.loc[audit["requirement"].eq("product_level_coverage"), "coverage"].iloc[0] == 0
     assert "No causal regressions" in notes
@@ -70,6 +73,8 @@ def test_empirical_readiness_audit_uses_available_artifacts(tmp_path: Path) -> N
             {
                 "year": year,
                 "flow_code": flow,
+                "world_exports_pte": 100.0 if flow == "X" else None,
+                "world_imports_pte": 100.0 if flow == "M" else None,
                 "colonial_exports_complete_pte": 1.0 if flow == "X" else None,
                 "colonial_imports_complete_pte": 1.0 if flow == "M" else None,
                 "efta_participation_exports_pte": 1.0 if flow == "X" else None,
@@ -147,6 +152,7 @@ def test_empirical_readiness_audit_uses_available_artifacts(tmp_path: Path) -> N
             {
                 "sector_code": f"sector_{sector:02d}",
                 "year": year,
+                "dependent_variable_value": sector * 0.01 + (year - 1962) * 0.02,
                 "colonial_exposure": (
                     sector * 0.02 + (year - 1962) * 0.01 + sector * (year - 1962) * 0.001
                 ),
@@ -159,6 +165,22 @@ def test_empirical_readiness_audit_uses_available_artifacts(tmp_path: Path) -> N
             for year in range(1962, 1974)
         ]
     ).to_csv(interim / "empirical_design_matrix.csv", index=False)
+    pd.DataFrame(
+        [
+            {
+                "sector_code": f"sector_{sector:02d}",
+                "year": year,
+                "nominal_output": 100 + sector + year,
+                "real_output": 90 + sector + year,
+                "output_growth": sector * 0.01 + (year - 1962) * 0.02,
+                "deflator": 1 + (year - 1962) * 0.01,
+                "source_id": "test_source",
+                "source_quality": "reviewed",
+            }
+            for sector in range(10)
+            for year in range(1962, 1974)
+        ]
+    ).to_csv(processed / "sectoral_output_panel.csv", index=False)
     (tmp_path / "config").mkdir()
     (tmp_path / "config/product_industry_mapping.yml").write_text(
         "\n".join(
@@ -212,6 +234,7 @@ def test_empirical_readiness_audit_uses_available_artifacts(tmp_path: Path) -> N
     assert "usable_industries" in satisfied
     assert "usable_years" in satisfied
     assert "classification_breaks_documented" in satisfied
+    assert "dependent_variable_coverage" in satisfied
     assert "identification_variables_available" in satisfied
     assert "within_sector_exposure_variation" in satisfied
     assert "within_year_cross_sectional_variation" in satisfied
@@ -273,6 +296,7 @@ def test_empirical_design_matrix_loader_preserves_existing_matrix(tmp_path: Path
                 "year": 1962,
                 "sector_code": "textiles",
                 "outcome_variable": "output_growth",
+                "dependent_variable_value": 0.03,
                 "colonial_exposure": 0.2,
                 "european_exposure": 0.3,
                 "controls_available": True,
@@ -294,13 +318,21 @@ def test_empty_identification_strategy_review_blocks_by_default() -> None:
     assert set(review["strategy_component"]) == {"simultaneity", "common_european_shocks"}
 
 
-def test_macro_controls_require_empirical_use_review_flags(tmp_path: Path) -> None:
+def test_sectoral_output_readiness_requires_actual_output_panel(tmp_path: Path) -> None:
     live = tmp_path / "results/live"
     live.mkdir(parents=True)
     pd.DataFrame(
         [
-            {"series": "manufacturing GVA", "concept": "manufacturing_value_added"},
-            {"series": "GDP deflator price", "concept": "gdp_deflator"},
+            {
+                "series": "manufacturing GVA",
+                "concept": "manufacturing_value_added",
+                "analytical_use": "empirical_identification",
+            },
+            {
+                "series": "GDP deflator price",
+                "concept": "gdp_deflator",
+                "analytical_use": "empirical_identification",
+            },
         ]
     ).to_csv(live / "bpstat_macro_data_dictionary.csv", index=False)
 
@@ -310,8 +342,8 @@ def test_macro_controls_require_empirical_use_review_flags(tmp_path: Path) -> No
     deflator = audit.loc[audit["requirement"].eq("price_deflator_coverage")].iloc[0]
     assert sectoral["status"] == "blocked"
     assert deflator["status"] == "blocked"
-    assert "empirical-use review flags" in sectoral["blocking_reason"]
-    assert "empirical-use review flags" in deflator["blocking_reason"]
+    assert "sectoral output panel" in sectoral["blocking_reason"]
+    assert "sectoral output panel" in deflator["blocking_reason"]
 
 
 def test_empirical_audit_uses_full_territorial_and_reconciliation_denominators(
@@ -377,7 +409,16 @@ def test_trade_sample_years_are_loaded_from_project_config(tmp_path: Path) -> No
         encoding="utf-8",
     )
     pd.DataFrame(
-        [{"year": year, "flow_code": flow} for year in [1962, 1963, 1964] for flow in ["X", "M"]]
+        [
+            {
+                "year": year,
+                "flow_code": flow,
+                "world_exports_pte": 100.0 if flow == "X" else None,
+                "world_imports_pte": 100.0 if flow == "M" else None,
+            }
+            for year in [1962, 1963, 1964]
+            for flow in ["X", "M"]
+        ]
     ).to_csv(processed / "validated_annual_aggregate_external_orientation.csv", index=False)
 
     audit = build_empirical_readiness_audit(tmp_path)
@@ -388,6 +429,30 @@ def test_trade_sample_years_are_loaded_from_project_config(tmp_path: Path) -> No
     assert annual["status"] == "satisfied"
 
 
+def test_annual_trade_coverage_requires_non_null_trade_values(tmp_path: Path) -> None:
+    processed = tmp_path / "data/processed/live"
+    processed.mkdir(parents=True)
+    pd.DataFrame(
+        [
+            {
+                "year": year,
+                "flow_code": flow,
+                "world_exports_pte": None,
+                "world_imports_pte": None,
+            }
+            for year in range(1962, 1974)
+            for flow in ["X", "M"]
+        ]
+    ).to_csv(processed / "validated_annual_aggregate_external_orientation.csv", index=False)
+
+    audit = build_empirical_readiness_audit(tmp_path)
+
+    annual = audit.loc[audit["requirement"].eq("annual_trade_coverage")].iloc[0]
+    assert annual["required"] == 24
+    assert annual["available"] == 0
+    assert annual["status"] == "blocked"
+
+
 def test_identification_checks_reject_year_effect_absorbed_exposures(tmp_path: Path) -> None:
     interim = tmp_path / "data/interim/live"
     interim.mkdir(parents=True)
@@ -396,6 +461,7 @@ def test_identification_checks_reject_year_effect_absorbed_exposures(tmp_path: P
             {
                 "sector_code": f"sector_{sector:02d}",
                 "year": year,
+                "dependent_variable_value": (year - 1962) * 0.01,
                 "colonial_exposure": 0.2 + (year - 1962) * 0.01,
                 "european_exposure": 0.4 - (year - 1962) * 0.01,
                 "controls_available": True,
@@ -423,6 +489,38 @@ def test_identification_checks_reject_year_effect_absorbed_exposures(tmp_path: P
     assert residual_rank["status"] == "blocked"
 
 
+def test_empirical_design_matrix_requires_numeric_dependent_variable(tmp_path: Path) -> None:
+    interim = tmp_path / "data/interim/live"
+    interim.mkdir(parents=True)
+    pd.DataFrame(
+        [
+            {
+                "sector_code": f"sector_{sector:02d}",
+                "year": year,
+                "colonial_exposure": (
+                    sector * 0.02 + (year - 1962) * 0.01 + sector * (year - 1962) * 0.001
+                ),
+                "european_exposure": (
+                    sector * 0.03 - (year - 1962) * 0.005 + (sector**2) * (year - 1962) * 0.0001
+                ),
+                "controls_available": True,
+            }
+            for sector in range(10)
+            for year in range(1962, 1974)
+        ]
+    ).to_csv(interim / "empirical_design_matrix.csv", index=False)
+
+    audit = build_empirical_readiness_audit(tmp_path)
+
+    dependent = audit.loc[audit["requirement"].eq("dependent_variable_coverage")].iloc[0]
+    identification = audit.loc[audit["requirement"].eq("identification_variables_available")].iloc[
+        0
+    ]
+    assert dependent["available"] == 0
+    assert dependent["status"] == "blocked"
+    assert identification["status"] == "blocked"
+
+
 def test_panel_sufficiency_rejects_sparse_sector_year_grid(tmp_path: Path) -> None:
     interim = tmp_path / "data/interim/live"
     interim.mkdir(parents=True)
@@ -434,6 +532,7 @@ def test_panel_sufficiency_rejects_sparse_sector_year_grid(tmp_path: Path) -> No
                 {
                     "sector_code": f"sector_{sector:02d}",
                     "year": year,
+                    "dependent_variable_value": sector * 0.01 + year_index * 0.02,
                     "colonial_exposure": (
                         sector * 0.2 + year_index * 0.03 + sector * year_index * 0.01
                     ),
@@ -491,6 +590,7 @@ def test_empirical_readiness_rejects_complete_panel_outside_configured_years(
             {
                 "sector_code": sector,
                 "year": year,
+                "dependent_variable_value": sector_index * 0.01 + year_index * 0.02,
                 "colonial_exposure": (
                     sector_index * 0.02 + year_index * 0.01 + sector_index * year_index * 0.001
                 ),
@@ -528,6 +628,7 @@ def test_empirical_readiness_rejects_duplicate_sector_year_observations(
         {
             "sector_code": f"sector_{sector:02d}",
             "year": year,
+            "dependent_variable_value": sector * 0.01 + (year - 1962) * 0.02,
             "colonial_exposure": (
                 sector * 0.02 + (year - 1962) * 0.01 + sector * (year - 1962) * 0.001
             ),
@@ -645,6 +746,8 @@ def test_partner_completeness_uses_fixed_sample_denominator_for_long_partial_pan
             {
                 "year": 1962,
                 "flow_code": "X",
+                "world_exports_pte": 100.0,
+                "world_imports_pte": None,
                 "colonial_exports_complete_pte": 10.0,
                 "colonial_imports_complete_pte": None,
                 "efta_participation_exports_pte": 5.0,
@@ -653,6 +756,8 @@ def test_partner_completeness_uses_fixed_sample_denominator_for_long_partial_pan
             {
                 "year": 1962,
                 "flow_code": "M",
+                "world_exports_pte": None,
+                "world_imports_pte": 100.0,
                 "colonial_exports_complete_pte": None,
                 "colonial_imports_complete_pte": 8.0,
                 "efta_participation_exports_pte": None,

@@ -12,6 +12,8 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
 - Empirical panel sufficiency now checks sector-year grid coverage, minimum years per sector, and
   residual degrees of freedom.
 - Empirical readiness now checks that sector-year observations are unique.
+- Empirical readiness now includes a `dependent_variable_coverage` gate and a scaffolded
+  `sectoral_output_panel.csv` outcome panel.
 - Pipeline metadata writes now preserve repository-relative provenance when run from a different
   current working directory.
 
@@ -25,6 +27,12 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
   rank instead of an approximate parameter-count formula.
 - Pipeline metadata root detection now prefers project sentinels before generic path markers such
   as `data` or `results`.
+- Sectoral-output and deflator readiness now require actual sector-year observations instead of
+  BPstat dictionary flags.
+- Annual trade coverage now requires non-null world trade values for each sample year-flow row.
+- Release blocker IDs no longer duplicate the `research_` prefix.
+- Analytical dictionary coverage now uses dataset-column dictionaries for the BPstat-derived context
+  tables and complete exposure-value units.
 
 ## [0.1.6] - 2026-08-09
 

@@ -33,7 +33,7 @@ def test_research_data_freeze_declares_not_ready_with_machine_blockers(
     )
 
     assert declaration.loc[0, "declaration"] == "NOT_READY"
-    assert "research_research.empirical_prerequisites" in blockers["blocker_id"].tolist()
+    assert "research_empirical_prerequisites" in blockers["blocker_id"].tolist()
     assert "final_result_table_creation_timestamps_missing" in blockers["blocker_id"].tolist()
     assert "analytical_data_dictionaries_missing" in blockers["blocker_id"].tolist()
     transcription_reason = blockers.loc[
@@ -608,7 +608,7 @@ def test_freeze_checklist_blocks_cross_source_comparison_failures() -> None:
     blockers = pd.DataFrame(
         [
             {
-                "blocker_id": "research_research.cross_source_comparison",
+                "blocker_id": "research_cross_source_comparison",
                 "source_check": "research.cross_source_comparison",
                 "severity": "not_ready",
                 "blocking_reason": "source rows disagree",
