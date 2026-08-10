@@ -18,6 +18,8 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
   deflator, source-provenance, and outcome-definition consistency coverage.
 - Sectoral-output readiness now includes a source registry scaffold and explicit 1963-1973
   growth-sample coverage for log-change outcomes.
+- Sectoral-output diagnostics now include a source-transition registry scaffold for reviewed
+  cross-source level bridges.
 - Pipeline metadata writes now preserve repository-relative provenance when run from a different
   current working directory.
 
@@ -40,6 +42,15 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
   registry and classification-break statuses to use an empirically usable controlled vocabulary.
 - Output-growth readiness now validates `output_growth` as a deterministic prior-year log change
   of reviewed real output, and export-growth coverage is derived from sectoral export levels.
+- Sectoral-output source registries now enforce non-placeholder source metadata, valid retrieval
+  dates, resolved licence statuses, parseable year scopes, unique `source_id` values, and
+  panel-source year/classification compatibility.
+- Output-growth readiness now blocks growth across incompatible source, unit, price-basis,
+  classification, mapping, or real-output-method regimes unless a reviewed source transition is
+  registered, and records current/lag source IDs for accepted growth observations.
+- `real_output_method` now uses a controlled vocabulary.
+- Candidate model readiness now checks outcome-specific joined designs, so export-growth models
+  require export-growth sector-years to overlap the exposure panel.
 - Model readiness now declares model-specific high-level prerequisites and required outcomes, so
   export-growth candidate models no longer inherit the sectoral-output prerequisite by default.
 - Release blocker IDs no longer duplicate the `research_` prefix.

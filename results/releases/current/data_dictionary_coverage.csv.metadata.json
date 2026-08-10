@@ -10,7 +10,7 @@
     "placeholder_description_count",
     "missing_unit_count"
   ],
-  "creation_timestamp_utc": "2026-08-10T16:23:04+01:00",
+  "creation_timestamp_utc": "2026-08-10T21:13:09+01:00",
   "date_range": null,
   "file": "results/releases/current/data_dictionary_coverage.csv",
   "input_artifacts": [],
@@ -25,7 +25,7 @@
     "missing_unit_count": "int64",
     "placeholder_description_count": "int64"
   },
-  "sha256": "702b56750aae627c0c7d5a3459138cb2f0b4bd89ed928b5ad4f6263793a00795",
+  "sha256": "45e5978bcdb010777103816d5db011db10fe0c8033283c34f6d866316fd47001",
   "source_files": [
     "data/processed/live",
     "data/interim/live"

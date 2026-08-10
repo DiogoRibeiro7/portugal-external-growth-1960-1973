@@ -9,16 +9,16 @@
     "source_status",
     "analytical_use"
   ],
-  "creation_timestamp_utc": "2026-08-10T16:23:04+01:00",
+  "creation_timestamp_utc": "2026-08-10T21:13:09+01:00",
   "date_range": null,
   "file": "results/live/sectoral_output_panel_data_dictionary.csv",
   "input_artifacts": [
     {
       "path": "data/processed/live/sectoral_output_panel.csv",
-      "sha256": "4d0cf97a0901a6cd1699e07e9d7679170a983ff5bdd400f2669f4bd628d2fa6b"
+      "sha256": "a7b0d3ac2fbe977d8563b065208e298c59f96b9b211c97005c8dc6dbc7d48bd2"
     }
   ],
-  "rows": 23,
+  "rows": 25,
   "schema": {
     "analytical_use": "object",
     "column_name": "object",
@@ -28,7 +28,7 @@
     "source_status": "object",
     "unit": "object"
   },
-  "sha256": "080d9364053f2f1b9548dd3a28606e62ea3682b1c73cf92ee9000cc8b69351de",
+  "sha256": "c7a493a9d5f4ca958b761df906f0bd44b94c44e808975deef687e8e30dc39746",
   "source_files": [
     "data/processed/live/sectoral_output_panel.csv"
   ],

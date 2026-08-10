@@ -282,6 +282,14 @@ COLUMN_DESCRIPTIONS = {
         "method",
     ),
     "base_year": ("base year for indexed or deflated output measures", "year"),
+    "current_source_id": (
+        "source identifier for the current-year level used in a derived growth observation",
+        "identifier",
+    ),
+    "lag_source_id": (
+        "source identifier for the prior-year level used in a derived growth observation",
+        "identifier",
+    ),
     "colonial_exposure": ("colonial-demand exposure variable", "share"),
     "european_exposure": ("European-demand exposure variable", "share"),
     "controls_available": ("whether required control variables are available", "boolean"),

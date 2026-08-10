@@ -1,0 +1,44 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "from_source_id",
+    "to_source_id",
+    "sector_code",
+    "transition_year",
+    "unit_consistent",
+    "classification_consistent",
+    "price_basis_consistent",
+    "level_link_method",
+    "status",
+    "notes"
+  ],
+  "creation_timestamp_utc": "2026-08-10T21:13:09+01:00",
+  "date_range": null,
+  "file": "results/diagnostics/sectoral_output/source_transition_registry.csv",
+  "input_artifacts": [
+    {
+      "path": "data/raw/live/sectoral_output/source_registry.csv",
+      "sha256": "1cd758b9bb44f19d57881ce89f7d1757da09f0cf08feacadb2be006d5ec23dc7"
+    }
+  ],
+  "rows": 0,
+  "schema": {
+    "classification_consistent": "object",
+    "from_source_id": "object",
+    "level_link_method": "object",
+    "notes": "object",
+    "price_basis_consistent": "object",
+    "sector_code": "object",
+    "status": "object",
+    "to_source_id": "object",
+    "transition_year": "object",
+    "unit_consistent": "object"
+  },
+  "sha256": "3245d7ee0156b304c320334ac5b26b84dabce64bb738058bce576eec52ce0e80",
+  "source_files": [
+    "data/raw/live/sectoral_output/source_registry.csv"
+  ],
+  "source_licence": "not_specified",
+  "stage": "sectoral_output_source_transition_registry_pending_historical_sources",
+  "validation_findings": []
+}

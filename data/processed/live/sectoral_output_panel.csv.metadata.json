@@ -22,16 +22,22 @@
     "lag_definition",
     "log_or_percent_change",
     "base_year",
+    "current_source_id",
+    "lag_source_id",
     "source_id",
     "source_quality"
   ],
-  "creation_timestamp_utc": "2026-08-10T16:23:04+01:00",
+  "creation_timestamp_utc": "2026-08-10T21:13:09+01:00",
   "date_range": null,
   "file": "data/processed/live/sectoral_output_panel.csv",
   "input_artifacts": [
     {
       "path": "data/raw/live/sectoral_output/source_registry.csv",
       "sha256": "1cd758b9bb44f19d57881ce89f7d1757da09f0cf08feacadb2be006d5ec23dc7"
+    },
+    {
+      "path": "results/diagnostics/sectoral_output/source_transition_registry.csv",
+      "sha256": "3245d7ee0156b304c320334ac5b26b84dabce64bb738058bce576eec52ce0e80"
     }
   ],
   "rows": 0,
@@ -40,11 +46,13 @@
     "classification_break_status": "object",
     "classification_version": "object",
     "currency": "object",
+    "current_source_id": "object",
     "deflator": "object",
     "deflator_base": "object",
     "growth_method": "object",
     "harmonised_sector_code": "object",
     "lag_definition": "object",
+    "lag_source_id": "object",
     "log_or_percent_change": "object",
     "mapping_version": "object",
     "nominal_output": "object",
@@ -60,9 +68,10 @@
     "unit": "object",
     "year": "object"
   },
-  "sha256": "4d0cf97a0901a6cd1699e07e9d7679170a983ff5bdd400f2669f4bd628d2fa6b",
+  "sha256": "a7b0d3ac2fbe977d8563b065208e298c59f96b9b211c97005c8dc6dbc7d48bd2",
   "source_files": [
-    "data/raw/live/sectoral_output/source_registry.csv"
+    "data/raw/live/sectoral_output/source_registry.csv",
+    "results/diagnostics/sectoral_output/source_transition_registry.csv"
   ],
   "source_licence": "not_specified",
   "stage": "sectoral_output_panel_pending_source_grounded_empirical_data",

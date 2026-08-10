@@ -41,8 +41,12 @@
       "sha256": "1cd758b9bb44f19d57881ce89f7d1757da09f0cf08feacadb2be006d5ec23dc7"
     },
     {
+      "path": "results/diagnostics/sectoral_output/source_transition_registry.csv",
+      "sha256": "3245d7ee0156b304c320334ac5b26b84dabce64bb738058bce576eec52ce0e80"
+    },
+    {
       "path": "data/processed/live/sectoral_output_panel.csv",
-      "sha256": "4d0cf97a0901a6cd1699e07e9d7679170a983ff5bdd400f2669f4bd628d2fa6b"
+      "sha256": "a7b0d3ac2fbe977d8563b065208e298c59f96b9b211c97005c8dc6dbc7d48bd2"
     },
     {
       "path": "data/processed/live/industry_trade_panel.csv",
@@ -71,6 +75,7 @@
     "results/live/product_industry_mapping_documentation.txt",
     "config/product_industry_mapping.yml",
     "data/raw/live/sectoral_output/source_registry.csv",
+    "results/diagnostics/sectoral_output/source_transition_registry.csv",
     "data/processed/live/sectoral_output_panel.csv",
     "data/processed/live/industry_trade_panel.csv",
     "results/diagnostics/industry_exposure/industry_exposure_coverage.csv"

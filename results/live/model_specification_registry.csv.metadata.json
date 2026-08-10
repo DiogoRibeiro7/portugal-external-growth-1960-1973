@@ -12,13 +12,13 @@
     "blocking_requirements",
     "identification_risk"
   ],
-  "creation_timestamp_utc": "2026-08-10T16:23:04+01:00",
+  "creation_timestamp_utc": "2026-08-10T21:13:09+01:00",
   "date_range": null,
   "file": "results/live/model_specification_registry.csv",
   "input_artifacts": [
     {
       "path": "src/portugal_external_growth/empirical.py",
-      "sha256": "84a17e6e57f194a245eb954799e35c8712b261bc7246e1e580023c1c2706ca0b"
+      "sha256": "98a7dff92020542a662f7dca0e4ea3883b1a01f61dd4f3490624c23271b515df"
     }
   ],
   "rows": 4,
@@ -34,7 +34,7 @@
     "status": "object",
     "unit_of_observation": "object"
   },
-  "sha256": "d19e173bf7cb11857b1c8711e792b6cff3a88d2d4c5e55e6b120f250e2be9482",
+  "sha256": "fa8611d13f41c4a252a9ea06f8fe179bcc0311ff96704561d7091d3eb50e7af1",
   "source_files": [
     "src/portugal_external_growth/empirical.py"
   ],
