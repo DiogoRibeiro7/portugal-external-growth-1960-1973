@@ -11,7 +11,7 @@
     "metadata_path",
     "provenance_status"
   ],
-  "creation_timestamp_utc": "2026-08-10T17:52:55+01:00",
+  "creation_timestamp_utc": "2026-08-10T21:12:23+01:00",
   "date_range": null,
   "file": "results/releases/current/final_result_table_provenance.csv",
   "input_artifacts": [],
@@ -27,7 +27,7 @@
     "result_table": "object",
     "sha256": "object"
   },
-  "sha256": "b4fa5194e5a555a1de2f46b7a8cdb692652b003ae777429dc9fc4143bee73b4d",
+  "sha256": "68d8a7cc3b839fbfd863681bd13e07e0450e2a8e7b317b446beab4cd8f8e87cf",
   "source_files": [
     "results/live"
   ],
