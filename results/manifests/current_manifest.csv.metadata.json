@@ -6,7 +6,7 @@
     "sha256",
     "artifact_role"
   ],
-  "creation_timestamp_utc": "2026-08-09T23:34:07+01:00",
+  "creation_timestamp_utc": "2026-08-10T09:22:39+01:00",
   "date_range": null,
   "file": "results/manifests/current_manifest.csv",
   "rows": 489,
@@ -17,7 +17,7 @@
     "size_bytes": "int64"
   },
   "scope": "current",
-  "sha256": "5b59f80ac3e239cbfeb600c801ef281990b1c093d1916d826b7acaa27e9f2300",
+  "sha256": "6a3934085b046c875684c147e6823c4f326897a6c1acff0aa6661b45735acf1f",
   "source_licence": "not_specified",
   "stage": "manifest",
   "validation_findings": []
