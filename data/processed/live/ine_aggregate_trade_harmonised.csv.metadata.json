@@ -25,7 +25,7 @@
     "entry_pass",
     "adjudication_status"
   ],
-  "creation_timestamp_utc": "2026-08-09T12:28:00+01:00",
+  "creation_timestamp_utc": "2026-08-11T09:23:21+01:00",
   "date_range": {
     "end_year": 1974,
     "start_year": 1963
@@ -34,18 +34,18 @@
   "input_artifacts": [
     {
       "path": "data/manual/transcriptions/pass_1/ine_aggregate_transcription_pass_1.csv",
-      "sha256": "d3c97f5a4d9d4ce9baa3807671937a736c1c3888c37a9129d0ac779d62cb992d"
+      "sha256": "83ba889ca181c2bac50451a18e4c598eee0c1679766530a4441b6ab7b8f0de57"
     },
     {
       "path": "data/manual/transcriptions/pass_2/ine_aggregate_transcription_pass_2.csv",
-      "sha256": "0ccc81457758aabb5a6675ee6f8a3f854a2179f483e7f9f7fd4f12e31377ce01"
+      "sha256": "765860d6a4e86d6cd74ed21b26ba05f77d71ded6d0f1b8fe34685b8e5677c248"
     },
     {
       "path": "data/interim/live/ine_aggregate_transcription_discrepancies.csv",
       "sha256": "2059d73a15145569e49593662e0f48863e77550d2c535c343440a6da6888e092"
     }
   ],
-  "rows": 24,
+  "rows": 112,
   "schema": {
     "adjudication_status": "object",
     "cell_status": "object",
@@ -71,7 +71,7 @@
     "valuation_basis": "object",
     "value_source": "int64"
   },
-  "sha256": "52355dbfae22d8e420b88a049cf29e28c134bd4e3d27fa8491a88bb07e9000f1",
+  "sha256": "f664928bc3fe3beaf3363fc3a74085b191384a15e66f0640a5a961d1bf20e858",
   "source_files": [
     "data/manual/transcriptions/pass_1/ine_aggregate_transcription_pass_1.csv",
     "data/manual/transcriptions/pass_2/ine_aggregate_transcription_pass_2.csv",

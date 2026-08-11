@@ -26,6 +26,12 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
   current working directory.
 - Empirical readiness now audits `sectoral_output_sector_year_uniqueness` so the upstream
   sectoral-output panel must resolve to one analytical level per sector-year.
+- Double-entry transcription of the eleven fixed European partner rows printed in every INE
+  benchmark volume (1962, 1965, 1970, 1973), giving the first source-grounded constant-composition
+  European trade series: fixed-sample export share 43.5%, 47.6%, 51.8% and 60.1%.
+- `config/historical_groups.yml` registers `efta_eec_fixed_partner_sample_ine_benchmark`, the
+  operational fixed European sample, and the validated aggregate table now derives
+  `fixed_europe_*` by summing those reviewed partner rows instead of requiring a pre-summed row.
 
 ### Fixed
 

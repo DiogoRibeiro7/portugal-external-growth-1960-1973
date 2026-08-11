@@ -7,6 +7,8 @@ from typing import Any, cast
 
 import pandas as pd
 
+from portugal_external_growth.config import load_yaml
+
 DATASET_COLUMNS = [
     "year",
     "world_exports_pte",
@@ -75,6 +77,9 @@ COLONIAL_PARTNER_GROUPS = frozenset({"Ultramar", "Provincias Ultramarinas"})
 FIXED_EUROPE_PARTNER_GROUPS = frozenset(
     {"efta_eec_fixed_partner_sample", "Fixed Europe", "Fixed European partner sample"}
 )
+FIXED_EUROPE_GROUP_NAME = "efta_eec_fixed_partner_sample_ine_benchmark"
+FIXED_EUROPE_SERIES_PREFIX = {"M": "imports_from", "X": "exports_to"}
+FIXED_EUROPE_SERIES_SUFFIX = "special_trade_current_escudos"
 
 
 def build_validated_aggregate_orientation_outputs(
@@ -94,7 +99,16 @@ def build_validated_aggregate_orientation_outputs(
     source_registry = _read_csv(root / "data/manual/source_documents/source_document_registry.csv")
     trade_source_comparison = _read_csv(root / "data/interim/live/trade_source_comparison.csv")
 
-    dataset = _build_dataset(validated, reconciliation, registry, pass_1, pass_2, source_registry)
+    fixed_sample = fixed_europe_partner_sample(root)
+    dataset = _build_dataset(
+        validated,
+        reconciliation,
+        registry,
+        pass_1,
+        pass_2,
+        source_registry,
+        fixed_sample=fixed_sample,
+    )
     status = _build_status_table(dataset, validated, pass_1, pass_2, source_registry, registry)
     matrix = _build_reconciliation_matrix(validated, reconciliation)
     source_comparison = _build_source_comparison(trade_source_comparison)
@@ -109,6 +123,8 @@ def _build_dataset(
     pass_1: pd.DataFrame,
     pass_2: pd.DataFrame,
     source_registry: pd.DataFrame,
+    *,
+    fixed_sample: tuple[str, ...] = (),
 ) -> pd.DataFrame:
     records: list[dict[str, object]] = []
     registry_status = _registry_status(registry)
@@ -119,7 +135,13 @@ def _build_dataset(
         record["reconciliation_status"] = registry_status if year == 1962 else "not_benchmark_year"
         year_validated = _validated_year_rows(validated, year)
         if _has_complete_world_colonial_flows(year_validated):
-            _populate_validated_ine_values(record, year, year_validated, reconciliation)
+            _populate_validated_ine_values(
+                record,
+                year,
+                year_validated,
+                reconciliation,
+                fixed_sample=fixed_sample,
+            )
             record["estimate_status"] = "observed_no_estimation"
             record["source_status"] = "validated_ine_aggregate"
             record["notes"] = (
@@ -145,6 +167,8 @@ def _populate_validated_ine_values(
     year: int,
     year_validated: pd.DataFrame,
     reconciliation: pd.DataFrame,
+    *,
+    fixed_sample: tuple[str, ...] = (),
 ) -> None:
     world_exports = _aggregate_value(year_validated, flow="X", partner_group="World")
     world_imports = _aggregate_value(year_validated, flow="M", partner_group="World")
@@ -164,7 +188,12 @@ def _populate_validated_ine_values(
             "unassigned_residual_imports_pte": 0.0,
         }
     )
-    _populate_validated_europe_values(record, year_validated, world_exports)
+    _populate_validated_europe_values(
+        record,
+        year_validated,
+        world_exports,
+        fixed_sample=fixed_sample,
+    )
     first_row = year_validated.iloc[0]
     record["valuation_basis"] = first_row.get("valuation_basis", "")
     record["territorial_definition"] = first_row.get("territorial_definition", "")
@@ -188,14 +217,18 @@ def _populate_validated_ine_values(
 
 
 def _populate_validated_europe_values(
-    record: dict[str, object], year_validated: pd.DataFrame, world_exports: float
+    record: dict[str, object],
+    year_validated: pd.DataFrame,
+    world_exports: float,
+    *,
+    fixed_sample: tuple[str, ...] = (),
 ) -> None:
     efta_exports = _aggregate_value(year_validated, flow="X", partner_group="EFTA")
     efta_imports = _aggregate_value(year_validated, flow="M", partner_group="EFTA")
     eec_exports = _aggregate_value(year_validated, flow="X", partner_group="CEE")
     eec_imports = _aggregate_value(year_validated, flow="M", partner_group="CEE")
-    fixed_exports = _fixed_europe_value(year_validated, flow="X")
-    fixed_imports = _fixed_europe_value(year_validated, flow="M")
+    fixed_exports = _fixed_europe_value(year_validated, flow="X", members=fixed_sample)
+    fixed_imports = _fixed_europe_value(year_validated, flow="M", members=fixed_sample)
     record.update(
         {
             "efta_participation_exports_pte": _optional_value(efta_exports),
@@ -379,17 +412,69 @@ def _aggregate_rows(frame: pd.DataFrame, *, flow: str, partner_group: str) -> pd
     return frame.loc[frame["flow"].eq(flow) & partner_mask]
 
 
-def _fixed_europe_value(frame: pd.DataFrame, *, flow: str) -> float:
+def _fixed_europe_value(frame: pd.DataFrame, *, flow: str, members: tuple[str, ...] = ()) -> float:
     if frame.empty or not {"flow", "partner_group_source"}.issubset(frame.columns):
         return float("nan")
     rows = frame.loc[
         frame["flow"].eq(flow)
         & frame["partner_group_source"].astype(str).isin(FIXED_EUROPE_PARTNER_GROUPS)
     ]
-    if rows.empty:
+    if not rows.empty:
+        row = rows.iloc[0]
+        return _optional_float(row["value_source"]) * _optional_float(row["unit_multiplier"])
+    return _fixed_europe_member_sum(frame, flow=flow, members=members)
+
+
+def _fixed_europe_member_sum(frame: pd.DataFrame, *, flow: str, members: tuple[str, ...]) -> float:
+    """Sum reviewed partner rows for the configured fixed sample, or return NaN if incomplete."""
+
+    if not members or "series_name_source" not in frame.columns:
         return float("nan")
-    row = rows.iloc[0]
-    return _optional_float(row["value_source"]) * _optional_float(row["unit_multiplier"])
+    flow_rows = frame.loc[frame["flow"].eq(flow)]
+    if flow_rows.empty:
+        return float("nan")
+    series_names = flow_rows["series_name_source"].astype(str)
+    total = 0.0
+    for entity_id in members:
+        expected = _fixed_europe_series_name(entity_id, flow=flow)
+        if expected is None:
+            return float("nan")
+        member_rows = flow_rows.loc[series_names.eq(expected)]
+        if len(member_rows) != 1:
+            return float("nan")
+        member = member_rows.iloc[0]
+        value = _optional_float(member["value_source"]) * _optional_float(member["unit_multiplier"])
+        if pd.isna(value):
+            return float("nan")
+        total += value
+    return total
+
+
+def _fixed_europe_series_name(entity_id: str, *, flow: str) -> str | None:
+    prefix = FIXED_EUROPE_SERIES_PREFIX.get(flow)
+    if prefix is None:
+        return None
+    return f"{prefix}_{entity_id}_{FIXED_EUROPE_SERIES_SUFFIX}"
+
+
+def fixed_europe_partner_sample(root: Path) -> tuple[str, ...]:
+    """Return the configured fixed European partner sample used for constant-composition shares."""
+
+    group_path = root / "config/historical_groups.yml"
+    if not group_path.exists():
+        return ()
+    payload = load_yaml(group_path)
+    groups = payload.get("groups")
+    if not isinstance(groups, dict):
+        return ()
+    members = groups.get(FIXED_EUROPE_GROUP_NAME)
+    if not isinstance(members, list):
+        return ()
+    return tuple(
+        str(member["entity_id"])
+        for member in members
+        if isinstance(member, dict) and member.get("entity_id")
+    )
 
 
 def _reconciliation_row(

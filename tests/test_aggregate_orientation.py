@@ -124,6 +124,69 @@ def test_fixed_europe_uses_explicit_fixed_sample_rows(tmp_path: Path) -> None:
     assert row_1970["fixed_europe_export_share"] == 14500000000 / 27298661000
 
 
+def test_fixed_europe_sums_configured_partner_rows(tmp_path: Path) -> None:
+    members = {"austria": 705741, "france": 3176225, "united_kingdom": 6369218}
+    _write_fixed_sample_config(tmp_path, tuple(members))
+    _write_validated_ine_1962(
+        tmp_path,
+        extra_rows=[
+            _ine_row("M", "World", 45495031, year=1970),
+            _ine_row("X", "World", 27298661, year=1970),
+            _ine_row("M", "Provincias Ultramarinas", 6716990, year=1970),
+            _ine_row("X", "Provincias Ultramarinas", 6687814, year=1970),
+            *[_partner_row("M", entity, value, year=1970) for entity, value in members.items()],
+            *[
+                _partner_row("X", entity, value // 2, year=1970)
+                for entity, value in members.items()
+            ],
+        ],
+    )
+    _write_reconciliation(tmp_path)
+    _write_registry(tmp_path)
+    _write_pass_rows(tmp_path)
+    _write_source_registry(tmp_path)
+
+    dataset, _status, _matrix, _source_comparison, _notes = (
+        build_validated_aggregate_orientation_outputs(tmp_path)
+    )
+
+    row_1970 = dataset.loc[dataset["year"].eq(1970)].iloc[0]
+    expected_imports = sum(members.values()) * 1000
+    expected_exports = sum(value // 2 for value in members.values()) * 1000
+    assert row_1970["fixed_europe_imports_pte"] == expected_imports
+    assert row_1970["fixed_europe_exports_pte"] == expected_exports
+    assert row_1970["fixed_europe_export_share"] == expected_exports / 27298661000
+
+
+def test_fixed_europe_requires_every_configured_partner(tmp_path: Path) -> None:
+    _write_fixed_sample_config(tmp_path, ("austria", "france", "united_kingdom"))
+    _write_validated_ine_1962(
+        tmp_path,
+        extra_rows=[
+            _ine_row("M", "World", 45495031, year=1970),
+            _ine_row("X", "World", 27298661, year=1970),
+            _ine_row("M", "Provincias Ultramarinas", 6716990, year=1970),
+            _ine_row("X", "Provincias Ultramarinas", 6687814, year=1970),
+            _partner_row("M", "austria", 705741, year=1970),
+            _partner_row("M", "france", 3176225, year=1970),
+            _partner_row("X", "austria", 389993, year=1970),
+            _partner_row("X", "france", 1245152, year=1970),
+        ],
+    )
+    _write_reconciliation(tmp_path)
+    _write_registry(tmp_path)
+    _write_pass_rows(tmp_path)
+    _write_source_registry(tmp_path)
+
+    dataset, _status, _matrix, _source_comparison, _notes = (
+        build_validated_aggregate_orientation_outputs(tmp_path)
+    )
+
+    row_1970 = dataset.loc[dataset["year"].eq(1970)].iloc[0]
+    assert pd.isna(row_1970["fixed_europe_exports_pte"])
+    assert pd.isna(row_1970["fixed_europe_imports_pte"])
+
+
 def test_pipeline_writes_validated_aggregate_orientation_outputs(tmp_path: Path) -> None:
     _write_validated_ine_1962(tmp_path)
     _write_reconciliation(tmp_path)
@@ -168,6 +231,24 @@ def _ine_row(flow: str, partner_group: str, value: int, *, year: int = 1962) -> 
         "territorial_definition": "INE statistical territory",
         "adjudication_status": "double_entry_verified",
     }
+
+
+def _partner_row(flow: str, entity_id: str, value: int, *, year: int) -> dict[str, object]:
+    prefix = "imports_from" if flow == "M" else "exports_to"
+    row = _ine_row(flow, entity_id.replace("_", " ").title(), value, year=year)
+    row["series_name_source"] = f"{prefix}_{entity_id}_special_trade_current_escudos"
+    return row
+
+
+def _write_fixed_sample_config(root: Path, members: tuple[str, ...]) -> None:
+    config = root / "config"
+    config.mkdir(parents=True, exist_ok=True)
+    lines = ["groups:", "  efta_eec_fixed_partner_sample_ine_benchmark:"]
+    lines.extend(
+        f"    - {{entity_id: {entity_id}, start_year: 1960, end_year: 1973}}"
+        for entity_id in members
+    )
+    (config / "historical_groups.yml").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def _write_reconciliation(root: Path) -> None:

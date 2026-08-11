@@ -32,7 +32,7 @@
     },
     {
       "path": "config/historical_groups.yml",
-      "sha256": "f1d7ab80828e7b2c5a86a894c022c61e5b2b2654f779c1769a1a310b013ae984"
+      "sha256": "47c106acbea306c6134613bb197195a2130ac77c28c3606b1e5d0155332fe753"
     },
     {
       "path": "config/comtrade_partner_areas.yml",

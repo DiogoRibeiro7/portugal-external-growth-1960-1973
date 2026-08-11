@@ -25,6 +25,22 @@ groups:
     - {entity_id: italy, start_year: 1960, end_year: 1973}
     - {entity_id: netherlands, start_year: 1960, end_year: 1973}
     - {entity_id: united_kingdom, start_year: 1973, end_year: 1973}
+  # Operational fixed European sample: the subset of efta_eec_fixed_partner_sample that the INE
+  # external-trade yearbooks print as separate partner rows in every transcribed benchmark volume.
+  # Finland and Ireland are excluded because the 1962 and 1965 volumes fold them into the residual
+  # "Outros paises" row, so a constant-composition series cannot observe them across all years.
+  efta_eec_fixed_partner_sample_ine_benchmark:
+    - {entity_id: austria, start_year: 1960, end_year: 1973}
+    - {entity_id: belgium_luxembourg, start_year: 1960, end_year: 1973}
+    - {entity_id: denmark, start_year: 1960, end_year: 1973}
+    - {entity_id: france, start_year: 1960, end_year: 1973}
+    - {entity_id: west_germany, start_year: 1960, end_year: 1973}
+    - {entity_id: italy, start_year: 1960, end_year: 1973}
+    - {entity_id: netherlands, start_year: 1960, end_year: 1973}
+    - {entity_id: norway, start_year: 1960, end_year: 1973}
+    - {entity_id: sweden, start_year: 1960, end_year: 1973}
+    - {entity_id: switzerland_liechtenstein, start_year: 1960, end_year: 1973}
+    - {entity_id: united_kingdom, start_year: 1960, end_year: 1973}
   efta_eec_fixed_partner_sample:
     - {entity_id: austria, start_year: 1960, end_year: 1973}
     - {entity_id: belgium_luxembourg, start_year: 1960, end_year: 1973}

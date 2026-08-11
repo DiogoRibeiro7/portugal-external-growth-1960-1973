@@ -11,7 +11,7 @@
   "input_artifacts": [
     {
       "path": "results/live/empirical_readiness_audit.csv",
-      "sha256": "c4247f4e8cca9a19fa9a9c230a0c4149ad2708d3bfb099823aba9c0fbbd45005"
+      "sha256": "159cad33a1b1e0b8f6cd6638c455ce24c67a61edb182ac2c0b68a5dfa3a1cb7a"
     },
     {
       "path": "results/live/identification_strategy_review.csv",

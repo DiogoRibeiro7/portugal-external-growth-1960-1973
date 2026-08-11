@@ -35,7 +35,7 @@
     "territorial_definition",
     "notes"
   ],
-  "creation_timestamp_utc": "2026-08-09T21:55:07+01:00",
+  "creation_timestamp_utc": "2026-08-11T09:23:21+01:00",
   "date_range": {
     "end_year": 1973,
     "start_year": 1962
@@ -44,7 +44,7 @@
   "input_artifacts": [
     {
       "path": "data/processed/live/ine_aggregate_trade_harmonised.csv",
-      "sha256": "52355dbfae22d8e420b88a049cf29e28c134bd4e3d27fa8491a88bb07e9000f1"
+      "sha256": "f664928bc3fe3beaf3363fc3a74085b191384a15e66f0640a5a961d1bf20e858"
     },
     {
       "path": "data/interim/live/ine_comtrade_1962_reconciliation.csv",
@@ -56,11 +56,11 @@
     },
     {
       "path": "data/manual/transcriptions/pass_1/ine_aggregate_transcription_pass_1.csv",
-      "sha256": "d3c97f5a4d9d4ce9baa3807671937a736c1c3888c37a9129d0ac779d62cb992d"
+      "sha256": "83ba889ca181c2bac50451a18e4c598eee0c1679766530a4441b6ab7b8f0de57"
     },
     {
       "path": "data/manual/transcriptions/pass_2/ine_aggregate_transcription_pass_2.csv",
-      "sha256": "0ccc81457758aabb5a6675ee6f8a3f854a2179f483e7f9f7fd4f12e31377ce01"
+      "sha256": "765860d6a4e86d6cd74ed21b26ba05f77d71ded6d0f1b8fe34685b8e5677c248"
     },
     {
       "path": "data/manual/source_documents/source_document_registry.csv",
@@ -103,7 +103,7 @@
     "world_imports_pte": "object",
     "year": "int64"
   },
-  "sha256": "c430d7ab187f2ecc1a4d9d4c983344709b148c5693bf6f743d5c8f824dec8b81",
+  "sha256": "228ba152f49b108982f90bb95cb9136bc96e7dd1a448a56d56a4db74015873e8",
   "source_files": [
     "data/processed/live/ine_aggregate_trade_harmonised.csv",
     "data/interim/live/ine_comtrade_1962_reconciliation.csv",
