@@ -2,21 +2,21 @@ Research data readiness declaration
 ===================================
 
 Declaration: NOT_READY
-Release version: 0.1.6+4ca0215
-Source commit: 4ca02159c98bbd7f046cf762c97511ffbe14189e
-Source commit timestamp: 2026-08-11T09:03:43+01:00
-Release archive: release/research-data-freeze-0.1.6+4ca0215.zip
+Release version: 0.1.6+7a1ecdb
+Source commit: 7a1ecdb5c38e161d37ff0190d99017b2800e4fb8
+Source commit timestamp: 2026-08-11T09:16:01+01:00
+Release archive: release/research-data-freeze-0.1.6+7a1ecdb.zip
 Release archive SHA-256: not_created
 
 Machine-readable blockers: results/releases/current/freeze_blocking_reasons.csv
 Checklist: results/releases/current/freeze_checklist.csv
 
 Checklist status:
-- 1. All tests pass: blocked
-- 2. Linting passes: blocked
-- 3. Type checking passes: blocked
-- 4. Reproduction from local snapshots passes: blocked
-- 5. Manifest is deterministic: blocked
+- 1. All tests pass: passed
+- 2. Linting passes: passed
+- 3. Type checking passes: passed
+- 4. Reproduction from local snapshots passes: passed
+- 5. Manifest is deterministic: passed
 - 6. Source-document checksums match: passed
 - 7. Human transcription and adjudication are complete: blocked
 - 8. Cross-source reconciliations are resolved or documented: blocked
@@ -29,13 +29,6 @@ Checklist status:
 - 15. Produce final RESEARCH_DATA_READINESS.txt: passed
 
 Blocking reasons:
-- verification_format: stale_scope: post-commit verification passed; verification scope fingerprint does not match current tracked content
-- verification_lint: stale_scope: post-commit verification passed; verification scope fingerprint does not match current tracked content
-- verification_manifest: stale_scope: post-commit verification passed; verification scope fingerprint does not match current tracked content
-- verification_reproduction: stale_scope: post-commit verification passed; verification scope fingerprint does not match current tracked content
-- verification_tests: stale_scope: post-commit verification passed; verification scope fingerprint does not match current tracked content
-- verification_typecheck: stale_scope: post-commit verification passed; verification scope fingerprint does not match current tracked content
-- verification_validation: stale_scope: post-commit verification passed; verification scope fingerprint does not match current tracked content
 - research_empirical_prerequisites: 0/6 empirical prerequisites are satisfied.
 - research_manual_source_documents: 4/43 expected manual source-year records are complete.
 - research_cross_source_comparison: 88/120 cross-source comparison rows have missing source coverage.
@@ -49,3 +42,10 @@ Blocking reasons:
 - empirical_product_to_industry_mapping_coverage: product_extraction_status_blocked;product_industry_mapping_coverage_zero;product_industry_mapping_not_registered;product_level_trade_not_validated
 - empirical_sectoral_output_source_registry: sectoral output source registry is missing or empty
 - empirical_sectoral_output_source_coverage: sectoral output panel is missing or empty
+- empirical_sectoral_output_sector_year_uniqueness: sectoral output panel is missing or empty
+- empirical_real_output_coverage: sectoral output panel is missing or empty
+- empirical_output_growth_coverage: sectoral output panel is missing or empty
+- empirical_price_deflator_coverage: sectoral output panel is missing or empty
+- empirical_outcome_source_provenance: sectoral output panel is missing or empty
+- empirical_outcome_definition_consistency: empirical design matrix is not linked to reviewed sectoral output growth
+- empirical_sectoral_export_growth_coverage: industry trade panel is empty
