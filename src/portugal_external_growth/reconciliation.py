@@ -74,7 +74,7 @@ RECONCILIATION_REGISTRY_COLUMNS = [
     "evidence_reference",
 ]
 
-PTE_PER_USD_DIAGNOSTIC_1962 = 28.75
+PTE_PER_USD_PAR_VALUE_1962 = 28.75
 WORLD_RECONCILIATION_TOLERANCE = 0.0001
 RESOLVED_RECONCILIATION_STATUSES = {
     "reconciled",
@@ -118,7 +118,7 @@ def build_exchange_rate_evidence(root: Path) -> pd.DataFrame:
                 "currency": "PTE",
                 "counter_currency": "USD",
                 "rate_type": "IMF par value",
-                "pte_per_usd": PTE_PER_USD_DIAGNOSTIC_1962,
+                "pte_per_usd": PTE_PER_USD_PAR_VALUE_1962,
                 "effective_date": "1962-06-01",
                 "source": "IMF, Central Banking Legislation, Portugal chapter",
                 "source_url": (
@@ -144,9 +144,7 @@ def build_trade_source_comparison(root: Path) -> pd.DataFrame:
     """Build a source-preserving annual trade comparison table."""
 
     coverage_path = root / "results/diagnostics/comtrade_coverage/comtrade_coverage_audit.csv"
-    exchange_rate = _exchange_rate_evidence_1962(root)
-    exchange_rate_registered = exchange_rate is not None
-    conversion_note = _conversion_method(exchange_rate_registered=exchange_rate_registered)
+    exchange_rates = _registered_exchange_rates(root)
     rows: list[dict[str, object]] = []
     if coverage_path.exists():
         coverage = pd.read_csv(coverage_path)
@@ -184,7 +182,9 @@ def build_trade_source_comparison(root: Path) -> pd.DataFrame:
         ):
             year = _as_int(ine_record["reference_year"])
             flow_code = str(ine_record["flow"])
-            source_value = _ine_pte_value(ine_record) / PTE_PER_USD_DIAGNOSTIC_1962
+            rate = exchange_rates.get(year)
+            source_value = _ine_pte_value(ine_record) / rate if rate else pd.NA
+            conversion_note = _conversion_method(year=year, rate=rate)
             ine_keys.add((year, flow_code))
             rows.append(
                 {
@@ -206,8 +206,18 @@ def build_trade_source_comparison(root: Path) -> pd.DataFrame:
                     "explanatory_note": (
                         "Validated double-entry INE aggregate; converted only for diagnostic "
                         "comparison pending territorial-definition evidence."
+                        if rate
+                        else (
+                            "Validated double-entry INE aggregate; no USD comparison is derived "
+                            f"because no {year} PTE/USD rate is registered. Rates from other "
+                            "years are never substituted."
+                        )
                     ),
-                    "confidence_status": "usable_with_conversion_and_territorial_caveat",
+                    "confidence_status": (
+                        "usable_with_conversion_and_territorial_caveat"
+                        if rate
+                        else "blocked_pending_year_exchange_rate"
+                    ),
                 }
             )
 
@@ -255,18 +265,19 @@ def build_ine_comtrade_1962_reconciliation(root: Path) -> pd.DataFrame:
     matrix = _read_optional_csv(root / "data/interim/live/comtrade_coverage_matrix.csv")
     if ine.empty or audit.empty:
         return pd.DataFrame(columns=INE_COMTRADE_1962_COLUMNS)
-    exchange_rate = _exchange_rate_evidence_1962(root)
+    exchange_rate = _exchange_rate_for_year(root, 1962)
     exchange_rate_registered = exchange_rate is not None
 
     rows: list[dict[str, object]] = []
     for flow, concept in (("X", "World exports"), ("M", "World imports")):
-        ine_row = _ine_aggregate_row(ine, flow=flow, partner_group="World")
+        ine_row = _ine_aggregate_row(ine, flow=flow, partner_group="World", year=1962)
         audit_row = _comtrade_world_row(audit, flow=flow)
         if ine_row is None or audit_row is None:
             continue
         relative_difference = _relative_difference(
             source_a_value=_as_float(audit_row["world_value_usd"]),
             source_b_original_value=_ine_pte_value(ine_row),
+            rate=exchange_rate,
         )
         world_status = (
             "reconciled_with_conversion"
@@ -305,7 +316,7 @@ def build_ine_comtrade_1962_reconciliation(root: Path) -> pd.DataFrame:
                     f"1962 {flow} World row; "
                     "data/interim/live/portugal_exchange_rate_evidence.csv."
                 ),
-                exchange_rate_registered=exchange_rate_registered,
+                exchange_rate=exchange_rate,
             )
         )
 
@@ -315,7 +326,7 @@ def build_ine_comtrade_1962_reconciliation(root: Path) -> pd.DataFrame:
     )
     expected_entities = _ine_ultramar_entities_1962(root, fallback_entities=configured_entities)
     for flow, concept in (("X", "Overseas exports"), ("M", "Overseas imports")):
-        ine_row = _ine_aggregate_row(ine, flow=flow, partner_group="Ultramar")
+        ine_row = _ine_aggregate_row(ine, flow=flow, partner_group="Ultramar", year=1962)
         if ine_row is None:
             continue
         observed = _observed_colonial_comtrade(matrix, memberships, flow=flow)
@@ -359,7 +370,7 @@ def build_ine_comtrade_1962_reconciliation(root: Path) -> pd.DataFrame:
                 expected_partner_count=len(expected_entities),
                 observed_partner_count=len(observed_entities),
                 missing_partner_entities=";".join(missing_entities),
-                exchange_rate_registered=exchange_rate_registered,
+                exchange_rate=exchange_rate,
             )
         )
     return pd.DataFrame.from_records(rows, columns=INE_COMTRADE_1962_COLUMNS)
@@ -579,6 +590,32 @@ def _read_optional_csv(path: Path) -> pd.DataFrame:
     return pd.read_csv(path)
 
 
+def _registered_exchange_rates(root: Path) -> dict[int, float]:
+    """Return every year with a source-registered PTE/USD rate."""
+
+    path = root / "data/interim/live/portugal_exchange_rate_evidence.csv"
+    frame = _read_optional_csv(path)
+    if frame.empty:
+        frame = build_exchange_rate_evidence(root)
+    if frame.empty or not {"year", "pte_per_usd", "source_status"}.issubset(frame.columns):
+        return {}
+    registered = frame.loc[frame["source_status"].astype(str).eq("registered_local_source")]
+    rates: dict[int, float] = {}
+    for record in registered.to_dict(orient="records"):
+        year = pd.to_numeric(pd.Series([record["year"]]), errors="coerce").iloc[0]
+        rate = pd.to_numeric(pd.Series([record["pte_per_usd"]]), errors="coerce").iloc[0]
+        if pd.isna(year) or pd.isna(rate) or float(rate) <= 0:
+            continue
+        rates[int(year)] = float(rate)
+    return rates
+
+
+def _exchange_rate_for_year(root: Path, year: int) -> float | None:
+    """Return the registered PTE/USD rate for one year, never borrowing another year's rate."""
+
+    return _registered_exchange_rates(root).get(int(year))
+
+
 def _exchange_rate_evidence_1962(root: Path) -> dict[str, object] | None:
     path = root / "data/interim/live/portugal_exchange_rate_evidence.csv"
     frame = _read_optional_csv(path)
@@ -590,7 +627,7 @@ def _exchange_rate_evidence_1962(root: Path) -> dict[str, object] | None:
         frame["year"].eq(1962)
         & frame["currency"].astype(str).eq("PTE")
         & frame["counter_currency"].astype(str).eq("USD")
-        & pd.to_numeric(frame["pte_per_usd"], errors="coerce").eq(PTE_PER_USD_DIAGNOSTIC_1962)
+        & pd.to_numeric(frame["pte_per_usd"], errors="coerce").eq(PTE_PER_USD_PAR_VALUE_1962)
         & frame["source_status"].astype(str).eq("registered_local_source")
     ]
     if rows.empty:
@@ -598,24 +635,30 @@ def _exchange_rate_evidence_1962(root: Path) -> dict[str, object] | None:
     return cast(dict[str, object], rows.iloc[0].to_dict())
 
 
-def _conversion_method(*, exchange_rate_registered: bool) -> str:
-    if exchange_rate_registered:
-        return "source_b_original_value / 28.75; registered IMF par value effective 1962-06-01"
-    return (
-        "source_b_original_value / 28.75; diagnostic fixed PTE/USD conversion, "
-        "exchange-rate source not registered"
-    )
+def _conversion_method(*, year: int, rate: float | None) -> str:
+    if rate is None:
+        return f"no_registered_exchange_rate_for_{year}"
+    return f"source_b_original_value / {rate:g}; registered {year} PTE/USD rate"
 
 
-def _relative_difference(*, source_a_value: float, source_b_original_value: float) -> float:
-    source_b_value = source_b_original_value / PTE_PER_USD_DIAGNOSTIC_1962
+def _relative_difference(
+    *, source_a_value: float, source_b_original_value: float, rate: float | None
+) -> float:
+    if rate is None or not rate:
+        return float("nan")
+    source_b_value = source_b_original_value / rate
     return (source_a_value - source_b_value) / source_b_value if source_b_value else float("nan")
 
 
 def _ine_aggregate_row(
-    ine: pd.DataFrame, *, flow: str, partner_group: str
+    ine: pd.DataFrame, *, flow: str, partner_group: str, year: int
 ) -> dict[str, object] | None:
-    rows = ine.loc[ine["flow"].eq(flow) & ine["partner_group_source"].eq(partner_group)]
+    reference_year = pd.to_numeric(ine["reference_year"], errors="coerce")
+    rows = ine.loc[
+        reference_year.eq(year)
+        & ine["flow"].eq(flow)
+        & ine["partner_group_source"].eq(partner_group)
+    ]
     if rows.empty:
         return None
     return cast(dict[str, object], rows.iloc[0].to_dict())
@@ -654,9 +697,9 @@ def _comparison_row(
     expected_partner_count: int | None = None,
     observed_partner_count: int | None = None,
     missing_partner_entities: str = "",
-    exchange_rate_registered: bool = False,
+    exchange_rate: float | None = None,
 ) -> dict[str, object]:
-    source_b_value = source_b_original_value / PTE_PER_USD_DIAGNOSTIC_1962
+    source_b_value = source_b_original_value / exchange_rate if exchange_rate else float("nan")
     source_a_numeric = pd.to_numeric(pd.Series([source_a_value]), errors="coerce").iloc[0]
     signed_difference: object
     if pd.notna(source_a_numeric):
@@ -703,7 +746,7 @@ def _comparison_row(
         "source_a_currency": "USD",
         "source_b_original_value": source_b_original_value,
         "source_b_currency": "PTE",
-        "conversion_method": _conversion_method(exchange_rate_registered=exchange_rate_registered),
+        "conversion_method": _conversion_method(year=year, rate=exchange_rate),
         "expected_partner_count": expected_partner_count
         if expected_partner_count is not None
         else pd.NA,

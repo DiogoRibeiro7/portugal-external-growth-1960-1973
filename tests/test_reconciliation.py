@@ -5,7 +5,7 @@ from pathlib import Path
 import pandas as pd
 
 from portugal_external_growth.reconciliation import (
-    PTE_PER_USD_DIAGNOSTIC_1962,
+    PTE_PER_USD_PAR_VALUE_1962,
     build_ine_comtrade_1962_notes,
     build_ine_comtrade_1962_reconciliation,
     build_reconciliation_registry,
@@ -80,7 +80,8 @@ def test_ine_comtrade_1962_reconciliation_keeps_world_unresolved(
     assert world_exports["source_a_value"] == 369792288.0
     assert world_exports["source_b_original_value"] == 10631829000.0
     assert world_exports["reconciliation_status"] == "unresolved"
-    assert abs(float(world_exports["relative_difference"])) < 0.0001
+    assert pd.isna(world_exports["relative_difference"])
+    assert world_exports["conversion_method"] == "no_registered_exchange_rate_for_1962"
     assert "exchange-rate source" in world_exports["explanation"]
 
 
@@ -115,6 +116,7 @@ def test_ine_comtrade_1962_reconciliation_marks_overseas_lower_bound(
     _write_comtrade_1962_inputs(tmp_path)
     _write_colonial_group_config(tmp_path)
     _write_historical_colonial_crosswalk(tmp_path)
+    _write_exchange_rate_source(tmp_path)
 
     result = build_ine_comtrade_1962_reconciliation(tmp_path)
 
@@ -123,7 +125,7 @@ def test_ine_comtrade_1962_reconciliation_marks_overseas_lower_bound(
     assert overseas_exports["expected_partner_count"] == 8
     assert overseas_exports["observed_partner_count"] == 4
     assert overseas_exports["coverage_ratio"] == 4 / 8
-    expected_value_coverage = 83098353.0 / (2390852000.0 / PTE_PER_USD_DIAGNOSTIC_1962)
+    expected_value_coverage = 83098353.0 / (2390852000.0 / PTE_PER_USD_PAR_VALUE_1962)
     assert abs(float(overseas_exports["value_coverage_ratio"]) - expected_value_coverage) < 1e-12
     assert "portuguese_india" in overseas_exports["missing_partner_entities"]
     assert (
@@ -140,6 +142,7 @@ def test_ine_comtrade_1962_notes_report_partner_and_value_coverage(
     _write_comtrade_1962_inputs(tmp_path)
     _write_colonial_group_config(tmp_path)
     _write_historical_colonial_crosswalk(tmp_path)
+    _write_exchange_rate_source(tmp_path)
 
     notes = build_ine_comtrade_1962_notes(build_ine_comtrade_1962_reconciliation(tmp_path))
 
@@ -180,17 +183,62 @@ def test_trade_reconciliation_notes_list_missing_sources() -> None:
     assert "INE" in notes
 
 
-def _write_ine_aggregates(root: Path) -> None:
+def test_trade_source_comparison_never_borrows_another_years_exchange_rate(
+    tmp_path: Path,
+) -> None:
+    _write_ine_aggregates(tmp_path, extra_years=(1973,))
+    _write_exchange_rate_source(tmp_path)
+
+    comparison = build_trade_source_comparison(tmp_path)
+
+    ine = comparison.loc[comparison["source"].eq("INE")]
+    row_1962 = ine.loc[ine["year"].eq(1962) & ine["flow_code"].eq("X")].iloc[0]
+    row_1973 = ine.loc[ine["year"].eq(1973) & ine["flow_code"].eq("X")].iloc[0]
+
+    assert float(row_1962["source_value"]) == 10631829000.0 / PTE_PER_USD_PAR_VALUE_1962
+    assert row_1962["confidence_status"] == "usable_with_conversion_and_territorial_caveat"
+    assert pd.isna(row_1973["source_value"])
+    assert row_1973["nominal_conversion_method"] == "no_registered_exchange_rate_for_1973"
+    assert row_1973["confidence_status"] == "blocked_pending_year_exchange_rate"
+
+
+def test_ine_aggregate_rows_are_selected_by_reference_year(tmp_path: Path) -> None:
+    _write_ine_aggregates(tmp_path, extra_years=(1973,), lead_year=1973)
+    _write_comtrade_1962_inputs(tmp_path)
+    _write_colonial_group_config(tmp_path)
+    _write_historical_colonial_crosswalk(tmp_path)
+    _write_exchange_rate_source(tmp_path)
+
+    result = build_ine_comtrade_1962_reconciliation(tmp_path)
+
+    world_exports = result.loc[result["concept"].eq("World exports")].iloc[0]
+    assert world_exports["source_b_original_value"] == 10631829000.0
+
+
+def _write_ine_aggregates(
+    root: Path,
+    *,
+    extra_years: tuple[int, ...] = (),
+    lead_year: int | None = None,
+) -> None:
     output_dir = root / "data/processed/live"
     output_dir.mkdir(parents=True)
-    pd.DataFrame(
-        [
-            _ine_row("M", "World", 16829535, "World imports", 29),
-            _ine_row("X", "World", 10631829, "World exports", 33),
-            _ine_row("M", "Ultramar", 2122236, "Overseas imports", 38),
-            _ine_row("X", "Ultramar", 2390852, "Overseas exports", 39),
-        ]
-    ).to_csv(output_dir / "ine_aggregate_trade_harmonised.csv", index=False)
+    rows = [
+        _ine_row("M", "World", 16829535, "World imports", 29),
+        _ine_row("X", "World", 10631829, "World exports", 33),
+        _ine_row("M", "Ultramar", 2122236, "Overseas imports", 38),
+        _ine_row("X", "Ultramar", 2390852, "Overseas exports", 39),
+    ]
+    for year in extra_years:
+        rows.extend(
+            [
+                _ine_row("M", "World", 74775538, "World imports", 23, year=year),
+                _ine_row("X", "World", 45410493, "World exports", 23, year=year),
+            ]
+        )
+    if lead_year is not None:
+        rows.sort(key=lambda row: row["reference_year"] != lead_year)
+    pd.DataFrame(rows).to_csv(output_dir / "ine_aggregate_trade_harmonised.csv", index=False)
 
 
 def _ine_row(
@@ -199,9 +247,11 @@ def _ine_row(
     value: int,
     table_title: str,
     page_number: int,
+    *,
+    year: int = 1962,
 ) -> dict[str, object]:
     return {
-        "reference_year": 1962,
+        "reference_year": year,
         "flow": flow,
         "partner_group_source": partner_group,
         "value_source": value,

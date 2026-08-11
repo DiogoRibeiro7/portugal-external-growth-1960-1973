@@ -29,6 +29,12 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
 - Double-entry transcription of the eleven fixed European partner rows printed in every INE
   benchmark volume (1962, 1965, 1970, 1973), giving the first source-grounded constant-composition
   European trade series: fixed-sample export share 43.5%, 47.6%, 51.8% and 60.1%.
+- `results/diagnostics/ine_partner_component_reconciliation.csv` reconciles every transcribed
+  partner block against the printed aggregate it belongs to, reporting residuals and sample
+  completeness in machine-readable form.
+- The validated aggregate table now publishes `fixed_europe_sample_id`,
+  `fixed_europe_partner_count` and `fixed_europe_import_share`, so the constant-composition
+  benchmark can never be read as a measure of total European trade.
 - Double-entry transcription of the printed overseas-territory partner rows (Cabo Verde, Guine,
   S. Tome e Principe, Angola, Mocambique, India, Macau, Timor) for the four INE benchmark years,
   so the colonial aggregate can be audited against its own printed components.
@@ -80,6 +86,13 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
 - Release blocker IDs no longer duplicate the `research_` prefix.
 - Analytical dictionary coverage now uses dataset-column dictionaries for the BPstat-derived context
   tables and complete exposure-value units.
+- Cross-source comparisons no longer convert every INE year with the 1962 IMF par value.
+  Conversion now requires a rate registered for that same year, and years without one are
+  reported as `blocked_pending_year_exchange_rate` instead of borrowing another year's rate.
+- The 1962 INE-Comtrade reconciliation now selects INE rows by reference year instead of
+  relying on row order, which became unsafe once later benchmark years were transcribed.
+- The fixed European benchmark is always recomputed from its configured members; a pre-summed
+  row of unverified composition can no longer silently replace the 11-country sample.
 - Duplicated sector-year output levels no longer produce an ambiguous economic lag: such rows are
   excluded from the reviewed output panel and from derived output growth.
 - Local sectoral-output registry sources must now be repository-relative paths inside the project

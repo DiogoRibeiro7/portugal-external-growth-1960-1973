@@ -1,0 +1,59 @@
+{
+  "access_conditions": "not_specified",
+  "columns": [
+    "year",
+    "flow",
+    "component_group",
+    "aggregate_value",
+    "component_sum",
+    "absolute_residual",
+    "relative_residual",
+    "expected_partner_count",
+    "observed_partner_count",
+    "status",
+    "note"
+  ],
+  "creation_timestamp_utc": "2026-08-11T10:46:45+01:00",
+  "date_range": {
+    "end_year": 1973,
+    "start_year": 1962
+  },
+  "file": "results/diagnostics/ine_partner_component_reconciliation.csv",
+  "input_artifacts": [
+    {
+      "path": "data/processed/live/ine_aggregate_trade_harmonised.csv",
+      "sha256": "fb23b5df69f4619a6fb1c7b474884c251e45dfd6f58d7bf4d7c0d06b421a107b"
+    },
+    {
+      "path": "data/interim/live/historical_colonial_partner_crosswalk.csv",
+      "sha256": "0920abbea59294101fc0e8531dadc213f82523c7f9ddea0614ff5a9b9d2a65a7"
+    },
+    {
+      "path": "config/historical_groups.yml",
+      "sha256": "47c106acbea306c6134613bb197195a2130ac77c28c3606b1e5d0155332fe753"
+    }
+  ],
+  "rows": 16,
+  "schema": {
+    "absolute_residual": "object",
+    "aggregate_value": "object",
+    "component_group": "object",
+    "component_sum": "float64",
+    "expected_partner_count": "int64",
+    "flow": "object",
+    "note": "object",
+    "observed_partner_count": "int64",
+    "relative_residual": "object",
+    "status": "object",
+    "year": "int64"
+  },
+  "sha256": "5c360617a78abadac2eac9c4dd85d3f99b1e04f2443d12564826ec57a6ea2536",
+  "source_files": [
+    "data/processed/live/ine_aggregate_trade_harmonised.csv",
+    "data/interim/live/historical_colonial_partner_crosswalk.csv",
+    "config/historical_groups.yml"
+  ],
+  "source_licence": "not_specified",
+  "stage": "ine_partner_component_reconciliation",
+  "validation_findings": []
+}

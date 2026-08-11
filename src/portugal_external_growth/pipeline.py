@@ -11,6 +11,7 @@ from typing import Any
 import pandas as pd
 
 from portugal_external_growth.aggregate_orientation import (
+    build_ine_partner_component_reconciliation,
     build_validated_aggregate_orientation_outputs,
 )
 from portugal_external_growth.clients.bpstat import BPstatClient, BPstatSeries
@@ -1215,6 +1216,18 @@ def build_validated_aggregate_orientation(settings: Settings) -> None:
         status,
         root / "results/live/annual_aggregate_external_orientation_status.csv",
         metadata={"source_files": source_files, "stage": "annual_aggregate_coverage_status"},
+    )
+    write_dataframe_with_metadata(
+        build_ine_partner_component_reconciliation(root),
+        root / "results/diagnostics/ine_partner_component_reconciliation.csv",
+        metadata={
+            "source_files": [
+                "data/processed/live/ine_aggregate_trade_harmonised.csv",
+                "data/interim/live/historical_colonial_partner_crosswalk.csv",
+                "config/historical_groups.yml",
+            ],
+            "stage": "ine_partner_component_reconciliation",
+        },
     )
     write_dataframe_with_metadata(
         matrix,

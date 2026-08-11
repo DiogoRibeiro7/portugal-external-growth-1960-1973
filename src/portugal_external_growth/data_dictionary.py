@@ -146,14 +146,22 @@ COLUMN_DESCRIPTIONS = {
         "PTE",
     ),
     "fixed_europe_exports_pte": (
-        "exports to the configured fixed European partner sample when explicit "
-        "source-backed rows exist",
+        "exports to the constant-composition 11-country European benchmark, summed from "
+        "individually transcribed partner rows; not total European exports",
         "PTE",
     ),
     "fixed_europe_imports_pte": (
-        "imports from the configured fixed European partner sample when explicit "
-        "source-backed rows exist",
+        "imports from the constant-composition 11-country European benchmark, summed from "
+        "individually transcribed partner rows; not total European imports",
         "PTE",
+    ),
+    "fixed_europe_sample_id": (
+        "identifier of the configured partner sample the fixed European values were summed from",
+        "identifier",
+    ),
+    "fixed_europe_partner_count": (
+        "number of partner countries in the fixed European benchmark sample",
+        "count",
     ),
     "efta_export_share": (
         "contemporaneous EFTA exports divided by total exports",
@@ -164,8 +172,13 @@ COLUMN_DESCRIPTIONS = {
         "share",
     ),
     "fixed_europe_export_share": (
-        "fixed European partner-sample exports divided by total exports when the fixed "
-        "sample is observed",
+        "constant-composition 11-country European benchmark exports divided by total exports; "
+        "a benchmark share, not a total European share",
+        "share",
+    ),
+    "fixed_europe_import_share": (
+        "constant-composition 11-country European benchmark imports divided by total imports; "
+        "a benchmark share, not a total European share",
         "share",
     ),
     "nominal_gdp_million_eur": ("gross domestic product at current prices", "million EUR"),

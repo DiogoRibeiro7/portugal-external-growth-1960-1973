@@ -27,7 +27,7 @@
   "input_artifacts": [
     {
       "path": "data/interim/live/ine_comtrade_1962_reconciliation.csv",
-      "sha256": "c63a6372d7be5e34b917a7d1e3844df37e9b71ac9d4f0afd661838068ef28ef8"
+      "sha256": "57589edebf351d67770317b6240507a4a1eb342a5c29b5e3cdcb2f44eb00128a"
     },
     {
       "path": "data/interim/live/historical_colonial_partner_crosswalk.csv",

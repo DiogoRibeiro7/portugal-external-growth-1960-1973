@@ -18,9 +18,12 @@
     "eec_membership_imports_pte",
     "fixed_europe_exports_pte",
     "fixed_europe_imports_pte",
+    "fixed_europe_sample_id",
+    "fixed_europe_partner_count",
     "efta_export_share",
     "eec_export_share",
     "fixed_europe_export_share",
+    "fixed_europe_import_share",
     "non_colonial_world_exports_pte",
     "non_colonial_world_imports_pte",
     "unassigned_residual_exports_pte",
@@ -35,7 +38,7 @@
     "territorial_definition",
     "notes"
   ],
-  "creation_timestamp_utc": "2026-08-11T09:23:21+01:00",
+  "creation_timestamp_utc": "2026-08-11T10:46:45+01:00",
   "date_range": {
     "end_year": 1973,
     "start_year": 1962
@@ -48,7 +51,7 @@
     },
     {
       "path": "data/interim/live/ine_comtrade_1962_reconciliation.csv",
-      "sha256": "c63a6372d7be5e34b917a7d1e3844df37e9b71ac9d4f0afd661838068ef28ef8"
+      "sha256": "57589edebf351d67770317b6240507a4a1eb342a5c29b5e3cdcb2f44eb00128a"
     },
     {
       "path": "results/diagnostics/reconciliation/reconciliation_registry.csv",
@@ -86,7 +89,10 @@
     "estimate_status": "object",
     "fixed_europe_export_share": "object",
     "fixed_europe_exports_pte": "object",
+    "fixed_europe_import_share": "object",
     "fixed_europe_imports_pte": "object",
+    "fixed_europe_partner_count": "object",
+    "fixed_europe_sample_id": "object",
     "non_colonial_world_exports_pte": "object",
     "non_colonial_world_imports_pte": "object",
     "notes": "object",
@@ -103,7 +109,7 @@
     "world_imports_pte": "object",
     "year": "int64"
   },
-  "sha256": "228ba152f49b108982f90bb95cb9136bc96e7dd1a448a56d56a4db74015873e8",
+  "sha256": "9837076672f7adc2aa3f735d0f9ace8ae71199c7b443fb8817a9a395fb92e966",
   "source_files": [
     "data/processed/live/ine_aggregate_trade_harmonised.csv",
     "data/interim/live/ine_comtrade_1962_reconciliation.csv",

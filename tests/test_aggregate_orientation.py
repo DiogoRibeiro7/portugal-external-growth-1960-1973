@@ -5,6 +5,7 @@ from pathlib import Path
 import pandas as pd
 
 from portugal_external_growth.aggregate_orientation import (
+    build_ine_partner_component_reconciliation,
     build_validated_aggregate_orientation_outputs,
 )
 from portugal_external_growth.pipeline import build_validated_aggregate_orientation
@@ -93,7 +94,9 @@ def test_validated_aggregate_orientation_accepts_provincias_ultramarinas_label(
     assert status_1970["blocking_reason"] == ""
 
 
-def test_fixed_europe_uses_explicit_fixed_sample_rows(tmp_path: Path) -> None:
+def test_fixed_europe_ignores_presummed_rows_of_unverified_composition(tmp_path: Path) -> None:
+    members = {"austria": 705741, "france": 3176225, "united_kingdom": 6369218}
+    _write_fixed_sample_config(tmp_path, tuple(members))
     _write_validated_ine_1962(
         tmp_path,
         extra_rows=[
@@ -101,12 +104,11 @@ def test_fixed_europe_uses_explicit_fixed_sample_rows(tmp_path: Path) -> None:
             _ine_row("X", "World", 27298661, year=1970),
             _ine_row("M", "Provincias Ultramarinas", 6716990, year=1970),
             _ine_row("X", "Provincias Ultramarinas", 6687814, year=1970),
-            _ine_row("M", "CEE", 15047905, year=1970),
-            _ine_row("X", "CEE", 5005444, year=1970),
-            _ine_row("M", "EFTA", 11023880, year=1970),
-            _ine_row("X", "EFTA", 9671172, year=1970),
+            # A pre-summed row for the wider 13-country concept must never be adopted.
             _ine_row("M", "efta_eec_fixed_partner_sample", 25500000, year=1970),
             _ine_row("X", "efta_eec_fixed_partner_sample", 14500000, year=1970),
+            *[_partner_row("M", entity, value, year=1970) for entity, value in members.items()],
+            *[_partner_row("X", entity, value, year=1970) for entity, value in members.items()],
         ],
     )
     _write_reconciliation(tmp_path)
@@ -119,9 +121,11 @@ def test_fixed_europe_uses_explicit_fixed_sample_rows(tmp_path: Path) -> None:
     )
 
     row_1970 = dataset.loc[dataset["year"].eq(1970)].iloc[0]
-    assert row_1970["fixed_europe_exports_pte"] == 14500000000
-    assert row_1970["fixed_europe_imports_pte"] == 25500000000
-    assert row_1970["fixed_europe_export_share"] == 14500000000 / 27298661000
+    expected = sum(members.values()) * 1000
+    assert row_1970["fixed_europe_exports_pte"] == expected
+    assert row_1970["fixed_europe_imports_pte"] == expected
+    assert row_1970["fixed_europe_sample_id"] == "efta_eec_fixed_partner_sample_ine_benchmark"
+    assert row_1970["fixed_europe_partner_count"] == len(members)
 
 
 def test_fixed_europe_sums_configured_partner_rows(tmp_path: Path) -> None:
@@ -156,6 +160,9 @@ def test_fixed_europe_sums_configured_partner_rows(tmp_path: Path) -> None:
     assert row_1970["fixed_europe_imports_pte"] == expected_imports
     assert row_1970["fixed_europe_exports_pte"] == expected_exports
     assert row_1970["fixed_europe_export_share"] == expected_exports / 27298661000
+    assert row_1970["fixed_europe_import_share"] == expected_imports / 45495031000
+    assert row_1970["fixed_europe_sample_id"] == "efta_eec_fixed_partner_sample_ine_benchmark"
+    assert row_1970["fixed_europe_partner_count"] == 3
 
 
 def test_fixed_europe_requires_every_configured_partner(tmp_path: Path) -> None:
@@ -185,6 +192,49 @@ def test_fixed_europe_requires_every_configured_partner(tmp_path: Path) -> None:
     row_1970 = dataset.loc[dataset["year"].eq(1970)].iloc[0]
     assert pd.isna(row_1970["fixed_europe_exports_pte"])
     assert pd.isna(row_1970["fixed_europe_imports_pte"])
+    assert pd.isna(row_1970["fixed_europe_sample_id"])
+    assert pd.isna(row_1970["fixed_europe_partner_count"])
+
+
+def test_partner_component_reconciliation_reports_residuals_and_completeness(
+    tmp_path: Path,
+) -> None:
+    _write_fixed_sample_config(tmp_path, ("austria", "france"))
+    _write_colonial_crosswalk(tmp_path, ("angola", "macao"))
+    _write_validated_ine_1962(
+        tmp_path,
+        extra_rows=[
+            # Territory rows deliberately fall 500 short of the printed aggregate.
+            _partner_row("X", "angola", 1286467, year=1962),
+            _partner_row("X", "macao", 1103885, year=1962),
+            _partner_row("X", "austria", 84164, year=1962),
+            # France is missing, so the European sample is incomplete.
+        ],
+    )
+    _write_reconciliation(tmp_path)
+    _write_registry(tmp_path)
+    _write_pass_rows(tmp_path)
+    _write_source_registry(tmp_path)
+
+    reconciliation = build_ine_partner_component_reconciliation(tmp_path)
+
+    colonial = reconciliation.loc[
+        reconciliation["component_group"].eq("colonial_overseas_territories")
+        & reconciliation["flow"].eq("X")
+    ].iloc[0]
+    europe = reconciliation.loc[
+        ~reconciliation["component_group"].eq("colonial_overseas_territories")
+        & reconciliation["flow"].eq("X")
+    ].iloc[0]
+    assert colonial["aggregate_value"] == 2390852000.0
+    assert colonial["component_sum"] == 2390352000.0
+    assert colonial["absolute_residual"] == 500000.0
+    assert colonial["observed_partner_count"] == 2
+    assert colonial["status"] == "residual_documented"
+    assert pd.isna(europe["aggregate_value"])
+    assert europe["expected_partner_count"] == 2
+    assert europe["observed_partner_count"] == 1
+    assert europe["status"] == "component_sum_only_no_printed_aggregate_incomplete_sample"
 
 
 def test_pipeline_writes_validated_aggregate_orientation_outputs(tmp_path: Path) -> None:
@@ -240,6 +290,17 @@ def _partner_row(flow: str, entity_id: str, value: int, *, year: int) -> dict[st
     return row
 
 
+def _write_colonial_crosswalk(root: Path, entities: tuple[str, ...]) -> None:
+    output = root / "data/interim/live"
+    output.mkdir(parents=True, exist_ok=True)
+    pd.DataFrame(
+        [
+            {"entity_id": entity, "ine_group": "Ultramar Portugues", "reference_year": 1962}
+            for entity in entities
+        ]
+    ).to_csv(output / "historical_colonial_partner_crosswalk.csv", index=False)
+
+
 def _write_fixed_sample_config(root: Path, members: tuple[str, ...]) -> None:
     config = root / "config"
     config.mkdir(parents=True, exist_ok=True)
@@ -253,7 +314,7 @@ def _write_fixed_sample_config(root: Path, members: tuple[str, ...]) -> None:
 
 def _write_reconciliation(root: Path) -> None:
     output = root / "data/interim/live"
-    output.mkdir(parents=True)
+    output.mkdir(parents=True, exist_ok=True)
     pd.DataFrame(
         [
             _reconciliation_row("World exports", 369792288, "reconciled_with_conversion"),

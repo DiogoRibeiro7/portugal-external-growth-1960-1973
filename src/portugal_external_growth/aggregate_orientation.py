@@ -27,9 +27,12 @@ DATASET_COLUMNS = [
     "eec_membership_imports_pte",
     "fixed_europe_exports_pte",
     "fixed_europe_imports_pte",
+    "fixed_europe_sample_id",
+    "fixed_europe_partner_count",
     "efta_export_share",
     "eec_export_share",
     "fixed_europe_export_share",
+    "fixed_europe_import_share",
     "non_colonial_world_exports_pte",
     "non_colonial_world_imports_pte",
     "unassigned_residual_exports_pte",
@@ -74,9 +77,20 @@ MATRIX_COLUMNS = [
 ]
 
 COLONIAL_PARTNER_GROUPS = frozenset({"Ultramar", "Provincias Ultramarinas"})
-FIXED_EUROPE_PARTNER_GROUPS = frozenset(
-    {"efta_eec_fixed_partner_sample", "Fixed Europe", "Fixed European partner sample"}
-)
+PARTNER_COMPONENT_RECONCILIATION_COLUMNS = [
+    "year",
+    "flow",
+    "component_group",
+    "aggregate_value",
+    "component_sum",
+    "absolute_residual",
+    "relative_residual",
+    "expected_partner_count",
+    "observed_partner_count",
+    "status",
+    "note",
+]
+COMPONENT_RESIDUAL_TOLERANCE = 0.001
 FIXED_EUROPE_GROUP_NAME = "efta_eec_fixed_partner_sample_ine_benchmark"
 FIXED_EUROPE_SERIES_PREFIX = {"M": "imports_from", "X": "exports_to"}
 FIXED_EUROPE_SERIES_SUFFIX = "special_trade_current_escudos"
@@ -114,6 +128,132 @@ def build_validated_aggregate_orientation_outputs(
     source_comparison = _build_source_comparison(trade_source_comparison)
     notes = _build_cross_check_notes(dataset, status, matrix)
     return dataset, status, matrix, source_comparison, notes
+
+
+def build_ine_partner_component_reconciliation(root: Path) -> pd.DataFrame:
+    """Reconcile transcribed INE partner rows against the printed aggregate they belong to."""
+
+    validated = _read_csv(root / "data/processed/live/ine_aggregate_trade_harmonised.csv")
+    colonial_members = _ine_ultramar_entities(root)
+    europe_members = fixed_europe_partner_sample(root)
+    records: list[dict[str, object]] = []
+    for year in range(1962, 1974):
+        year_rows = _validated_year_rows(validated, year)
+        if year_rows.empty:
+            continue
+        for flow in ("M", "X"):
+            records.append(
+                _component_record(
+                    year_rows,
+                    year=year,
+                    flow=flow,
+                    group="colonial_overseas_territories",
+                    members=colonial_members,
+                    aggregate=_aggregate_value(year_rows, flow=flow, partner_group="Ultramar"),
+                    note=(
+                        "Printed Ultramar aggregate compared with the individually printed "
+                        "overseas-territory rows transcribed from the same table."
+                    ),
+                )
+            )
+            records.append(
+                _component_record(
+                    year_rows,
+                    year=year,
+                    flow=flow,
+                    group=FIXED_EUROPE_GROUP_NAME,
+                    members=europe_members,
+                    aggregate=float("nan"),
+                    note=(
+                        "The source prints no constant-composition European aggregate, so the "
+                        "benchmark is the component sum itself and only sample completeness "
+                        "can be checked."
+                    ),
+                )
+            )
+    return pd.DataFrame.from_records(
+        records, columns=PARTNER_COMPONENT_RECONCILIATION_COLUMNS
+    ).sort_values(["year", "flow", "component_group"])
+
+
+def _component_record(
+    year_rows: pd.DataFrame,
+    *,
+    year: int,
+    flow: str,
+    group: str,
+    members: tuple[str, ...] | list[str],
+    aggregate: float,
+    note: str,
+) -> dict[str, object]:
+    observed = 0
+    component_sum = 0.0
+    for entity_id in members:
+        value = _member_value(year_rows, flow=flow, entity_id=entity_id)
+        if pd.notna(value):
+            observed += 1
+            component_sum += float(value)
+    expected = len(members)
+    has_components = observed > 0
+    has_aggregate = pd.notna(aggregate)
+    residual: float | None = None
+    relative: float | None = None
+    if has_aggregate and has_components:
+        residual = float(aggregate) - component_sum
+        relative = residual / float(aggregate) if float(aggregate) else None
+    absolute_residual: object = pd.NA if residual is None else residual
+    relative_residual: object = pd.NA if relative is None else relative
+    if not has_components:
+        status = "components_not_transcribed"
+    elif not has_aggregate:
+        status = "component_sum_only_no_printed_aggregate"
+    elif residual == 0:
+        status = "exact"
+    elif relative is not None and abs(relative) > COMPONENT_RESIDUAL_TOLERANCE:
+        status = "residual_exceeds_tolerance"
+    else:
+        status = "residual_documented"
+    if observed < expected and has_components:
+        status = f"{status}_incomplete_sample"
+    return {
+        "year": year,
+        "flow": flow,
+        "component_group": group,
+        "aggregate_value": aggregate if has_aggregate else pd.NA,
+        "component_sum": component_sum if has_components else pd.NA,
+        "absolute_residual": absolute_residual,
+        "relative_residual": relative_residual,
+        "expected_partner_count": expected,
+        "observed_partner_count": observed,
+        "status": status,
+        "note": note,
+    }
+
+
+def _member_value(frame: pd.DataFrame, *, flow: str, entity_id: str) -> float:
+    if "series_name_source" not in frame.columns:
+        return float("nan")
+    expected = _fixed_europe_series_name(entity_id, flow=flow)
+    if expected is None:
+        return float("nan")
+    rows = frame.loc[frame["flow"].eq(flow) & frame["series_name_source"].astype(str).eq(expected)]
+    if len(rows) != 1:
+        return float("nan")
+    row = rows.iloc[0]
+    return _optional_float(row["value_source"]) * _optional_float(row["unit_multiplier"])
+
+
+def _ine_ultramar_entities(root: Path) -> tuple[str, ...]:
+    """Return the INE overseas-territory entities documented in the committed crosswalk."""
+
+    crosswalk = _read_csv(root / "data/interim/live/historical_colonial_partner_crosswalk.csv")
+    required = {"entity_id", "ine_group"}
+    if crosswalk.empty or not required.issubset(crosswalk.columns):
+        return ()
+    ultramar = crosswalk.loc[
+        crosswalk["ine_group"].astype("string").str.strip().eq("Ultramar Portugues")
+    ]
+    return tuple(sorted(set(ultramar["entity_id"].astype(str))))
 
 
 def _build_dataset(
@@ -192,6 +332,7 @@ def _populate_validated_ine_values(
         record,
         year_validated,
         world_exports,
+        world_imports,
         fixed_sample=fixed_sample,
     )
     first_row = year_validated.iloc[0]
@@ -220,6 +361,7 @@ def _populate_validated_europe_values(
     record: dict[str, object],
     year_validated: pd.DataFrame,
     world_exports: float,
+    world_imports: float,
     *,
     fixed_sample: tuple[str, ...] = (),
 ) -> None:
@@ -229,6 +371,7 @@ def _populate_validated_europe_values(
     eec_imports = _aggregate_value(year_validated, flow="M", partner_group="CEE")
     fixed_exports = _fixed_europe_value(year_validated, flow="X", members=fixed_sample)
     fixed_imports = _fixed_europe_value(year_validated, flow="M", members=fixed_sample)
+    fixed_observed = pd.notna(fixed_exports) or pd.notna(fixed_imports)
     record.update(
         {
             "efta_participation_exports_pte": _optional_value(efta_exports),
@@ -237,9 +380,12 @@ def _populate_validated_europe_values(
             "eec_membership_imports_pte": _optional_value(eec_imports),
             "fixed_europe_exports_pte": _optional_value(fixed_exports),
             "fixed_europe_imports_pte": _optional_value(fixed_imports),
+            "fixed_europe_sample_id": FIXED_EUROPE_GROUP_NAME if fixed_observed else pd.NA,
+            "fixed_europe_partner_count": len(fixed_sample) if fixed_observed else pd.NA,
             "efta_export_share": _safe_divide(efta_exports, world_exports),
             "eec_export_share": _safe_divide(eec_exports, world_exports),
             "fixed_europe_export_share": _safe_divide(fixed_exports, world_exports),
+            "fixed_europe_import_share": _safe_divide(fixed_imports, world_imports),
         }
     )
 
@@ -412,21 +558,12 @@ def _aggregate_rows(frame: pd.DataFrame, *, flow: str, partner_group: str) -> pd
     return frame.loc[frame["flow"].eq(flow) & partner_mask]
 
 
-def _fixed_europe_value(frame: pd.DataFrame, *, flow: str, members: tuple[str, ...] = ()) -> float:
-    if frame.empty or not {"flow", "partner_group_source"}.issubset(frame.columns):
-        return float("nan")
-    rows = frame.loc[
-        frame["flow"].eq(flow)
-        & frame["partner_group_source"].astype(str).isin(FIXED_EUROPE_PARTNER_GROUPS)
-    ]
-    if not rows.empty:
-        row = rows.iloc[0]
-        return _optional_float(row["value_source"]) * _optional_float(row["unit_multiplier"])
-    return _fixed_europe_member_sum(frame, flow=flow, members=members)
+def _fixed_europe_value(frame: pd.DataFrame, *, flow: str, members: tuple[str, ...]) -> float:
+    """Sum reviewed partner rows for the configured fixed sample, or return NaN if incomplete.
 
-
-def _fixed_europe_member_sum(frame: pd.DataFrame, *, flow: str, members: tuple[str, ...]) -> float:
-    """Sum reviewed partner rows for the configured fixed sample, or return NaN if incomplete."""
+    The benchmark is always recomputed from its configured members. A pre-summed row is never
+    accepted, because its composition cannot be verified against the configured sample.
+    """
 
     if not members or "series_name_source" not in frame.columns:
         return float("nan")

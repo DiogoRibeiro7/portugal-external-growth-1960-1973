@@ -1,12 +1,12 @@
 year,flow_code,source,source_value,source_currency,nominal_conversion_method,coverage_definition,confidence_status,explanatory_note
 1962,M,CEPII TRADHIST,,,,,missing_source,No local structured source table is available yet.
 1962,M,EFTA,,,,,missing_source,No local structured source table is available yet.
-1962,M,INE,585375130.4347826,USD,source_b_original_value / 28.75; registered IMF par value effective 1962-06-01,INE special-trade World total,usable_with_conversion_and_territorial_caveat,Validated double-entry INE aggregate; converted only for diagnostic comparison pending territorial-definition evidence.
+1962,M,INE,585375130.4347826,USD,source_b_original_value / 28.75; registered 1962 PTE/USD rate,INE special-trade World total,usable_with_conversion_and_territorial_caveat,Validated double-entry INE aggregate; converted only for diagnostic comparison pending territorial-definition evidence.
 1962,M,OECD,,,,,missing_source,No local structured source table is available yet.
 1962,M,UN Comtrade,585345024.0,USD,source_reported_usd,"Portugal reporter code 620, World partner total",usable_with_territorial_caveat,Benchmark row; territorial definition still under review.
 1962,X,CEPII TRADHIST,,,,,missing_source,No local structured source table is available yet.
 1962,X,EFTA,,,,,missing_source,No local structured source table is available yet.
-1962,X,INE,369802747.8260869,USD,source_b_original_value / 28.75; registered IMF par value effective 1962-06-01,INE special-trade World total,usable_with_conversion_and_territorial_caveat,Validated double-entry INE aggregate; converted only for diagnostic comparison pending territorial-definition evidence.
+1962,X,INE,369802747.8260869,USD,source_b_original_value / 28.75; registered 1962 PTE/USD rate,INE special-trade World total,usable_with_conversion_and_territorial_caveat,Validated double-entry INE aggregate; converted only for diagnostic comparison pending territorial-definition evidence.
 1962,X,OECD,,,,,missing_source,No local structured source table is available yet.
 1962,X,UN Comtrade,369792288.0,USD,source_reported_usd,"Portugal reporter code 620, World partner total",usable_with_territorial_caveat,Benchmark row; territorial definition still under review.
 1963,M,CEPII TRADHIST,,,,,missing_source,No local structured source table is available yet.
@@ -31,12 +31,12 @@ year,flow_code,source,source_value,source_currency,nominal_conversion_method,cov
 1964,X,UN Comtrade,515699840.0,USD,source_reported_usd,"Portugal reporter code 620, World partner total",usable_with_territorial_caveat,Benchmark row; territorial definition still under review.
 1965,M,CEPII TRADHIST,,,,,missing_source,No local structured source table is available yet.
 1965,M,EFTA,,,,,missing_source,No local structured source table is available yet.
-1965,M,INE,923573669.5652174,USD,source_b_original_value / 28.75; registered IMF par value effective 1962-06-01,INE special-trade World total,usable_with_conversion_and_territorial_caveat,Validated double-entry INE aggregate; converted only for diagnostic comparison pending territorial-definition evidence.
+1965,M,INE,,USD,no_registered_exchange_rate_for_1965,INE special-trade World total,blocked_pending_year_exchange_rate,Validated double-entry INE aggregate; no USD comparison is derived because no 1965 PTE/USD rate is registered. Rates from other years are never substituted.
 1965,M,OECD,,,,,missing_source,No local structured source table is available yet.
 1965,M,UN Comtrade,923515840.0,USD,source_reported_usd,"Portugal reporter code 620, World partner total",usable_with_territorial_caveat,Benchmark row; territorial definition still under review.
 1965,X,CEPII TRADHIST,,,,,missing_source,No local structured source table is available yet.
 1965,X,EFTA,,,,,missing_source,No local structured source table is available yet.
-1965,X,INE,576439547.826087,USD,source_b_original_value / 28.75; registered IMF par value effective 1962-06-01,INE special-trade World total,usable_with_conversion_and_territorial_caveat,Validated double-entry INE aggregate; converted only for diagnostic comparison pending territorial-definition evidence.
+1965,X,INE,,USD,no_registered_exchange_rate_for_1965,INE special-trade World total,blocked_pending_year_exchange_rate,Validated double-entry INE aggregate; no USD comparison is derived because no 1965 PTE/USD rate is registered. Rates from other years are never substituted.
 1965,X,OECD,,,,,missing_source,No local structured source table is available yet.
 1965,X,UN Comtrade,576399168.0,USD,source_reported_usd,"Portugal reporter code 620, World partner total",usable_with_territorial_caveat,Benchmark row; territorial definition still under review.
 1966,M,CEPII TRADHIST,,,,,missing_source,No local structured source table is available yet.
@@ -81,12 +81,12 @@ year,flow_code,source,source_value,source_currency,nominal_conversion_method,cov
 1969,X,UN Comtrade,852978752.0,USD,source_reported_usd,"Portugal reporter code 620, World partner total",usable_with_territorial_caveat,Benchmark row; territorial definition still under review.
 1970,M,CEPII TRADHIST,,,,,missing_source,No local structured source table is available yet.
 1970,M,EFTA,,,,,missing_source,No local structured source table is available yet.
-1970,M,INE,1582435860.8695652,USD,source_b_original_value / 28.75; registered IMF par value effective 1962-06-01,INE special-trade World total,usable_with_conversion_and_territorial_caveat,Validated double-entry INE aggregate; converted only for diagnostic comparison pending territorial-definition evidence.
+1970,M,INE,,USD,no_registered_exchange_rate_for_1970,INE special-trade World total,blocked_pending_year_exchange_rate,Validated double-entry INE aggregate; no USD comparison is derived because no 1970 PTE/USD rate is registered. Rates from other years are never substituted.
 1970,M,OECD,,,,,missing_source,No local structured source table is available yet.
 1970,M,UN Comtrade,1589826688.0,USD,source_reported_usd,"Portugal reporter code 620, World partner total",usable_with_territorial_caveat,Benchmark row; territorial definition still under review.
 1970,X,CEPII TRADHIST,,,,,missing_source,No local structured source table is available yet.
 1970,X,EFTA,,,,,missing_source,No local structured source table is available yet.
-1970,X,INE,949518643.4782608,USD,source_b_original_value / 28.75; registered IMF par value effective 1962-06-01,INE special-trade World total,usable_with_conversion_and_territorial_caveat,Validated double-entry INE aggregate; converted only for diagnostic comparison pending territorial-definition evidence.
+1970,X,INE,,USD,no_registered_exchange_rate_for_1970,INE special-trade World total,blocked_pending_year_exchange_rate,Validated double-entry INE aggregate; no USD comparison is derived because no 1970 PTE/USD rate is registered. Rates from other years are never substituted.
 1970,X,OECD,,,,,missing_source,No local structured source table is available yet.
 1970,X,UN Comtrade,949225152.0,USD,source_reported_usd,"Portugal reporter code 620, World partner total",usable_with_territorial_caveat,Benchmark row; territorial definition still under review.
 1971,M,CEPII TRADHIST,,,,,missing_source,No local structured source table is available yet.
@@ -111,11 +111,11 @@ year,flow_code,source,source_value,source_currency,nominal_conversion_method,cov
 1972,X,UN Comtrade,1293765376.0,USD,source_reported_usd,"Portugal reporter code 620, World partner total",usable_with_territorial_caveat,Benchmark row; territorial definition still under review.
 1973,M,CEPII TRADHIST,,,,,missing_source,No local structured source table is available yet.
 1973,M,EFTA,,,,,missing_source,No local structured source table is available yet.
-1973,M,INE,2600888278.260869,USD,source_b_original_value / 28.75; registered IMF par value effective 1962-06-01,INE special-trade World total,usable_with_conversion_and_territorial_caveat,Validated double-entry INE aggregate; converted only for diagnostic comparison pending territorial-definition evidence.
+1973,M,INE,,USD,no_registered_exchange_rate_for_1973,INE special-trade World total,blocked_pending_year_exchange_rate,Validated double-entry INE aggregate; no USD comparison is derived because no 1973 PTE/USD rate is registered. Rates from other years are never substituted.
 1973,M,OECD,,,,,missing_source,No local structured source table is available yet.
 1973,M,UN Comtrade,3072798464.0,USD,source_reported_usd,"Portugal reporter code 620, World partner total",usable_with_territorial_caveat,Benchmark row; territorial definition still under review.
 1973,X,CEPII TRADHIST,,,,,missing_source,No local structured source table is available yet.
 1973,X,EFTA,,,,,missing_source,No local structured source table is available yet.
-1973,X,INE,1579495408.6956522,USD,source_b_original_value / 28.75; registered IMF par value effective 1962-06-01,INE special-trade World total,usable_with_conversion_and_territorial_caveat,Validated double-entry INE aggregate; converted only for diagnostic comparison pending territorial-definition evidence.
+1973,X,INE,,USD,no_registered_exchange_rate_for_1973,INE special-trade World total,blocked_pending_year_exchange_rate,Validated double-entry INE aggregate; no USD comparison is derived because no 1973 PTE/USD rate is registered. Rates from other years are never substituted.
 1973,X,OECD,,,,,missing_source,No local structured source table is available yet.
 1973,X,UN Comtrade,1861681536.0,USD,source_reported_usd,"Portugal reporter code 620, World partner total",usable_with_territorial_caveat,Benchmark row; territorial definition still under review.
