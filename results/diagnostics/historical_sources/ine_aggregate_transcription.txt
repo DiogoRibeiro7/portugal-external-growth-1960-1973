@@ -1,8 +1,8 @@
 INE aggregate transcription status
 ==================================
 
-Pass 1 aggregate rows: 112
-Pass 2 aggregate rows: 112
+Pass 1 aggregate rows: 171
+Pass 2 aggregate rows: 171
 Unresolved aggregate discrepancies: 0
 Unresolved reference years: none
 Unresolved partner groups: none

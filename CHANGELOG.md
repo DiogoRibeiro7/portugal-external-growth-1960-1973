@@ -29,6 +29,9 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
 - Double-entry transcription of the eleven fixed European partner rows printed in every INE
   benchmark volume (1962, 1965, 1970, 1973), giving the first source-grounded constant-composition
   European trade series: fixed-sample export share 43.5%, 47.6%, 51.8% and 60.1%.
+- Double-entry transcription of the printed overseas-territory partner rows (Cabo Verde, Guine,
+  S. Tome e Principe, Angola, Mocambique, India, Macau, Timor) for the four INE benchmark years,
+  so the colonial aggregate can be audited against its own printed components.
 - `config/historical_groups.yml` registers `efta_eec_fixed_partner_sample_ine_benchmark`, the
   operational fixed European sample, and the validated aggregate table now derives
   `fixed_europe_*` by summing those reviewed partner rows instead of requiring a pre-summed row.
