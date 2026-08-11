@@ -23,7 +23,7 @@
   "input_artifacts": [
     {
       "path": "data/manual/source_documents/source_document_registry.csv",
-      "sha256": "1117eb2db582fe0cd62feeb2934c9d431c8e9a58ba8d6e940a77cb63dac92e66"
+      "sha256": "5f7873dd5545770e0f3380bae9cf146a7eaa597c6814e317aa59a8639d74d9b6"
     }
   ],
   "rows": 9,

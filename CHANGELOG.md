@@ -26,6 +26,11 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
   current working directory.
 - Empirical readiness now audits `sectoral_output_sector_year_uniqueness` so the upstream
   sectoral-output panel must resolve to one analytical level per sector-year.
+- The 1960 INE yearbook (both volumes) is registered with checksums and metadata, and its
+  Quadro III rows are transcribed by double entry: World and Ultramar totals, the eight
+  overseas territories, and the ten benchmark European partners the volume prints. Austria is
+  not printed separately in 1960, so the eleven-country benchmark is not observable for that
+  year and no value is derived for it.
 - Double-entry transcription of the eleven fixed European partner rows printed in every INE
   benchmark volume (1962, 1965, 1970, 1973), giving the first source-grounded constant-composition
   European trade series: fixed-sample export share 43.5%, 47.6%, 51.8% and 60.1%.

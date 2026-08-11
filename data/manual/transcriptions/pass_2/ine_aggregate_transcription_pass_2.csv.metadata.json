@@ -25,10 +25,10 @@
     "entry_pass",
     "adjudication_status"
   ],
-  "creation_timestamp_utc": "2026-08-11T10:13:03+01:00",
+  "creation_timestamp_utc": "2026-08-11T12:07:56+01:00",
   "date_range": {
     "end_year": 1974,
-    "start_year": 1963
+    "start_year": 1961
   },
   "file": "data/manual/transcriptions/pass_2/ine_aggregate_transcription_pass_2.csv",
   "input_artifacts": [
@@ -47,10 +47,14 @@
     {
       "path": "data/manual/source_documents/ine_external_trade_1973_volume_i.pdf",
       "sha256": "ef13f704b430a739a258e56e080d21d930b074fe49774b6726989329a339225f"
+    },
+    {
+      "path": "data/manual/source_documents/ine_external_trade_1960_volume_i.pdf",
+      "sha256": "b7160de354832e3d896af73a6375e0e7cdbf4712ffaece574bbc253e5f4d2013"
     }
   ],
   "purpose": "INE aggregate double-entry transcription pass 2",
-  "rows": 171,
+  "rows": 213,
   "schema": {
     "adjudication_status": "object",
     "cell_status": "object",
@@ -76,12 +80,13 @@
     "valuation_basis": "object",
     "value_source": "int64"
   },
-  "sha256": "60949972837f54315e63f5fcd859c9f0e8fbf4a572c57ca9b05bd9a848da8729",
+  "sha256": "a72eda1f7fcafd7b7084056ef236a008e7dddd85904b547af6e1d37dbfb46e1a",
   "source_files": [
     "data/manual/source_documents/ine_external_trade_1962_volume_i.pdf",
     "data/manual/source_documents/ine_external_trade_1965_volume_i.pdf",
     "data/manual/source_documents/ine_external_trade_1970_volume_i.pdf",
-    "data/manual/source_documents/ine_external_trade_1973_volume_i.pdf"
+    "data/manual/source_documents/ine_external_trade_1973_volume_i.pdf",
+    "data/manual/source_documents/ine_external_trade_1960_volume_i.pdf"
   ],
   "source_licence": "not_specified",
   "stage": "protected_manual_aggregate_transcription",

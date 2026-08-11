@@ -27,7 +27,7 @@
     },
     {
       "path": "data/processed/live/ine_aggregate_trade_harmonised.csv",
-      "sha256": "fb23b5df69f4619a6fb1c7b474884c251e45dfd6f58d7bf4d7c0d06b421a107b"
+      "sha256": "30efa37d824960def863627d3e08140077e6757d9681af22d358ff7044a4161c"
     }
   ],
   "rows": 4,
