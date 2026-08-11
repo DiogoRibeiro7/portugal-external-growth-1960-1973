@@ -196,6 +196,40 @@ def test_fixed_europe_requires_every_configured_partner(tmp_path: Path) -> None:
     assert pd.isna(row_1970["fixed_europe_partner_count"])
 
 
+def test_colonial_benchmark_and_residual_shares_partition_the_world_total(
+    tmp_path: Path,
+) -> None:
+    members = {"austria": 1000000, "france": 2000000}
+    _write_fixed_sample_config(tmp_path, tuple(members))
+    _write_validated_ine_1962(
+        tmp_path,
+        extra_rows=[
+            *[_partner_row("X", entity, value, year=1962) for entity, value in members.items()],
+            *[_partner_row("M", entity, value, year=1962) for entity, value in members.items()],
+        ],
+    )
+    _write_reconciliation(tmp_path)
+    _write_registry(tmp_path)
+    _write_pass_rows(tmp_path)
+    _write_source_registry(tmp_path)
+
+    dataset, _status, _matrix, _source_comparison, notes = (
+        build_validated_aggregate_orientation_outputs(tmp_path)
+    )
+
+    row = dataset.loc[dataset["year"].eq(1962)].iloc[0]
+    benchmark = sum(members.values()) * 1000
+    assert row["residual_destinations_exports_pte"] == 10631829000 - 2390852000 - benchmark
+    shares = (
+        float(row["complete_colonial_export_share"])
+        + float(row["fixed_europe_export_share"])
+        + float(row["residual_destinations_export_share"])
+    )
+    assert abs(shares - 1.0) < 1e-12
+    assert "not total European trade" in notes
+    assert "Spain, Finland and Ireland" in notes
+
+
 def test_partner_component_reconciliation_reports_residuals_and_completeness(
     tmp_path: Path,
 ) -> None:

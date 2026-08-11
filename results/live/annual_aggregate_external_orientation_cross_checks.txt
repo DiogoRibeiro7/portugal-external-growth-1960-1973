@@ -8,3 +8,14 @@ Reconciliation matrix rows: 4
 
 Complete colonial shares are never filled from incomplete Comtrade colonial rows.
 EFTA/EEC variables are populated only from double-entry verified group totals.
+
+Constant-composition European benchmark
+---------------------------------------
+fixed_europe_* values are the sum of 11 individually transcribed partner rows registered as efta_eec_fixed_partner_sample_ine_benchmark: austria, belgium_luxembourg, denmark, france, west_germany, italy, netherlands, norway, sweden, switzerland_liechtenstein, united_kingdom.
+They are a fixed-composition benchmark, not total European trade. Finland and Ireland are excluded because the 1962 and 1965 volumes fold them into the printed residual 'Outros paises' row, so they cannot be observed on a constant basis across the benchmark years.
+The benchmark is always recomputed from those member rows, and is left missing for any year in which one member is absent.
+residual_destinations_* is the world total minus the colonial aggregate and the benchmark. It still contains European destinations outside the benchmark, including Spain, Finland and Ireland.
+
+Component reconciliation
+------------------------
+Transcribed partner rows are reconciled against the aggregate printed in the same table by results/diagnostics/ine_partner_component_reconciliation.csv, which reports every residual and any incomplete partner sample.

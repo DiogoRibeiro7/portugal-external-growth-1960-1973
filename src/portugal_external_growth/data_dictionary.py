@@ -242,6 +242,28 @@ COLUMN_DESCRIPTIONS = {
         "total imports minus complete colonial-market imports; this residual still includes Europe",
         "PTE",
     ),
+    "residual_destinations_exports_pte": (
+        "exports to destinations outside both the colonial market and the European benchmark; "
+        "still includes European countries outside the benchmark such as Spain, Finland and "
+        "Ireland",
+        "PTE",
+    ),
+    "residual_destinations_imports_pte": (
+        "imports from destinations outside both the colonial market and the European benchmark; "
+        "still includes European countries outside the benchmark such as Spain, Finland and "
+        "Ireland",
+        "PTE",
+    ),
+    "residual_destinations_export_share": (
+        "residual-destination exports divided by total exports; the third group of the "
+        "colonial, benchmark and residual decomposition",
+        "share",
+    ),
+    "residual_destinations_import_share": (
+        "residual-destination imports divided by total imports; the third group of the "
+        "colonial, benchmark and residual decomposition",
+        "share",
+    ),
     "unassigned_residual_exports_pte": (
         "exports not assigned after the explicitly documented aggregate components are reconciled",
         "PTE",

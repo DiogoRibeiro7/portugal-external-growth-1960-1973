@@ -29,6 +29,12 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
 - Double-entry transcription of the eleven fixed European partner rows printed in every INE
   benchmark volume (1962, 1965, 1970, 1973), giving the first source-grounded constant-composition
   European trade series: fixed-sample export share 43.5%, 47.6%, 51.8% and 60.1%.
+- The validated aggregate table now publishes `residual_destinations_*` values and shares, so
+  colonial market, European benchmark and residual destinations partition the world total
+  exactly and can be charted as three exhaustive groups.
+- The aggregate cross-check notes now document the benchmark's membership, why Finland and
+  Ireland are excluded, what the residual group still contains, and where component
+  reconciliation residuals are reported.
 - `results/diagnostics/ine_partner_component_reconciliation.csv` reconciles every transcribed
   partner block against the printed aggregate it belongs to, reporting residuals and sample
   completeness in machine-readable form.

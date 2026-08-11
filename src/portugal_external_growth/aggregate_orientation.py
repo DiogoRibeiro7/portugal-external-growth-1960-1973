@@ -35,6 +35,10 @@ DATASET_COLUMNS = [
     "fixed_europe_import_share",
     "non_colonial_world_exports_pte",
     "non_colonial_world_imports_pte",
+    "residual_destinations_exports_pte",
+    "residual_destinations_imports_pte",
+    "residual_destinations_export_share",
+    "residual_destinations_import_share",
     "unassigned_residual_exports_pte",
     "unassigned_residual_imports_pte",
     "colonial_observed_partner_count",
@@ -126,7 +130,7 @@ def build_validated_aggregate_orientation_outputs(
     status = _build_status_table(dataset, validated, pass_1, pass_2, source_registry, registry)
     matrix = _build_reconciliation_matrix(validated, reconciliation)
     source_comparison = _build_source_comparison(trade_source_comparison)
-    notes = _build_cross_check_notes(dataset, status, matrix)
+    notes = _build_cross_check_notes(dataset, status, matrix, fixed_sample)
     return dataset, status, matrix, source_comparison, notes
 
 
@@ -372,6 +376,10 @@ def _populate_validated_europe_values(
     fixed_exports = _fixed_europe_value(year_validated, flow="X", members=fixed_sample)
     fixed_imports = _fixed_europe_value(year_validated, flow="M", members=fixed_sample)
     fixed_observed = pd.notna(fixed_exports) or pd.notna(fixed_imports)
+    colonial_exports = _aggregate_value(year_validated, flow="X", partner_group="Ultramar")
+    colonial_imports = _aggregate_value(year_validated, flow="M", partner_group="Ultramar")
+    residual_exports = world_exports - colonial_exports - fixed_exports
+    residual_imports = world_imports - colonial_imports - fixed_imports
     record.update(
         {
             "efta_participation_exports_pte": _optional_value(efta_exports),
@@ -386,6 +394,10 @@ def _populate_validated_europe_values(
             "eec_export_share": _safe_divide(eec_exports, world_exports),
             "fixed_europe_export_share": _safe_divide(fixed_exports, world_exports),
             "fixed_europe_import_share": _safe_divide(fixed_imports, world_imports),
+            "residual_destinations_exports_pte": _optional_value(residual_exports),
+            "residual_destinations_imports_pte": _optional_value(residual_imports),
+            "residual_destinations_export_share": _safe_divide(residual_exports, world_exports),
+            "residual_destinations_import_share": _safe_divide(residual_imports, world_imports),
         }
     )
 
@@ -479,8 +491,13 @@ def _build_source_comparison(trade_source_comparison: pd.DataFrame) -> pd.DataFr
 
 
 def _build_cross_check_notes(
-    dataset: pd.DataFrame, status: pd.DataFrame, matrix: pd.DataFrame
+    dataset: pd.DataFrame,
+    status: pd.DataFrame,
+    matrix: pd.DataFrame,
+    fixed_sample: tuple[str, ...] = (),
 ) -> str:
+    benchmark_size = len(fixed_sample)
+    benchmark_members = ", ".join(fixed_sample) or "no configured members"
     share_columns = [
         "complete_colonial_export_share",
         "complete_colonial_import_share",
@@ -513,6 +530,37 @@ def _build_cross_check_notes(
             "",
             "Complete colonial shares are never filled from incomplete Comtrade colonial rows.",
             "EFTA/EEC variables are populated only from double-entry verified group totals.",
+            "",
+            "Constant-composition European benchmark",
+            "---------------------------------------",
+            (
+                f"fixed_europe_* values are the sum of {benchmark_size} individually transcribed "
+                f"partner rows registered as {FIXED_EUROPE_GROUP_NAME}: "
+                f"{benchmark_members}."
+            ),
+            (
+                "They are a fixed-composition benchmark, not total European trade. Finland and "
+                "Ireland are excluded because the 1962 and 1965 volumes fold them into the "
+                "printed residual 'Outros paises' row, so they cannot be observed on a constant "
+                "basis across the benchmark years."
+            ),
+            (
+                "The benchmark is always recomputed from those member rows, and is left missing "
+                "for any year in which one member is absent."
+            ),
+            (
+                "residual_destinations_* is the world total minus the colonial aggregate and the "
+                "benchmark. It still contains European destinations outside the benchmark, "
+                "including Spain, Finland and Ireland."
+            ),
+            "",
+            "Component reconciliation",
+            "------------------------",
+            (
+                "Transcribed partner rows are reconciled against the aggregate printed in the "
+                "same table by results/diagnostics/ine_partner_component_reconciliation.csv, "
+                "which reports every residual and any incomplete partner sample."
+            ),
             "",
         ]
     )

@@ -9,16 +9,16 @@
     "source_status",
     "analytical_use"
   ],
-  "creation_timestamp_utc": "2026-08-11T10:46:45+01:00",
+  "creation_timestamp_utc": "2026-08-11T11:32:28+01:00",
   "date_range": null,
   "file": "results/live/validated_annual_aggregate_external_orientation_data_dictionary.csv",
   "input_artifacts": [
     {
       "path": "data/processed/live/validated_annual_aggregate_external_orientation.csv",
-      "sha256": "9837076672f7adc2aa3f735d0f9ace8ae71199c7b443fb8817a9a395fb92e966"
+      "sha256": "a6342d1131363693849a88effd2b40492d4ebb74e89eba7d5f53e192bd916dcc"
     }
   ],
-  "rows": 36,
+  "rows": 40,
   "schema": {
     "analytical_use": "object",
     "column_name": "object",
@@ -28,7 +28,7 @@
     "source_status": "object",
     "unit": "object"
   },
-  "sha256": "d4ecd0bc2a78e9daea7acd988227ccba75cc6398fb13f8034ad27cf8d0c6f3f8",
+  "sha256": "2991eb89f6c5e3e9b3caa9b758c248878d4f8a1f6fce4fde2b379aff4f8bba93",
   "source_files": [
     "data/processed/live/validated_annual_aggregate_external_orientation.csv"
   ],
