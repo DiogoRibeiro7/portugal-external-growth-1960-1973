@@ -1,11 +1,7 @@
 {
   "title": "Portugal External Growth 1960-1973",
-  "description": "<p>Reproducible data repository for studying the relative importance of colonial and European economic linkages in Portuguese growth between 1960 and 1973.</p><p>The repository contains data engineering and analytical code only. It intentionally contains no paper, argument, narrative conclusion, or publication draft. The pipeline uses three data layers (immutable raw snapshots, normalised interim tables, and stable processed analysis tables), writes portable metadata sidecars with SHA-256 checksums and input artefact hashes, and applies time-aware partner-group classifications so that historical trade is not classified using current EU membership. Current source integrations include the World Bank Indicators API, UN Comtrade, and BPstat; the pipeline supports future integration of sources including CEPII TRADHIST and transcribed INE, OECD, and EFTA historical documents.</p>",
   "upload_type": "software",
-  "access_right": "open",
-  "license": "mit",
-  "version": "0.1.6",
-  "language": "eng",
+  "description": "<p>Reproducible research-software repository for constructing source-grounded evidence on Portuguese colonial and European economic linkages between 1960 and 1973.</p><p>The repository contains data engineering, validation, provenance, and empirical-readiness code. It intentionally contains no manuscript, causal estimate, publication draft, or narrative conclusion. Current release reports mark the research data as <strong>NOT_READY</strong>: sectoral-output sources, fixed-European comparisons, product-to-industry mappings, territorial-definition checks, and empirical design matrices remain incomplete.</p><p>The pipeline separates immutable raw snapshots, normalised interim tables, and processed analysis tables; writes repository-relative metadata sidecars with SHA-256 hashes and input-artifact hashes; applies time-aware partner-group definitions; and records release-readiness blockers, data dictionaries, source-release policy, and archive manifests. Empirical safeguards include source-registry validation, source-transition checks, materialised output-growth lineage, validated world-total export-growth inputs, and model-specific joined outcome/exposure design checks.</p>",
   "creators": [
     {
       "name": "Ribeiro, Diogo",
@@ -13,23 +9,45 @@
       "affiliation": "ESMAD - School of Media Arts and Design, Polytechnic of Porto"
     }
   ],
+  "access_right": "open",
+  "license": "mit",
+  "version": "0.1.6",
+  "publication_date": "2026-08-09",
+  "language": "eng",
   "keywords": [
-    "portugal",
+    "Portugal",
     "economic history",
     "colonial trade",
-    "european integration",
+    "European integration",
     "EFTA",
     "EEC",
     "external trade",
-    "data pipeline",
-    "reproducible research"
+    "source criticism",
+    "data provenance",
+    "reproducible research",
+    "research software"
   ],
+  "method": "<p>Install the Python package dependencies with Poetry, then run <code>poetry run peg reproduce-from-local</code>, <code>poetry run peg validate</code>, and the pytest suite. Release reports are generated with <code>poetry run peg freeze-research-data</code>. Network refreshes are intentionally separate from deterministic local reproduction and require provider access where applicable.</p>",
+  "notes": "<p>The MIT license applies to repository code. Third-party source data, downloaded responses, historical documents, and transcriptions remain subject to the terms, licenses, and access conditions of their original providers. When redistribution rights are unresolved, release archives include metadata, checksums, citations, and derived tables rather than restricted local source documents.</p>",
   "related_identifiers": [
     {
       "identifier": "https://github.com/DiogoRibeiro7/portugal-external-growth-1960-1973",
       "relation": "isSupplementTo",
       "resource_type": "software",
       "scheme": "url"
+    },
+    {
+      "identifier": "https://github.com/DiogoRibeiro7/portugal-external-growth-1960-1973/blob/main/CITATION.cff",
+      "relation": "isDocumentedBy",
+      "resource_type": "other",
+      "scheme": "url"
     }
+  ],
+  "references": [
+    "World Bank Indicators API v2. https://datahelpdesk.worldbank.org/knowledgebase/articles/898581-api-basic-call-structures",
+    "UN Comtrade API. https://uncomtrade.org/docs/un-comtrade-api/",
+    "Banco de Portugal BPstat Data API. https://bpstat.bportugal.pt/data/docs",
+    "CEPII TRADHIST database. https://www.cepii.fr/CEPII/en/bdd_modele/bdd_modele_item.asp?id=32",
+    "Instituto Nacional de Estatistica historical trade publications and statistical yearbooks."
   ]
 }
