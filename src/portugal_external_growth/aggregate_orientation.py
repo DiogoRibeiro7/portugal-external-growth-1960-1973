@@ -339,9 +339,10 @@ def _populate_validated_ine_values(
         world_imports,
         fixed_sample=fixed_sample,
     )
-    first_row = year_validated.iloc[0]
-    record["valuation_basis"] = first_row.get("valuation_basis", "")
-    record["territorial_definition"] = first_row.get("territorial_definition", "")
+    record["valuation_basis"] = _world_metadata_value(year_validated, "valuation_basis")
+    record["territorial_definition"] = _world_metadata_value(
+        year_validated, "territorial_definition"
+    )
 
     observed_exports = _reconciliation_row(reconciliation, year=year, concept="Overseas exports")
     observed_imports = _reconciliation_row(reconciliation, year=year, concept="Overseas imports")
@@ -566,6 +567,32 @@ def _build_cross_check_notes(
     )
 
 
+def _world_metadata_value(year_validated: pd.DataFrame, column: str) -> str:
+    """Describe a year's source metadata without silently picking one flow's wording.
+
+    A published row covers both flows, so a single arbitrary row's text would misdescribe the
+    other flow. Values are taken from the World rows that define the published aggregate, and
+    are labelled per flow whenever the source wording differs between them.
+    """
+
+    if column not in year_validated.columns:
+        return ""
+    values: list[tuple[str, str]] = []
+    for flow in ("X", "M"):
+        rows = _aggregate_rows(year_validated, flow=flow, partner_group="World")
+        if rows.empty:
+            continue
+        text = str(rows.iloc[0].get(column, "")).strip()
+        if text:
+            values.append((flow, text))
+    if not values:
+        return ""
+    distinct = {text for _flow, text in values}
+    if len(distinct) == 1:
+        return values[0][1]
+    return "; ".join(f"{flow}: {text}" for flow, text in values)
+
+
 def _has_complete_world_colonial_flows(frame: pd.DataFrame) -> bool:
     return all(
         not _aggregate_rows(frame, flow=flow, partner_group=partner_group).empty
@@ -589,7 +616,8 @@ def _validated_year_rows(frame: pd.DataFrame, year: int) -> pd.DataFrame:
 
 def _aggregate_value(frame: pd.DataFrame, *, flow: str, partner_group: str) -> float:
     rows = _aggregate_rows(frame, flow=flow, partner_group=partner_group)
-    if rows.empty:
+    if len(rows) != 1:
+        # An ambiguous aggregate must read as missing rather than resolve to an arbitrary row.
         return float("nan")
     row = rows.iloc[0]
     return _optional_float(row["value_source"]) * _optional_float(row["unit_multiplier"])

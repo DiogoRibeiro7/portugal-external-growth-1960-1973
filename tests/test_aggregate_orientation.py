@@ -230,6 +230,37 @@ def test_colonial_benchmark_and_residual_shares_partition_the_world_total(
     assert "Spain, Finland and Ireland" in notes
 
 
+def test_year_metadata_describes_both_flows_and_ambiguous_aggregates_read_missing(
+    tmp_path: Path,
+) -> None:
+    export_basis = "special trade; export values follow INE conventions"
+    import_basis = "special trade; import values declared by importers"
+    rows = [
+        {**_ine_row("X", "World", 10631829), "valuation_basis": export_basis},
+        {**_ine_row("M", "World", 16829535), "valuation_basis": import_basis},
+        {**_ine_row("X", "Ultramar", 2390852), "valuation_basis": export_basis},
+        {**_ine_row("M", "Ultramar", 2122236), "valuation_basis": import_basis},
+        # A duplicated colonial export aggregate must not resolve to an arbitrary row.
+        {**_ine_row("X", "Ultramar", 9999999), "valuation_basis": export_basis},
+    ]
+    output = tmp_path / "data/processed/live"
+    output.mkdir(parents=True)
+    pd.DataFrame(rows).to_csv(output / "ine_aggregate_trade_harmonised.csv", index=False)
+    _write_reconciliation(tmp_path)
+    _write_registry(tmp_path)
+    _write_pass_rows(tmp_path)
+    _write_source_registry(tmp_path)
+
+    dataset, _status, _matrix, _source_comparison, _notes = (
+        build_validated_aggregate_orientation_outputs(tmp_path)
+    )
+
+    row = dataset.loc[dataset["year"].eq(1962)].iloc[0]
+    assert row["valuation_basis"] == f"X: {export_basis}; M: {import_basis}"
+    assert pd.isna(row["colonial_exports_complete_pte"])
+    assert row["colonial_imports_complete_pte"] == 2122236000
+
+
 def test_partner_component_reconciliation_reports_residuals_and_completeness(
     tmp_path: Path,
 ) -> None:

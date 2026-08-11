@@ -92,6 +92,11 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
 - Release blocker IDs no longer duplicate the `research_` prefix.
 - Analytical dictionary coverage now uses dataset-column dictionaries for the BPstat-derived context
   tables and complete exposure-value units.
+- The published `valuation_basis` and `territorial_definition` of a year no longer come from
+  whichever transcribed row sorted first. They are taken from the World rows that define the
+  published aggregate and are labelled per flow when the source wording differs, so an export
+  figure is never described by the import valuation convention.
+- An ambiguous aggregate row now reads as missing instead of resolving to an arbitrary match.
 - Cross-source comparisons no longer convert every INE year with the 1962 IMF par value.
   Conversion now requires a rate registered for that same year, and years without one are
   reported as `blocked_pending_year_exchange_rate` instead of borrowing another year's rate.
