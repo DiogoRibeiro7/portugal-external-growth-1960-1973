@@ -1,5 +1,5 @@
 dataset_path,expected_dictionary_path,dictionary_status,blocking_reason,dataset_column_count,dictionary_column_count,placeholder_description_count,missing_unit_count
-data/processed/live/validated_annual_aggregate_external_orientation.csv,results/live/validated_annual_aggregate_external_orientation_data_dictionary.csv,available,,33,33,0,0
+data/processed/live/validated_annual_aggregate_external_orientation.csv,results/live/validated_annual_aggregate_external_orientation_data_dictionary.csv,available,,36,36,0,0
 data/processed/live/portugal_macro_context.csv,results/live/portugal_macro_context_data_dictionary.csv,available,,16,16,0,0
 data/processed/live/portugal_broad_sector_context.csv,results/live/portugal_broad_sector_context_data_dictionary.csv,available,,11,11,0,0
 data/processed/live/industry_trade_panel.csv,results/live/industry_trade_panel_data_dictionary.csv,available,,17,17,0,0
