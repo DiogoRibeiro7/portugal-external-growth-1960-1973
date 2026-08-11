@@ -13,7 +13,7 @@
   "input_artifacts": [
     {
       "path": "results/releases/current/freeze_blocking_reasons.csv",
-      "sha256": "5e9f0429187709ea153a90615f7073c20dcc499fd25b7d2ea022fc7c93629de6"
+      "sha256": "ac3e44d4589d77d0843d4ac4bd3b4c3f09d4b398341f9cb9ecee382d46e26df8"
     }
   ],
   "rows": 15,
