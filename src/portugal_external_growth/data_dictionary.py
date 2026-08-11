@@ -56,6 +56,17 @@ DATASET_SPECS = {
             "candidate empirical outcome panel; unavailable until populated and reviewed"
         ),
     ),
+    "data/processed/live/sectoral_output_growth_panel.csv": DatasetDictionarySpec(
+        source_status=(
+            "derived exclusively from reviewed sectoral-output levels with validated "
+            "current/lag provenance and reviewed source-transition checks"
+        ),
+        analytical_use=(
+            "candidate dependent-variable panel for sector-year growth models over the "
+            "configured growth sample, usable only after every empirical prerequisite is "
+            "satisfied"
+        ),
+    ),
     "data/interim/live/empirical_design_matrix.csv": DatasetDictionarySpec(
         source_status="schema placeholder pending empirical prerequisites",
         analytical_use="no model fitting; intentionally empty until readiness audit passes",

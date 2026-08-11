@@ -24,6 +24,8 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
   `data/processed/live/sectoral_output_growth_panel.csv` with current/lag source lineage.
 - Pipeline metadata writes now preserve repository-relative provenance when run from a different
   current working directory.
+- Empirical readiness now audits `sectoral_output_sector_year_uniqueness` so the upstream
+  sectoral-output panel must resolve to one analytical level per sector-year.
 
 ### Fixed
 
@@ -69,6 +71,12 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
 - Release blocker IDs no longer duplicate the `research_` prefix.
 - Analytical dictionary coverage now uses dataset-column dictionaries for the BPstat-derived context
   tables and complete exposure-value units.
+- Duplicated sector-year output levels no longer produce an ambiguous economic lag: such rows are
+  excluded from the reviewed output panel and from derived output growth.
+- Local sectoral-output registry sources must now be repository-relative paths inside the project
+  root, so external or traversal paths can no longer make the repository empirically ready.
+- `sectoral_output_growth_panel.csv` now has a dataset-level dictionary specification, restoring the
+  release checklist item for analytical data dictionaries.
 
 ## [0.1.6] - 2026-08-09
 

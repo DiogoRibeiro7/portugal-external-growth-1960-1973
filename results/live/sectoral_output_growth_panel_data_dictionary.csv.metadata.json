@@ -9,7 +9,7 @@
     "source_status",
     "analytical_use"
   ],
-  "creation_timestamp_utc": "2026-08-10T22:36:12+01:00",
+  "creation_timestamp_utc": "2026-08-10T23:43:03+01:00",
   "date_range": null,
   "file": "results/live/sectoral_output_growth_panel_data_dictionary.csv",
   "input_artifacts": [
@@ -28,7 +28,7 @@
     "source_status": "object",
     "unit": "object"
   },
-  "sha256": "56da0e475ea1d9ac3ab42ca19290affc00a83ef12843097eeffc5a3c891debc0",
+  "sha256": "5342d5a8aacd1dbfb0b798869cc280926f05d199ea754fcdfe401a349dd4d9d3",
   "source_files": [
     "data/processed/live/sectoral_output_growth_panel.csv"
   ],

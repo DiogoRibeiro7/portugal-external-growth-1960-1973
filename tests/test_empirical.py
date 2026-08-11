@@ -53,7 +53,7 @@ def test_empirical_readiness_audit_blocks_empty_repository(tmp_path: Path) -> No
     audit = build_empirical_readiness_audit(tmp_path)
     notes = build_empirical_readiness_audit_notes(audit)
 
-    assert len(audit) == 34
+    assert len(audit) == 35
     assert set(audit["status"]) == {"blocked"}
     assert audit.loc[audit["requirement"].eq("product_level_coverage"), "coverage"].iloc[0] == 0
     assert "No causal regressions" in notes
@@ -991,6 +991,133 @@ def test_materialised_output_growth_must_match_recomputed_lineage(tmp_path: Path
     dependent = audit.loc[audit["requirement"].eq("dependent_variable_coverage")].iloc[0]
     assert output_growth["available"] == 0
     assert dependent["available"] == 0
+
+
+def test_output_growth_rejects_duplicate_sector_year_levels(tmp_path: Path) -> None:
+    processed = tmp_path / "data/processed/live"
+    registry = tmp_path / "data/raw/live/sectoral_output"
+    processed.mkdir(parents=True)
+    registry.mkdir(parents=True)
+    pd.DataFrame(
+        [
+            {
+                "source_id": "test_source",
+                "provider": "test_provider",
+                "dataset_table": "test_table",
+                "source_reference": "test reference",
+                "source_file_or_url": "https://example.test/test_source.csv",
+                "retrieval_date": "2026-08-10",
+                "checksum_if_local": "not_applicable",
+                "years": "1962-1973",
+                "classification": "source_sector_test",
+                "licence_status": "test_fixture",
+                "review_status": "reviewed",
+            }
+        ]
+    ).to_csv(registry / "source_registry.csv", index=False)
+    growth = float(np.log(220.0 / 200.0))
+    pd.DataFrame(
+        [
+            _sectoral_output_row("sector_00", 1962, 100.0, 0.0),
+            _sectoral_output_row("sector_00", 1962, 200.0, 0.0),
+            _sectoral_output_row("sector_00", 1963, 220.0, growth),
+        ]
+    ).to_csv(processed / "sectoral_output_panel.csv", index=False)
+
+    growth_panel = build_sectoral_output_growth_panel(tmp_path)
+    audit = build_empirical_readiness_audit(tmp_path)
+
+    requirement = "sectoral_output_sector_year_uniqueness"
+    uniqueness = audit.loc[audit["requirement"].eq(requirement)].iloc[0]
+    assert growth_panel.empty
+    assert uniqueness["available"] == 0
+    assert uniqueness["status"] == "blocked"
+    assert "duplicate analytical sector-year levels" in uniqueness["blocking_reason"]
+
+
+def test_unique_sector_year_levels_keep_derived_output_growth(tmp_path: Path) -> None:
+    processed = tmp_path / "data/processed/live"
+    registry = tmp_path / "data/raw/live/sectoral_output"
+    processed.mkdir(parents=True)
+    registry.mkdir(parents=True)
+    pd.DataFrame(
+        [
+            {
+                "source_id": "test_source",
+                "provider": "test_provider",
+                "dataset_table": "test_table",
+                "source_reference": "test reference",
+                "source_file_or_url": "https://example.test/test_source.csv",
+                "retrieval_date": "2026-08-10",
+                "checksum_if_local": "not_applicable",
+                "years": "1962-1973",
+                "classification": "source_sector_test",
+                "licence_status": "test_fixture",
+                "review_status": "reviewed",
+            }
+        ]
+    ).to_csv(registry / "source_registry.csv", index=False)
+    growth = float(np.log(220.0 / 200.0))
+    pd.DataFrame(
+        [
+            _sectoral_output_row("sector_00", 1962, 200.0, 0.0),
+            _sectoral_output_row("sector_00", 1963, 220.0, growth),
+        ]
+    ).to_csv(processed / "sectoral_output_panel.csv", index=False)
+
+    growth_panel = build_sectoral_output_growth_panel(tmp_path)
+    audit = build_empirical_readiness_audit(tmp_path)
+
+    requirement = "sectoral_output_sector_year_uniqueness"
+    uniqueness = audit.loc[audit["requirement"].eq(requirement)].iloc[0]
+    assert np.isclose(growth_panel["output_growth"].iloc[0], growth)
+    assert uniqueness["status"] == "satisfied"
+
+
+def test_source_registry_rejects_local_paths_outside_the_repository(tmp_path: Path) -> None:
+    external = tmp_path / "external"
+    external.mkdir(parents=True)
+    external_source = external / "sectoral-output.csv"
+    external_source.write_text("sectoral output fixture\n", encoding="utf-8")
+    root = tmp_path / "repository"
+    registry = root / "data/raw/live/sectoral_output"
+    registry.mkdir(parents=True)
+    pd.DataFrame(
+        [
+            {
+                "source_id": "test_source",
+                "provider": "test_provider",
+                "dataset_table": "test_table",
+                "source_reference": "test reference",
+                "source_file_or_url": str(external_source),
+                "retrieval_date": "2026-08-10",
+                "checksum_if_local": sha256_file(external_source),
+                "years": "1962-1973",
+                "classification": "source_sector_test",
+                "licence_status": "test_fixture",
+                "review_status": "reviewed",
+            },
+            {
+                "source_id": "traversal_source",
+                "provider": "test_provider",
+                "dataset_table": "test_table",
+                "source_reference": "test reference",
+                "source_file_or_url": "../external/sectoral-output.csv",
+                "retrieval_date": "2026-08-10",
+                "checksum_if_local": sha256_file(external_source),
+                "years": "1962-1973",
+                "classification": "source_sector_test",
+                "licence_status": "test_fixture",
+                "review_status": "reviewed",
+            },
+        ]
+    ).to_csv(registry / "source_registry.csv", index=False)
+
+    audit = build_empirical_readiness_audit(root)
+
+    registry_row = audit.loc[audit["requirement"].eq("sectoral_output_source_registry")].iloc[0]
+    assert registry_row["status"] == "blocked"
+    assert registry_row["available"] == 0
 
 
 def test_export_growth_models_require_joined_outcome_exposure_design(tmp_path: Path) -> None:

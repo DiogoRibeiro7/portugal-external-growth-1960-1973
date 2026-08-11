@@ -8,7 +8,7 @@
     "status",
     "blocking_reason"
   ],
-  "creation_timestamp_utc": "2026-08-10T16:23:04+01:00",
+  "creation_timestamp_utc": "2026-08-10T23:43:03+01:00",
   "date_range": null,
   "file": "results/live/empirical_readiness_audit.csv",
   "input_artifacts": [
@@ -61,7 +61,7 @@
       "sha256": "00ffc33b09c076612363745e4ce728d877ec979be5ec1778c130d3b05eac557a"
     }
   ],
-  "rows": 34,
+  "rows": 35,
   "schema": {
     "available": "float64",
     "blocking_reason": "object",
@@ -70,7 +70,7 @@
     "requirement": "object",
     "status": "object"
   },
-  "sha256": "cfc8332dd0a0156abceaf4a4c08d8c1d05986c9733b1fba8449b794a81e94e6e",
+  "sha256": "c4247f4e8cca9a19fa9a9c230a0c4149ad2708d3bfb099823aba9c0fbbd45005",
   "source_files": [
     "data/processed/live/validated_annual_aggregate_external_orientation.csv",
     "results/live/comtrade_product_extraction_status.csv",

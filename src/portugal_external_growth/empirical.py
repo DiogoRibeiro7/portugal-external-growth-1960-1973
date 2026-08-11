@@ -36,6 +36,7 @@ PREREQUISITE_AUDIT_REQUIREMENTS = {
     "portuguese_sectoral_output_data": (
         "sectoral_output_source_registry",
         "sectoral_output_source_coverage",
+        "sectoral_output_sector_year_uniqueness",
         "real_output_coverage",
         "output_growth_coverage",
         "price_deflator_coverage",
@@ -309,6 +310,7 @@ def build_empirical_readiness_audit(root: Path) -> pd.DataFrame:
         _product_industry_mapping_coverage(root),
         _sectoral_output_source_registry(root),
         _sectoral_output_source_coverage(root),
+        _sectoral_output_sector_year_uniqueness(root),
         _real_output_coverage(root),
         _output_growth_coverage(root),
         _deflator_coverage(root),
@@ -915,6 +917,27 @@ def _sectoral_output_source_coverage(root: Path) -> dict[str, object]:
         required,
         available,
         "reviewed nominal sector-year output observations do not cover the configured sample",
+    )
+
+
+def _sectoral_output_sector_year_uniqueness(root: Path) -> dict[str, object]:
+    panel = _sectoral_output_panel(root)
+    if panel.empty:
+        return _record(
+            "sectoral_output_sector_year_uniqueness",
+            1,
+            0,
+            "sectoral output panel is missing or empty",
+        )
+    ambiguous = int(_ambiguous_sector_year_mask(panel).sum())
+    return _record(
+        "sectoral_output_sector_year_uniqueness",
+        1,
+        int(ambiguous == 0),
+        (
+            "sectoral output panel contains duplicate analytical sector-year levels; "
+            "reconcile competing sources into one preferred observation"
+        ),
     )
 
 
@@ -1949,6 +1972,30 @@ def _sectoral_output_panel(root: Path) -> pd.DataFrame:
     return sample
 
 
+def _ambiguous_sector_year_mask(panel: pd.DataFrame) -> pd.Series:
+    """Flag sector-year rows that do not resolve to one analytical output level."""
+
+    if panel.empty or not {"sector_code", "year"}.issubset(panel.columns):
+        return pd.Series(False, index=panel.index, dtype=bool)
+    keys = pd.DataFrame(
+        {
+            "sector_code": panel["sector_code"].astype("string").fillna("").str.strip(),
+            "year": pd.to_numeric(panel["year"], errors="coerce"),
+        },
+        index=panel.index,
+    )
+    ambiguous = keys.duplicated(keep=False)
+    if "harmonised_sector_code" in panel.columns:
+        harmonised = keys.assign(
+            sector_code=panel["harmonised_sector_code"].astype("string").fillna("").str.strip()
+        )
+        populated = harmonised["sector_code"].ne("")
+        ambiguous |= (
+            harmonised.loc[populated].duplicated(keep=False).reindex(panel.index, fill_value=False)
+        )
+    return ambiguous
+
+
 def _sectoral_output_source_registry_frame(root: Path) -> pd.DataFrame:
     registry = _read_csv(root / "data/raw/live/sectoral_output/source_registry.csv")
     if registry.empty or not set(SECTORAL_OUTPUT_SOURCE_REGISTRY_COLUMNS).issubset(
@@ -2043,7 +2090,8 @@ def _reviewed_output_panel(root: Path, panel: pd.DataFrame) -> pd.DataFrame:
         & in_scope
         & classification_matches
     ].copy()
-    return retained[[column for column in panel.columns if column in retained.columns]].copy()
+    output = retained[[column for column in panel.columns if column in retained.columns]].copy()
+    return output.loc[~_ambiguous_sector_year_mask(output)].copy()
 
 
 def _reviewed_output_growth_panel(root: Path) -> pd.DataFrame:
@@ -2222,10 +2270,27 @@ def _source_location_checksum_valid(root: Path, row: pd.Series) -> bool:
         return checksum == "not_applicable" or bool(re.fullmatch(r"[a-f0-9]{64}", checksum))
     if not re.fullmatch(r"[a-f0-9]{64}", checksum):
         return False
-    source_path = root / location
-    if not source_path.is_file():
+    source_path = _repository_local_source_path(root, location)
+    if source_path is None or not source_path.is_file():
         return False
     return sha256_file(source_path).lower() == checksum
+
+
+def _repository_local_source_path(root: Path, location: str) -> Path | None:
+    """Resolve a local source location that must be tracked inside the repository."""
+
+    if re.match(r"^[a-z][a-z0-9+.-]*:", location.lower()):
+        return None
+    candidate = Path(location)
+    if candidate.is_absolute() or candidate.drive or candidate.root:
+        return None
+    if ".." in candidate.parts:
+        return None
+    resolved_root = root.resolve()
+    resolved = (resolved_root / candidate).resolve()
+    if not resolved.is_relative_to(resolved_root):
+        return None
+    return resolved
 
 
 def _external_source_location(location: str) -> bool:
@@ -2367,6 +2432,9 @@ def _derived_output_growth_frame(root: Path, panel: pd.DataFrame) -> pd.DataFram
     working["source_id"] = working["source_id"].astype("string").fillna("").str.strip()
     working["year"] = pd.to_numeric(working["year"], errors="coerce")
     working["real_output"] = pd.to_numeric(working["real_output"], errors="coerce")
+    working = working.loc[~_ambiguous_sector_year_mask(working)].copy()
+    if working.empty:
+        return output
     working = working.sort_values(["sector_code", "year"])
     previous = working.groupby("sector_code", dropna=False)["real_output"].shift(1)
     previous_year = working.groupby("sector_code", dropna=False)["year"].shift(1)
