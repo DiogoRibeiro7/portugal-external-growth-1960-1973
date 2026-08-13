@@ -109,12 +109,12 @@ year,flow_code,source,territorial_definition,source_value,source_unit,source_cur
 1971,X,UN Comtrade,requires_historical_metadata_review,1052598592.0,nominal merchandise trade,USD,source_reported_usd,"Portugal reporter code 620, World partner total",World,UN Comtrade,1052598592.0,0.0,0.0,0.0,Benchmark row; territorial definition still under review.,usable_with_territorial_caveat
 1972,M,CEPII TRADHIST,not_available_locally,,,,,,,UN Comtrade,,,,,No local structured source table is available yet.,missing_source
 1972,M,EFTA,not_available_locally,,,,,,,UN Comtrade,,,,,No local structured source table is available yet.,missing_source
-1972,M,INE,not_available_locally,,,,,,,UN Comtrade,,,,,No local structured source table is available yet.,missing_source
+1972,M,INE,INE statistical territories as printed in the 1972 volume; Continente e Ilhas Adjacentes reporting scope,,nominal merchandise trade,USD,no_registered_exchange_rate_for_1972,INE special-trade World total,World,UN Comtrade,,,,,Validated double-entry INE aggregate; no USD comparison is derived because no 1972 PTE/USD rate is registered. Rates from other years are never substituted.,blocked_pending_year_exchange_rate
 1972,M,OECD,not_available_locally,,,,,,,UN Comtrade,,,,,No local structured source table is available yet.,missing_source
 1972,M,UN Comtrade,requires_historical_metadata_review,2227166208.0,nominal merchandise trade,USD,source_reported_usd,"Portugal reporter code 620, World partner total",World,UN Comtrade,2227166208.0,0.0,0.0,0.0,Benchmark row; territorial definition still under review.,usable_with_territorial_caveat
 1972,X,CEPII TRADHIST,not_available_locally,,,,,,,UN Comtrade,,,,,No local structured source table is available yet.,missing_source
 1972,X,EFTA,not_available_locally,,,,,,,UN Comtrade,,,,,No local structured source table is available yet.,missing_source
-1972,X,INE,not_available_locally,,,,,,,UN Comtrade,,,,,No local structured source table is available yet.,missing_source
+1972,X,INE,INE statistical territories as printed in the 1972 volume; Continente e Ilhas Adjacentes reporting scope,,nominal merchandise trade,USD,no_registered_exchange_rate_for_1972,INE special-trade World total,World,UN Comtrade,,,,,Validated double-entry INE aggregate; no USD comparison is derived because no 1972 PTE/USD rate is registered. Rates from other years are never substituted.,blocked_pending_year_exchange_rate
 1972,X,OECD,not_available_locally,,,,,,,UN Comtrade,,,,,No local structured source table is available yet.,missing_source
 1972,X,UN Comtrade,requires_historical_metadata_review,1293765376.0,nominal merchandise trade,USD,source_reported_usd,"Portugal reporter code 620, World partner total",World,UN Comtrade,1293765376.0,0.0,0.0,0.0,Benchmark row; territorial definition still under review.,usable_with_territorial_caveat
 1973,M,CEPII TRADHIST,not_available_locally,,,,,,,UN Comtrade,,,,,No local structured source table is available yet.,missing_source

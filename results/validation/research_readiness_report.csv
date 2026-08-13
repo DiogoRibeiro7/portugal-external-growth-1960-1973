@@ -1,7 +1,7 @@
 severity,check,message
 not_ready,research.empirical_prerequisites,0/6 empirical prerequisites are satisfied.
 not_ready,research.manual_source_documents,14/43 expected manual source-year records are complete.
-not_ready,research.cross_source_comparison,92/128 cross-source comparison rows have missing source coverage.
+not_ready,research.cross_source_comparison,90/128 cross-source comparison rows have missing source coverage.
 not_ready,research.product_industry_mapping,Product-to-industry mapping coverage is zero.
 not_ready,research.territorial_definition,24 Comtrade coverage rows still require territorial-definition review.
 not_ready,research.empirical_design_matrix,No empirical design matrix exists.
