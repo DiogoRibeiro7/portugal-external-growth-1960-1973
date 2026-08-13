@@ -95,6 +95,7 @@ PARTNER_COMPONENT_RECONCILIATION_COLUMNS = [
     "note",
 ]
 COMPONENT_RESIDUAL_TOLERANCE = 0.001
+DEFAULT_PANEL_YEARS = tuple(range(1962, 1974))
 FIXED_EUROPE_GROUP_NAME = "efta_eec_fixed_partner_sample_ine_benchmark"
 FIXED_EUROPE_SERIES_PREFIX = {"M": "imports_from", "X": "exports_to"}
 FIXED_EUROPE_SERIES_SUFFIX = "special_trade_current_escudos"
@@ -126,6 +127,7 @@ def build_validated_aggregate_orientation_outputs(
         pass_2,
         source_registry,
         fixed_sample=fixed_sample,
+        panel_years=bilateral_trade_panel_years(root),
     )
     status = _build_status_table(dataset, validated, pass_1, pass_2, source_registry, registry)
     matrix = _build_reconciliation_matrix(validated, reconciliation)
@@ -141,7 +143,7 @@ def build_ine_partner_component_reconciliation(root: Path) -> pd.DataFrame:
     colonial_members = _ine_ultramar_entities(root)
     europe_members = fixed_europe_partner_sample(root)
     records: list[dict[str, object]] = []
-    for year in range(1962, 1974):
+    for year in transcribed_reference_years(validated):
         year_rows = _validated_year_rows(validated, year)
         if year_rows.empty:
             continue
@@ -269,10 +271,11 @@ def _build_dataset(
     source_registry: pd.DataFrame,
     *,
     fixed_sample: tuple[str, ...] = (),
+    panel_years: tuple[int, ...] = DEFAULT_PANEL_YEARS,
 ) -> pd.DataFrame:
     records: list[dict[str, object]] = []
     registry_status = _registry_status(registry)
-    for year in range(1962, 1974):
+    for year in panel_years:
         record: dict[str, object] = {column: pd.NA for column in DATASET_COLUMNS}
         record["year"] = year
         record["source_currency"] = "PTE"
@@ -668,6 +671,40 @@ def _fixed_europe_series_name(entity_id: str, *, flow: str) -> str | None:
     if prefix is None:
         return None
     return f"{prefix}_{entity_id}_{FIXED_EUROPE_SERIES_SUFFIX}"
+
+
+def bilateral_trade_panel_years(root: Path) -> tuple[int, ...]:
+    """Return the configured bilateral trade panel years.
+
+    The published panel range is a research-scope decision recorded in project.yml, not a
+    property of the code, so extending it once further source years are acquired must not
+    require editing this module.
+    """
+
+    project_path = root / "config/project.yml"
+    if not project_path.exists():
+        return DEFAULT_PANEL_YEARS
+    payload = load_yaml(project_path)
+    project = payload.get("project")
+    if not isinstance(project, dict):
+        return DEFAULT_PANEL_YEARS
+    try:
+        start = int(project["bilateral_trade_panel_start_year"])
+        end = int(project["bilateral_trade_panel_end_year"])
+    except (KeyError, TypeError, ValueError):
+        return DEFAULT_PANEL_YEARS
+    if start > end:
+        return DEFAULT_PANEL_YEARS
+    return tuple(range(start, end + 1))
+
+
+def transcribed_reference_years(validated: pd.DataFrame) -> tuple[int, ...]:
+    """Return every reference year present in verified transcriptions, in order."""
+
+    if validated.empty or "reference_year" not in validated.columns:
+        return ()
+    years = pd.to_numeric(validated["reference_year"], errors="coerce").dropna()
+    return tuple(sorted({int(year) for year in years}))
 
 
 def fixed_europe_partner_sample(root: Path) -> tuple[str, ...]:

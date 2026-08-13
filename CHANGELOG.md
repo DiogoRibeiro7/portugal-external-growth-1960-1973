@@ -26,6 +26,9 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
   current working directory.
 - Empirical readiness now audits `sectoral_output_sector_year_uniqueness` so the upstream
   sectoral-output panel must resolve to one analytical level per sector-year.
+- The published panel range now comes from `project.yml` instead of a hardcoded literal, and
+  partner-component reconciliation now covers every transcribed reference year, so verified
+  years outside the current panel are still reported.
 - The 1960 INE yearbook (both volumes) is registered with checksums and metadata, and its
   Quadro III rows are transcribed by double entry: World and Ultramar totals, the eight
   overseas territories, and the ten benchmark European partners the volume prints. Austria is

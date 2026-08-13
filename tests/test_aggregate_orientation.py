@@ -5,6 +5,7 @@ from pathlib import Path
 import pandas as pd
 
 from portugal_external_growth.aggregate_orientation import (
+    bilateral_trade_panel_years,
     build_ine_partner_component_reconciliation,
     build_validated_aggregate_orientation_outputs,
 )
@@ -259,6 +260,57 @@ def test_year_metadata_describes_both_flows_and_ambiguous_aggregates_read_missin
     assert row["valuation_basis"] == f"X: {export_basis}; M: {import_basis}"
     assert pd.isna(row["colonial_exports_complete_pte"])
     assert row["colonial_imports_complete_pte"] == 2122236000
+
+
+def test_panel_years_follow_project_config_and_diagnostics_follow_the_data(
+    tmp_path: Path,
+) -> None:
+    config = tmp_path / "config"
+    config.mkdir(parents=True)
+    (config / "project.yml").write_text(
+        "project:\n"
+        "  bilateral_trade_panel_start_year: 1963\n"
+        "  bilateral_trade_panel_end_year: 1965\n",
+        encoding="utf-8",
+    )
+    _write_colonial_crosswalk(tmp_path, ("angola",))
+    _write_fixed_sample_config(tmp_path, ("france",))
+    # A verified year outside the configured panel must still be reconciled.
+    _write_validated_ine_1962(
+        tmp_path,
+        extra_rows=[_partner_row("X", "angola", 2390852, year=1962)],
+    )
+    _write_reconciliation(tmp_path)
+    _write_registry(tmp_path)
+    _write_pass_rows(tmp_path)
+    _write_source_registry(tmp_path)
+
+    dataset, _status, _matrix, _source_comparison, _notes = (
+        build_validated_aggregate_orientation_outputs(tmp_path)
+    )
+    reconciliation = build_ine_partner_component_reconciliation(tmp_path)
+
+    assert bilateral_trade_panel_years(tmp_path) == (1963, 1964, 1965)
+    assert dataset["year"].tolist() == [1963, 1964, 1965]
+    assert 1962 in set(reconciliation["year"])
+    colonial = reconciliation.loc[
+        reconciliation["component_group"].eq("colonial_overseas_territories")
+        & reconciliation["flow"].eq("X")
+    ].iloc[0]
+    assert colonial["status"] == "exact"
+
+
+def test_panel_years_fall_back_when_config_is_unusable(tmp_path: Path) -> None:
+    config = tmp_path / "config"
+    config.mkdir(parents=True)
+    (config / "project.yml").write_text(
+        "project:\n"
+        "  bilateral_trade_panel_start_year: 1970\n"
+        "  bilateral_trade_panel_end_year: 1965\n",
+        encoding="utf-8",
+    )
+
+    assert bilateral_trade_panel_years(tmp_path) == tuple(range(1962, 1974))
 
 
 def test_partner_component_reconciliation_reports_residuals_and_completeness(
