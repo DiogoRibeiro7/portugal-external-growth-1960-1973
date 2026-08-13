@@ -25,7 +25,7 @@
   "input_artifacts": [
     {
       "path": "data/manual/source_documents/source_document_registry.csv",
-      "sha256": "5f7873dd5545770e0f3380bae9cf146a7eaa597c6814e317aa59a8639d74d9b6"
+      "sha256": "ff392b2c4e4d924f980ff8f5c34c1b86b626afe31410370224b979add51598c2"
     },
     {
       "path": "data/manual/source_documents/ine_external_trade_1962_volume_i.pdf",
@@ -37,11 +37,11 @@
     },
     {
       "path": "data/manual/transcriptions/pass_1/ine_aggregate_transcription_pass_1.csv",
-      "sha256": "bfcaf9a27e1a58cf8fcc5dcb6d2d281826374f11c42e876d9ea2da31e367fdb6"
+      "sha256": "ea051f39d24c916553f9dd81ec9c9527ac86a6b65d99a76c81ad52993c54e119"
     },
     {
       "path": "data/manual/transcriptions/pass_2/ine_aggregate_transcription_pass_2.csv",
-      "sha256": "a72eda1f7fcafd7b7084056ef236a008e7dddd85904b547af6e1d37dbfb46e1a"
+      "sha256": "a4e00e44bd19b22e7dfc27339d4d73f423015d2800dab70174f43a7a3b73ae95"
     },
     {
       "path": "data/interim/live/ine_aggregate_transcription_discrepancies.csv",

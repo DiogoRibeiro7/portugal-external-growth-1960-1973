@@ -99,12 +99,12 @@ year,flow_code,source,source_value,source_currency,nominal_conversion_method,cov
 1970,X,UN Comtrade,949225152.0,USD,source_reported_usd,"Portugal reporter code 620, World partner total",usable_with_territorial_caveat,Benchmark row; territorial definition still under review.
 1971,M,CEPII TRADHIST,,,,,missing_source,No local structured source table is available yet.
 1971,M,EFTA,,,,,missing_source,No local structured source table is available yet.
-1971,M,INE,,,,,missing_source,No local structured source table is available yet.
+1971,M,INE,,USD,no_registered_exchange_rate_for_1971,INE special-trade World total,blocked_pending_year_exchange_rate,Validated double-entry INE aggregate; no USD comparison is derived because no 1971 PTE/USD rate is registered. Rates from other years are never substituted.
 1971,M,OECD,,,,,missing_source,No local structured source table is available yet.
 1971,M,UN Comtrade,1823831680.0,USD,source_reported_usd,"Portugal reporter code 620, World partner total",usable_with_territorial_caveat,Benchmark row; territorial definition still under review.
 1971,X,CEPII TRADHIST,,,,,missing_source,No local structured source table is available yet.
 1971,X,EFTA,,,,,missing_source,No local structured source table is available yet.
-1971,X,INE,,,,,missing_source,No local structured source table is available yet.
+1971,X,INE,,USD,no_registered_exchange_rate_for_1971,INE special-trade World total,blocked_pending_year_exchange_rate,Validated double-entry INE aggregate; no USD comparison is derived because no 1971 PTE/USD rate is registered. Rates from other years are never substituted.
 1971,X,OECD,,,,,missing_source,No local structured source table is available yet.
 1971,X,UN Comtrade,1052598592.0,USD,source_reported_usd,"Portugal reporter code 620, World partner total",usable_with_territorial_caveat,Benchmark row; territorial definition still under review.
 1972,M,CEPII TRADHIST,,,,,missing_source,No local structured source table is available yet.

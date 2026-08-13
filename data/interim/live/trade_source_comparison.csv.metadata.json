@@ -19,7 +19,7 @@
     "explanatory_note",
     "confidence_status"
   ],
-  "creation_timestamp_utc": "2026-08-11T12:07:56+01:00",
+  "creation_timestamp_utc": "2026-08-13T22:43:32+01:00",
   "date_range": {
     "end_year": 1973,
     "start_year": 1960
@@ -32,7 +32,7 @@
     },
     {
       "path": "data/processed/live/ine_aggregate_trade_harmonised.csv",
-      "sha256": "30efa37d824960def863627d3e08140077e6757d9681af22d358ff7044a4161c"
+      "sha256": "4358c88ff8a499aed8d6b02c6eeb48b295aee6fbaf67a80c71ee69b63d318f71"
     },
     {
       "path": "data/interim/live/portugal_exchange_rate_evidence.csv",
@@ -59,7 +59,7 @@
     "territorial_definition": "object",
     "year": "int64"
   },
-  "sha256": "d00f6d32e62de33e7847729619ebb9026eeb37372c642361ccc88f3f6dc0e943",
+  "sha256": "68f29894ad243157d8163f40b5eab37bf7a9ec65e94576dd8d7591ff62cd6656",
   "source_files": [
     "results/diagnostics/comtrade_coverage/comtrade_coverage_audit.csv",
     "data/processed/live/ine_aggregate_trade_harmonised.csv",
