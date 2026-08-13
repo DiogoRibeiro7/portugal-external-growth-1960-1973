@@ -10,7 +10,7 @@
     "is_available",
     "blocking_reason"
   ],
-  "creation_timestamp_utc": "2026-08-11T12:07:56+01:00",
+  "creation_timestamp_utc": "2026-08-13T21:58:35+01:00",
   "date_range": {
     "end_year": 1974,
     "start_year": 1960
@@ -23,7 +23,7 @@
     },
     {
       "path": "data/manual/source_documents/source_document_registry.csv",
-      "sha256": "5f7873dd5545770e0f3380bae9cf146a7eaa597c6814e317aa59a8639d74d9b6"
+      "sha256": "ff392b2c4e4d924f980ff8f5c34c1b86b626afe31410370224b979add51598c2"
     }
   ],
   "rows": 43,
@@ -37,7 +37,7 @@
     "source_pdf_sha256": "string",
     "title_pattern": "object"
   },
-  "sha256": "af600d1b580462e9d6928e6adb92856823ca647a2a0b68fc49b2e07592674bab",
+  "sha256": "f6ff2f43aca8241a7849824de1332d0414748ae95c9696332c7c1aab67052bea",
   "source_files": [
     "config/manual_sources.yml",
     "data/manual/source_documents/source_document_registry.csv"

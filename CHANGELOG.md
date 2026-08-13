@@ -29,6 +29,9 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
 - The published panel range now comes from `project.yml` instead of a hardcoded literal, and
   partner-component reconciliation now covers every transcribed reference year, so verified
   years outside the current panel are still reported.
+- The remaining INE yearbooks for 1961, 1963, 1964, 1966-1969, 1971 and 1972 are registered
+  with checksums and metadata, each reference year confirmed against the printed title page of
+  both volumes. The INE source series for 1960-1973 is now complete: 14 of 14 years.
 - The 1960 INE yearbook (both volumes) is registered with checksums and metadata, and its
   Quadro III rows are transcribed by double entry: World and Ultramar totals, the eight
   overseas territories, and the ten benchmark European partners the volume prints. Austria is
