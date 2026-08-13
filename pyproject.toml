@@ -48,7 +48,7 @@ packages = [{ include = "portugal_external_growth", from = "src" }]
 pytest = ">=9.0.3,<10.0.0"
 pytest-cov = "^6.0.0"
 responses = "^0.25.3"
-ruff = "^0.9.4"
+ruff = "^0.16.2"
 mypy = "^1.14.1"
 pandas-stubs = "^2.2.3.241126"
 types-PyYAML = "^6.0.12.20241230"
