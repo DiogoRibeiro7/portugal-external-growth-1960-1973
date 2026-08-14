@@ -15,11 +15,11 @@
   "input_artifacts": [
     {
       "path": "results/validation/research_readiness_report.csv",
-      "sha256": "6c848154f73bc551eec1613e3c8d358acdc3b1a74c5cc19758c82f8bb24052bd"
+      "sha256": "12e51a59294d11dbfd7cbd2541004399a2395414eb6656d3c70a4be4f394c291"
     },
     {
       "path": "results/live/empirical_readiness_audit.csv",
-      "sha256": "5f5da62e2ef66e9822423ceca8ce66982e4c2b73124d0094eb78fd3b6341f0b7"
+      "sha256": "065e59e7ce417fba6206f36f6dc4a33a2af93d814f2222c5e6a63fa364426f12"
     }
   ],
   "rows": 1,

@@ -26,8 +26,8 @@
   "file": "results/diagnostics/missing_colonial_partners/missing_colonies_1962_diagnostic.csv",
   "input_artifacts": [
     {
-      "path": "data/interim/live/ine_comtrade_1962_reconciliation.csv",
-      "sha256": "57589edebf351d67770317b6240507a4a1eb342a5c29b5e3cdcb2f44eb00128a"
+      "path": "data/interim/live/ine_comtrade_reconciliation.csv",
+      "sha256": "5b10637fdbf107fd2d978792e0cdcc7eef6c2eec2d7daadad9768159843bb2dd"
     },
     {
       "path": "data/interim/live/historical_colonial_partner_crosswalk.csv",
@@ -64,7 +64,7 @@
   },
   "sha256": "0979e2adbaf7118c6cbee58a59ed250a99ccc2b1073cc504ba2ddef3c325a628",
   "source_files": [
-    "data/interim/live/ine_comtrade_1962_reconciliation.csv",
+    "data/interim/live/ine_comtrade_reconciliation.csv",
     "data/interim/live/historical_colonial_partner_crosswalk.csv",
     "data/interim/live/comtrade_coverage_matrix.csv",
     "results/diagnostics/comtrade_coverage/requested_not_returned.csv"

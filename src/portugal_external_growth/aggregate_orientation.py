@@ -107,7 +107,7 @@ def build_validated_aggregate_orientation_outputs(
     """Build Prompt 07 aggregate orientation outputs from validated inputs only."""
 
     validated = _read_csv(root / "data/processed/live/ine_aggregate_trade_harmonised.csv")
-    reconciliation = _read_csv(root / "data/interim/live/ine_comtrade_1962_reconciliation.csv")
+    reconciliation = _read_csv(root / "data/interim/live/ine_comtrade_reconciliation.csv")
     registry = _read_csv(root / "results/diagnostics/reconciliation/reconciliation_registry.csv")
     pass_1 = _read_csv(
         root / "data/manual/transcriptions/pass_1/ine_aggregate_transcription_pass_1.csv"

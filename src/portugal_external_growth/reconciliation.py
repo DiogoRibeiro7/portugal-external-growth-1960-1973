@@ -31,7 +31,7 @@ RECONCILIATION_COLUMNS = [
     "confidence_status",
 ]
 
-INE_COMTRADE_1962_COLUMNS = [
+INE_COMTRADE_COLUMNS = [
     "year",
     "flow",
     "concept",
@@ -302,8 +302,8 @@ def build_trade_source_comparison(root: Path) -> pd.DataFrame:
     )
 
 
-def build_ine_comtrade_1962_reconciliation(root: Path) -> pd.DataFrame:
-    """Compare verified 1962 INE aggregates with the local Comtrade snapshot."""
+def build_ine_comtrade_reconciliation(root: Path) -> pd.DataFrame:
+    """Compare verified INE aggregates with the local Comtrade snapshot, year by year."""
 
     ine = _load_ine_aggregates(root)
     audit = _read_optional_csv(
@@ -311,14 +311,40 @@ def build_ine_comtrade_1962_reconciliation(root: Path) -> pd.DataFrame:
     )
     matrix = _read_optional_csv(root / "data/interim/live/comtrade_coverage_matrix.csv")
     if ine.empty or audit.empty:
-        return pd.DataFrame(columns=INE_COMTRADE_1962_COLUMNS)
-    exchange_rate = _exchange_rate_for_year(root, 1962)
-    exchange_rate_registered = exchange_rate is not None
+        return pd.DataFrame(columns=INE_COMTRADE_COLUMNS)
+
+    ine_years = set(pd.to_numeric(ine["reference_year"], errors="coerce").dropna().astype(int))
+    audit_years = set(pd.to_numeric(audit["year"], errors="coerce").dropna().astype(int))
+    reference_entities = _ine_ultramar_reference_entities(root, fallback_entities=[])
 
     rows: list[dict[str, object]] = []
+    for year in sorted(ine_years & audit_years):
+        rate = _exchange_rate_for_year(root, year)
+        rows.extend(_world_reconciliation_rows(ine, audit, year=year, exchange_rate=rate))
+        rows.extend(
+            _colonial_reconciliation_rows(
+                root,
+                ine,
+                matrix,
+                year=year,
+                exchange_rate=rate,
+                reference_entities=reference_entities,
+            )
+        )
+    return pd.DataFrame.from_records(rows, columns=INE_COMTRADE_COLUMNS)
+
+
+def _world_reconciliation_rows(
+    ine: pd.DataFrame,
+    audit: pd.DataFrame,
+    *,
+    year: int,
+    exchange_rate: float | None,
+) -> list[dict[str, object]]:
+    rows: list[dict[str, object]] = []
     for flow, concept in (("X", "World exports"), ("M", "World imports")):
-        ine_row = _ine_aggregate_row(ine, flow=flow, partner_group="World", year=1962)
-        audit_row = _comtrade_world_row(audit, flow=flow)
+        ine_row = _ine_aggregate_row(ine, flow=flow, partner_group="World", year=year)
+        audit_row = _comtrade_world_row(audit, flow=flow, year=year)
         if ine_row is None or audit_row is None:
             continue
         relative_difference = _relative_difference(
@@ -326,27 +352,32 @@ def build_ine_comtrade_1962_reconciliation(root: Path) -> pd.DataFrame:
             source_b_original_value=_ine_pte_value(ine_row),
             rate=exchange_rate,
         )
-        world_status = (
-            "reconciled_with_conversion"
-            if exchange_rate_registered
-            and abs(relative_difference) <= WORLD_RECONCILIATION_TOLERANCE
-            else "unresolved"
+        within_tolerance = exchange_rate is not None and (
+            abs(relative_difference) <= WORLD_RECONCILIATION_TOLERANCE
         )
-        world_explanation = (
-            "World totals reconcile within tolerance after applying the registered "
-            "1962 IMF par value of 28.75 PTE/USD. Reporter-territory evidence remains "
-            "a caveat, so Comtrade is retained as a benchmark rather than merged into "
-            "the INE source universe."
-            if world_status == "reconciled_with_conversion"
-            else (
-                "World totals are numerically close after a diagnostic 28.75 PTE/USD "
-                "conversion, but the exchange-rate source and Comtrade reporter "
-                "territorial definition are not yet independently documented."
+        status = "reconciled_with_conversion" if within_tolerance else "unresolved"
+        if exchange_rate is None:
+            explanation = (
+                f"No {year} PTE/USD rate is registered, so the two sources cannot be compared in "
+                "a common unit. Rates from other years are never substituted."
             )
-        )
+        elif within_tolerance:
+            explanation = (
+                "World totals reconcile within tolerance after converting at the registered "
+                f"{year} rate of {exchange_rate:g} PTE/USD. Reporter-territory evidence remains a "
+                "caveat, so Comtrade is retained as a benchmark rather than merged into the INE "
+                "source universe."
+            )
+        else:
+            explanation = (
+                f"World totals differ by {relative_difference:.4%} after converting at the "
+                f"registered {year} rate of {exchange_rate:g} PTE/USD, which exceeds the "
+                "reconciliation tolerance. Annual period-average conversion is a weaker "
+                "approximation in years when the rate moved within the year."
+            )
         rows.append(
             _comparison_row(
-                year=1962,
+                year=year,
                 flow=flow,
                 concept=concept,
                 source_a_value=_as_float(audit_row["world_value_usd"]),
@@ -354,29 +385,41 @@ def build_ine_comtrade_1962_reconciliation(root: Path) -> pd.DataFrame:
                 valuation_basis=str(ine_row["valuation_basis"]),
                 territorial_definition_a=str(audit_row["territorial_definition_status"]),
                 territorial_definition_b=str(ine_row["territorial_definition"]),
-                status=world_status,
-                explanation=world_explanation,
+                status=status,
+                explanation=explanation,
                 evidence_reference=(
                     f"INE Volume I PDF page {ine_row['page_number']} "
                     f"({ine_row['table_title']}); "
                     "results/diagnostics/comtrade_coverage/comtrade_coverage_audit.csv "
-                    f"1962 {flow} World row; "
+                    f"{year} {flow} World row; "
                     "data/interim/live/portugal_exchange_rate_evidence.csv."
                 ),
                 exchange_rate=exchange_rate,
             )
         )
+    return rows
 
-    memberships = _colonial_memberships_1962(root)
+
+def _colonial_reconciliation_rows(
+    root: Path,
+    ine: pd.DataFrame,
+    matrix: pd.DataFrame,
+    *,
+    year: int,
+    exchange_rate: float | None,
+    reference_entities: list[str],
+) -> list[dict[str, object]]:
+    memberships = _colonial_memberships(root, year=year)
     configured_entities = (
         sorted(set(memberships["entity_id"].astype(str))) if not memberships.empty else []
     )
-    expected_entities = _ine_ultramar_entities_1962(root, fallback_entities=configured_entities)
+    expected_entities = reference_entities or configured_entities
+    rows: list[dict[str, object]] = []
     for flow, concept in (("X", "Overseas exports"), ("M", "Overseas imports")):
-        ine_row = _ine_aggregate_row(ine, flow=flow, partner_group="Ultramar", year=1962)
+        ine_row = _ine_colonial_row(ine, flow=flow, year=year)
         if ine_row is None:
             continue
-        observed = _observed_colonial_comtrade(matrix, memberships, flow=flow)
+        observed = _observed_colonial_comtrade(matrix, memberships, flow=flow, year=year)
         observed_entities = (
             sorted(set(observed["entity_id"].astype(str))) if not observed.empty else []
         )
@@ -388,31 +431,31 @@ def build_ine_comtrade_1962_reconciliation(root: Path) -> pd.DataFrame:
         )
         rows.append(
             _comparison_row(
-                year=1962,
+                year=year,
                 flow=flow,
                 concept=concept,
                 source_a_value=source_a_value,
                 source_b_original_value=_ine_pte_value(ine_row),
                 valuation_basis=str(ine_row["valuation_basis"]),
                 territorial_definition_a=(
-                    "Observed Comtrade configured colonial partner subset; INE Ultramar "
+                    "Observed Comtrade configured colonial partner subset; INE overseas "
                     "territories not returned or not registered as Comtrade areas remain "
                     "unresolved."
                 ),
                 territorial_definition_b=str(ine_row["territorial_definition"]),
                 status="resolved_for_dataset_ine_preferred_complete_aggregate",
                 explanation=(
-                    "INE provides the complete Ultramar aggregate and is the preferred "
-                    "source for complete colonial shares. The Comtrade colonial partner "
-                    "subset remains an observed lower-bound diagnostic: it covers only the "
-                    "returned partners, while the contemporaneous INE Ultramar Portugues "
-                    "category includes additional source-specific territories."
+                    "INE provides the complete overseas aggregate and is the preferred source for "
+                    "complete colonial shares. The Comtrade colonial partner subset remains an "
+                    "observed lower-bound diagnostic: it covers only the returned partners, while "
+                    "the contemporaneous INE overseas category includes additional source-specific "
+                    "territories."
                 ),
                 evidence_reference=(
                     f"INE Volume I PDF page {ine_row['page_number']} "
                     f"({ine_row['table_title']}); "
-                    "data/interim/live/comtrade_coverage_matrix.csv 1962 S1 colonial "
-                    "partner rows; config/historical_groups.yml colonies group."
+                    f"data/interim/live/comtrade_coverage_matrix.csv {year} colonial partner rows; "
+                    "config/historical_groups.yml colonies group."
                 ),
                 expected_partner_count=len(expected_entities),
                 observed_partner_count=len(observed_entities),
@@ -420,7 +463,17 @@ def build_ine_comtrade_1962_reconciliation(root: Path) -> pd.DataFrame:
                 exchange_rate=exchange_rate,
             )
         )
-    return pd.DataFrame.from_records(rows, columns=INE_COMTRADE_1962_COLUMNS)
+    return rows
+
+
+def _ine_colonial_row(ine: pd.DataFrame, *, flow: str, year: int) -> dict[str, object] | None:
+    """Return the year's overseas aggregate under whichever label the volume prints."""
+
+    for partner_group in ("Ultramar", "Provincias Ultramarinas"):
+        row = _ine_aggregate_row(ine, flow=flow, partner_group=partner_group, year=year)
+        if row is not None:
+            return row
+    return None
 
 
 def finalise_trade_reconciliation(comparison: pd.DataFrame) -> pd.DataFrame:
@@ -449,7 +502,7 @@ def finalise_trade_reconciliation(comparison: pd.DataFrame) -> pd.DataFrame:
     return output
 
 
-def build_ine_comtrade_1962_notes(reconciliation: pd.DataFrame) -> str:
+def build_ine_comtrade_notes(reconciliation: pd.DataFrame) -> str:
     """Summarise the 1962 INE-Comtrade reconciliation result."""
 
     unresolved = int(
@@ -542,14 +595,14 @@ def build_trade_reconciliation_notes(comparison: pd.DataFrame) -> str:
     )
 
 
-def build_reconciliation_registry(ine_comtrade_1962: pd.DataFrame) -> pd.DataFrame:
+def build_reconciliation_registry(ine_comtrade: pd.DataFrame) -> pd.DataFrame:
     """Build a small registry of source-pair reconciliation readiness."""
 
-    if ine_comtrade_1962.empty:
+    if ine_comtrade.empty:
         return pd.DataFrame.from_records(
             [
                 {
-                    "reconciliation_id": "ine_comtrade_1962",
+                    "reconciliation_id": "ine_comtrade",
                     "reconciliation_scope": "ine_comtrade",
                     "benchmark_year": 1962,
                     "source_a": "UN Comtrade",
@@ -564,15 +617,15 @@ def build_reconciliation_registry(ine_comtrade_1962: pd.DataFrame) -> pd.DataFra
             ],
             columns=RECONCILIATION_REGISTRY_COLUMNS,
         )
-    unresolved = ine_comtrade_1962.loc[
-        ~ine_comtrade_1962["reconciliation_status"].isin(RESOLVED_RECONCILIATION_STATUSES)
+    unresolved = ine_comtrade.loc[
+        ~ine_comtrade["reconciliation_status"].isin(RESOLVED_RECONCILIATION_STATUSES)
     ]
     reasons: list[str] = []
-    statuses = set(ine_comtrade_1962["reconciliation_status"].astype(str))
+    statuses = set(ine_comtrade["reconciliation_status"].astype(str))
     if "unresolved" in statuses:
         conversion_methods = (
-            ine_comtrade_1962["conversion_method"].astype(str)
-            if "conversion_method" in ine_comtrade_1962
+            ine_comtrade["conversion_method"].astype(str)
+            if "conversion_method" in ine_comtrade
             else pd.Series(["exchange-rate source not registered"])
         )
         if conversion_methods.str.contains(
@@ -582,10 +635,10 @@ def build_reconciliation_registry(ine_comtrade_1962: pd.DataFrame) -> pd.DataFra
         reasons.append("comtrade_reporter_territory_unresolved")
     if (
         not unresolved.empty
-        and (pd.to_numeric(ine_comtrade_1962["coverage_ratio"], errors="coerce") < 1.0).any()
+        and (pd.to_numeric(ine_comtrade["coverage_ratio"], errors="coerce") < 1.0).any()
     ):
         reasons.append("colonial_partner_coverage_incomplete")
-    has_caveats = (pd.to_numeric(ine_comtrade_1962["coverage_ratio"], errors="coerce") < 1.0).any()
+    has_caveats = (pd.to_numeric(ine_comtrade["coverage_ratio"], errors="coerce") < 1.0).any()
     overall_status = (
         "unresolved"
         if not unresolved.empty
@@ -596,20 +649,20 @@ def build_reconciliation_registry(ine_comtrade_1962: pd.DataFrame) -> pd.DataFra
     return pd.DataFrame.from_records(
         [
             {
-                "reconciliation_id": "ine_comtrade_1962",
+                "reconciliation_id": "ine_comtrade",
                 "reconciliation_scope": "ine_comtrade",
                 "benchmark_year": 1962,
                 "source_a": "UN Comtrade",
                 "source_b": "INE",
-                "row_count": len(ine_comtrade_1962),
-                "reconciled_row_count": len(ine_comtrade_1962) - len(unresolved),
+                "row_count": len(ine_comtrade),
+                "reconciled_row_count": len(ine_comtrade) - len(unresolved),
                 "unresolved_row_count": len(unresolved),
                 "overall_status": overall_status,
                 "blocking_reasons": ";".join(reasons) if not unresolved.empty else "",
                 "evidence_reference": (
-                    "data/interim/live/ine_comtrade_1962_reconciliation.csv; "
+                    "data/interim/live/ine_comtrade_reconciliation.csv; "
                     "results/diagnostics/reconciliation/"
-                    "ine_comtrade_1962_reconciliation.txt"
+                    "ine_comtrade_reconciliation.txt"
                 ),
             }
         ],
@@ -711,8 +764,8 @@ def _ine_aggregate_row(
     return cast(dict[str, object], rows.iloc[0].to_dict())
 
 
-def _comtrade_world_row(audit: pd.DataFrame, *, flow: str) -> dict[str, object] | None:
-    rows = audit.loc[audit["year"].eq(1962) & audit["flow_code"].eq(flow)]
+def _comtrade_world_row(audit: pd.DataFrame, *, flow: str, year: int) -> dict[str, object] | None:
+    rows = audit.loc[audit["year"].eq(year) & audit["flow_code"].eq(flow)]
     if rows.empty:
         return None
     return cast(dict[str, object], rows.iloc[0].to_dict())
@@ -806,25 +859,25 @@ def _comparison_row(
     }
 
 
-def _colonial_memberships_1962(root: Path) -> pd.DataFrame:
+def _colonial_memberships(root: Path, *, year: int) -> pd.DataFrame:
     group_path = root / "config/historical_groups.yml"
     area_path = root / "config/comtrade_partner_areas.yml"
     if not group_path.exists() or not area_path.exists():
         return pd.DataFrame()
     memberships = load_historical_group_memberships(group_path, area_path)
     return memberships.loc[
-        memberships["year"].eq(1962) & memberships["partner_group"].eq("colonies")
+        memberships["year"].eq(year) & memberships["partner_group"].eq("colonies")
     ].copy()
 
 
 def _observed_colonial_comtrade(
-    matrix: pd.DataFrame, memberships: pd.DataFrame, *, flow: str
+    matrix: pd.DataFrame, memberships: pd.DataFrame, *, flow: str, year: int
 ) -> pd.DataFrame:
     if matrix.empty or memberships.empty:
         return pd.DataFrame()
     colonial_entities = set(memberships["entity_id"].astype(str))
     return matrix.loc[
-        matrix["year"].eq(1962)
+        matrix["year"].eq(year)
         & matrix["flow_code"].eq(flow)
         & matrix["classification_code"].eq("S1")
         & matrix["entity_id"].astype(str).isin(colonial_entities)
@@ -832,7 +885,13 @@ def _observed_colonial_comtrade(
     ].copy()
 
 
-def _ine_ultramar_entities_1962(root: Path, *, fallback_entities: list[str]) -> list[str]:
+def _ine_ultramar_reference_entities(root: Path, *, fallback_entities: list[str]) -> list[str]:
+    """Return the INE Ultramar composition documented in the 1962 crosswalk.
+
+    The crosswalk records the contemporaneous eight-territory category, which is the reference
+    composition used to judge Comtrade colonial coverage in every sample year.
+    """
+
     crosswalk_path = root / "data/interim/live/historical_colonial_partner_crosswalk.csv"
     if not crosswalk_path.exists():
         return fallback_entities

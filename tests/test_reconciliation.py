@@ -5,10 +5,10 @@ from pathlib import Path
 import pandas as pd
 
 from portugal_external_growth.reconciliation import (
-    _imf_exchange_rate_rows,
     PTE_PER_USD_PAR_VALUE_1962,
-    build_ine_comtrade_1962_notes,
-    build_ine_comtrade_1962_reconciliation,
+    _imf_exchange_rate_rows,
+    build_ine_comtrade_notes,
+    build_ine_comtrade_reconciliation,
     build_reconciliation_registry,
     build_trade_reconciliation_notes,
     build_trade_source_comparison,
@@ -75,7 +75,7 @@ def test_ine_comtrade_1962_reconciliation_keeps_world_unresolved(
     _write_comtrade_1962_inputs(tmp_path)
     _write_colonial_group_config(tmp_path)
 
-    result = build_ine_comtrade_1962_reconciliation(tmp_path)
+    result = build_ine_comtrade_reconciliation(tmp_path)
 
     world_exports = result.loc[result["concept"].eq("World exports")].iloc[0]
     assert world_exports["source_a_value"] == 369792288.0
@@ -83,7 +83,7 @@ def test_ine_comtrade_1962_reconciliation_keeps_world_unresolved(
     assert world_exports["reconciliation_status"] == "unresolved"
     assert pd.isna(world_exports["relative_difference"])
     assert world_exports["conversion_method"] == "no_registered_exchange_rate_for_1962"
-    assert "exchange-rate source" in world_exports["explanation"]
+    assert "Rates from other years are never substituted" in world_exports["explanation"]
 
 
 def test_ine_comtrade_1962_reconciliation_resolves_with_exchange_rate_evidence(
@@ -95,7 +95,7 @@ def test_ine_comtrade_1962_reconciliation_resolves_with_exchange_rate_evidence(
     _write_historical_colonial_crosswalk(tmp_path)
     _write_exchange_rate_source(tmp_path)
 
-    reconciliation = build_ine_comtrade_1962_reconciliation(tmp_path)
+    reconciliation = build_ine_comtrade_reconciliation(tmp_path)
     registry = build_reconciliation_registry(reconciliation)
 
     world_exports = reconciliation.loc[reconciliation["concept"].eq("World exports")].iloc[0]
@@ -119,7 +119,7 @@ def test_ine_comtrade_1962_reconciliation_marks_overseas_lower_bound(
     _write_historical_colonial_crosswalk(tmp_path)
     _write_exchange_rate_source(tmp_path)
 
-    result = build_ine_comtrade_1962_reconciliation(tmp_path)
+    result = build_ine_comtrade_reconciliation(tmp_path)
 
     overseas_exports = result.loc[result["concept"].eq("Overseas exports")].iloc[0]
     assert overseas_exports["source_a_value"] == 83098353.0
@@ -145,7 +145,7 @@ def test_ine_comtrade_1962_notes_report_partner_and_value_coverage(
     _write_historical_colonial_crosswalk(tmp_path)
     _write_exchange_rate_source(tmp_path)
 
-    notes = build_ine_comtrade_1962_notes(build_ine_comtrade_1962_reconciliation(tmp_path))
+    notes = build_ine_comtrade_notes(build_ine_comtrade_reconciliation(tmp_path))
 
     assert "Minimum observed overseas partner coverage ratio: 0.500000" in notes
     assert "Minimum observed overseas value coverage ratio: 0.999258" in notes
@@ -234,7 +234,7 @@ def test_ine_aggregate_rows_are_selected_by_reference_year(tmp_path: Path) -> No
     _write_historical_colonial_crosswalk(tmp_path)
     _write_exchange_rate_source(tmp_path)
 
-    result = build_ine_comtrade_1962_reconciliation(tmp_path)
+    result = build_ine_comtrade_reconciliation(tmp_path)
 
     world_exports = result.loc[result["concept"].eq("World exports")].iloc[0]
     assert world_exports["source_b_original_value"] == 10631829000.0

@@ -20,8 +20,8 @@
       "sha256": "0d5aa730a7c95823fcbb33bb19a292a9af193e6701d4527a0a79eef2bbde1c62"
     },
     {
-      "path": "data/interim/live/ine_comtrade_1962_reconciliation.csv",
-      "sha256": "57589edebf351d67770317b6240507a4a1eb342a5c29b5e3cdcb2f44eb00128a"
+      "path": "data/interim/live/ine_comtrade_reconciliation.csv",
+      "sha256": "5b10637fdbf107fd2d978792e0cdcc7eef6c2eec2d7daadad9768159843bb2dd"
     }
   ],
   "rows": 0,
@@ -39,7 +39,7 @@
   "sha256": "df95114e30ea0fac1d74c22f90b0a1999634086500e6a5633ce91448ab832466",
   "source_files": [
     "data/interim/live/comtrade_product_normalised.csv",
-    "data/interim/live/ine_comtrade_1962_reconciliation.csv"
+    "data/interim/live/ine_comtrade_reconciliation.csv"
   ],
   "source_licence": "not_specified",
   "stage": "comtrade_product_world_reconciliation",

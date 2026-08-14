@@ -1,5 +1,5 @@
 year,source_document_status,aggregate_pass_1_rows,aggregate_pass_2_rows,validated_aggregate_rows,required_validated_rows,source_status,estimate_status,reconciliation_status,blocking_reason
-1962,available,42,42,42,4,validated_ine_aggregate,observed_no_estimation,satisfactory_with_caveats,
+1962,available,42,42,42,4,validated_ine_aggregate,observed_no_estimation,unresolved,
 1963,available,40,40,40,4,validated_ine_aggregate,observed_no_estimation,not_benchmark_year,
 1964,available,40,40,40,4,validated_ine_aggregate,observed_no_estimation,not_benchmark_year,
 1965,available,41,41,41,4,validated_ine_aggregate,observed_no_estimation,not_benchmark_year,

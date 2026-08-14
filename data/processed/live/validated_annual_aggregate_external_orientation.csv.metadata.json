@@ -42,7 +42,7 @@
     "territorial_definition",
     "notes"
   ],
-  "creation_timestamp_utc": "2026-08-14T11:39:39+01:00",
+  "creation_timestamp_utc": "2026-08-14T13:07:02+01:00",
   "date_range": {
     "end_year": 1973,
     "start_year": 1962
@@ -54,12 +54,12 @@
       "sha256": "3da6cf996cf4665ccbcfe32bd6e989c802ec63eac1c3d157823568287bf6db7b"
     },
     {
-      "path": "data/interim/live/ine_comtrade_1962_reconciliation.csv",
-      "sha256": "57589edebf351d67770317b6240507a4a1eb342a5c29b5e3cdcb2f44eb00128a"
+      "path": "data/interim/live/ine_comtrade_reconciliation.csv",
+      "sha256": "5b10637fdbf107fd2d978792e0cdcc7eef6c2eec2d7daadad9768159843bb2dd"
     },
     {
       "path": "results/diagnostics/reconciliation/reconciliation_registry.csv",
-      "sha256": "ea0d9bd9ca87f211f06ddd4ea1a25c40072d53ad1d6e98aac9efbce89380a7b5"
+      "sha256": "0adefcd8de34242a14f23c62265eb0559dcb65c31fffb0dd6f06ea7cbe7f6372"
     },
     {
       "path": "data/manual/transcriptions/pass_1/ine_aggregate_transcription_pass_1.csv",
@@ -76,12 +76,12 @@
   ],
   "rows": 12,
   "schema": {
-    "colonial_expected_partner_count": "object",
+    "colonial_expected_partner_count": "float64",
     "colonial_exports_complete_pte": "float64",
-    "colonial_exports_observed_comtrade_usd": "object",
+    "colonial_exports_observed_comtrade_usd": "float64",
     "colonial_imports_complete_pte": "float64",
-    "colonial_imports_observed_comtrade_usd": "object",
-    "colonial_observed_partner_count": "object",
+    "colonial_imports_observed_comtrade_usd": "float64",
+    "colonial_observed_partner_count": "float64",
     "complete_colonial_export_share": "float64",
     "complete_colonial_import_share": "float64",
     "eec_export_share": "object",
@@ -100,8 +100,8 @@
     "non_colonial_world_exports_pte": "float64",
     "non_colonial_world_imports_pte": "float64",
     "notes": "object",
-    "observed_colonial_export_share": "object",
-    "observed_colonial_import_share": "object",
+    "observed_colonial_export_share": "float64",
+    "observed_colonial_import_share": "float64",
     "reconciliation_status": "object",
     "residual_destinations_export_share": "float64",
     "residual_destinations_exports_pte": "float64",
@@ -117,10 +117,10 @@
     "world_imports_pte": "float64",
     "year": "int64"
   },
-  "sha256": "1bafbd3d01f0ea5214e93a514e25c5dd3ea48ab39fc49aa2e26e81fdc47da421",
+  "sha256": "56ded496e4a6dd5d0b7b9851c5ef28d334ded77fcbebf400ce6e1b938e417844",
   "source_files": [
     "data/processed/live/ine_aggregate_trade_harmonised.csv",
-    "data/interim/live/ine_comtrade_1962_reconciliation.csv",
+    "data/interim/live/ine_comtrade_reconciliation.csv",
     "results/diagnostics/reconciliation/reconciliation_registry.csv",
     "data/manual/transcriptions/pass_1/ine_aggregate_transcription_pass_1.csv",
     "data/manual/transcriptions/pass_2/ine_aggregate_transcription_pass_2.csv",

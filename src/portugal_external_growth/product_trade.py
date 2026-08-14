@@ -99,7 +99,7 @@ def build_product_extraction_design_outputs(
     coverage = build_product_coverage_diagnostics(product)
     world_reconciliation = build_product_world_reconciliation(
         product,
-        _read_csv(root / "data/interim/live/ine_comtrade_1962_reconciliation.csv"),
+        _read_csv(root / "data/interim/live/ine_comtrade_reconciliation.csv"),
     )
     status = build_product_extraction_status(
         plan,

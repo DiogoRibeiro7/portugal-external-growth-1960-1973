@@ -451,7 +451,7 @@ def _write_reconciliation(root: Path) -> None:
                 value_coverage_ratio=0.9996657899969654,
             ),
         ]
-    ).to_csv(output / "ine_comtrade_1962_reconciliation.csv", index=False)
+    ).to_csv(output / "ine_comtrade_reconciliation.csv", index=False)
 
 
 def _reconciliation_row(

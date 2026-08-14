@@ -29,6 +29,10 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
 - The published panel range now comes from `project.yml` instead of a hardcoded literal, and
   partner-component reconciliation now covers every transcribed reference year, so verified
   years outside the current panel are still reported.
+- The INE-Comtrade reconciliation now covers every year both sources report, not 1962 alone.
+  `ine_comtrade_1962_reconciliation.csv` becomes `ine_comtrade_reconciliation.csv` and carries
+  48 rows across twelve years, with world-total and colonial-coverage comparisons per year and
+  a per-year conversion rate recorded on every row.
 - Year-specific PTE/USD exchange rates for 1960-1973 are registered from the IMF SDMX 2.1 API
   (Exchange Rates dataset, series PRT.XDC_USD.PA_RT.A), stored as a checksummed local
   snapshot. Every INE year now converts on its own period-average rate, so the INE-Comtrade

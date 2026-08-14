@@ -5,16 +5,16 @@
     "check",
     "message"
   ],
-  "creation_timestamp_utc": "2026-08-14T12:02:00+01:00",
+  "creation_timestamp_utc": "2026-08-14T13:07:02+01:00",
   "date_range": null,
   "file": "results/validation/research_readiness_report.csv",
-  "rows": 6,
+  "rows": 7,
   "schema": {
     "check": "object",
     "message": "object",
     "severity": "object"
   },
-  "sha256": "6c848154f73bc551eec1613e3c8d358acdc3b1a74c5cc19758c82f8bb24052bd",
+  "sha256": "12e51a59294d11dbfd7cbd2541004399a2395414eb6656d3c70a4be4f394c291",
   "source_licence": "not_specified",
   "stage": "research_readiness",
   "validation_findings": []

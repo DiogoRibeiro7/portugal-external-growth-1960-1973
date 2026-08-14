@@ -13,7 +13,7 @@
   "input_artifacts": [
     {
       "path": "results/validation/research_readiness_report.csv",
-      "sha256": "6c848154f73bc551eec1613e3c8d358acdc3b1a74c5cc19758c82f8bb24052bd"
+      "sha256": "12e51a59294d11dbfd7cbd2541004399a2395414eb6656d3c70a4be4f394c291"
     },
     {
       "path": "results/releases/current/verification_evidence.csv",

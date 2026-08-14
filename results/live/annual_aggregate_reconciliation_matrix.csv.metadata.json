@@ -14,7 +14,7 @@
     "use_in_validated_dataset",
     "note"
   ],
-  "creation_timestamp_utc": "2026-08-09T12:28:00+01:00",
+  "creation_timestamp_utc": "2026-08-14T13:07:02+01:00",
   "date_range": {
     "end_year": 1962,
     "start_year": 1962
@@ -22,8 +22,8 @@
   "file": "results/live/annual_aggregate_reconciliation_matrix.csv",
   "input_artifacts": [
     {
-      "path": "data/interim/live/ine_comtrade_1962_reconciliation.csv",
-      "sha256": "57589edebf351d67770317b6240507a4a1eb342a5c29b5e3cdcb2f44eb00128a"
+      "path": "data/interim/live/ine_comtrade_reconciliation.csv",
+      "sha256": "5b10637fdbf107fd2d978792e0cdcc7eef6c2eec2d7daadad9768159843bb2dd"
     },
     {
       "path": "data/processed/live/ine_aggregate_trade_harmonised.csv",
@@ -45,9 +45,9 @@
     "value_coverage_ratio": "float64",
     "year": "int64"
   },
-  "sha256": "421c87eb3b1625c63040b7228de49aab357a7899a31b1e742251efedac60f155",
+  "sha256": "bab42273dd19ce0dc34daedef3b271c21a0e1e3f0b6ae1daf218f7a40f9bc74b",
   "source_files": [
-    "data/interim/live/ine_comtrade_1962_reconciliation.csv",
+    "data/interim/live/ine_comtrade_reconciliation.csv",
     "data/processed/live/ine_aggregate_trade_harmonised.csv"
   ],
   "source_licence": "not_specified",

@@ -1,19 +1,19 @@
 1962 INE and UN Comtrade reconciliation
 =======================================
 
-Comparison rows: 4
-Unresolved rows: 0
+Comparison rows: 48
+Unresolved rows: 15
 
 Conversion diagnostic
 ---------------------
 INE escudo values are divided by the registered 1962 IMF par value of 28.75 PTE/USD.
-Maximum World relative difference after diagnostic conversion: 0.00005143
+Maximum World relative difference after diagnostic conversion: 0.01320285
 
 Overseas comparison
 -------------------
 Comtrade overseas partner sums remain lower-bound diagnostics; the complete colonial aggregate is taken from the verified INE Ultramar rows.
 Minimum observed overseas partner coverage ratio: 0.500000
-Minimum observed overseas value coverage ratio: 0.999258
+Minimum observed overseas value coverage ratio: 0.985222
 INE Ultramar Portugues is treated as a source-specific eight-entity 1962 category, including Portuguese India. Longitudinal Comtrade partner diagnostics use the harmonised configured colonial-market group, so partner-count coverage and value coverage are reported separately.
 
 Status

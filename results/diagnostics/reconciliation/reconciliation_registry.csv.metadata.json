@@ -13,17 +13,17 @@
     "blocking_reasons",
     "evidence_reference"
   ],
-  "creation_timestamp_utc": "2026-08-09T23:19:15+01:00",
+  "creation_timestamp_utc": "2026-08-14T13:07:02+01:00",
   "date_range": null,
   "file": "results/diagnostics/reconciliation/reconciliation_registry.csv",
   "input_artifacts": [
     {
-      "path": "data/interim/live/ine_comtrade_1962_reconciliation.csv",
-      "sha256": "57589edebf351d67770317b6240507a4a1eb342a5c29b5e3cdcb2f44eb00128a"
+      "path": "data/interim/live/ine_comtrade_reconciliation.csv",
+      "sha256": "5b10637fdbf107fd2d978792e0cdcc7eef6c2eec2d7daadad9768159843bb2dd"
     },
     {
-      "path": "results/diagnostics/reconciliation/ine_comtrade_1962_reconciliation.txt",
-      "sha256": "080c031cf0f0e630d94ae86b2a6cb16b96ba644d2da348750111736e6305ef2a"
+      "path": "results/diagnostics/reconciliation/ine_comtrade_reconciliation.txt",
+      "sha256": "e2acb9ddaf2923e5529cf365444afc71b3c0aeb2d60be98d0b356b7ec7e1057f"
     }
   ],
   "rows": 1,
@@ -40,10 +40,10 @@
     "source_b": "object",
     "unresolved_row_count": "int64"
   },
-  "sha256": "ea0d9bd9ca87f211f06ddd4ea1a25c40072d53ad1d6e98aac9efbce89380a7b5",
+  "sha256": "0adefcd8de34242a14f23c62265eb0559dcb65c31fffb0dd6f06ea7cbe7f6372",
   "source_files": [
-    "data/interim/live/ine_comtrade_1962_reconciliation.csv",
-    "results/diagnostics/reconciliation/ine_comtrade_1962_reconciliation.txt"
+    "data/interim/live/ine_comtrade_reconciliation.csv",
+    "results/diagnostics/reconciliation/ine_comtrade_reconciliation.txt"
   ],
   "source_licence": "not_specified",
   "stage": "reconciliation_readiness_registry",
