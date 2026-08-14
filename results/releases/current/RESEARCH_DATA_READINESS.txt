@@ -2,10 +2,10 @@ Research data readiness declaration
 ===================================
 
 Declaration: NOT_READY
-Release version: 0.1.6+f2e3f35
-Source commit: f2e3f3502e87f417541757e2f396442788c1620a
-Source commit timestamp: 2026-08-13T21:57:56+01:00
-Release archive: release/research-data-freeze-0.1.6+f2e3f35.zip
+Release version: 0.1.6+f39d3bb
+Source commit: f39d3bba70606c873865b6a0b1700731a88c97c2
+Source commit timestamp: 2026-08-14T12:22:01+01:00
+Release archive: release/research-data-freeze-0.1.6+f39d3bb.zip
 Release archive SHA-256: not_created
 
 Machine-readable blockers: results/releases/current/freeze_blocking_reasons.csv
@@ -37,15 +37,15 @@ Blocking reasons:
 - verification_typecheck: stale_scope: verification scope fingerprint does not match current tracked content
 - verification_validation: stale_scope: verification scope fingerprint does not match current tracked content
 - research_empirical_prerequisites: 0/6 empirical prerequisites are satisfied.
-- research_manual_source_documents: 5/43 expected manual source-year records are complete.
-- research_cross_source_comparison: 94/128 cross-source comparison rows have missing source coverage.
+- research_manual_source_documents: 14/43 expected manual source-year records are complete.
+- research_cross_source_comparison: 84/136 cross-source comparison rows have missing source coverage.
 - research_product_industry_mapping: Product-to-industry mapping coverage is zero.
 - research_territorial_definition: 24 Comtrade coverage rows still require territorial-definition review.
 - research_empirical_design_matrix: No empirical design matrix exists.
-- empirical_annual_trade_coverage: annual year-flow aggregate trade coverage is incomplete
-- empirical_colonial_partner_completeness: complete source-backed colonial aggregate coverage remains incomplete
-- empirical_european_partner_completeness: fixed European partner-sample coverage is incomplete
 - empirical_product_level_coverage: COMTRADE_SUBSCRIPTION_KEY_missing;commodity_code_batches_not_registered
 - empirical_product_to_industry_mapping_coverage: product_extraction_status_blocked;product_industry_mapping_coverage_zero;product_industry_mapping_not_registered;product_level_trade_not_validated
 - empirical_sectoral_output_source_registry: sectoral output source registry is missing or empty
 - empirical_sectoral_output_source_coverage: sectoral output panel is missing or empty
+- empirical_sectoral_output_sector_year_uniqueness: sectoral output panel is missing or empty
+- empirical_real_output_coverage: sectoral output panel is missing or empty
+- empirical_output_growth_coverage: sectoral output panel is missing or empty
