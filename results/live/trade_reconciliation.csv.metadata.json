@@ -19,7 +19,7 @@
     "explanatory_note",
     "confidence_status"
   ],
-  "creation_timestamp_utc": "2026-08-14T08:15:22+01:00",
+  "creation_timestamp_utc": "2026-08-14T08:39:40+01:00",
   "date_range": {
     "end_year": 1973,
     "start_year": 1960
@@ -28,7 +28,7 @@
   "input_artifacts": [
     {
       "path": "data/interim/live/trade_source_comparison.csv",
-      "sha256": "688f2e00c065ed4d185363bfa46a24ee521bb799bd9eefda9b2d2704bca003e2"
+      "sha256": "a386f8bb75d4bb2a7a5e56ff081cf2dc4972d780cd9f5ce7c172d32715fed987"
     }
   ],
   "rows": 128,
@@ -51,7 +51,7 @@
     "territorial_definition": "object",
     "year": "int64"
   },
-  "sha256": "52d52b3f3b4a9010a49449114e2533500036dfa9e721058eb008e0375d06a108",
+  "sha256": "8bd647049bd3f681951b8e98c5ba6abf91a4d9d5e6595993cf1877b5fe29ca45",
   "source_files": [
     "data/interim/live/trade_source_comparison.csv"
   ],

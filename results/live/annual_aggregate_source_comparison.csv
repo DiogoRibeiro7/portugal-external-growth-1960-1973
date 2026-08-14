@@ -29,12 +29,12 @@ year,flow_code,source,source_value,source_currency,nominal_conversion_method,cov
 1963,X,UN Comtrade,418157120.0,USD,source_reported_usd,"Portugal reporter code 620, World partner total",usable_with_territorial_caveat,Benchmark row; territorial definition still under review.
 1964,M,CEPII TRADHIST,,,,,missing_source,No local structured source table is available yet.
 1964,M,EFTA,,,,,missing_source,No local structured source table is available yet.
-1964,M,INE,,,,,missing_source,No local structured source table is available yet.
+1964,M,INE,,USD,no_registered_exchange_rate_for_1964,INE special-trade World total,blocked_pending_year_exchange_rate,Validated double-entry INE aggregate; no USD comparison is derived because no 1964 PTE/USD rate is registered. Rates from other years are never substituted.
 1964,M,OECD,,,,,missing_source,No local structured source table is available yet.
 1964,M,UN Comtrade,776289984.0,USD,source_reported_usd,"Portugal reporter code 620, World partner total",usable_with_territorial_caveat,Benchmark row; territorial definition still under review.
 1964,X,CEPII TRADHIST,,,,,missing_source,No local structured source table is available yet.
 1964,X,EFTA,,,,,missing_source,No local structured source table is available yet.
-1964,X,INE,,,,,missing_source,No local structured source table is available yet.
+1964,X,INE,,USD,no_registered_exchange_rate_for_1964,INE special-trade World total,blocked_pending_year_exchange_rate,Validated double-entry INE aggregate; no USD comparison is derived because no 1964 PTE/USD rate is registered. Rates from other years are never substituted.
 1964,X,OECD,,,,,missing_source,No local structured source table is available yet.
 1964,X,UN Comtrade,515699840.0,USD,source_reported_usd,"Portugal reporter code 620, World partner total",usable_with_territorial_caveat,Benchmark row; territorial definition still under review.
 1965,M,CEPII TRADHIST,,,,,missing_source,No local structured source table is available yet.

@@ -37,11 +37,11 @@
     },
     {
       "path": "data/manual/transcriptions/pass_1/ine_aggregate_transcription_pass_1.csv",
-      "sha256": "7c964a330f908af931b54227f265af12ab5c9e5ef627f199f1a5886a7986c608"
+      "sha256": "819f2c0f66a55e3f07fca5dcbc298d6b55a74bfbf2e51f4c7e0f9d11b8fcc089"
     },
     {
       "path": "data/manual/transcriptions/pass_2/ine_aggregate_transcription_pass_2.csv",
-      "sha256": "3810ea1a4d086d2fcf6adcb3a33455ca6f4b6d0be1098b4449e6df2224369707"
+      "sha256": "7b89b68679bed8c2bde3427b42b4f74b650b258bd2b6eb10b67a03b28b5d3ba9"
     },
     {
       "path": "data/interim/live/ine_aggregate_transcription_discrepancies.csv",
