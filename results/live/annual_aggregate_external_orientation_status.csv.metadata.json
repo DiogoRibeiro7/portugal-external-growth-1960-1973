@@ -12,7 +12,7 @@
     "reconciliation_status",
     "blocking_reason"
   ],
-  "creation_timestamp_utc": "2026-08-13T23:05:21+01:00",
+  "creation_timestamp_utc": "2026-08-14T08:07:52+01:00",
   "date_range": {
     "end_year": 1973,
     "start_year": 1962
@@ -21,7 +21,7 @@
   "input_artifacts": [
     {
       "path": "data/processed/live/ine_aggregate_trade_harmonised.csv",
-      "sha256": "df1824fed7175f5e1ddcc4e81e5f757f4863a003123f85f2e3aa0c6dec5300d1"
+      "sha256": "57673a8c2939eccf58339c7e9a7aa41a344533950adf17436d974e1143d41fe9"
     },
     {
       "path": "data/interim/live/ine_comtrade_1962_reconciliation.csv",
@@ -33,11 +33,11 @@
     },
     {
       "path": "data/manual/transcriptions/pass_1/ine_aggregate_transcription_pass_1.csv",
-      "sha256": "f51aef8212b385c9a9e6b8d236ee39642992d658a7925b595f3fd417006ea7ae"
+      "sha256": "bef405c4cfae455a8d809d5200c21eb8b716acd57ffd745c0d7eb84c901904b0"
     },
     {
       "path": "data/manual/transcriptions/pass_2/ine_aggregate_transcription_pass_2.csv",
-      "sha256": "a49f54679cce4b3749314ab993eaeda15fd14647c8b1f7f630ddf6e3e96e7a93"
+      "sha256": "4a30791936fc2a19f7172c2da70d7ba863d906a5c1b243152ee81762c9066fdf"
     },
     {
       "path": "data/manual/source_documents/source_document_registry.csv",
@@ -57,7 +57,7 @@
     "validated_aggregate_rows": "int64",
     "year": "int64"
   },
-  "sha256": "bb67ebbbcd7c1575087f7abbf29003b06afb0017775cafd0b624c9fe8953c6a4",
+  "sha256": "bf737491f1b31b6839cb80157623cb6ca557f2e80622717940253b31d56a6f07",
   "source_files": [
     "data/processed/live/ine_aggregate_trade_harmonised.csv",
     "data/interim/live/ine_comtrade_1962_reconciliation.csv",

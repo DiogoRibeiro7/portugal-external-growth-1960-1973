@@ -5,7 +5,7 @@
     "check",
     "message"
   ],
-  "creation_timestamp_utc": "2026-08-13T23:05:21+01:00",
+  "creation_timestamp_utc": "2026-08-14T08:07:52+01:00",
   "date_range": null,
   "file": "results/validation/research_readiness_report.csv",
   "rows": 6,
@@ -14,7 +14,7 @@
     "message": "object",
     "severity": "object"
   },
-  "sha256": "1456a197abe1c39609815562e0ba430fe19835d602fe8b2a1f70f025c60016fd",
+  "sha256": "9d3f2ae5047d9e490c221fa9be3f6b41650d39cc85f27bf16713bbd2eb1ce707",
   "source_licence": "not_specified",
   "stage": "research_readiness",
   "validation_findings": []

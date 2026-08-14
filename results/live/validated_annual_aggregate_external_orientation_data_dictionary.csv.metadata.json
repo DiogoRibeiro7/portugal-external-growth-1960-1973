@@ -15,7 +15,7 @@
   "input_artifacts": [
     {
       "path": "data/processed/live/validated_annual_aggregate_external_orientation.csv",
-      "sha256": "f3da6b15b753c4473e80404fde672e32f9ddf9164e36ed3c6acec92f2f0874b6"
+      "sha256": "96fdc59f6f2b4cf3d5b793cb9043eb89e16b8acfbb68a104224e6a725dccc8df"
     }
   ],
   "rows": 40,
