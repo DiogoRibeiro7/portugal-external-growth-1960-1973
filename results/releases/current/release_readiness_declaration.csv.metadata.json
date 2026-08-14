@@ -9,7 +9,7 @@
     "archive_path",
     "archive_sha256"
   ],
-  "creation_timestamp_utc": "2026-08-14T13:06:51+01:00",
+  "creation_timestamp_utc": "2026-08-14T13:31:54+01:00",
   "date_range": null,
   "file": "results/releases/current/release_readiness_declaration.csv",
   "input_artifacts": [
@@ -32,7 +32,7 @@
     "source_commit": "object",
     "source_commit_timestamp_utc": "object"
   },
-  "sha256": "9498af8862e636e265f3a3fd66943b19df85d1787ae92e3e0d547455bc1ed58b",
+  "sha256": "e5cf281a2f4bba33e6fbfab095bb9c55e49a442cd6272eea024a8f1706149897",
   "source_files": [
     "results/validation/research_readiness_report.csv",
     "results/live/empirical_readiness_audit.csv"

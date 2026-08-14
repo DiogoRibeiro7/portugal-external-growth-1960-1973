@@ -9,6 +9,7 @@ verification_validation,freeze.verification.validation,not_ready,stale_scope: ve
 research_empirical_prerequisites,research.empirical_prerequisites,not_ready,0/6 empirical prerequisites are satisfied.,results/validation/research_readiness_report.csv
 research_manual_source_documents,research.manual_source_documents,not_ready,14/43 expected manual source-year records are complete.,results/validation/research_readiness_report.csv
 research_cross_source_comparison,research.cross_source_comparison,not_ready,84/136 cross-source comparison rows have missing source coverage.,results/validation/research_readiness_report.csv
+research_source_reconciliation,research.source_reconciliation,not_ready,Unresolved source-pair reconciliation blocks remain: ine_comtrade.,results/validation/research_readiness_report.csv
 research_product_industry_mapping,research.product_industry_mapping,not_ready,Product-to-industry mapping coverage is zero.,results/validation/research_readiness_report.csv
 research_territorial_definition,research.territorial_definition,not_ready,24 Comtrade coverage rows still require territorial-definition review.,results/validation/research_readiness_report.csv
 research_empirical_design_matrix,research.empirical_design_matrix,not_ready,No empirical design matrix exists.,results/validation/research_readiness_report.csv

@@ -2,10 +2,10 @@ Research data readiness declaration
 ===================================
 
 Declaration: NOT_READY
-Release version: 0.1.6+985f28e
-Source commit: 985f28e2dca31af7d452454c883f02658cebce08
-Source commit timestamp: 2026-08-14T13:06:51+01:00
-Release archive: release/research-data-freeze-0.1.6+985f28e.zip
+Release version: 0.1.6+69dc1e3
+Source commit: 69dc1e31fc48e086327183ebb043c40fdbf81d28
+Source commit timestamp: 2026-08-14T13:31:54+01:00
+Release archive: release/research-data-freeze-0.1.6+69dc1e3.zip
 Release archive SHA-256: not_created
 
 Machine-readable blockers: results/releases/current/freeze_blocking_reasons.csv
@@ -39,6 +39,7 @@ Blocking reasons:
 - research_empirical_prerequisites: 0/6 empirical prerequisites are satisfied.
 - research_manual_source_documents: 14/43 expected manual source-year records are complete.
 - research_cross_source_comparison: 84/136 cross-source comparison rows have missing source coverage.
+- research_source_reconciliation: Unresolved source-pair reconciliation blocks remain: ine_comtrade.
 - research_product_industry_mapping: Product-to-industry mapping coverage is zero.
 - research_territorial_definition: 24 Comtrade coverage rows still require territorial-definition review.
 - research_empirical_design_matrix: No empirical design matrix exists.
@@ -48,4 +49,3 @@ Blocking reasons:
 - empirical_sectoral_output_source_coverage: sectoral output panel is missing or empty
 - empirical_sectoral_output_sector_year_uniqueness: sectoral output panel is missing or empty
 - empirical_real_output_coverage: sectoral output panel is missing or empty
-- empirical_output_growth_coverage: sectoral output panel is missing or empty
