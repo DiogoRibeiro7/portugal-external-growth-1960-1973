@@ -11,7 +11,7 @@
     "confidence_status",
     "explanatory_note"
   ],
-  "creation_timestamp_utc": "2026-08-13T22:51:33+01:00",
+  "creation_timestamp_utc": "2026-08-13T23:05:21+01:00",
   "date_range": {
     "end_year": 1973,
     "start_year": 1960
@@ -20,7 +20,7 @@
   "input_artifacts": [
     {
       "path": "data/interim/live/trade_source_comparison.csv",
-      "sha256": "f5de29863a8e6c461f4f44e30f7151fb288e07c5a218ffc826ee343dfedf78bb"
+      "sha256": "65237d166e4c2720ca94b1eff587af1da4dd0ff6886256c7bf74ae6ada583d90"
     }
   ],
   "rows": 128,
@@ -35,7 +35,7 @@
     "source_value": "float64",
     "year": "int64"
   },
-  "sha256": "4b6579324751b8734d0bddf194841630a72155e25efd506ab8e39ed45578e86a",
+  "sha256": "b40b0b1a50d1dbf19e8c48e0c49385bbf082ba27eb96d2cacb005167cd8cd1d8",
   "source_files": [
     "data/interim/live/trade_source_comparison.csv"
   ],

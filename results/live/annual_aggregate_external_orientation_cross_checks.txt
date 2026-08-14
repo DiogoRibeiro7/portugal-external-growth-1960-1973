@@ -1,7 +1,7 @@
 Validated annual aggregate external-orientation cross-checks
 ===========================================================
 
-Validated years: 1962, 1965, 1970, 1971, 1972, 1973
+Validated years: 1962, 1965, 1968, 1969, 1970, 1971, 1972, 1973
 Years blocked by first-pass-only aggregate transcription: none
 Share values outside [0, 1]: 0
 Reconciliation matrix rows: 4

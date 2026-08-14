@@ -13,7 +13,7 @@
     "status",
     "note"
   ],
-  "creation_timestamp_utc": "2026-08-13T22:51:33+01:00",
+  "creation_timestamp_utc": "2026-08-13T23:05:21+01:00",
   "date_range": {
     "end_year": 1973,
     "start_year": 1960
@@ -22,7 +22,7 @@
   "input_artifacts": [
     {
       "path": "data/processed/live/ine_aggregate_trade_harmonised.csv",
-      "sha256": "6429e65bb07a5dac52bd7e668a7ca303a1dcd4c839952cf7347ef03b1d9b3be6"
+      "sha256": "df1824fed7175f5e1ddcc4e81e5f757f4863a003123f85f2e3aa0c6dec5300d1"
     },
     {
       "path": "data/interim/live/historical_colonial_partner_crosswalk.csv",
@@ -33,7 +33,7 @@
       "sha256": "47c106acbea306c6134613bb197195a2130ac77c28c3606b1e5d0155332fe753"
     }
   ],
-  "rows": 28,
+  "rows": 36,
   "schema": {
     "absolute_residual": "object",
     "aggregate_value": "object",
@@ -47,7 +47,7 @@
     "status": "object",
     "year": "int64"
   },
-  "sha256": "b7787c80c20e29f4492bddc21b0be8593f4d4295d6953b8e31a22b0dcdd95179",
+  "sha256": "a4a21c46af2321dead3287b539cb127ad8bacb5005f611e99eb35d2071e73ab0",
   "source_files": [
     "data/processed/live/ine_aggregate_trade_harmonised.csv",
     "data/interim/live/historical_colonial_partner_crosswalk.csv",
