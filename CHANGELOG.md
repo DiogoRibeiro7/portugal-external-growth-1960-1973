@@ -6,6 +6,8 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
 
 ## [Unreleased]
 
+## [0.1.7] - 2026-08-14
+
 ### Added
 
 - Model readiness now depends on high-level empirical prerequisites before model-specific extras.
