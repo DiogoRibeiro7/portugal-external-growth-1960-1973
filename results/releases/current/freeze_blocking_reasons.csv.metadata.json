@@ -7,7 +7,7 @@
     "blocking_reason",
     "evidence_path"
   ],
-  "creation_timestamp_utc": "2026-08-14T15:28:41+01:00",
+  "creation_timestamp_utc": "2026-08-14T15:33:13+01:00",
   "date_range": null,
   "file": "results/releases/current/freeze_blocking_reasons.csv",
   "input_artifacts": [
@@ -20,7 +20,7 @@
       "sha256": "91d5dfe64d01fd35c8d687570072dd64ccc2bcdc5a193afb2d51da5cb4f6b925"
     }
   ],
-  "rows": 49,
+  "rows": 48,
   "schema": {
     "blocker_id": "object",
     "blocking_reason": "object",
@@ -28,7 +28,7 @@
     "severity": "object",
     "source_check": "object"
   },
-  "sha256": "85dba069c550346e5311a6d349e1ce40b31db43534cd6c2f08f52e837750e50a",
+  "sha256": "2d8a68cf95a864e2597fe954277ab1404e4e73edede42b4fad2fefe94913fc5e",
   "source_files": [
     "results/validation/research_readiness_report.csv",
     "results/releases/current/verification_evidence.csv"
