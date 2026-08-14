@@ -9,9 +9,9 @@ Catalogue records identified: 0
 Rows without source PDF SHA-256: 29
 Pass 1 transcribed rows: 0
 Pass 2 transcribed rows: 0
-Aggregate pass 1 transcribed rows: 517
-Aggregate pass 2 transcribed rows: 517
-Aggregate double-entry verified rows: 517
+Aggregate pass 1 transcribed rows: 557
+Aggregate pass 2 transcribed rows: 557
+Aggregate double-entry verified rows: 557
 Workflow status: in_progress
 Unresolved transcription discrepancies: 0
 Unresolved aggregate transcription discrepancies: 0
