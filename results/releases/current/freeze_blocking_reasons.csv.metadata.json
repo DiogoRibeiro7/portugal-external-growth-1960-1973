@@ -7,7 +7,7 @@
     "blocking_reason",
     "evidence_path"
   ],
-  "creation_timestamp_utc": "2026-08-14T13:31:54+01:00",
+  "creation_timestamp_utc": "2026-08-14T15:28:41+01:00",
   "date_range": null,
   "file": "results/releases/current/freeze_blocking_reasons.csv",
   "input_artifacts": [
@@ -28,7 +28,7 @@
     "severity": "object",
     "source_check": "object"
   },
-  "sha256": "741c5774a4d484f739d27d9c71511e7809aea29136058c9e120b2bdfc6228b16",
+  "sha256": "85dba069c550346e5311a6d349e1ce40b31db43534cd6c2f08f52e837750e50a",
   "source_files": [
     "results/validation/research_readiness_report.csv",
     "results/releases/current/verification_evidence.csv"
