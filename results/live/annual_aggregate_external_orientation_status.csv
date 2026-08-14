@@ -3,7 +3,7 @@ year,source_document_status,aggregate_pass_1_rows,aggregate_pass_2_rows,validate
 1963,available,0,0,0,4,source_registered_pending_transcription,not_available,not_benchmark_year,required_validated_world_and_colonial_flows_missing
 1964,available,0,0,0,4,source_registered_pending_transcription,not_available,not_benchmark_year,required_validated_world_and_colonial_flows_missing
 1965,available,41,41,41,4,validated_ine_aggregate,observed_no_estimation,not_benchmark_year,
-1966,available,0,0,0,4,source_registered_pending_transcription,not_available,not_benchmark_year,required_validated_world_and_colonial_flows_missing
+1966,available,40,40,40,4,validated_ine_aggregate,observed_no_estimation,not_benchmark_year,
 1967,available,40,40,40,4,validated_ine_aggregate,observed_no_estimation,not_benchmark_year,
 1968,available,40,40,40,4,validated_ine_aggregate,observed_no_estimation,not_benchmark_year,
 1969,available,48,48,48,4,validated_ine_aggregate,observed_no_estimation,not_benchmark_year,

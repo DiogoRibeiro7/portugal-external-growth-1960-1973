@@ -8,13 +8,13 @@
     "status",
     "blocking_reason"
   ],
-  "creation_timestamp_utc": "2026-08-14T08:07:52+01:00",
+  "creation_timestamp_utc": "2026-08-14T08:15:22+01:00",
   "date_range": null,
   "file": "results/live/empirical_readiness_audit.csv",
   "input_artifacts": [
     {
       "path": "data/processed/live/validated_annual_aggregate_external_orientation.csv",
-      "sha256": "96fdc59f6f2b4cf3d5b793cb9043eb89e16b8acfbb68a104224e6a725dccc8df"
+      "sha256": "1c4b636ec4d771fd9a62291718778a739634207131922d9d9060abd9987d008b"
     },
     {
       "path": "results/live/comtrade_product_extraction_status.csv",
@@ -70,7 +70,7 @@
     "requirement": "object",
     "status": "object"
   },
-  "sha256": "a4a6d67c85aff5195c740338435be1d047bcdce79f6d6b708983986c63320162",
+  "sha256": "764c3b6f7b64dd8b05939f17af6df9731811a685daece3e9f3da8e4d01ec2191",
   "source_files": [
     "data/processed/live/validated_annual_aggregate_external_orientation.csv",
     "results/live/comtrade_product_extraction_status.csv",
