@@ -5,6 +5,7 @@ from pathlib import Path
 import pandas as pd
 
 from portugal_external_growth.reconciliation import (
+    _imf_exchange_rate_rows,
     PTE_PER_USD_PAR_VALUE_1962,
     build_ine_comtrade_1962_notes,
     build_ine_comtrade_1962_reconciliation,
@@ -181,6 +182,30 @@ def test_trade_reconciliation_notes_list_missing_sources() -> None:
 
     assert "CEPII TRADHIST" in notes
     assert "INE" in notes
+
+
+def test_imf_snapshot_registers_one_rate_per_year_and_leaves_1962_to_its_par_value(
+    tmp_path: Path,
+) -> None:
+    snapshot = tmp_path / "data/raw/live/imf_exchange_rates"
+    snapshot.mkdir(parents=True)
+    (snapshot / "imf_ifs_er_prt_xdc_usd_pa_annual.xml").write_text(
+        "<Series>"
+        '<Obs TIME_PERIOD="1961" OBS_VALUE="28.75000002875"/>'
+        '<Obs TIME_PERIOD="1962" OBS_VALUE="28.75000002875"/>'
+        '<Obs TIME_PERIOD="1973" OBS_VALUE="24.515166666"/>'
+        '<Obs TIME_PERIOD="1975" OBS_VALUE="25.552700000"/>'
+        "</Series>",
+        encoding="utf-8",
+    )
+
+    rows = _imf_exchange_rate_rows(tmp_path)
+
+    years = [row["year"] for row in rows]
+    assert years == [1961, 1973]
+    assert rows[1]["pte_per_usd"] == 24.515167
+    assert rows[1]["rate_type"] == "IMF IFS period average"
+    assert rows[1]["source_status"] == "registered_local_source"
 
 
 def test_trade_source_comparison_never_borrows_another_years_exchange_rate(

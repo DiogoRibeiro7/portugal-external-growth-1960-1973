@@ -1,0 +1,21 @@
+{
+  "access_conditions": "public_api_or_provider_terms",
+  "api_version": "IMF SDMX 2.1 REST API",
+  "content_type": "application/xml",
+  "dataflow": "IMF.STA:ER(4.0.1)",
+  "endpoint": "https://api.imf.org/external/sdmx/2.1/data",
+  "extracted_at_utc": "2026-08-14T11:59:48.680489+00:00",
+  "http_status": 200,
+  "indicator": "XDC_USD",
+  "licence": "IMF data terms; attribution required",
+  "query_parameters": {
+    "endPeriod": "1975",
+    "key": "PRT.XDC_USD.PA_RT.A",
+    "startPeriod": "1960"
+  },
+  "raw_sha256": "85b7c96bcb20e0a90b5bf015eec90ff9ba5000652a8aa361da671ef68b533fc0",
+  "request_url": "https://api.imf.org/external/sdmx/2.1/data/IMF.STA,ER,4.0.1/PRT.XDC_USD.PA_RT.A?startPeriod=1960&endPeriod=1975",
+  "series_description": "Exchange rate, domestic currency (Portuguese escudo) per US dollar, period average, annual, from the IMF Exchange Rates (ER) dataset which carries the IFS exchange-rate series.",
+  "source": "International Monetary Fund, International Financial Statistics",
+  "type_of_transformation": "PA_RT"
+}

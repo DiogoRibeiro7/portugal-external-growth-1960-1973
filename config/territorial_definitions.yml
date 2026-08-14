@@ -33,4 +33,4 @@ territorial_definitions:
       - source: INE and UN Comtrade 1962 world totals
         local_file: data/interim/live/ine_comtrade_1962_reconciliation.csv
         page_or_section: World exports and World imports rows
-        note: After conversion at the registered 1962 IMF par value the two sources' world totals agree to a relative difference of -2.8e-05 for exports and -5.1e-05 for imports. Any difference in territorial coverage would move the totals by roughly 12 to 25 per cent, so the near-identity is only consistent with Comtrade reporter 620 covering the same metropolitan universe as INE.
+        note: After conversion at year-specific IMF IFS period-average rates the two sources' world totals agree to better than 0.03 per cent in 1962-1967 and 1969-1970, and to within 1.4 per cent in every year of 1962-1973. Any difference in territorial coverage would move the totals by roughly 12 to 25 per cent, because that is what colonial trade is worth, so agreement at this level across twelve years is only consistent with Comtrade reporter 620 covering the same metropolitan universe as INE.

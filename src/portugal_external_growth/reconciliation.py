@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 from typing import Any, cast
 
 import pandas as pd
 
+from portugal_external_growth.io_utils import sha256_file
 from portugal_external_growth.partners import load_historical_group_memberships
 
 RECONCILIATION_COLUMNS = [
@@ -107,8 +109,6 @@ def build_exchange_rate_evidence(root: Path) -> pd.DataFrame:
     source_sha256 = ""
     source_status = "missing_local_source"
     if local_file.exists():
-        from portugal_external_growth.io_utils import sha256_file
-
         source_sha256 = sha256_file(local_file)
         source_status = "registered_local_source"
     return pd.DataFrame.from_records(
@@ -134,10 +134,57 @@ def build_exchange_rate_evidence(root: Path) -> pd.DataFrame:
                     "effective 1962-06-01 of 28.75 escudos per U.S. dollar."
                 ),
                 "source_status": source_status,
-            }
+            },
+            *_imf_exchange_rate_rows(root),
         ],
         columns=EXCHANGE_RATE_EVIDENCE_COLUMNS,
     )
+
+
+IMF_EXCHANGE_RATE_SNAPSHOT = "data/raw/live/imf_exchange_rates/imf_ifs_er_prt_xdc_usd_pa_annual.xml"
+
+
+def _imf_exchange_rate_rows(root: Path) -> list[dict[str, object]]:
+    """Read registered IMF IFS period-average PTE/USD rates, one row per observed year.
+
+    The 1962 par value keeps its own legal source, so that year is served by the IMF Central
+    Banking Legislation row rather than duplicated from the statistical series.
+    """
+
+    snapshot = root / IMF_EXCHANGE_RATE_SNAPSHOT
+    if not snapshot.is_file():
+        return []
+    text = snapshot.read_text(encoding="utf-8", errors="replace")
+    digest = sha256_file(snapshot)
+    rows: list[dict[str, object]] = []
+    for year_text, value_text in re.findall(r'TIME_PERIOD="(\d{4})" OBS_VALUE="([^"]+)"', text):
+        year = int(year_text)
+        if year == 1962 or not 1960 <= year <= 1973:
+            continue
+        rows.append(
+            {
+                "year": year,
+                "currency": "PTE",
+                "counter_currency": "USD",
+                "rate_type": "IMF IFS period average",
+                "pte_per_usd": round(float(value_text), 6),
+                "effective_date": f"{year}-12-31",
+                "source": "IMF, International Financial Statistics, Exchange Rates (ER) dataset",
+                "source_url": (
+                    "https://api.imf.org/external/sdmx/2.1/data/IMF.STA,ER,4.0.1/"
+                    "PRT.XDC_USD.PA_RT.A"
+                ),
+                "local_file": IMF_EXCHANGE_RATE_SNAPSHOT,
+                "source_sha256": digest,
+                "evidence_note": (
+                    f"Annual period-average exchange rate for {year} from the IMF SDMX series "
+                    "PRT.XDC_USD.PA_RT.A, retrieved from the IMF SDMX 2.1 REST API and stored as "
+                    "a local snapshot."
+                ),
+                "source_status": "registered_local_source",
+            }
+        )
+    return sorted(rows, key=lambda row: int(row["year"]))
 
 
 def build_trade_source_comparison(root: Path) -> pd.DataFrame:

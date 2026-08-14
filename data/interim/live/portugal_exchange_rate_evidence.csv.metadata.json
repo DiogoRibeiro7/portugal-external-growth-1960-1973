@@ -14,10 +14,10 @@
     "evidence_note",
     "source_status"
   ],
-  "creation_timestamp_utc": "2026-08-09T12:28:00+01:00",
+  "creation_timestamp_utc": "2026-08-14T12:44:48+01:00",
   "date_range": {
-    "end_year": 1962,
-    "start_year": 1962
+    "end_year": 1973,
+    "start_year": 1960
   },
   "file": "data/interim/live/portugal_exchange_rate_evidence.csv",
   "input_artifacts": [
@@ -26,7 +26,7 @@
       "sha256": "3df5459a73b9ffeee9c08979bf43fb38e07103bc54f19a7bf667520dde87f809"
     }
   ],
-  "rows": 1,
+  "rows": 14,
   "schema": {
     "counter_currency": "object",
     "currency": "object",
@@ -41,7 +41,7 @@
     "source_url": "object",
     "year": "int64"
   },
-  "sha256": "68b0404e9be16fafe5c70dc7e7c553b2278e09328f28686d552421f282e3b7fe",
+  "sha256": "021e930f8a244275307fccb22be53f5b382fcee15231611eb37a8e5c8a40070c",
   "source_files": [
     "data/manual/source_documents/imf_central_banking_legislation_portugal_ch013.pdf"
   ],

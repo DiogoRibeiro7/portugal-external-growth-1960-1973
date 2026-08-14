@@ -29,6 +29,10 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
 - The published panel range now comes from `project.yml` instead of a hardcoded literal, and
   partner-component reconciliation now covers every transcribed reference year, so verified
   years outside the current panel are still reported.
+- Year-specific PTE/USD exchange rates for 1960-1973 are registered from the IMF SDMX 2.1 API
+  (Exchange Rates dataset, series PRT.XDC_USD.PA_RT.A), stored as a checksummed local
+  snapshot. Every INE year now converts on its own period-average rate, so the INE-Comtrade
+  world-total comparison runs for all twelve sample years instead of 1962 alone.
 - `config/territorial_definitions.yml` records four further pieces of reporter-territory
   evidence: the Continente e Ilhas Adjacentes scope printed on the later INE title pages, the
   treatment of the overseas territories as partner rows in all fourteen transcribed years, and

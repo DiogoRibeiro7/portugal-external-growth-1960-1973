@@ -16,7 +16,7 @@
   "input_artifacts": [
     {
       "path": "config/territorial_definitions.yml",
-      "sha256": "bd8dfd51af888f50340d987b622cad3e079b36cd435f578afe6b871d9ec8250c"
+      "sha256": "f4babf0d7920255a43634a26ce26ccdc94382cb6984426e5bece667c52b95416"
     },
     {
       "path": "data/raw/live/un_comtrade_metadata/reporters.json",
