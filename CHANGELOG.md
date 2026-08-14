@@ -29,6 +29,10 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
 - The published panel range now comes from `project.yml` instead of a hardcoded literal, and
   partner-component reconciliation now covers every transcribed reference year, so verified
   years outside the current panel are still reported.
+- Every INE yearbook year for 1960-1973 is now transcribed by double entry: 599 verified rows
+  covering World and colonial aggregates, the overseas territories, and the European partner
+  rows. The constant-composition benchmark runs annually from 1962 to 1973; the 1960 and 1961
+  volumes print no separate Austria row, so no benchmark value is derived for those years.
 - The remaining INE yearbooks for 1961, 1963, 1964, 1966-1969, 1971 and 1972 are registered
   with checksums and metadata, each reference year confirmed against the printed title page of
   both volumes. The INE source series for 1960-1973 is now complete: 14 of 14 years.

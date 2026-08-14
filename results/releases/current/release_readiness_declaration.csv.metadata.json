@@ -15,7 +15,7 @@
   "input_artifacts": [
     {
       "path": "results/validation/research_readiness_report.csv",
-      "sha256": "750af08a9ea5a7835ab840154ac6b10ec2b3bae4670647a711a03150e87c37c6"
+      "sha256": "6c848154f73bc551eec1613e3c8d358acdc3b1a74c5cc19758c82f8bb24052bd"
     },
     {
       "path": "results/live/empirical_readiness_audit.csv",

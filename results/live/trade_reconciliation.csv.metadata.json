@@ -19,7 +19,7 @@
     "explanatory_note",
     "confidence_status"
   ],
-  "creation_timestamp_utc": "2026-08-14T11:39:39+01:00",
+  "creation_timestamp_utc": "2026-08-14T12:02:00+01:00",
   "date_range": {
     "end_year": 1973,
     "start_year": 1960
@@ -28,10 +28,10 @@
   "input_artifacts": [
     {
       "path": "data/interim/live/trade_source_comparison.csv",
-      "sha256": "72e0efe98144bb456a0329e33584027a057d9deab70218a48a2d292159ce5c4a"
+      "sha256": "366387a98287f1bf7011ffd1cd97e2a3447711e0821ebad17a7b9f2eee73fca3"
     }
   ],
-  "rows": 128,
+  "rows": 136,
   "schema": {
     "absolute_discrepancy": "object",
     "benchmark_source": "object",
@@ -51,7 +51,7 @@
     "territorial_definition": "object",
     "year": "int64"
   },
-  "sha256": "0d30b932e9da5ec172b0af22db2a96696f042cd8dca0c69ecdcfb5912c841386",
+  "sha256": "05721b2fbfcbdc5dafa3100083b0282f83c22d853cf6bd777e94d82c6e37e28b",
   "source_files": [
     "data/interim/live/trade_source_comparison.csv"
   ],

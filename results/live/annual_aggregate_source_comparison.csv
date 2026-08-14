@@ -7,6 +7,14 @@ year,flow_code,source,source_value,source_currency,nominal_conversion_method,cov
 1960,X,EFTA,,,,,missing_source,No local structured source table is available yet.
 1960,X,INE,,USD,no_registered_exchange_rate_for_1960,INE special-trade World total,blocked_pending_year_exchange_rate,Validated double-entry INE aggregate; no USD comparison is derived because no 1960 PTE/USD rate is registered. Rates from other years are never substituted.
 1960,X,OECD,,,,,missing_source,No local structured source table is available yet.
+1961,M,CEPII TRADHIST,,,,,missing_source,No local structured source table is available yet.
+1961,M,EFTA,,,,,missing_source,No local structured source table is available yet.
+1961,M,INE,,USD,no_registered_exchange_rate_for_1961,INE special-trade World total,blocked_pending_year_exchange_rate,Validated double-entry INE aggregate; no USD comparison is derived because no 1961 PTE/USD rate is registered. Rates from other years are never substituted.
+1961,M,OECD,,,,,missing_source,No local structured source table is available yet.
+1961,X,CEPII TRADHIST,,,,,missing_source,No local structured source table is available yet.
+1961,X,EFTA,,,,,missing_source,No local structured source table is available yet.
+1961,X,INE,,USD,no_registered_exchange_rate_for_1961,INE special-trade World total,blocked_pending_year_exchange_rate,Validated double-entry INE aggregate; no USD comparison is derived because no 1961 PTE/USD rate is registered. Rates from other years are never substituted.
+1961,X,OECD,,,,,missing_source,No local structured source table is available yet.
 1962,M,CEPII TRADHIST,,,,,missing_source,No local structured source table is available yet.
 1962,M,EFTA,,,,,missing_source,No local structured source table is available yet.
 1962,M,INE,585375130.4347826,USD,source_b_original_value / 28.75; registered 1962 PTE/USD rate,INE special-trade World total,usable_with_conversion_and_territorial_caveat,Validated double-entry INE aggregate; converted only for diagnostic comparison pending territorial-definition evidence.
