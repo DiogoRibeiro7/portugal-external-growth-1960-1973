@@ -29,6 +29,11 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
 - The published panel range now comes from `project.yml` instead of a hardcoded literal, and
   partner-component reconciliation now covers every transcribed reference year, so verified
   years outside the current panel are still reported.
+- CEPII TRADHIST v4 is registered as a third trade compilation: the 1.1 GB upstream file is
+  kept local and untracked, with its SHA-256 and a filtered Portugal 1962-1973 subset
+  committed as provenance. TRADHIST is denominated in current British pounds and its Portugal
+  totals run 4 to 14 per cent above the INE aggregates, so it documents a real disagreement
+  between compilations rather than confirming either.
 - The INE-Comtrade reconciliation now covers every year both sources report, not 1962 alone.
   `ine_comtrade_1962_reconciliation.csv` becomes `ine_comtrade_reconciliation.csv` and carries
   48 rows across twelve years, with world-total and colonial-coverage comparisons per year and
