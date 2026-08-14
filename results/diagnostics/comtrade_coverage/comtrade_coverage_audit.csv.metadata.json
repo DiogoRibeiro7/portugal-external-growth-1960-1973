@@ -21,7 +21,7 @@
     "territorial_definition_evidence_count",
     "territorial_definition_evidence_summary"
   ],
-  "creation_timestamp_utc": "2026-08-09T12:28:00+01:00",
+  "creation_timestamp_utc": "2026-08-14T12:22:20+01:00",
   "date_range": {
     "end_year": 1973,
     "start_year": 1962
@@ -34,7 +34,7 @@
     },
     {
       "path": "config/territorial_definitions.yml",
-      "sha256": "04deef3ef8e3d81e628f506d63ec7bb09524be27c2162fcba01e899775934696"
+      "sha256": "bd8dfd51af888f50340d987b622cad3e079b36cd435f578afe6b871d9ec8250c"
     }
   ],
   "rows": 24,
@@ -59,7 +59,7 @@
     "world_value_usd": "float64",
     "year": "int64"
   },
-  "sha256": "6fa6f5975f1e389b8062cd8b2c7cb0e3ea73a7b9bbb117173f4c86ffb559173c",
+  "sha256": "05b084e94b17a90a8655da249aae7cc26c1977453bde0f1f15ffdbed583f72cd",
   "source_files": [
     "data/interim/live/comtrade_coverage_matrix.csv",
     "config/territorial_definitions.yml"

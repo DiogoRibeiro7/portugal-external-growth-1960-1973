@@ -29,6 +29,11 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
 - The published panel range now comes from `project.yml` instead of a hardcoded literal, and
   partner-component reconciliation now covers every transcribed reference year, so verified
   years outside the current panel are still reported.
+- `config/territorial_definitions.yml` records four further pieces of reporter-territory
+  evidence: the Continente e Ilhas Adjacentes scope printed on the later INE title pages, the
+  treatment of the overseas territories as partner rows in all fourteen transcribed years, and
+  the near-identity of the INE and Comtrade 1962 world totals. The status remains
+  partially_resolved pending a research judgement.
 - Every INE yearbook year for 1960-1973 is now transcribed by double entry: 599 verified rows
   covering World and colonial aggregates, the overseas territories, and the European partner
   rows. The constant-composition benchmark runs annually from 1962 to 1973; the 1960 and 1961

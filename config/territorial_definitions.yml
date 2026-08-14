@@ -18,3 +18,19 @@ territorial_definitions:
         local_file: data/manual/source_documents/ine_external_trade_1962_volume_i.pdf
         page_or_section: PDF page 23
         note: INE statistical-territory list separates Ultramar Portugues from foreign countries and prints OECD/EEC/EFTA groupings separately.
+      - source: INE Estatisticas do Comercio Externo 1969, Volume I
+        local_file: data/manual/source_documents/ine_external_trade_1969_volume_i.pdf
+        page_or_section: title page
+        note: Title page states the reporting scope explicitly in both languages as Continente e Ilhas Adjacentes / Continent et Iles Adjacentes. The series adopts this subtitle from the 1966 volume onward; the 1962 and 1965 title pages carry no territorial qualifier.
+      - source: INE Estatisticas do Comercio Externo 1973, Volume I
+        local_file: data/manual/source_documents/ine_external_trade_1973_volume_i.pdf
+        page_or_section: title page
+        note: Title page repeats the Continente e Ilhas Adjacentes scope statement, confirming the declared reporter territory is mainland Portugal plus the adjacent islands and excludes the overseas territories.
+      - source: INE Estatisticas do Comercio Externo 1960-1973, Volume I of each year
+        local_file: data/processed/live/ine_aggregate_trade_harmonised.csv
+        page_or_section: Quadro III / Quadro IV / Quadro n.o 2 statistical-territory tables
+        note: Across all fourteen transcribed years the overseas territories appear only as partner rows under Ultramar or Provincias Ultramarinas, never as part of the reporting territory, so the INE reporter universe is metropolitan throughout the period.
+      - source: INE and UN Comtrade 1962 world totals
+        local_file: data/interim/live/ine_comtrade_1962_reconciliation.csv
+        page_or_section: World exports and World imports rows
+        note: After conversion at the registered 1962 IMF par value the two sources' world totals agree to a relative difference of -2.8e-05 for exports and -5.1e-05 for imports. Any difference in territorial coverage would move the totals by roughly 12 to 25 per cent, so the near-identity is only consistent with Comtrade reporter 620 covering the same metropolitan universe as INE.
