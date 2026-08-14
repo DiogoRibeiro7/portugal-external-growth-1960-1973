@@ -13,7 +13,7 @@
     "blocking_reasons",
     "evidence_reference"
   ],
-  "creation_timestamp_utc": "2026-08-14T13:07:02+01:00",
+  "creation_timestamp_utc": "2026-08-14T14:55:09+01:00",
   "date_range": null,
   "file": "results/diagnostics/reconciliation/reconciliation_registry.csv",
   "input_artifacts": [
@@ -28,7 +28,7 @@
   ],
   "rows": 1,
   "schema": {
-    "benchmark_year": "int64",
+    "benchmark_year": "object",
     "blocking_reasons": "object",
     "evidence_reference": "object",
     "overall_status": "object",
@@ -40,7 +40,7 @@
     "source_b": "object",
     "unresolved_row_count": "int64"
   },
-  "sha256": "0adefcd8de34242a14f23c62265eb0559dcb65c31fffb0dd6f06ea7cbe7f6372",
+  "sha256": "4c71b16b7e961778b643b160b1aa5a85bb420abe17bcfb8afc9e13164522688a",
   "source_files": [
     "data/interim/live/ine_comtrade_reconciliation.csv",
     "results/diagnostics/reconciliation/ine_comtrade_reconciliation.txt"

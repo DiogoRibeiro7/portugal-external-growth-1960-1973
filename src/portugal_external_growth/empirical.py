@@ -115,8 +115,10 @@ RESOLVED_RECONCILIATION_STATUSES = {"reconciled", "satisfactory_with_caveats"}
 RESOLVED_IDENTIFICATION_STATUSES = {"satisfied", "approved", "resolved"}
 DEFAULT_TRADE_SAMPLE_YEARS = tuple(range(1962, 1974))
 TRADE_SAMPLE_FLOWS = ("X", "M")
-REQUIRED_RECONCILIATION_SCOPES = frozenset({"ine_comtrade", "cepii", "efta", "oecd"})
-REQUIRED_RECONCILIATION_SCOPE_COUNT = len(REQUIRED_RECONCILIATION_SCOPES)
+KNOWN_RECONCILIATION_SCOPES = frozenset({"ine_comtrade", "cepii", "efta", "oecd"})
+ADJUDICATED_RECONCILIATION_STATUSES = RESOLVED_RECONCILIATION_STATUSES | {
+    "divergence_documented"
+}
 MIN_USABLE_INDUSTRIES = 10
 MIN_INDEPENDENT_CLUSTERS = 10
 MIN_SECTOR_YEAR_GRID_COVERAGE = 0.8
@@ -1115,26 +1117,66 @@ def _territorial_consistency(root: Path) -> dict[str, object]:
     )
 
 
+def required_reconciliation_scopes(root: Path) -> tuple[set[str], set[str]]:
+    """Return the required and pending reconciliation scopes declared in configuration.
+
+    A scope is required when an independent source is obtainable and the comparison can therefore
+    be adjudicated. Scopes awaiting source acquisition are reported separately so that an
+    unobtainable source does not block the panel indefinitely.
+    """
+
+    path = root / "config/reconciliation_scopes.yml"
+    if not path.exists():
+        return set(KNOWN_RECONCILIATION_SCOPES), set()
+    payload = load_yaml(path)
+    entries = payload.get("scopes")
+    if not isinstance(entries, list):
+        return set(KNOWN_RECONCILIATION_SCOPES), set()
+    required: set[str] = set()
+    pending: set[str] = set()
+    for entry in entries:
+        if not isinstance(entry, dict):
+            continue
+        scope = str(entry.get("scope", "")).strip().lower()
+        if not scope:
+            continue
+        if str(entry.get("requirement", "")).strip().lower() == "required":
+            required.add(scope)
+        else:
+            pending.add(scope)
+    if not required:
+        return set(KNOWN_RECONCILIATION_SCOPES), pending
+    return required, pending
+
+
 def _cross_source_reconciliation(root: Path) -> dict[str, object]:
+    required, pending = required_reconciliation_scopes(root)
+    pending_note = (
+        f"; scopes awaiting source acquisition: {', '.join(sorted(pending))}" if pending else ""
+    )
     registry = _read_csv(root / "results/diagnostics/reconciliation/reconciliation_registry.csv")
     if registry.empty:
         return _record(
             "cross_source_reconciliation",
-            REQUIRED_RECONCILIATION_SCOPE_COUNT,
+            len(required),
             0,
-            "reconciliation registry missing",
+            f"reconciliation registry missing{pending_note}",
         )
-    resolved = registry.loc[
+    adjudicated = registry.loc[
         registry.get("overall_status", pd.Series(dtype=object))
         .astype(str)
-        .isin(RESOLVED_RECONCILIATION_STATUSES)
+        .isin(ADJUDICATED_RECONCILIATION_STATUSES)
     ]
-    available_scopes = _reconciliation_scopes(resolved)
+    available_scopes = _reconciliation_scopes(adjudicated)
+    missing = sorted(required - available_scopes)
     return _record(
         "cross_source_reconciliation",
-        REQUIRED_RECONCILIATION_SCOPE_COUNT,
-        len(available_scopes & REQUIRED_RECONCILIATION_SCOPES),
-        "INE-Comtrade, CEPII, EFTA, and OECD reconciliation scopes are not all resolved",
+        len(required),
+        len(available_scopes & required),
+        (
+            f"required reconciliation scopes not yet adjudicated: {', '.join(missing)}"
+            f"{pending_note}"
+        ),
     )
 
 
@@ -1157,7 +1199,7 @@ def _normalise_reconciliation_scope(text: str) -> str:
     for scope in ("cepii", "efta", "oecd"):
         if scope in normalised:
             return scope
-    return normalised if normalised in REQUIRED_RECONCILIATION_SCOPES else ""
+    return normalised if normalised in KNOWN_RECONCILIATION_SCOPES else ""
 
 
 def _efta_policy_availability(root: Path) -> dict[str, object]:

@@ -12,7 +12,7 @@
     "reconciliation_status",
     "blocking_reason"
   ],
-  "creation_timestamp_utc": "2026-08-14T13:07:02+01:00",
+  "creation_timestamp_utc": "2026-08-14T14:55:09+01:00",
   "date_range": {
     "end_year": 1973,
     "start_year": 1962
@@ -29,7 +29,7 @@
     },
     {
       "path": "results/diagnostics/reconciliation/reconciliation_registry.csv",
-      "sha256": "0adefcd8de34242a14f23c62265eb0559dcb65c31fffb0dd6f06ea7cbe7f6372"
+      "sha256": "4c71b16b7e961778b643b160b1aa5a85bb420abe17bcfb8afc9e13164522688a"
     },
     {
       "path": "data/manual/transcriptions/pass_1/ine_aggregate_transcription_pass_1.csv",
@@ -57,7 +57,7 @@
     "validated_aggregate_rows": "int64",
     "year": "int64"
   },
-  "sha256": "9a8c981a1a966cbba4e1eb222e9544b676356614b6152a73012773ec7206a494",
+  "sha256": "4a640eed94e7f88bd70b6534031ab18a47fbaa329b96ae409a696f66ffa74220",
   "source_files": [
     "data/processed/live/ine_aggregate_trade_harmonised.csv",
     "data/interim/live/ine_comtrade_reconciliation.csv",

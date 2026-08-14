@@ -1,0 +1,45 @@
+# Cross-source reconciliation scopes for the 1962-1973 merchandise trade panel.
+#
+# A scope is "required" when an independent source is actually obtainable and the comparison
+# against INE can therefore be adjudicated. Adjudication does not mean the sources agree: a
+# quantified, explained divergence is a valid terminal outcome, because the purpose of cross-source
+# reconciliation is to surface disagreement rather than to assume it away.
+#
+# A scope is "pending_source_acquisition" when no obtainable source exists yet. Such scopes are
+# reported as outstanding research work instead of blocking the panel indefinitely, and they move
+# to "required" as soon as a source is registered.
+scopes:
+  - scope: ine_comtrade
+    requirement: required
+    source_a: UN Comtrade
+    source_b: INE Estatisticas do Comercio Externo
+    rationale: >-
+      Comtrade publishes Portugal reporter 620 for the whole sample period and is registered
+      locally, so every sample year can be compared against the transcribed INE aggregates using
+      year-specific registered exchange rates.
+  - scope: cepii
+    requirement: required
+    source_a: CEPII TRADHIST v4
+    source_b: INE Estatisticas do Comercio Externo
+    rationale: >-
+      TRADHIST is publicly downloadable and covers 1962-1973 bilateral trade for Portugal,
+      including the overseas territories that Comtrade covers incompletely. Its Portugal series is
+      denominated in current British pounds and is largely derived from IMF DOTS mirror flows, so
+      it is a second compilation rather than an independent observation of Portuguese customs
+      records, and it is expected to diverge from INE rather than confirm it.
+  - scope: efta
+    requirement: pending_source_acquisition
+    source_a: EFTA trade statistics
+    source_b: INE Estatisticas do Comercio Externo
+    rationale: >-
+      EFTA published no machine-readable historical series for 1962-1973 and exposes no API. The
+      figures exist in contemporary print publications, so this scope requires the same document
+      acquisition and double-entry transcription route already used for the INE yearbooks.
+  - scope: oecd
+    requirement: pending_source_acquisition
+    source_a: OECD Statistics of Foreign Trade
+    source_b: INE Estatisticas do Comercio Externo
+    rationale: >-
+      The current OECD SDMX service carries only contemporary datasets; its historical foreign
+      trade series for the 1960s are not exposed there. Like EFTA, this scope requires acquiring
+      the printed volumes before any comparison can be adjudicated.

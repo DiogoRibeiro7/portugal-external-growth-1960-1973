@@ -596,7 +596,13 @@ def build_trade_reconciliation_notes(comparison: pd.DataFrame) -> str:
 
 
 def build_reconciliation_registry(ine_comtrade: pd.DataFrame) -> pd.DataFrame:
-    """Build a small registry of source-pair reconciliation readiness."""
+    """Summarise the adjudication state of each cross-source reconciliation scope.
+
+    A comparison counts as adjudicated once every row produced a number and an explanation.
+    Rows that could not be compared at all, because a required input such as a year's exchange
+    rate is missing, leave the scope unresolved. Rows that were compared and disagree are a
+    terminal outcome: the divergence is quantified and documented, not hidden.
+    """
 
     if ine_comtrade.empty:
         return pd.DataFrame.from_records(
@@ -604,65 +610,68 @@ def build_reconciliation_registry(ine_comtrade: pd.DataFrame) -> pd.DataFrame:
                 {
                     "reconciliation_id": "ine_comtrade",
                     "reconciliation_scope": "ine_comtrade",
-                    "benchmark_year": 1962,
+                    "benchmark_year": pd.NA,
                     "source_a": "UN Comtrade",
                     "source_b": "INE",
                     "row_count": 0,
                     "reconciled_row_count": 0,
                     "unresolved_row_count": 0,
-                    "overall_status": "not_available",
-                    "blocking_reasons": "missing_local_ine_or_comtrade_inputs",
-                    "evidence_reference": "",
+                    "overall_status": "unresolved",
+                    "blocking_reasons": "no_comparison_rows",
+                    "evidence_reference": "data/interim/live/ine_comtrade_reconciliation.csv",
                 }
             ],
             columns=RECONCILIATION_REGISTRY_COLUMNS,
         )
-    unresolved = ine_comtrade.loc[
-        ~ine_comtrade["reconciliation_status"].isin(RESOLVED_RECONCILIATION_STATUSES)
-    ]
+
+    def column(name: str) -> pd.Series:
+        if name in ine_comtrade.columns:
+            return ine_comtrade[name]
+        return pd.Series([pd.NA] * len(ine_comtrade), index=ine_comtrade.index)
+
+    reconciled = column("reconciliation_status").astype(str).isin(RESOLVED_RECONCILIATION_STATUSES)
+    comparable = pd.to_numeric(column("relative_difference"), errors="coerce").notna()
+
     reasons: list[str] = []
-    statuses = set(ine_comtrade["reconciliation_status"].astype(str))
-    if "unresolved" in statuses:
-        conversion_methods = (
-            ine_comtrade["conversion_method"].astype(str)
-            if "conversion_method" in ine_comtrade
-            else pd.Series(["exchange-rate source not registered"])
-        )
-        if conversion_methods.str.contains(
-            "exchange-rate source not registered", regex=False
-        ).any():
-            reasons.append("exchange_rate_source_not_registered")
-        reasons.append("comtrade_reporter_territory_unresolved")
-    if (
-        not unresolved.empty
-        and (pd.to_numeric(ine_comtrade["coverage_ratio"], errors="coerce") < 1.0).any()
-    ):
+    if column("conversion_method").astype(str).str.startswith("no_registered_exchange_rate").any():
+        reasons.append("exchange_rate_not_registered_for_every_year")
+    coverage = pd.to_numeric(column("coverage_ratio"), errors="coerce")
+    has_caveats = bool((coverage < 1.0).any())
+    if has_caveats:
         reasons.append("colonial_partner_coverage_incomplete")
-    has_caveats = (pd.to_numeric(ine_comtrade["coverage_ratio"], errors="coerce") < 1.0).any()
-    overall_status = (
-        "unresolved"
-        if not unresolved.empty
-        else "satisfactory_with_caveats"
-        if has_caveats
-        else "reconciled"
-    )
+    if not column("territorial_definition_a").astype(str).eq("resolved").all():
+        reasons.append("comtrade_reporter_territory_unresolved")
+
+    if not bool(comparable.all()):
+        overall_status = "unresolved"
+    elif bool(reconciled.all()):
+        overall_status = "satisfactory_with_caveats" if has_caveats else "reconciled"
+    else:
+        overall_status = "divergence_documented"
+
+    years = pd.to_numeric(column("year"), errors="coerce").dropna().astype(int)
+    if years.empty:
+        benchmark_year: object = pd.NA
+    elif years.min() == years.max():
+        benchmark_year = str(years.min())
+    else:
+        benchmark_year = f"{years.min()}-{years.max()}"
     return pd.DataFrame.from_records(
         [
             {
                 "reconciliation_id": "ine_comtrade",
                 "reconciliation_scope": "ine_comtrade",
-                "benchmark_year": 1962,
+                "benchmark_year": benchmark_year,
                 "source_a": "UN Comtrade",
                 "source_b": "INE",
                 "row_count": len(ine_comtrade),
-                "reconciled_row_count": len(ine_comtrade) - len(unresolved),
-                "unresolved_row_count": len(unresolved),
+                "reconciled_row_count": int(reconciled.sum()),
+                "unresolved_row_count": int((~reconciled).sum()),
                 "overall_status": overall_status,
-                "blocking_reasons": ";".join(reasons) if not unresolved.empty else "",
+                "blocking_reasons": ";".join(reasons) if overall_status == "unresolved" else "",
                 "evidence_reference": (
                     "data/interim/live/ine_comtrade_reconciliation.csv; "
-                    "results/diagnostics/reconciliation/"
-                    "ine_comtrade_reconciliation.txt"
+                    "results/diagnostics/reconciliation/ine_comtrade_reconciliation.txt"
                 ),
             }
         ],

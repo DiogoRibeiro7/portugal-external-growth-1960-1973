@@ -29,6 +29,16 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
 - The published panel range now comes from `project.yml` instead of a hardcoded literal, and
   partner-component reconciliation now covers every transcribed reference year, so verified
   years outside the current panel are still reported.
+- The cross-source reconciliation requirement is now declared in
+  `config/reconciliation_scopes.yml` with a rationale per scope, instead of a hardcoded set of
+  four. A scope is required when an obtainable source exists and the comparison can be
+  adjudicated; EFTA and OECD are recorded as awaiting source acquisition, with the reason,
+  rather than blocking the panel indefinitely.
+- A completed comparison whose sources disagree is now a terminal outcome,
+  `divergence_documented`, distinct from `unresolved`, which is reserved for comparisons that
+  could not be made at all because a required input was missing. The INE-Comtrade scope is
+  therefore adjudicated across 1962-1973 with 33 of 48 rows inside tolerance and the rest
+  quantified and explained.
 - CEPII TRADHIST v4 is registered as a third trade compilation: the 1.1 GB upstream file is
   kept local and untracked, with its SHA-256 and a filtered Portugal 1962-1973 subset
   committed as provenance. TRADHIST is denominated in current British pounds and its Portugal

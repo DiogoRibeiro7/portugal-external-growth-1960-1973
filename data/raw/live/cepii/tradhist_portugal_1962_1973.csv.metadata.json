@@ -1,5 +1,16 @@
 {
   "access_conditions": "CEPII public research database; attribution required",
+  "columns": [
+    "iso_o",
+    "iso_d",
+    "year",
+    "FLOW",
+    "SOURCE_TF",
+    "XPTOT_o",
+    "IPTOT_o",
+    "XPTOT_d",
+    "IPTOT_d"
+  ],
   "columns_kept": [
     "iso_o",
     "iso_d",
@@ -14,12 +25,13 @@
   "extracted_at_utc": "2026-08-14T13:51:49.182547+00:00",
   "extraction_query": "rows where iso_o == 'PRT' or iso_d == 'PRT' and year in 1962-1973",
   "retention_note": "The 1.1 GB upstream file is kept locally and left untracked; this filtered subset and the upstream SHA-256 are the committed provenance.",
+  "rows": 4267,
   "rows_kept": 4267,
   "rows_scanned": 2502427,
+  "sha256": "315222508aa7f5a17761dcdcb71877bf235ad18e2dc53d5ed223211d8cca091d",
   "source": "CEPII TRADHIST v4, historical bilateral trade and gravity data",
   "source_file": "data/raw/live/cepii/TRADHIST_v4.dta",
   "source_file_bytes": 1106094375,
   "source_file_sha256": "a3a02fbf26682161e8371cdcd0ff9afd6cd1a2ce0435360707a6c7736ac7d920",
-  "source_url": "https://www.cepii.fr/DATA_DOWNLOAD/TRADHIST/TRADHIST_v4.dta",
-  "subset_sha256": "315222508aa7f5a17761dcdcb71877bf235ad18e2dc53d5ed223211d8cca091d"
+  "source_url": "https://www.cepii.fr/DATA_DOWNLOAD/TRADHIST/TRADHIST_v4.dta"
 }
