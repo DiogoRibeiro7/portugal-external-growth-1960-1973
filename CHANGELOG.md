@@ -29,6 +29,8 @@ The format follows Keep a Changelog conventions, and this project uses semantic 
 - The published panel range now comes from `project.yml` instead of a hardcoded literal, and
   partner-component reconciliation now covers every transcribed reference year, so verified
   years outside the current panel are still reported.
+- `ROADMAP.md` records what remains between the current state and a research-ready panel, with
+  each item tied to the readiness requirement it unblocks.
 - The cross-source reconciliation requirement is now declared in
   `config/reconciliation_scopes.yml` with a rationale per scope, instead of a hardcoded set of
   four. A scope is required when an obtainable source exists and the comparison can be
