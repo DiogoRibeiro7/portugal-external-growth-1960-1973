@@ -46,7 +46,7 @@ packages = [{ include = "portugal_external_growth", from = "src" }]
 
 [tool.poetry.group.dev.dependencies]
 pytest = ">=9.0.3,<10.0.0"
-pytest-cov = "^6.0.0"
+pytest-cov = "^7.1.0"
 responses = "^0.25.3"
 ruff = "^0.9.4"
 mypy = "^1.14.1"
