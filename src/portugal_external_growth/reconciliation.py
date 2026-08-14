@@ -184,7 +184,7 @@ def _imf_exchange_rate_rows(root: Path) -> list[dict[str, object]]:
                 "source_status": "registered_local_source",
             }
         )
-    return sorted(rows, key=lambda row: int(row["year"]))
+    return sorted(rows, key=lambda row: cast(int, row["year"]))
 
 
 def build_trade_source_comparison(root: Path) -> pd.DataFrame:
