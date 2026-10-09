@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/project-logo.png" alt="portugal-external-growth-1960-1973 project logo" width="160" height="160">
+</p>
+
 # Portugal External Growth 1960–1973
 
 [![CI](https://github.com/DiogoRibeiro7/portugal-external-growth-1960-1973/actions/workflows/ci.yml/badge.svg)](https://github.com/DiogoRibeiro7/portugal-external-growth-1960-1973/actions/workflows/ci.yml)
